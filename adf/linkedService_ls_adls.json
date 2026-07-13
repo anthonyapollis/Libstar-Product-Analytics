@@ -1,0 +1,6 @@
+{
+  "type": "AzureBlobFS",
+  "typeProperties": {
+    "url": "https://stpargoparcels01.dfs.core.windows.net"
+  }
+}

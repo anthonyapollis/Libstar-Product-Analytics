@@ -1,0 +1,5 @@
+channel_id,sales_channel,sales_weight
+retail-wholesale,Retail and wholesale,0.62
+food-service,Food service,0.18
+industrial-contract-manufacturing,Industrial and contract manufacturing,0.12
+export,Export,0.08

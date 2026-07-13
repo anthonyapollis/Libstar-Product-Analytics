@@ -1,0 +1,11 @@
+.secrets/
+tools/
+.claude/
+data/raw/.claude/
+__pycache__/
+*.pyc
+
+# Regenerable CSV re-exports for offline Qlik use — derive from the
+# committed parquet via scripts/export_local_extracts.py rather than
+# storing a redundant uncompressed copy of the same rows.
+data/local/*.csv

@@ -1,0 +1,17 @@
+{
+  "type": "DelimitedText",
+  "linkedServiceName": { "referenceName": "ls_adls", "type": "LinkedServiceReference" },
+  "typeProperties": {
+    "location": {
+      "type": "AzureBlobFSLocation",
+      "fileSystem": "raw",
+      "folderPath": "reference",
+      "fileName": "brand_map.csv"
+    },
+    "columnDelimiter": ",",
+    "quoteChar": "\"",
+    "escapeChar": "\"",
+    "firstRowAsHeader": true
+  },
+  "schema": []
+}

@@ -1,0 +1,13 @@
+category_id,group_id,category
+dairy,perishable-products,Dairy
+convenience-meals,perishable-products,Convenience Meals
+value-added-meats,perishable-products,Value-added Meats
+baby,perishable-products,Baby
+fresh-mushrooms,perishable-products,Fresh Mushrooms
+dry-condiments,ambient-products,Dry condiments
+wet-condiments,ambient-products,Wet condiments
+meal-ingredients,ambient-products,Meal ingredients
+baking,ambient-products,Baking
+snacking,ambient-products,Snacking
+spreads,ambient-products,Spreads
+beverages,ambient-products,Beverages

@@ -1,0 +1,84 @@
+// ============================================================
+// Libstar Product Catalog — Qlik Sense load script
+// Tenant: go10njvx344b4j2.eu.qlikcloud.com
+// Source: Azure Synapse serverless SQL (db: libstar, schema: rpt)
+// Create a data connection first (see qlik/README.md), then set
+// its name below.
+// ============================================================
+
+SET vConnectionName = 'Azure_Synapse_Libstar';
+SET ThousandSep = ' ';
+SET DecimalSep = '.';
+SET MoneyFormat = 'R# ##0.00';
+SET DateFormat = 'YYYY-MM-DD';
+
+LIB CONNECT TO '$(vConnectionName)';
+
+// ---- Fact: cleaned product catalog (~4.5M rows after quarantine + dedupe)
+Products:
+LOAD
+    product_id,
+    sku,
+    product_name,
+    product_group,
+    category,
+    brand,
+    brand_solution,
+    sales_channel,
+    province,
+    price_zar,
+    cost_zar,
+    margin_pct,
+    weight_kg,
+    stock_qty,
+    units_sold_12m,
+    revenue_12m_zar,
+    date_added,
+    Year(date_added)                          AS year_added,
+    Date(MonthStart(date_added), 'YYYY-MM')   AS month_added,
+    is_active,
+    rating;
+SQL SELECT * FROM rpt.vw_products;
+
+// ---- Data quality: quarantine reject reasons
+DataQuality:
+LOAD
+    reject_reason,
+    row_count;
+SQL SELECT * FROM rpt.vw_data_quality;
+
+// ---- ML anomalies (IsolationForest output, for the ML Insights sheet)
+MlAnomalies:
+LOAD
+    product_id AS anomaly_product_id,
+    product_name AS anomaly_product_name,
+    category AS anomaly_category,
+    brand AS anomaly_brand,
+    price_zar AS anomaly_price_zar,
+    cost_zar AS anomaly_cost_zar,
+    margin_pct AS anomaly_margin_pct,
+    weight_kg AS anomaly_weight_kg,
+    anomaly_raw AS anomaly_score;
+SQL SELECT * FROM rpt.vw_ml_anomalies;
+
+// ---- Pre-aggregated views (small, used for QA reconciliation vs Excel/ebook)
+KpiSummary:
+LOAD *;
+SQL SELECT * FROM rpt.vw_kpi_summary;
+
+// ---- KPI variables (used by master measures)
+LET vTotalSkus      = Peek('total_skus', 0, 'KpiSummary');
+LET vRevenue12m     = Peek('revenue_12m_zar', 0, 'KpiSummary');
+
+// ============================================================
+// Master measures to create in the app (definitions):
+//   Revenue 12m        : Sum(revenue_12m_zar)
+//   Avg Margin %       : Avg(margin_pct)
+//   Active SKUs        : Count({<is_active={1}>} distinct product_id)
+//   Total SKUs         : Count(distinct product_id)
+//   Avg Rating         : Avg(rating)
+//   Stock Units        : Sum(stock_qty)
+//   DQ Pass Rate %     : =1 - Sum({1<source={'quarantine'}>} row_count)
+//                        / (Count(distinct product_id) + Sum(row_count))
+//   Revenue / SKU      : Sum(revenue_12m_zar) / Count(distinct product_id)
+// ============================================================

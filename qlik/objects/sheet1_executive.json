@@ -1,0 +1,101 @@
+{
+  "qInfo": { "qId": "sheet-exec", "qType": "sheet" },
+  "qMetaDef": { "title": "Executive Overview", "description": "KPIs and headline mix" },
+  "qProperty": {
+    "qInfo": { "qId": "sheet-exec", "qType": "sheet" },
+    "qMetaDef": { "title": "Executive Overview" },
+    "rank": 1,
+    "thumbnail": {},
+    "columns": 24,
+    "rows": 12,
+    "cells": [
+      { "name": "kpi-rev", "type": "kpi", "col": 0, "row": 0, "colspan": 6, "rowspan": 3 },
+      { "name": "kpi-margin", "type": "kpi", "col": 6, "row": 0, "colspan": 6, "rowspan": 3 },
+      { "name": "kpi-skus", "type": "kpi", "col": 12, "row": 0, "colspan": 6, "rowspan": 3 },
+      { "name": "kpi-rating", "type": "kpi", "col": 18, "row": 0, "colspan": 6, "rowspan": 3 },
+      { "name": "pie-group", "type": "piechart", "col": 0, "row": 3, "colspan": 8, "rowspan": 9 },
+      { "name": "bar-brands", "type": "barchart", "col": 8, "row": 3, "colspan": 16, "rowspan": 9 }
+    ]
+  },
+  "qChildren": [
+    {
+      "qInfo": { "qId": "kpi-rev", "qType": "kpi" },
+      "qProperty": {
+        "qInfo": { "qId": "kpi-rev", "qType": "kpi" },
+        "visualization": "kpi",
+        "title": "Revenue 12m",
+        "qHyperCubeDef": {
+          "qMeasures": [ { "qDef": { "qDef": "Sum(revenue_12m_zar)", "qLabel": "Revenue 12m", "qNumFormat": { "qType": "M", "qFmt": "R#,##0;-R#,##0" } } } ],
+          "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+        }
+      }
+    },
+    {
+      "qInfo": { "qId": "kpi-margin", "qType": "kpi" },
+      "qProperty": {
+        "qInfo": { "qId": "kpi-margin", "qType": "kpi" },
+        "visualization": "kpi",
+        "title": "Avg Margin %",
+        "qHyperCubeDef": {
+          "qMeasures": [ { "qDef": { "qDef": "Avg(margin_pct)", "qLabel": "Avg Margin %" } } ],
+          "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+        }
+      }
+    },
+    {
+      "qInfo": { "qId": "kpi-skus", "qType": "kpi" },
+      "qProperty": {
+        "qInfo": { "qId": "kpi-skus", "qType": "kpi" },
+        "visualization": "kpi",
+        "title": "Total SKUs",
+        "qHyperCubeDef": {
+          "qMeasures": [ { "qDef": { "qDef": "Count(distinct product_id)", "qLabel": "Total SKUs" } } ],
+          "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+        }
+      }
+    },
+    {
+      "qInfo": { "qId": "kpi-rating", "qType": "kpi" },
+      "qProperty": {
+        "qInfo": { "qId": "kpi-rating", "qType": "kpi" },
+        "visualization": "kpi",
+        "title": "Avg Rating",
+        "qHyperCubeDef": {
+          "qMeasures": [ { "qDef": { "qDef": "Avg(rating)", "qLabel": "Avg Rating" } } ],
+          "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+        }
+      }
+    },
+    {
+      "qInfo": { "qId": "pie-group", "qType": "piechart" },
+      "qProperty": {
+        "qInfo": { "qId": "pie-group", "qType": "piechart" },
+        "visualization": "piechart",
+        "title": "Revenue by product group",
+        "qHyperCubeDef": {
+          "qDimensions": [ { "qDef": { "qFieldDefs": ["product_group"] } } ],
+          "qMeasures": [ { "qDef": { "qDef": "Sum(revenue_12m_zar)", "qLabel": "Revenue" } } ],
+          "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 10 } ]
+        }
+      }
+    },
+    {
+      "qInfo": { "qId": "bar-brands", "qType": "barchart" },
+      "qProperty": {
+        "qInfo": { "qId": "bar-brands", "qType": "barchart" },
+        "visualization": "barchart",
+        "title": "Top 10 brands by revenue",
+        "orientation": "horizontal",
+        "qHyperCubeDef": {
+          "qDimensions": [ {
+            "qDef": { "qFieldDefs": ["brand"] },
+            "qOtherTotalSpec": { "qOtherMode": "OTHER_OFF", "qOtherCounted": { "qv": "10" } }
+          } ],
+          "qMeasures": [ { "qDef": { "qDef": "Sum(revenue_12m_zar)", "qLabel": "Revenue 12m" }, "qSortBy": { "qSortByNumeric": -1 } } ],
+          "qInterColumnSortOrder": [1, 0],
+          "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 50 } ]
+        }
+      }
+    }
+  ]
+}

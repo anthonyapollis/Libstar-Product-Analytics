@@ -1,0 +1,10 @@
+province,has_libstar_operations,sales_weight
+Western Cape,True,0.22
+Gauteng,True,0.3
+KwaZulu-Natal,True,0.17
+Eastern Cape,True,0.09
+Mpumalanga,True,0.06
+Limpopo,False,0.05
+North West,False,0.04
+Free State,False,0.04
+Northern Cape,False,0.03

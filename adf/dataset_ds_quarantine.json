@@ -1,0 +1,13 @@
+{
+  "type": "Parquet",
+  "linkedServiceName": { "referenceName": "ls_adls", "type": "LinkedServiceReference" },
+  "typeProperties": {
+    "location": {
+      "type": "AzureBlobFSLocation",
+      "fileSystem": "curated",
+      "folderPath": "products_quarantine"
+    },
+    "compressionCodec": "snappy"
+  },
+  "schema": []
+}

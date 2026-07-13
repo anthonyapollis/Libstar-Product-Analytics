@@ -1,0 +1,13 @@
+{
+  "type": "DelimitedText",
+  "linkedServiceName": { "referenceName": "ls_adls", "type": "LinkedServiceReference" },
+  "typeProperties": {
+    "location": { "type": "AzureBlobFSLocation", "fileSystem": "raw" },
+    "columnDelimiter": ",",
+    "quoteChar": "\"",
+    "escapeChar": "\"",
+    "firstRowAsHeader": true,
+    "compressionCodec": "gzip"
+  },
+  "schema": []
+}

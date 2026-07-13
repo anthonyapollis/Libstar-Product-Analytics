@@ -1,0 +1,79 @@
+// ============================================================
+// Libstar Product Catalog — LOCAL load script (no cloud needed)
+// Works in Qlik Sense Desktop / any Qlik with folder access.
+// Create a folder data connection named 'LibstarLocal' pointing to
+// <repo>\PargoParcels\data\local and paste this script.
+// Same table/field names as the Synapse variant, so the dashboard
+// spec applies unchanged.
+// ============================================================
+
+SET ThousandSep = ' ';
+SET DecimalSep = '.';
+SET MoneyFormat = 'R# ##0.00';
+SET DateFormat = 'YYYY-MM-DD';
+
+// ---- Fact: cleaned catalog (1M-row stratified sample; full 4.28M lives
+//      in data/curated parquet — swap in an exported full CSV if needed)
+Products:
+LOAD
+    product_id,
+    sku,
+    product_name,
+    product_group,
+    category,
+    brand,
+    brand_solution,
+    sales_channel,
+    province,
+    Num(price_zar)          AS price_zar,
+    Num(cost_zar)           AS cost_zar,
+    Num(margin_pct)         AS margin_pct,
+    Num(weight_kg)          AS weight_kg,
+    Num(stock_qty)          AS stock_qty,
+    Num(units_sold_12m)     AS units_sold_12m,
+    Num(revenue_12m_zar)    AS revenue_12m_zar,
+    Date(Date#(date_added, 'YYYY-MM-DD'))                    AS date_added,
+    Year(Date#(date_added, 'YYYY-MM-DD'))                    AS year_added,
+    Date(MonthStart(Date#(date_added, 'YYYY-MM-DD')), 'YYYY-MM') AS month_added,
+    is_active,
+    Num(rating)             AS rating
+FROM [lib://LibstarLocal/products_clean_1m_sample.csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+// ---- Data quality (full quarantine)
+DataQuality:
+LOAD
+    reject_reason,
+    Count(product_id) AS row_count
+FROM [lib://LibstarLocal/products_quarantine.csv]
+(txt, utf8, embedded labels, delimiter is ',', msq)
+GROUP BY reject_reason;
+
+// ---- ML anomalies
+MlAnomalies:
+LOAD
+    product_id      AS anomaly_product_id,
+    product_name    AS anomaly_product_name,
+    category        AS anomaly_category,
+    brand           AS anomaly_brand,
+    Num(price_zar)  AS anomaly_price_zar,
+    Num(cost_zar)   AS anomaly_cost_zar,
+    Num(margin_pct) AS anomaly_margin_pct,
+    Num(weight_kg)  AS anomaly_weight_kg,
+    Num(anomaly_raw) AS anomaly_score
+FROM [lib://LibstarLocal/price_anomalies.csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+// ---- Reconciliation aggregates (full-population numbers; use these for
+//      KPI tiles so they match the ebook/Excel even though Products is
+//      a 1M sample)
+KpiSummary:
+LOAD * FROM [lib://LibstarLocal/kpi_summary.csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+CategoryPerformance:
+LOAD * FROM [lib://LibstarLocal/category_performance.csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+// Master measures: see libstar_load_script.qvs / dashboard_spec.md —
+// identical definitions apply.
