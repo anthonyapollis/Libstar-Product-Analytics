@@ -1,0 +1,224 @@
+[
+  {
+    "qInfo": {
+      "qId": "m-active-skus",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Active SKUs",
+      "qDef": "Sum(active_skus)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Active SKUs"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-avg-margin-pct",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Avg Margin %",
+      "qDef": "Avg(kpi_avg_margin_pct)/100",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "R",
+        "qnDec": 1,
+        "qUseThou": 0,
+        "qFmt": "0.0%",
+        "qDec": "."
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Avg Margin %"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-avg-rating",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Avg Rating",
+      "qDef": "Avg(kpi_avg_rating)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "F",
+        "qnDec": 2,
+        "qUseThou": 0,
+        "qFmt": "0.00",
+        "qDec": "."
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Avg Rating"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-dq-pass-rate",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "DQ Pass Rate",
+      "qDef": "Sum(total_skus)/Sum(raw_rows)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "R",
+        "qnDec": 1,
+        "qUseThou": 0,
+        "qFmt": "0.0%",
+        "qDec": "."
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "DQ Pass Rate"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-quarantined-rows",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Quarantined Rows",
+      "qDef": "Sum(quarantined_rows)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Quarantined Rows"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-revenue-12m",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Revenue 12m",
+      "qDef": "Sum(kpi_revenue_12m_zar)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "R# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Revenue 12m"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-revenue-per-sku",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Revenue per SKU",
+      "qDef": "Sum(kpi_revenue_12m_zar)/Sum(total_skus)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "R# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Revenue per SKU"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-stock-units",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Stock Units",
+      "qDef": "Sum(total_stock_units)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Stock Units"
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "m-total-skus",
+      "qType": "measure"
+    },
+    "qMeasure": {
+      "qLabel": "Total SKUs",
+      "qDef": "Sum(total_skus)",
+      "qGrouping": "N",
+      "qExpressions": [],
+      "qActiveExpression": 0,
+      "qNumFormat": {
+        "qType": "M",
+        "qnDec": 0,
+        "qUseThou": 1,
+        "qFmt": "# ##0",
+        "qDec": ".",
+        "qThou": " "
+      },
+      "qOrigin": "PROGRAM"
+    },
+    "qMetaDef": {
+      "title": "Total SKUs"
+    }
+  }
+]

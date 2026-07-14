@@ -1,0 +1,4429 @@
+[
+  {
+    "qInfo": {
+      "qId": "sheet-exec",
+      "qType": "sheet"
+    },
+    "qMetaDef": {
+      "title": "Executive Overview",
+      "description": "Headline KPIs and revenue mix"
+    },
+    "rank": 1,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      {
+        "name": "kpi-revenue",
+        "type": "kpi",
+        "col": 0,
+        "row": 0,
+        "colspan": 5,
+        "rowspan": 3
+      },
+      {
+        "name": "kpi-margin",
+        "type": "kpi",
+        "col": 5,
+        "row": 0,
+        "colspan": 5,
+        "rowspan": 3
+      },
+      {
+        "name": "kpi-skus",
+        "type": "kpi",
+        "col": 10,
+        "row": 0,
+        "colspan": 5,
+        "rowspan": 3
+      },
+      {
+        "name": "kpi-active",
+        "type": "kpi",
+        "col": 15,
+        "row": 0,
+        "colspan": 4,
+        "rowspan": 3
+      },
+      {
+        "name": "kpi-rating",
+        "type": "kpi",
+        "col": 19,
+        "row": 0,
+        "colspan": 5,
+        "rowspan": 3
+      },
+      {
+        "name": "flt-main",
+        "type": "filterpane",
+        "col": 0,
+        "row": 3,
+        "colspan": 5,
+        "rowspan": 9
+      },
+      {
+        "name": "pie-group",
+        "type": "piechart",
+        "col": 5,
+        "row": 3,
+        "colspan": 6,
+        "rowspan": 9
+      },
+      {
+        "name": "bar-brands",
+        "type": "barchart",
+        "col": 11,
+        "row": 3,
+        "colspan": 13,
+        "rowspan": 9
+      },
+      {
+        "name": "line-growth",
+        "type": "linechart",
+        "col": 0,
+        "row": 12,
+        "colspan": 24,
+        "rowspan": 3
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "sheet-catbrand",
+      "qType": "sheet"
+    },
+    "qMetaDef": {
+      "title": "Category & Brand",
+      "description": "Category and brand performance, exact full-population totals"
+    },
+    "rank": 2,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      {
+        "name": "treemap-cat",
+        "type": "treemap",
+        "col": 0,
+        "row": 0,
+        "colspan": 10,
+        "rowspan": 8
+      },
+      {
+        "name": "bar-cat-margin",
+        "type": "barchart",
+        "col": 10,
+        "row": 0,
+        "colspan": 14,
+        "rowspan": 8
+      },
+      {
+        "name": "bar-cat-solution",
+        "type": "barchart",
+        "col": 0,
+        "row": 8,
+        "colspan": 12,
+        "rowspan": 7
+      },
+      {
+        "name": "tbl-brand-cat",
+        "type": "table",
+        "col": 12,
+        "row": 8,
+        "colspan": 12,
+        "rowspan": 7
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "sheet-regional",
+      "qType": "sheet"
+    },
+    "qMetaDef": {
+      "title": "Regional & Channel",
+      "description": "Revenue by province and sales channel"
+    },
+    "rank": 3,
+    "columns": 24,
+    "rows": 20,
+    "cells": [
+      {
+        "colspan": 24,
+        "col": 0,
+        "rowspan": 8,
+        "row": 0,
+        "type": "map",
+        "name": "map-province-revenue"
+      },
+      {
+        "colspan": 24,
+        "col": 0,
+        "rowspan": 1,
+        "row": 8,
+        "type": "text-image",
+        "name": "txt-map-note"
+      },
+      {
+        "colspan": 12,
+        "col": 0,
+        "rowspan": 6,
+        "row": 9,
+        "type": "barchart",
+        "name": "bar-province-revenue"
+      },
+      {
+        "colspan": 12,
+        "col": 12,
+        "rowspan": 6,
+        "row": 9,
+        "type": "barchart",
+        "name": "bar-province-skus"
+      },
+      {
+        "colspan": 24,
+        "col": 0,
+        "rowspan": 5,
+        "row": 15,
+        "type": "barchart",
+        "name": "bar-channel-revenue"
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "sheet-dq",
+      "qType": "sheet"
+    },
+    "qMetaDef": {
+      "title": "Data Quality",
+      "description": "The ADF cleaning story: what got rejected and why"
+    },
+    "rank": 4,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      {
+        "name": "kpi-quarantined",
+        "type": "kpi",
+        "col": 0,
+        "row": 0,
+        "colspan": 6,
+        "rowspan": 4
+      },
+      {
+        "name": "kpi-dq-pass",
+        "type": "kpi",
+        "col": 6,
+        "row": 0,
+        "colspan": 6,
+        "rowspan": 4
+      },
+      {
+        "name": "txt-pipeline",
+        "type": "text-image",
+        "col": 12,
+        "row": 0,
+        "colspan": 12,
+        "rowspan": 4
+      },
+      {
+        "name": "bar-reject",
+        "type": "barchart",
+        "col": 0,
+        "row": 4,
+        "colspan": 12,
+        "rowspan": 8
+      },
+      {
+        "name": "tbl-kpi-recon",
+        "type": "table",
+        "col": 12,
+        "row": 4,
+        "colspan": 12,
+        "rowspan": 8
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "sheet-ml",
+      "qType": "sheet"
+    },
+    "qMetaDef": {
+      "title": "ML Insights",
+      "description": "Pricing model, anomaly detection, product segments"
+    },
+    "rank": 5,
+    "columns": 24,
+    "rows": 16,
+    "cells": [
+      {
+        "name": "kpi-ml-r2",
+        "type": "kpi",
+        "col": 0,
+        "row": 0,
+        "colspan": 6,
+        "rowspan": 3
+      },
+      {
+        "name": "kpi-ml-mae",
+        "type": "kpi",
+        "col": 6,
+        "row": 0,
+        "colspan": 6,
+        "rowspan": 3
+      },
+      {
+        "name": "txt-anomaly-exp",
+        "type": "text-image",
+        "col": 12,
+        "row": 0,
+        "colspan": 12,
+        "rowspan": 5
+      },
+      {
+        "name": "scatter-segments",
+        "type": "scatterplot",
+        "col": 0,
+        "row": 3,
+        "colspan": 12,
+        "rowspan": 6
+      },
+      {
+        "name": "tbl-anomalies",
+        "type": "table",
+        "col": 0,
+        "row": 9,
+        "colspan": 24,
+        "rowspan": 7
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-revenue",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Revenue 12m"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Revenue 12m",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-revenue-12m",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-rev"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Source: rpt.vw_kpi_summary (Synapse serverless), 12-month trailing",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-margin",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Avg Margin %"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Avg Margin %",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-avg-margin-pct",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-margin"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#BC6C25",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Blended margin across all active SKUs",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-skus",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Total SKUs"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Total SKUs",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-total-skus",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-skus"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Distinct product_id after ADF cleaning",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-active",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Active SKUs"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Active SKUs",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-active-skus",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-active"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#A3B18A",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "is_active=1: in stock and not discontinued",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-rating",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Avg Rating"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Avg Rating",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-avg-rating",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-rating"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#E9C46A",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Average customer rating, 1-5 scale",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-quarantined",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Quarantined Rows"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Quarantined Rows",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-quarantined-rows",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-quar"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#780000",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Rows rejected by the ADF data flow before reaching the curated layer",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-dq-pass",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "DQ Pass Rate"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "DQ Pass Rate",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qLibraryId": "m-dq-pass-rate",
+          "qDef": {
+            "qTags": [],
+            "qGrouping": "N",
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-kpi-dqpass"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "1 - quarantined / (clean + quarantined)",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-ml-r2",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Price model R2"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Price model R2",
+    "subtitle": "HistGradientBoostingRegressor",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "R2",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(ml_r2)",
+            "qNumFormat": {
+              "qType": "F",
+              "qnDec": 2,
+              "qUseThou": 0,
+              "qFmt": "0.00",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-r2-meas"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Price model, held-out test set",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "kpi-ml-mae",
+      "qType": "kpi"
+    },
+    "qMetaDef": {
+      "title": "Price model MAE"
+    },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Price model MAE (ZAR)",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "MAE",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(ml_mae_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 2,
+              "qUseThou": 1,
+              "qFmt": "R# ##0.00",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-mae-meas"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 1,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#BC6C25",
+          "index": -1
+        }
+      }
+    },
+    "footnote": "Mean absolute error, ZAR",
+    "showMeasureTitle": true,
+    "fontSize": "M"
+  },
+  {
+    "qInfo": {
+      "qId": "flt-main",
+      "qType": "filterpane"
+    },
+    "qMetaDef": {
+      "title": "Filters"
+    },
+    "visualization": "filterpane",
+    "showTitles": true,
+    "title": "Filters",
+    "qChildListDef": {
+      "qData": {}
+    },
+    "children": [
+      {
+        "qInfo": {
+          "qId": "flt-product-group",
+          "qType": "listbox"
+        },
+        "qListObjectDef": {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "product_group"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-flt-pg"
+          },
+          "qFrequencyMode": "N",
+          "qInitialDataFetch": [
+            {
+              "qLeft": 0,
+              "qTop": 0,
+              "qWidth": 1,
+              "qHeight": 50
+            }
+          ],
+          "qExpressions": []
+        }
+      },
+      {
+        "qInfo": {
+          "qId": "flt-category",
+          "qType": "listbox"
+        },
+        "qListObjectDef": {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-flt-cat"
+          },
+          "qFrequencyMode": "N",
+          "qInitialDataFetch": [
+            {
+              "qLeft": 0,
+              "qTop": 0,
+              "qWidth": 1,
+              "qHeight": 50
+            }
+          ],
+          "qExpressions": []
+        }
+      },
+      {
+        "qInfo": {
+          "qId": "flt-brand-solution",
+          "qType": "listbox"
+        },
+        "qListObjectDef": {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "brand_solution"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-flt-bs"
+          },
+          "qFrequencyMode": "N",
+          "qInitialDataFetch": [
+            {
+              "qLeft": 0,
+              "qTop": 0,
+              "qWidth": 1,
+              "qHeight": 50
+            }
+          ],
+          "qExpressions": []
+        }
+      },
+      {
+        "qInfo": {
+          "qId": "flt-province",
+          "qType": "listbox"
+        },
+        "qListObjectDef": {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "province"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-flt-prov"
+          },
+          "qFrequencyMode": "N",
+          "qInitialDataFetch": [
+            {
+              "qLeft": 0,
+              "qTop": 0,
+              "qWidth": 1,
+              "qHeight": 50
+            }
+          ],
+          "qExpressions": []
+        }
+      },
+      {
+        "qInfo": {
+          "qId": "flt-year",
+          "qType": "listbox"
+        },
+        "qListObjectDef": {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "year_added"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-flt-year"
+          },
+          "qFrequencyMode": "N",
+          "qInitialDataFetch": [
+            {
+              "qLeft": 0,
+              "qTop": 0,
+              "qWidth": 1,
+              "qHeight": 50
+            }
+          ],
+          "qExpressions": []
+        }
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "pie-group",
+      "qType": "piechart"
+    },
+    "qMetaDef": {
+      "title": "Revenue by product group"
+    },
+    "visualization": "piechart",
+    "showTitles": true,
+    "title": "Revenue by product group",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "product_group"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-pie-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(cat_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-pie-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 10
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Perishable vs Ambient revenue split",
+    "footnote": "Source: rpt.vw_products, product_group field",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "dock": "right",
+      "show": true
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "bar-brands",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Revenue by brand"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Revenue by brand",
+    "barGrouping": {
+      "grouping": "stacked"
+    },
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "brand"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-bar-dim-brand"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        },
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "brand_solution"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-bar-dim-solution"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(brand_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-bar-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        2,
+        0,
+        1
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 3,
+          "qHeight": 50
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#BC6C25",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Top 10 brands by revenue, coloured by brand solution",
+    "footnote": "Source: rpt.vw_products joined to dim_brand_solution",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    },
+    "orientation": "horizontal"
+  },
+  {
+    "qInfo": {
+      "qId": "line-growth",
+      "qType": "linechart"
+    },
+    "qMetaDef": {
+      "title": "Products added per month"
+    },
+    "visualization": "linechart",
+    "showTitles": true,
+    "title": "Products added per month",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "growth_month"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-line-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Products added",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(products_added)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-line-meas"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        0,
+        1
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 60
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Catalog growth: revenue by month added",
+    "footnote": "month_added derived from product onboarding date",
+    "dataPoint": {
+      "showLabels": false,
+      "show": false
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "treemap-cat",
+      "qType": "treemap"
+    },
+    "qMetaDef": {
+      "title": "Category revenue"
+    },
+    "visualization": "treemap",
+    "showTitles": true,
+    "title": "Revenue by category",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-tree-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(cat_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-tree-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 15
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "legend": {
+      "show": true,
+      "dock": "auto",
+      "showTitle": true
+    },
+    "dataPoint": {
+      "showLabels": true
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Category revenue, sized by revenue and coloured by margin",
+    "footnote": "Source: rpt.vw_category_performance",
+    "colorMode": "byExpression"
+  },
+  {
+    "qInfo": {
+      "qId": "bar-cat-margin",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Margin by category"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Average margin % by category",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-catm-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Avg Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(cat_avg_margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-catm-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 15
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#E9C46A",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Average margin % by category vs overall average",
+    "footnote": "Dashed line = blended margin across all categories",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "bar-cat-solution",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Category revenue by brand solution"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Category revenue by brand solution",
+    "orientation": "horizontal",
+    "barGrouping": {
+      "grouping": "stacked"
+    },
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-cs-dim-cat"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        },
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "brand_solution"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-cs-dim-sol"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue (sampled)",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-cs-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        2,
+        0,
+        1
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 3,
+          "qHeight": 40
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#BC6C25",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Category revenue split by brand solution",
+    "footnote": "Brand solution = Libstar's internal manufacturing/distribution grouping",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "tbl-brand-cat",
+      "qType": "table"
+    },
+    "qMetaDef": {
+      "title": "Brand x category detail"
+    },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Brand x category detail",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "brand"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-tb-dim-brand"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        },
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-tb-dim-cat"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue (sampled)",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-tb-meas-rev"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Avg Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-tb-meas-margin"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "SKU count",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Count(product_id)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-tb-meas-skus"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Avg Rating",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(rating)",
+            "qNumFormat": {
+              "qType": "F",
+              "qnDec": 2,
+              "qUseThou": 0,
+              "qFmt": "0.00",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-tb-meas-rating"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 6,
+          "qHeight": 50
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "subtitle": "Brand x category cross-tab: revenue, margin, SKU count, rating",
+    "footnote": "Source: rpt.vw_products"
+  },
+  {
+    "qInfo": {
+      "qId": "txt-map-note",
+      "qType": "text-image"
+    },
+    "qMetaDef": {
+      "title": "Map note"
+    },
+    "visualization": "text-image",
+    "text": "A full South Africa province revenue choropleth map is in the companion ebook (Libstar_Data_Story.docx, Figure 6). This sheet gives the same province-level detail in tabular/chart form for interactive filtering.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": {
+      "qId": "map-province-revenue",
+      "qType": "map"
+    },
+    "qMetaDef": {
+      "title": "Revenue by province"
+    },
+    "visualization": "map",
+    "showTitles": true,
+    "title": "Revenue by province",
+    "subtitle": "Area map: darker = higher 12-month revenue",
+    "footnote": "Source: rpt.vw_province_performance. has_libstar_operations=False provinces (Limpopo, North West, Free State, Northern Cape) show no active distribution yet.",
+    "gaVersion": 2,
+    "mapSettings": {
+      "_layerType": "",
+      "baseMap": "default",
+      "initialView": null,
+      "mapLanguage": "auto",
+      "panLimitSwitch": false,
+      "panLimits": null,
+      "projection": "default",
+      "selectionType": "lasso",
+      "showDebugInfo": false,
+      "showFindLocationButton": false,
+      "showLegend": true,
+      "showScaleBar": true,
+      "sidebarAlignment": "auto",
+      "useImperialUnits": false,
+      "zoomLimit": {
+        "range": [
+          0,
+          20
+        ]
+      },
+      "zoomLimitSwitch": false
+    },
+    "gaLayers": [
+      {
+        "cId": "cao_geoAreaLayer",
+        "type": "AreaLayer",
+        "showLayer": true,
+        "layerSelectionsDisabled": false,
+        "exclFromAutozoom": false,
+        "hideCalcCond": false,
+        "showInAllLevels": true,
+        "showPopUp": true,
+        "showSizeLegend": true,
+        "showToolTip": true,
+        "displayLegend": "auto",
+        "displayUnselected": false,
+        "maxObjects": 1000,
+        "zoomRange": [
+          0,
+          20
+        ],
+        "locationNamesAuto": true,
+        "locationType": "",
+        "locationDefault": "",
+        "locationOrLatitude": {
+          "key": "=[province]",
+          "label": "province",
+          "type": "expression"
+        },
+        "locationAdmin1": {
+          "key": "",
+          "label": "",
+          "type": ""
+        },
+        "locationAdmin2": {
+          "key": "",
+          "label": "",
+          "type": ""
+        },
+        "locationCountry": {
+          "key": "='South Africa'",
+          "label": "Country",
+          "type": "expression"
+        },
+        "drillDown": {
+          "auto": true,
+          "showLevel0": true,
+          "showLevel1": true,
+          "showLevel2": true,
+          "showLevel3": true,
+          "showLevel4": true,
+          "showLevel5": true,
+          "showLevel6": true,
+          "showLevel7": true
+        },
+        "label": {
+          "expression": {
+            "key": "province",
+            "label": "dimension.qDef.qFieldDefs[0]",
+            "type": "expression"
+          },
+          "position": "TOP",
+          "show": true,
+          "showInAllLevels": true,
+          "visibleRange": [
+            0,
+            20
+          ]
+        },
+        "color": {
+          "mode": "byMeasure",
+          "auto": false,
+          "opacity": 1,
+          "outlineOpacity": 1,
+          "expressionIsColor": true,
+          "altLabel": "Revenue 12m",
+          "dimensionScheme": "12",
+          "measureMax": 10,
+          "measureMin": 0,
+          "measureScheme": "sg",
+          "byMeasureDef": {
+            "key": "=Sum(prov_revenue_12m_zar)",
+            "label": "Revenue 12m",
+            "type": "expression"
+          },
+          "colorExpression": "",
+          "outline": {
+            "color": "#7b7a78",
+            "index": -1
+          },
+          "paletteColor": {
+            "color": "#1B4332",
+            "index": 6
+          }
+        },
+        "qHyperCubeDef": {
+          "qDimensions": [
+            {
+              "qDef": {
+                "qGrouping": "N",
+                "qFieldDefs": [
+                  "[province]"
+                ],
+                "qFieldLabels": [
+                  "province"
+                ],
+                "qSortCriterias": [],
+                "qNumberPresentations": [],
+                "qActiveField": 0,
+                "cId": "dd-map-province"
+              },
+              "qOtherTotalSpec": {
+                "qOtherMode": "OTHER_OFF",
+                "qOtherCounted": {},
+                "qOtherLimit": {},
+                "qOtherLimitMode": "OTHER_GT_LIMIT",
+                "qForceBadValueKeeping": true,
+                "qApplyEvenWhenPossiblyWrongResult": true,
+                "qOtherSortMode": "OTHER_SORT_DESCENDING",
+                "qTotalMode": "TOTAL_OFF",
+                "qReferencedExpression": {}
+              },
+              "qOtherLabel": {},
+              "qTotalLabel": {},
+              "qCalcCond": {},
+              "qAttributeExpressions": [
+                {
+                  "qExpression": "=Sum(prov_revenue_12m_zar)",
+                  "id": "colorByAlternative",
+                  "label": "Revenue 12m"
+                }
+              ],
+              "qAttributeDimensions": [],
+              "qCalcCondition": {
+                "qCond": {},
+                "qMsg": {}
+              }
+            }
+          ],
+          "qMeasures": [],
+          "qInterColumnSortOrder": [],
+          "qInitialDataFetch": [],
+          "qReductionMode": "N",
+          "qMode": "S",
+          "qPseudoDimPos": -1,
+          "qNoOfLeftDims": -1,
+          "qMaxStackedCells": 5000,
+          "qCalcCond": {},
+          "qTitle": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qColumnOrder": [],
+          "qExpansionState": [],
+          "qDynamicScript": []
+        },
+        "tooltip": {
+          "auto": true,
+          "data": {
+            "qHyperCubeDef": {
+              "qDimensions": [],
+              "qMeasures": [],
+              "qInterColumnSortOrder": [],
+              "qInitialDataFetch": [
+                {
+                  "qLeft": 0,
+                  "qTop": 0,
+                  "qWidth": 1,
+                  "qHeight": 0
+                }
+              ],
+              "qReductionMode": "N",
+              "qMode": "S",
+              "qPseudoDimPos": -1,
+              "qNoOfLeftDims": -1,
+              "qMaxStackedCells": 5000,
+              "qCalcCond": {},
+              "qTitle": {},
+              "qCalcCondition": {
+                "qCond": {},
+                "qMsg": {}
+              },
+              "qColumnOrder": [],
+              "qExpansionState": [],
+              "qDynamicScript": []
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "qInfo": {
+      "qId": "bar-province-revenue",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Revenue by province"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Revenue by province",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "=if(Len(Trim(province))>0, province)"
+            ],
+            "qFieldLabels": [
+              "province"
+            ],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-provrev-dim"
+          },
+          "qNullSuppression": true,
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(prov_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-provrev-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 10
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Revenue by province",
+    "footnote": "See map above for geographic distribution - has_libstar_operations flags active provinces",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    },
+    "orientation": "horizontal"
+  },
+  {
+    "qInfo": {
+      "qId": "bar-province-skus",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "SKU count by province"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "SKU count and margin by province",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "=if(Len(Trim(province))>0, province)"
+            ],
+            "qFieldLabels": [
+              "province"
+            ],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-provsku-dim"
+          },
+          "qNullSuppression": true,
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "SKU count",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(prov_sku_count)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-provsku-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Avg Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(prov_avg_margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-provmargin-meas"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0,
+        2
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 3,
+          "qHeight": 10
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#A3B18A",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "SKU count by province",
+    "footnote": "Source: rpt.vw_province_performance",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    },
+    "orientation": "horizontal"
+  },
+  {
+    "qInfo": {
+      "qId": "bar-channel-revenue",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Revenue by sales channel"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Revenue by sales channel",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "=if(Len(Trim(sales_channel))>0, sales_channel)"
+            ],
+            "qFieldLabels": [
+              "sales_channel"
+            ],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-chanrev-dim"
+          },
+          "qNullSuppression": true,
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(chan_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-chanrev-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 10
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#BC6C25",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Revenue by sales channel",
+    "footnote": "Source: rpt.vw_channel_performance",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "txt-pipeline",
+      "qType": "text-image"
+    },
+    "qMetaDef": {
+      "title": "Pipeline"
+    },
+    "visualization": "text-image",
+    "text": "Pipeline: gzipped raw CSV -> Azure Data Lake Storage Gen2 -> Azure Data Factory mapping data flow (price/date/unit/boolean normalisation, brand lookup, dedupe) -> curated parquet -> Synapse serverless SQL views. Every rejected row carries an explicit reject_reason, not a silent drop.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": {
+      "qId": "bar-reject",
+      "qType": "barchart"
+    },
+    "qMetaDef": {
+      "title": "Reject reasons"
+    },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Quarantined rows by reject reason",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "reject_reason"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-reject-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Rows",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(row_count)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-reject-meas"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 2,
+          "qHeight": 15
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#780000",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Rows rejected by the ADF cleaning pipeline, by reason",
+    "footnote": "bad_price / bad_date / unknown_brand / duplicate - see Data Quality sheet",
+    "dataPoint": {
+      "showLabels": true
+    },
+    "legend": {
+      "show": false
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "tbl-kpi-recon",
+      "qType": "table"
+    },
+    "qMetaDef": {
+      "title": "KPI reconciliation"
+    },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Reconciliation vs Excel report / ebook",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Total SKUs",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(total_skus)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-skus"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Active SKUs",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(active_skus)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-active"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Revenue 12m",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(kpi_revenue_12m_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-rev"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Avg Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(kpi_avg_margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-margin"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Quarantined Rows",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(quarantined_rows)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-quar"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Raw Rows Processed",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(raw_rows)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-recon-raw"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 6,
+          "qHeight": 1
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "subtitle": "Same KPI figures as the Excel report and ebook, for reconciliation",
+    "footnote": "Source: rpt.vw_kpi_summary - single source of truth for all three deliverables"
+  },
+  {
+    "qInfo": {
+      "qId": "txt-anomaly-exp",
+      "qType": "text-image"
+    },
+    "qMetaDef": {
+      "title": "What is an anomaly here"
+    },
+    "visualization": "text-image",
+    "text": "What 'anomaly' means: an IsolationForest model scored 1,000,000 products on price, cost, margin and weight together, and flagged the 2,000 whose combination is most unlike the rest of the catalog -- e.g. a heavyweight item priced like a small pack, or a product with an implausible margin. These usually signal a data-entry or pricing error, not genuine premium products. Recommendation: route the table below to category managers for manual review before next price-list publication; correcting these before they reach retail shelves protects margin and avoids customer-facing pricing errors.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": {
+      "qId": "scatter-segments",
+      "qType": "scatterplot"
+    },
+    "qMetaDef": {
+      "title": "Product segments"
+    },
+    "visualization": "scatterplot",
+    "showTitles": true,
+    "title": "Product segments (KMeans)",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "segment_label"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-seg-dim"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Avg Price",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(seg_avg_price)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "R# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-seg-x"
+          },
+          "qSortBy": {
+            "qSortByNumeric": -1,
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Avg Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Avg(seg_avg_margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-seg-y"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Products",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(seg_products)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 0,
+              "qUseThou": 1,
+              "qFmt": "# ##0",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-seg-size"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        1,
+        0,
+        2,
+        3
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 4,
+          "qHeight": 10
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "dataPoint": {
+      "showLabels": true
+    },
+    "gridLine": {
+      "auto": true
+    },
+    "color": {
+      "mode": "primary",
+      "primary": {
+        "color": {
+          "color": "#1B4332",
+          "index": -1
+        }
+      }
+    },
+    "subtitle": "Price vs margin, coloured by customer segment",
+    "footnote": "Sampled for render performance - see ML Insights notes for full methodology",
+    "legend": {
+      "dock": "auto",
+      "show": true
+    }
+  },
+  {
+    "qInfo": {
+      "qId": "tbl-anomalies",
+      "qType": "table"
+    },
+    "qMetaDef": {
+      "title": "Top price anomalies"
+    },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Top price anomalies for review",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "anomaly_product_name"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-anom-dim-name"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        },
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "anomaly_category"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-anom-dim-cat"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        },
+        {
+          "qDef": {
+            "qGrouping": "N",
+            "qFieldDefs": [
+              "anomaly_brand"
+            ],
+            "qFieldLabels": [],
+            "qSortCriterias": [],
+            "qNumberPresentations": [],
+            "qActiveField": 0,
+            "cId": "c-anom-dim-brand"
+          },
+          "qOtherTotalSpec": {
+            "qOtherMode": "OTHER_OFF",
+            "qOtherCounted": {},
+            "qOtherLimit": {},
+            "qOtherLimitMode": "OTHER_GT_LIMIT",
+            "qForceBadValueKeeping": true,
+            "qApplyEvenWhenPossiblyWrongResult": true,
+            "qOtherSortMode": "OTHER_SORT_DESCENDING",
+            "qTotalMode": "TOTAL_OFF",
+            "qReferencedExpression": {}
+          },
+          "qOtherLabel": {},
+          "qTotalLabel": {},
+          "qCalcCond": {},
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          }
+        }
+      ],
+      "qMeasures": [
+        {
+          "qDef": {
+            "qLabel": "Price",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(anomaly_price_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 2,
+              "qUseThou": 1,
+              "qFmt": "R# ##0.00",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-anom-price"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Cost",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(anomaly_cost_zar)",
+            "qNumFormat": {
+              "qType": "M",
+              "qnDec": 2,
+              "qUseThou": 1,
+              "qFmt": "R# ##0.00",
+              "qDec": ".",
+              "qThou": " "
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-anom-cost"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Margin %",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(anomaly_margin_pct)/100",
+            "qNumFormat": {
+              "qType": "R",
+              "qnDec": 1,
+              "qUseThou": 0,
+              "qFmt": "0.0%",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-anom-margin"
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        },
+        {
+          "qDef": {
+            "qLabel": "Anomaly Score",
+            "qTags": [],
+            "qGrouping": "N",
+            "qDef": "Sum(anomaly_score)",
+            "qNumFormat": {
+              "qType": "F",
+              "qnDec": 4,
+              "qUseThou": 0,
+              "qFmt": "0.0000",
+              "qDec": "."
+            },
+            "qAccumulate": 0,
+            "qActiveExpression": 0,
+            "qExpressions": [],
+            "cId": "c-anom-score",
+            "qSortBy": {
+              "qSortByNumeric": 1
+            }
+          },
+          "qSortBy": {
+            "qExpression": {}
+          },
+          "qAttributeExpressions": [],
+          "qAttributeDimensions": [],
+          "qCalcCond": {},
+          "qCalcCondition": {
+            "qCond": {},
+            "qMsg": {}
+          },
+          "qTrendLines": [],
+          "qMiniChartDef": {
+            "qSortBy": {
+              "qExpression": {}
+            },
+            "qOtherTotalSpec": {
+              "qOtherMode": "OTHER_OFF",
+              "qOtherCounted": {},
+              "qOtherLimit": {},
+              "qOtherLimitMode": "OTHER_GT_LIMIT",
+              "qForceBadValueKeeping": true,
+              "qApplyEvenWhenPossiblyWrongResult": true,
+              "qOtherSortMode": "OTHER_SORT_DESCENDING",
+              "qTotalMode": "TOTAL_OFF",
+              "qReferencedExpression": {}
+            },
+            "qMaxNumberPoints": -1,
+            "qAttributeExpressions": []
+          }
+        }
+      ],
+      "qInterColumnSortOrder": [
+        6,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "qInitialDataFetch": [
+        {
+          "qLeft": 0,
+          "qTop": 0,
+          "qWidth": 7,
+          "qHeight": 50
+        }
+      ],
+      "qReductionMode": "N",
+      "qMode": "S",
+      "qPseudoDimPos": -1,
+      "qNoOfLeftDims": -1,
+      "qMaxStackedCells": 5000,
+      "qCalcCond": {},
+      "qTitle": {},
+      "qCalcCondition": {
+        "qCond": {},
+        "qMsg": {}
+      },
+      "qColumnOrder": [],
+      "qExpansionState": [],
+      "qDynamicScript": []
+    },
+    "subtitle": "Products where price deviates most from the category median",
+    "footnote": "Source: rpt.vw_ml_anomalies (Isolation Forest anomaly score)"
+  }
+]

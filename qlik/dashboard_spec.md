@@ -2,6 +2,26 @@
 
 App name: **Libstar Product Analytics** · Data: `libstar_load_script.qvs`
 
+Live app id `ce620f1c-5ad7-4add-801f-20ce0c044326` on
+`go10njvx344b4j2.eu.qlikcloud.com`. **Fastest way to (re)build it:**
+
+```powershell
+.\qlik\build_qlik_app.ps1 -AppId ce620f1c-5ad7-4add-801f-20ce0c044326           # measures + visual layer
+.\qlik\build_qlik_app.ps1 -AppId <id> -UploadData                              # full build incl. data upload + reload
+.\qlik\build_qlik_app.ps1 -AppId <id> -VerifyOnly                              # health check
+```
+
+Reads `qlik\objects\measures.json` (9 master measures) and
+`qlik\objects\app_objects_combined.json` (5 sheets, 28 child objects + the SA
+province map) — the exact payload live in the tenant right now. Design system:
+forest green `#1B4332` / terracotta `#BC6C25` / mustard `#E9C46A` / burgundy
+`#780000` (deliberately distinct from the sibling Kalahari Petroleum project's
+navy/steel-blue theme — different company, different identity). Every chart
+carries a subtitle (what it shows) and footnote (its Synapse source view).
+Sheet 3 has a real Qlik area map on `province` (Gauteng, Western Cape, etc. —
+real SA province names resolve via Qlik's location service) in addition to
+the bar-chart breakdowns originally specced below.
+
 ## Master measures
 
 | Name | Definition | Format |
