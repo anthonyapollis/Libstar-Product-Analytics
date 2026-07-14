@@ -20,9 +20,9 @@ AGG = os.path.join(BASE, "data", "aggregates")
 ML = os.path.join(BASE, "ml", "outputs")
 OUT = os.path.join(BASE, "excel", "Libstar_Product_Report.xlsx")
 
-NAVY = "1B2A4A"
-TEAL = "2A9D8F"
-LIGHT = "EEF2F7"
+NAVY = "8E1E4D"
+TEAL = "0FB5AE"
+LIGHT = "FDF3F7"
 FONT = "Arial"
 
 header_font = Font(name=FONT, bold=True, color="FFFFFF", size=10)

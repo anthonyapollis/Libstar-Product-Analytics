@@ -19,7 +19,7 @@ ML = os.path.join(BASE, "ml", "outputs")
 CHARTS = os.path.join(BASE, "ebook", "charts")
 OUT = os.path.join(BASE, "index.html")
 
-NAVY, TEAL, GOLD, CORAL = "#1b2a4a", "#2a9d8f", "#e9c46a", "#e76f51"
+NAVY, TEAL, GOLD, CORAL = "#8e1e4d", "#0fb5ae", "#ffb703", "#f3722c"
 
 
 def img64(name):
@@ -32,8 +32,8 @@ def rbn(x):
 
 
 def lerp_color(t):
-    """light #eaf2e3 -> teal -> navy ramp for the choropleth"""
-    stops = [(0xEA, 0xF2, 0xE3), (0x2A, 0x9D, 0x8F), (0x1B, 0x2A, 0x4A)]
+    """light -> teal -> deep raspberry ramp for the choropleth"""
+    stops = [(0xE3, 0xF8, 0xF6), (0x0F, 0xB5, 0xAE), (0x8E, 0x1E, 0x4D)]
     seg = min(int(t * 2), 1)
     f = t * 2 - seg
     a, b = stops[seg], stops[seg + 1]
@@ -131,20 +131,20 @@ def main():
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Libstar Product Analytics — From 5 Million Dirty Rows to One Trusted Catalog</title>
 <style>
-:root{{--navy:{NAVY};--navy2:#12203c;--teal:{TEAL};--gold:{GOLD};--coral:{CORAL};
-  --ink:#1f2430;--paper:#f7f9fc;--card:#fff}}
+:root{{--navy:{NAVY};--navy2:#5c1433;--teal:{TEAL};--gold:{GOLD};--coral:{CORAL};
+  --ink:#1f2430;--paper:#fdf6f9;--card:#fff}}
 *{{margin:0;padding:0;box-sizing:border-box}}
 body{{font-family:'Segoe UI',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.65}}
 nav{{position:sticky;top:0;z-index:50;background:var(--navy2);display:flex;align-items:center;gap:16px;padding:12px 26px;flex-wrap:wrap}}
 nav .brand{{color:var(--gold);font-weight:800;letter-spacing:.12em;font-size:.9rem}}
-nav a{{color:#dbe4f0;text-decoration:none;font-size:.84rem}} nav a:hover{{color:#fff}}
+nav a{{color:#f6d9e6;text-decoration:none;font-size:.84rem}} nav a:hover{{color:#fff}}
 nav .btn{{padding:6px 14px;border-radius:5px;font-weight:600;color:#fff}}
-.b-teal{{background:var(--teal)}}.b-coral{{background:var(--coral)}}.b-navy{{background:#3c5a99}}
+.b-teal{{background:var(--teal)}}.b-coral{{background:var(--coral)}}.b-navy{{background:#d6336c}}
 nav .sp{{flex:1}}
-header{{background:linear-gradient(165deg,var(--navy) 0%,#23406e 55%,#173a37 100%);color:#fff;text-align:center;padding:70px 24px 60px}}
+header{{background:linear-gradient(165deg,var(--navy) 0%,#b3286b 55%,#8a5a00 100%);color:#fff;text-align:center;padding:70px 24px 60px}}
 header h1{{font-size:2.7rem;margin-bottom:14px;line-height:1.2}}
-header .sub{{max-width:880px;margin:0 auto 8px;font-size:1.12rem;color:#dbe4f0}}
-.note{{max-width:920px;margin:28px auto 0;background:var(--gold);color:#2a2109;border-left:6px solid #b8860b;padding:16px 22px;text-align:left;border-radius:4px;font-size:.95rem}}
+header .sub{{max-width:880px;margin:0 auto 8px;font-size:1.12rem;color:#f6d9e6}}
+.note{{max-width:920px;margin:28px auto 0;background:var(--gold);color:#4a2500;border-left:6px solid #c2410c;padding:16px 22px;text-align:left;border-radius:4px;font-size:.95rem}}
 .kpis{{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;max-width:1150px;margin:38px auto 0}}
 .kpi{{background:var(--card);color:var(--ink);border-radius:10px;padding:20px 24px;min-width:200px;box-shadow:0 6px 18px rgba(0,0,0,.25);text-align:center}}
 .kpi b{{display:block;font-size:1.75rem;color:var(--navy)}} .kpi span{{font-size:.84rem;color:#5a6474}}
@@ -152,21 +152,21 @@ section{{max-width:1100px;margin:0 auto;padding:58px 24px 6px}}
 h2{{color:var(--navy);font-size:1.75rem;margin-bottom:8px;border-bottom:3px solid var(--teal);display:inline-block;padding-bottom:4px}}
 h3{{color:var(--navy);margin:26px 0 6px;font-size:1.15rem}}
 p{{margin:13px 0;max-width:72em}}
-.dark{{background:var(--navy);color:#e8edf5;max-width:none;padding:58px 0 44px;margin-top:52px}}
+.dark{{background:var(--navy);color:#fbeaf1;max-width:none;padding:58px 0 44px;margin-top:52px}}
 .dark .in{{max-width:1100px;margin:0 auto;padding:0 24px}}
-.dark h2{{color:var(--gold);border-color:var(--gold)}} .dark p{{color:#cdd8e8}}
+.dark h2{{color:var(--gold);border-color:var(--gold)}} .dark p{{color:#f0c9dc}}
 figure{{margin:24px 0;background:var(--card);border-radius:10px;padding:16px;box-shadow:0 3px 12px rgba(20,30,60,.08)}}
 figure img{{width:100%;border-radius:4px}}
 figcaption{{font-size:.85rem;color:#5a6474;margin-top:9px;font-style:italic}}
 .g2{{display:grid;grid-template-columns:1fr 1fr;gap:22px}} @media(max-width:840px){{.g2{{grid-template-columns:1fr}}}}
 table{{border-collapse:collapse;width:100%;margin:16px 0;background:var(--card);font-size:.9rem;box-shadow:0 2px 8px rgba(20,30,60,.06)}}
 th{{background:var(--navy);color:#fff;text-align:left;padding:9px 13px;white-space:nowrap}}
-td{{padding:8px 13px;border-bottom:1px solid #e4e9f1}} tr:nth-child(even) td{{background:#f2f5fa}}
-.dark table{{box-shadow:none}} .dark td{{color:#dbe4f0;border-color:#2c4066}} .dark tr:nth-child(even) td{{background:#20345c}}
-.callout{{background:#eaf6f4;border-left:6px solid var(--teal);padding:15px 20px;border-radius:4px;margin:20px 0}}
-.callout.warn{{background:#fdf0ec;border-color:var(--coral)}}
+td{{padding:8px 13px;border-bottom:1px solid #f5e0ea}} tr:nth-child(even) td{{background:#fdf3f7}}
+.dark table{{box-shadow:none}} .dark td{{color:#f6d9e6;border-color:#7a2050}} .dark tr:nth-child(even) td{{background:#6a173d}}
+.callout{{background:#e3f8f6;border-left:6px solid var(--teal);padding:15px 20px;border-radius:4px;margin:20px 0}}
+.callout.warn{{background:#fdece2;border-color:var(--coral)}}
 code{{background:#eef1f6;padding:2px 6px;border-radius:4px;font-size:.88em}}
-pre{{background:var(--navy2);color:#d7e3f4;padding:16px 20px;border-radius:8px;overflow-x:auto;font-size:.84rem;margin:16px 0}}
+pre{{background:var(--navy2);color:#f6d9e6;padding:16px 20px;border-radius:8px;overflow-x:auto;font-size:.84rem;margin:16px 0}}
 .mapwrap{{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start}}
 @media(max-width:840px){{.mapwrap{{grid-template-columns:1fr}}}}
 #zamap{{background:var(--card);border-radius:10px;box-shadow:0 3px 12px rgba(20,30,60,.08);padding:10px}}
@@ -176,11 +176,11 @@ pre{{background:var(--navy2);color:#d7e3f4;padding:16px 20px;border-radius:8px;o
 #mapinfo b.pv{{font-size:1.3rem;color:var(--navy)}} #mapinfo .stat{{margin:10px 0;font-size:.95rem}}
 #mapinfo .stat b{{color:var(--teal);font-size:1.25rem;display:block}}
 .legend{{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#5a6474;margin-top:8px}}
-.legend .ramp{{flex:1;height:10px;border-radius:5px;background:linear-gradient(90deg,#eaf2e3,var(--teal),var(--navy))}}
+.legend .ramp{{flex:1;height:10px;border-radius:5px;background:linear-gradient(90deg,#e3f8f6,var(--teal),var(--navy))}}
 .hbar{{display:grid;grid-template-columns:220px 1fr 110px;gap:12px;align-items:center;margin:9px 0;font-size:.92rem}}
-.hbar .bar{{background:#e4e9f1;border-radius:5px;height:16px}} .hbar .bar div{{background:var(--teal);height:16px;border-radius:5px}}
+.hbar .bar{{background:#f5e0ea;border-radius:5px;height:16px}} .hbar .bar div{{background:var(--teal);height:16px;border-radius:5px}}
 .hbar b{{text-align:right;color:var(--navy)}}
-footer{{background:var(--navy2);color:#8fa0b8;text-align:center;padding:26px;font-size:.85rem;margin-top:56px}}
+footer{{background:var(--navy2);color:#c98aa8;text-align:center;padding:26px;font-size:.85rem;margin-top:56px}}
 </style></head><body>
 
 <nav><span class="brand">LIBSTAR PRODUCT ANALYTICS</span>

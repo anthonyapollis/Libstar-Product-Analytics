@@ -21,8 +21,8 @@ CHARTS = os.path.join(BASE, "ebook", "charts")
 ML = os.path.join(BASE, "ml", "outputs")
 OUT = os.path.join(BASE, "ebook", "Libstar_Data_Story.docx")
 
-NAVY = RGBColor(0x1B, 0x2A, 0x4A)
-TEAL = RGBColor(0x2A, 0x9D, 0x8F)
+NAVY = RGBColor(0x8E, 0x1E, 0x4D)
+TEAL = RGBColor(0x0F, 0xB5, 0xAE)
 GREY = RGBColor(0x66, 0x66, 0x66)
 
 

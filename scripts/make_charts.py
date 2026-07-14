@@ -22,11 +22,11 @@ BASE = os.path.join(os.path.dirname(__file__), "..")
 CHARTS = os.path.join(BASE, "ebook", "charts")
 AGG = os.path.join(BASE, "data", "aggregates")
 
-NAVY = "#1b2a4a"
-TEAL = "#2a9d8f"
-GOLD = "#e9c46a"
-CORAL = "#e76f51"
-GREY = "#8d99ae"
+NAVY = "#8e1e4d"
+TEAL = "#0fb5ae"
+GOLD = "#ffb703"
+CORAL = "#f3722c"
+GREY = "#6a4c93"
 GROUP_COLORS = {"Perishable products": TEAL, "Ambient products": NAVY}
 SOLUTION_COLORS = {
     "Libstar Brands": NAVY,
@@ -187,7 +187,8 @@ def main() -> None:
         gj = json.load(f)
     rev = provp.set_index("province")["revenue_12m_zar"]
     vmin, vmax = rev.min(), rev.max()
-    cmap = plt.cm.YlGnBu
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list("libstar_map", ["#e3f8f6", TEAL, NAVY])
     fig, ax = plt.subplots(figsize=(12, 10))
     for ft in gj["features"]:
         name = ft["properties"]["name"]
