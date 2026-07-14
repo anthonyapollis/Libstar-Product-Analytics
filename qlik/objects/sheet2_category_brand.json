@@ -1,0 +1,92 @@
+[
+  {
+    "qInfo": { "qId": "sheet-catbrand", "qType": "sheet" },
+    "qMetaDef": { "title": "Category & Brand", "description": "Category and brand performance, exact full-population totals" },
+    "rank": 2,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      { "name": "treemap-cat",    "type": "treemap",  "col": 0,  "row": 0, "colspan": 10, "rowspan": 8 },
+      { "name": "bar-cat-margin", "type": "barchart", "col": 10, "row": 0, "colspan": 14, "rowspan": 8 },
+      { "name": "bar-cat-solution","type": "barchart","col": 0,  "row": 8, "colspan": 12, "rowspan": 7 },
+      { "name": "tbl-brand-cat",  "type": "table",     "col": 12, "row": 8, "colspan": 12, "rowspan": 7 }
+    ]
+  },
+  {
+    "qInfo": { "qId": "treemap-cat", "qType": "treemap" },
+    "qMetaDef": { "title": "Category revenue" },
+    "visualization": "treemap",
+    "showTitles": true,
+    "title": "Revenue by category",
+    "subtitle": "Size = revenue",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["category"], "cId": "c-tree-dim" } } ],
+      "qMeasures": [ { "qDef": { "qDef": "Sum(cat_revenue_12m_zar)", "cId": "c-tree-meas", "qLabel": "Revenue 12m",
+        "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 15 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "bar-cat-margin", "qType": "barchart" },
+    "qMetaDef": { "title": "Margin by category" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Average margin % by category",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["category"], "cId": "c-catm-dim",
+        "qSortCriterias": [ { "qSortByExpression": -1, "qExpression": { "qv": "Avg(cat_avg_margin_pct)" } } ] } } ],
+      "qMeasures": [ { "qDef": { "qDef": "Avg(cat_avg_margin_pct)/100", "cId": "c-catm-meas", "qLabel": "Avg Margin %",
+        "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 15 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "bar-cat-solution", "qType": "barchart" },
+    "qMetaDef": { "title": "Category revenue by brand solution" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Category revenue by brand solution",
+    "subtitle": "Sampled — based on the 999,999-row representative sample",
+    "orientation": "horizontal",
+    "barGrouping": { "grouping": "stacked" },
+    "qHyperCubeDef": {
+      "qDimensions": [
+        { "qDef": { "qFieldDefs": ["category"], "cId": "c-cs-dim-cat" } },
+        { "qDef": { "qFieldDefs": ["brand_solution"], "cId": "c-cs-dim-sol" } }
+      ],
+      "qMeasures": [ { "qDef": { "qDef": "Sum(revenue_12m_zar)", "cId": "c-cs-meas", "qLabel": "Revenue (sampled)",
+        "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 3, "qHeight": 40 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "tbl-brand-cat", "qType": "table" },
+    "qMetaDef": { "title": "Brand x category detail" },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Brand x category detail",
+    "subtitle": "Sampled — based on the 999,999-row representative sample",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        { "qDef": { "qFieldDefs": ["brand"], "cId": "c-tb-dim-brand" } },
+        { "qDef": { "qFieldDefs": ["category"], "cId": "c-tb-dim-cat" } }
+      ],
+      "qMeasures": [
+        { "qDef": { "qDef": "Sum(revenue_12m_zar)", "cId": "c-tb-meas-rev", "qLabel": "Revenue (sampled)",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Avg(margin_pct)/100", "cId": "c-tb-meas-margin", "qLabel": "Avg Margin %",
+          "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } },
+        { "qDef": { "qDef": "Count(product_id)", "cId": "c-tb-meas-skus", "qLabel": "SKU count",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Avg(rating)", "cId": "c-tb-meas-rating", "qLabel": "Avg Rating",
+          "qNumFormat": { "qType": "F", "qnDec": 2, "qUseThou": 0, "qFmt": "0.00", "qDec": "." } } }
+      ],
+      "qInterColumnSortOrder": [0, 1, 2, 3, 4],
+      "qInitialDataFetch": [ { "qWidth": 6, "qHeight": 50 } ]
+    }
+  }
+]

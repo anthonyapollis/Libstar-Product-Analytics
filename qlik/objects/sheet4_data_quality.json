@@ -1,0 +1,88 @@
+[
+  {
+    "qInfo": { "qId": "sheet-dq", "qType": "sheet" },
+    "qMetaDef": { "title": "Data Quality", "description": "The ADF cleaning story: what got rejected and why" },
+    "rank": 4,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      { "name": "kpi-quarantined", "type": "kpi",       "col": 0,  "row": 0, "colspan": 6,  "rowspan": 4 },
+      { "name": "kpi-dq-pass",     "type": "kpi",       "col": 6,  "row": 0, "colspan": 6,  "rowspan": 4 },
+      { "name": "txt-pipeline",    "type": "text-image", "col": 12, "row": 0, "colspan": 12, "rowspan": 4 },
+      { "name": "bar-reject",      "type": "barchart",  "col": 0,  "row": 4, "colspan": 12, "rowspan": 8 },
+      { "name": "tbl-kpi-recon",   "type": "table",      "col": 12, "row": 4, "colspan": 12, "rowspan": 8 }
+    ]
+  },
+  {
+    "qInfo": { "qId": "kpi-quarantined", "qType": "kpi" },
+    "qMetaDef": { "title": "Quarantined Rows" },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Quarantined Rows",
+    "qHyperCubeDef": {
+      "qMeasures": [ { "qLibraryId": "m-quarantined-rows", "qDef": { "cId": "c-kpi-quar", "qDef": "" } } ],
+      "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "kpi-dq-pass", "qType": "kpi" },
+    "qMetaDef": { "title": "DQ Pass Rate" },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "DQ Pass Rate",
+    "qHyperCubeDef": {
+      "qMeasures": [ { "qLibraryId": "m-dq-pass-rate", "qDef": { "cId": "c-kpi-dqpass", "qDef": "" } } ],
+      "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "txt-pipeline", "qType": "text-image" },
+    "qMetaDef": { "title": "Pipeline" },
+    "visualization": "text-image",
+    "text": "Pipeline: gzipped raw CSV -> Azure Data Lake Storage Gen2 -> Azure Data Factory mapping data flow (price/date/unit/boolean normalisation, brand lookup, dedupe) -> curated parquet -> Synapse serverless SQL views. Every rejected row carries an explicit reject_reason, not a silent drop.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": { "qId": "bar-reject", "qType": "barchart" },
+    "qMetaDef": { "title": "Reject reasons" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Quarantined rows by reject reason",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["reject_reason"], "cId": "c-reject-dim",
+        "qSortCriterias": [ { "qSortByExpression": -1, "qExpression": { "qv": "Sum(row_count)" } } ] } } ],
+      "qMeasures": [ { "qDef": { "qDef": "Sum(row_count)", "cId": "c-reject-meas", "qLabel": "Rows",
+        "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 15 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "tbl-kpi-recon", "qType": "table" },
+    "qMetaDef": { "title": "KPI reconciliation" },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Reconciliation vs Excel report / ebook",
+    "subtitle": "Same Synapse aggregate source as excel/Libstar_Product_Report.xlsx",
+    "qHyperCubeDef": {
+      "qDimensions": [],
+      "qMeasures": [
+        { "qDef": { "qDef": "Sum(total_skus)", "cId": "c-recon-skus", "qLabel": "Total SKUs",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Sum(active_skus)", "cId": "c-recon-active", "qLabel": "Active SKUs",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Sum(kpi_revenue_12m_zar)", "cId": "c-recon-rev", "qLabel": "Revenue 12m",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Avg(kpi_avg_margin_pct)/100", "cId": "c-recon-margin", "qLabel": "Avg Margin %",
+          "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } },
+        { "qDef": { "qDef": "Sum(quarantined_rows)", "cId": "c-recon-quar", "qLabel": "Quarantined Rows",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Sum(raw_rows)", "cId": "c-recon-raw", "qLabel": "Raw Rows Processed",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } }
+      ],
+      "qInterColumnSortOrder": [0, 1, 2, 3, 4, 5],
+      "qInitialDataFetch": [ { "qWidth": 6, "qHeight": 1 } ]
+    }
+  }
+]

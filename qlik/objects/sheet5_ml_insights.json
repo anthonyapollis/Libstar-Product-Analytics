@@ -1,0 +1,97 @@
+[
+  {
+    "qInfo": { "qId": "sheet-ml", "qType": "sheet" },
+    "qMetaDef": { "title": "ML Insights", "description": "Pricing model, anomaly detection, product segments" },
+    "rank": 5,
+    "columns": 24,
+    "rows": 16,
+    "cells": [
+      { "name": "kpi-ml-r2",       "type": "kpi",         "col": 0,  "row": 0, "colspan": 6,  "rowspan": 3 },
+      { "name": "kpi-ml-mae",      "type": "kpi",         "col": 6,  "row": 0, "colspan": 6,  "rowspan": 3 },
+      { "name": "txt-anomaly-exp", "type": "text-image",  "col": 12, "row": 0, "colspan": 12, "rowspan": 5 },
+      { "name": "scatter-segments","type": "scatterplot", "col": 0,  "row": 3, "colspan": 12, "rowspan": 6 },
+      { "name": "tbl-anomalies",   "type": "table",       "col": 0,  "row": 9, "colspan": 24, "rowspan": 7 }
+    ]
+  },
+  {
+    "qInfo": { "qId": "kpi-ml-r2", "qType": "kpi" },
+    "qMetaDef": { "title": "Price model R2" },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Price model R2",
+    "subtitle": "HistGradientBoostingRegressor",
+    "qHyperCubeDef": {
+      "qMeasures": [ { "qDef": { "qDef": "Sum(ml_r2)", "cId": "c-r2-meas", "qLabel": "R2",
+        "qNumFormat": { "qType": "F", "qnDec": 2, "qUseThou": 0, "qFmt": "0.00", "qDec": "." } } } ],
+      "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "kpi-ml-mae", "qType": "kpi" },
+    "qMetaDef": { "title": "Price model MAE" },
+    "visualization": "kpi",
+    "showTitles": true,
+    "title": "Price model MAE (ZAR)",
+    "qHyperCubeDef": {
+      "qMeasures": [ { "qDef": { "qDef": "Sum(ml_mae_zar)", "cId": "c-mae-meas", "qLabel": "MAE",
+        "qNumFormat": { "qType": "M", "qnDec": 2, "qUseThou": 1, "qFmt": "R# ##0.00", "qDec": ".", "qThou": " " } } } ],
+      "qInitialDataFetch": [ { "qWidth": 1, "qHeight": 1 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "txt-anomaly-exp", "qType": "text-image" },
+    "qMetaDef": { "title": "What is an anomaly here" },
+    "visualization": "text-image",
+    "text": "What 'anomaly' means: an IsolationForest model scored 1,000,000 products on price, cost, margin and weight together, and flagged the 2,000 whose combination is most unlike the rest of the catalog -- e.g. a heavyweight item priced like a small pack, or a product with an implausible margin. These usually signal a data-entry or pricing error, not genuine premium products. Recommendation: route the table below to category managers for manual review before next price-list publication; correcting these before they reach retail shelves protects margin and avoids customer-facing pricing errors.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": { "qId": "scatter-segments", "qType": "scatterplot" },
+    "qMetaDef": { "title": "Product segments" },
+    "visualization": "scatterplot",
+    "showTitles": true,
+    "title": "Product segments (KMeans)",
+    "subtitle": "Bubble size = number of products in segment",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["segment_label"], "cId": "c-seg-dim" } } ],
+      "qMeasures": [
+        { "qDef": { "qDef": "Avg(seg_avg_price)", "cId": "c-seg-x", "qLabel": "Avg Price",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Avg(seg_avg_margin_pct)/100", "cId": "c-seg-y", "qLabel": "Avg Margin %",
+          "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } },
+        { "qDef": { "qDef": "Sum(seg_products)", "cId": "c-seg-size", "qLabel": "Products",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } }
+      ],
+      "qInterColumnSortOrder": [0, 1, 2, 3],
+      "qInitialDataFetch": [ { "qWidth": 4, "qHeight": 10 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "tbl-anomalies", "qType": "table" },
+    "qMetaDef": { "title": "Top price anomalies" },
+    "visualization": "table",
+    "showTitles": true,
+    "title": "Top price anomalies for review",
+    "subtitle": "Full flagged set (2,000); most anomalous first",
+    "qHyperCubeDef": {
+      "qDimensions": [
+        { "qDef": { "qFieldDefs": ["anomaly_product_name"], "cId": "c-anom-dim-name" } },
+        { "qDef": { "qFieldDefs": ["anomaly_category"], "cId": "c-anom-dim-cat" } },
+        { "qDef": { "qFieldDefs": ["anomaly_brand"], "cId": "c-anom-dim-brand" } }
+      ],
+      "qMeasures": [
+        { "qDef": { "qDef": "Sum(anomaly_price_zar)", "cId": "c-anom-price", "qLabel": "Price",
+          "qNumFormat": { "qType": "M", "qnDec": 2, "qUseThou": 1, "qFmt": "R# ##0.00", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Sum(anomaly_cost_zar)", "cId": "c-anom-cost", "qLabel": "Cost",
+          "qNumFormat": { "qType": "M", "qnDec": 2, "qUseThou": 1, "qFmt": "R# ##0.00", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Sum(anomaly_margin_pct)/100", "cId": "c-anom-margin", "qLabel": "Margin %",
+          "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } },
+        { "qDef": { "qDef": "Sum(anomaly_score)", "cId": "c-anom-score", "qLabel": "Anomaly Score",
+          "qSortBy": { "qSortByNumeric": 1 },
+          "qNumFormat": { "qType": "F", "qnDec": 4, "qUseThou": 0, "qFmt": "0.0000", "qDec": "." } } }
+      ],
+      "qInterColumnSortOrder": [6, 0, 1, 2, 3, 4, 5],
+      "qInitialDataFetch": [ { "qWidth": 7, "qHeight": 50 } ]
+    }
+  }
+]

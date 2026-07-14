@@ -1,0 +1,74 @@
+[
+  {
+    "qInfo": { "qId": "sheet-regional", "qType": "sheet" },
+    "qMetaDef": { "title": "Regional & Channel", "description": "Revenue by province and sales channel" },
+    "rank": 3,
+    "columns": 24,
+    "rows": 15,
+    "cells": [
+      { "name": "txt-map-note",         "type": "text-image", "col": 0,  "row": 0, "colspan": 24, "rowspan": 2 },
+      { "name": "bar-province-revenue", "type": "barchart",   "col": 0,  "row": 2, "colspan": 12, "rowspan": 7 },
+      { "name": "bar-province-skus",    "type": "barchart",   "col": 12, "row": 2, "colspan": 12, "rowspan": 7 },
+      { "name": "bar-channel-revenue",  "type": "barchart",   "col": 0,  "row": 9, "colspan": 24, "rowspan": 6 }
+    ]
+  },
+  {
+    "qInfo": { "qId": "txt-map-note", "qType": "text-image" },
+    "qMetaDef": { "title": "Map note" },
+    "visualization": "text-image",
+    "text": "A full South Africa province revenue choropleth map is in the companion ebook (Libstar_Data_Story.docx, Figure 6). This sheet gives the same province-level detail in tabular/chart form for interactive filtering.",
+    "textAlign": "left"
+  },
+  {
+    "qInfo": { "qId": "bar-province-revenue", "qType": "barchart" },
+    "qMetaDef": { "title": "Revenue by province" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Revenue by province",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["=if(Len(Trim(province))>0, province)"], "qFieldLabels": ["province"], "cId": "c-provrev-dim",
+        "qSortCriterias": [ { "qSortByExpression": -1, "qExpression": { "qv": "Sum(prov_revenue_12m_zar)" } } ] }, "qNullSuppression": true } ],
+      "qMeasures": [ { "qDef": { "qDef": "Sum(prov_revenue_12m_zar)", "cId": "c-provrev-meas", "qLabel": "Revenue 12m",
+        "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 10 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "bar-province-skus", "qType": "barchart" },
+    "qMetaDef": { "title": "SKU count by province" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "SKU count and margin by province",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["=if(Len(Trim(province))>0, province)"], "qFieldLabels": ["province"], "cId": "c-provsku-dim",
+        "qSortCriterias": [ { "qSortByExpression": -1, "qExpression": { "qv": "Sum(prov_sku_count)" } } ] }, "qNullSuppression": true } ],
+      "qMeasures": [
+        { "qDef": { "qDef": "Sum(prov_sku_count)", "cId": "c-provsku-meas", "qLabel": "SKU count",
+          "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "# ##0", "qDec": ".", "qThou": " " } } },
+        { "qDef": { "qDef": "Avg(prov_avg_margin_pct)/100", "cId": "c-provmargin-meas", "qLabel": "Avg Margin %",
+          "qNumFormat": { "qType": "R", "qnDec": 1, "qUseThou": 0, "qFmt": "0.0%", "qDec": "." } } }
+      ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 3, "qHeight": 10 } ]
+    }
+  },
+  {
+    "qInfo": { "qId": "bar-channel-revenue", "qType": "barchart" },
+    "qMetaDef": { "title": "Revenue by sales channel" },
+    "visualization": "barchart",
+    "showTitles": true,
+    "title": "Revenue by sales channel",
+    "orientation": "horizontal",
+    "qHyperCubeDef": {
+      "qDimensions": [ { "qDef": { "qFieldDefs": ["=if(Len(Trim(sales_channel))>0, sales_channel)"], "qFieldLabels": ["sales_channel"], "cId": "c-chanrev-dim",
+        "qSortCriterias": [ { "qSortByExpression": -1, "qExpression": { "qv": "Sum(chan_revenue_12m_zar)" } } ] }, "qNullSuppression": true } ],
+      "qMeasures": [ { "qDef": { "qDef": "Sum(chan_revenue_12m_zar)", "cId": "c-chanrev-meas", "qLabel": "Revenue 12m",
+        "qNumFormat": { "qType": "M", "qnDec": 0, "qUseThou": 1, "qFmt": "R# ##0", "qDec": ".", "qThou": " " } } } ],
+      "qInterColumnSortOrder": [0, 1],
+      "qInitialDataFetch": [ { "qWidth": 2, "qHeight": 10 } ]
+    }
+  }
+]

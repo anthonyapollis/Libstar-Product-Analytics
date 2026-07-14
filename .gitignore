@@ -12,3 +12,7 @@ __pycache__/
 # committed parquet via scripts/export_local_extracts.py rather than
 # storing a redundant uncompressed copy of the same rows.
 data/local/*.csv
+
+# Transient .txt copies staged for the Qlik Cloud DataFiles upload —
+# byte-identical duplicates of data/local + ml/outputs, not source data.
+qlik/upload/

@@ -1,0 +1,156 @@
+// ============================================================
+// Libstar Product Catalog — Qlik Cloud-native load script
+// Loads from the app's own DataFiles storage (uploaded via qlik-cli),
+// no external database connection required.
+//
+// Design: headline KPIs/charts bind to pre-aggregated tables computed
+// once from the FULL 4,284,971-row cleaned catalog (CategoryPerformance,
+// BrandPerformance, ProvincePerformance, ChannelPerformance, DataQuality,
+// KpiSummary, CatalogGrowth) so every number reconciles exactly with the
+// Excel report and ebook. The `Products` table is a 999,999-row
+// stratified-by-category SAMPLE of the same population — used only for
+// row-level interactivity (filters, the brand x category pivot) where
+// exact aggregation isn't required; charts sourced from it are labelled
+// "sampled" in their titles.
+// ============================================================
+
+SET ThousandSep = ' ';
+SET DecimalSep = '.';
+SET MoneyFormat = 'R# ##0.00';
+SET DateFormat = 'YYYY-MM-DD';
+
+Products:
+LOAD
+    product_id,
+    sku,
+    product_name,
+    product_group,
+    category,
+    brand,
+    brand_solution,
+    sales_channel,
+    province,
+    Num(price_zar)          AS price_zar,
+    Num(cost_zar)           AS cost_zar,
+    Num(margin_pct)         AS margin_pct,
+    Num(weight_kg)          AS weight_kg,
+    Num(stock_qty)          AS stock_qty,
+    Num(units_sold_12m)     AS units_sold_12m,
+    Num(revenue_12m_zar)    AS revenue_12m_zar,
+    Date(Date#(date_added, 'YYYY-MM-DD'))                         AS date_added,
+    Year(Date#(date_added, 'YYYY-MM-DD'))                         AS year_added,
+    Date(MonthStart(Date#(date_added, 'YYYY-MM-DD')), 'YYYY-MM')  AS month_added,
+    is_active,
+    Num(rating)              AS rating
+FROM [lib://DataFiles/products_clean.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+DataQuality:
+LOAD
+    reject_reason,
+    Num(row_count) AS row_count
+FROM [lib://DataFiles/data_quality.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+MlAnomalies:
+LOAD
+    product_id      AS anomaly_product_id,
+    product_name    AS anomaly_product_name,
+    category        AS anomaly_category,
+    brand           AS anomaly_brand,
+    Num(price_zar)  AS anomaly_price_zar,
+    Num(cost_zar)   AS anomaly_cost_zar,
+    Num(margin_pct) AS anomaly_margin_pct,
+    Num(weight_kg)  AS anomaly_weight_kg,
+    Num(anomaly_raw) AS anomaly_score
+FROM [lib://DataFiles/price_anomalies.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+KpiSummary:
+LOAD
+    Num(total_skus) AS total_skus,
+    Num(active_skus) AS active_skus,
+    Num(revenue_12m_zar) AS kpi_revenue_12m_zar,
+    Num(avg_margin_pct) AS kpi_avg_margin_pct,
+    Num(avg_price_zar) AS kpi_avg_price_zar,
+    Num(avg_rating) AS kpi_avg_rating,
+    Num(total_stock_units) AS total_stock_units,
+    Num(quarantined_rows) AS quarantined_rows,
+    Num(raw_rows) AS raw_rows
+FROM [lib://DataFiles/kpi_summary.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+CategoryPerformance:
+LOAD
+    product_group,
+    category,
+    Num(sku_count) AS cat_sku_count,
+    Num(revenue_12m_zar) AS cat_revenue_12m_zar,
+    Num(avg_margin_pct) AS cat_avg_margin_pct,
+    Num(avg_price_zar) AS cat_avg_price_zar,
+    Num(avg_rating) AS cat_avg_rating
+FROM [lib://DataFiles/category_performance.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+BrandPerformance:
+LOAD
+    brand_solution,
+    brand,
+    Num(sku_count) AS brand_sku_count,
+    Num(revenue_12m_zar) AS brand_revenue_12m_zar,
+    Num(avg_margin_pct) AS brand_avg_margin_pct,
+    Num(avg_rating) AS brand_avg_rating
+FROM [lib://DataFiles/brand_performance.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+ProvincePerformance:
+LOAD
+    province,
+    Num(sku_count) AS prov_sku_count,
+    Num(revenue_12m_zar) AS prov_revenue_12m_zar,
+    Num(avg_margin_pct) AS prov_avg_margin_pct
+FROM [lib://DataFiles/province_performance.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+ChannelPerformance:
+LOAD
+    sales_channel,
+    Num(sku_count) AS chan_sku_count,
+    Num(revenue_12m_zar) AS chan_revenue_12m_zar,
+    Num(avg_margin_pct) AS chan_avg_margin_pct
+FROM [lib://DataFiles/channel_performance.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+CatalogGrowth:
+LOAD
+    Date(Date#(month, 'YYYY-MM'), 'YYYY-MM') AS growth_month,
+    Num(products_added) AS products_added
+FROM [lib://DataFiles/catalog_growth.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+MlSegments:
+LOAD
+    'Segment ' & segment  AS segment_label,
+    Num(products)         AS seg_products,
+    Num(avg_price)         AS seg_avg_price,
+    Num(avg_margin_pct)    AS seg_avg_margin_pct,
+    Num(avg_units_12m)     AS seg_avg_units_12m,
+    Num(avg_rating)        AS seg_avg_rating,
+    Num(revenue_12m)       AS seg_revenue_12m
+FROM [lib://DataFiles/segments_summary.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+MlMetrics:
+LOAD
+    model,
+    Num(train_rows) AS ml_train_rows,
+    Num(r2) AS ml_r2,
+    Num(mae_zar) AS ml_mae_zar,
+    Num(mean_price_zar) AS ml_mean_price_zar,
+    Num(anomalies_flagged) AS ml_anomalies_flagged,
+    Num(rows_cleaned) AS ml_rows_cleaned
+FROM [lib://DataFiles/ml_metrics.txt]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+// Master measures & sheets set programmatically via qlik-cli
+// (qlik/objects/measures.json, qlik/objects/app_objects.json).

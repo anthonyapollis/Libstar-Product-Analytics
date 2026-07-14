@@ -26,10 +26,11 @@ def main() -> None:
 
     files = glob.glob(os.path.join(BASE, "data", "curated", "products_clean", "*.parquet"))
     df = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
-    sample = (df.groupby("category", observed=True, group_keys=False)
-                .apply(lambda g: g.sample(frac=1_000_000 / len(df), random_state=SEED)))
+    sample = df.groupby("category", observed=True).sample(
+        frac=1_000_000 / len(df), random_state=SEED)
+    assert "category" in sample.columns, "stratified sample dropped the category column"
     sample.to_csv(os.path.join(OUT, "products_clean_1m_sample.csv"), index=False)
-    print(f"sample written: {len(sample):,} rows")
+    print(f"sample written: {len(sample):,} rows, columns: {list(sample.columns)}")
 
     qfiles = glob.glob(os.path.join(BASE, "data", "curated", "products_quarantine", "*.parquet"))
     q = pd.concat([pd.read_parquet(f) for f in qfiles], ignore_index=True)
