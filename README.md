@@ -1,4 +1,4 @@
-# Libstar Product Analytics — Azure lakehouse portfolio project
+# Libstar Product Analytics — Azure lakehouse completed project
 
 End-to-end pipeline: **5 million deliberately dirty product records → Azure
 Data Factory cleaning → Synapse serverless SQL → Qlik Sense, ML, ebook and

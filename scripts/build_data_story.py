@@ -336,7 +336,7 @@ python ml/train_models.py &amp;&amp; python scripts/make_charts.py
 python scripts/build_excel_report.py &amp;&amp; python scripts/build_ebook.py
 python scripts/build_data_story.py                 # this page</pre></section>
 
-<footer>Libstar Product Analytics — synthetic portfolio project by Anthony Apollis · July 2026<br>
+<footer>Libstar Product Analytics — synthetic analytics case study by Anthony Apollis · July 2026<br>
 Data modelled on Libstar's public brand/category structure (libstar.co.za) · Not affiliated with Libstar Holdings</footer>
 
 <script>
