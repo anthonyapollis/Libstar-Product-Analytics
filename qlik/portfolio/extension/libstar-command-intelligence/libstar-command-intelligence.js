@@ -1,4 +1,4 @@
-define([
+﻿define([
   "qlik", "jquery", "./properties",
   "text!./libstar-command-intelligence.css",
   "text!./data/kpi_summary.csv",
@@ -112,7 +112,7 @@ define([
   }
 
   function header(page, eyebrow, summary) {
-    return '<header class="lci-header"><div class="lci-title"><span class="lci-eyebrow">' + esc(eyebrow) + '</span><h1>LIBSTAR <b>RETAIL + MANUFACTURING</b> INTELLIGENCE</h1><p>' + esc(summary) + '</p></div><div class="lci-asof"><i></i><span>MODEL SNAPSHOT<br><b>30 JUN 2026</b></span></div></header><div class="lci-pagebar"><span>' + esc(pageNames[page]) + '</span><div><b>SYNTHETIC CASE STUDY</b><em>Executive decision system</em></div></div>';
+    return '<header class="lci-header"><div class="lci-title"><span class="lci-eyebrow">' + esc(eyebrow) + '</span><h1>SHELFLINE <b>RETAIL + MANUFACTURING</b> INTELLIGENCE</h1><p>' + esc(summary) + '</p></div><div class="lci-asof"><i></i><span>MODEL SNAPSHOT<br><b>30 JUN 2026</b></span></div></header><div class="lci-pagebar"><span>' + esc(pageNames[page]) + '</span><div><b>SYNTHETIC CASE STUDY</b><em>Executive decision system</em></div></div>';
   }
 
   function card(title, subtitle, body, cls) {
@@ -177,7 +177,7 @@ define([
     var mapRows = provinces.slice().sort(function(a,b){return n(b.revenue_12m_zar)-n(a.revenue_12m_zar);});
     var map = '<div class="lci-mapviz"><div class="lci-sa-shape"><span>ZA</span></div><div class="lci-maplist">' + mapRows.map(function(r,i){var share=n(r.revenue_12m_zar)/totalValue*100;return '<div><span>'+String(i+1).padStart(2,"0")+'</span><b>'+esc(r.province)+'</b><i><em style="width:'+share*2.6+'%"></em></i><strong>'+share.toFixed(1)+'%</strong><small>'+money(r.revenue_12m_zar,true)+'</small></div>';}).join("") + '</div></div>';
     var region = card("National value footprint", "Province share of modeled 12-month catalog value", map, "lci-region");
-    var channel = card("Route-to-market architecture", "Scale, margin and value by channel", '<div class="lci-channelcards">' + channels.map(function(r,i){return '<article class="ch'+i+'"><span>'+icon(i===2?"factory":"route")+'</span><div><b>'+esc(r.sales_channel)+'</b><strong>'+money(r.revenue_12m_zar,true)+'</strong><small>'+count(r.sku_count)+' SKUs · '+pct(r.avg_margin_pct)+' margin</small></div></article>';}).join("") + '</div>', "lci-channels");
+    var channel = card("Route-to-market architecture", "Scale, margin and value by channel", '<div class="lci-channelcards">' + channels.map(function(r,i){return '<article class="ch'+i+'"><span>'+icon(i===2?"factory":"route")+'</span><div><b>'+esc(r.sales_channel)+'</b><strong>'+money(r.revenue_12m_zar,true)+'</strong><small>'+count(r.sku_count)+' SKUs Â· '+pct(r.avg_margin_pct)+' margin</small></div></article>';}).join("") + '</div>', "lci-channels");
     return kpis + '<div class="lci-grid two network">' + region + channel + '</div>';
   }
 
@@ -187,16 +187,16 @@ define([
     var funnel = '<div class="lci-funnel"><div class="raw"><b>'+count(raw)+'</b><span>RAW PRODUCTS</span></div><i>ADF validation</i><div class="clean"><b>'+count(clean)+'</b><span>CLEAN + CONFORMED</span></div><i>Synapse marts</i><div class="serve"><b>7</b><span>REPORTING AGGREGATES</span></div></div>';
     var funnelCard = card("Medallion control flow", "Every rejected row remains traceable", funnel + '<div class="lci-control-note"><b>Control passed</b><span>'+count(clean)+' + '+count(rejected)+' = '+count(raw)+'</span></div>', "lci-flow");
     var reasonCard = card("Why records were quarantined", "Reject combinations ranked by affected rows", bars(quality,"reject_reason","row_count",function(v){return count(v);},"copper",11), "lci-reasons");
-    var growthCard = card("Catalog ingestion cadence", "Products added by month, Jan 2021–Jun 2026", sparkline(growth,"products_added") + '<div class="lci-growthstats"><span><b>'+count(sum(growth,"products_added"))+'</b> total additions</span><span><b>'+count(sum(growth,"products_added")/growth.length)+'</b> average/month</span><span><b>'+growth.length+'</b> reporting months</span></div>', "lci-growth");
+    var growthCard = card("Catalog ingestion cadence", "Products added by month, Jan 2021â€“Jun 2026", sparkline(growth,"products_added") + '<div class="lci-growthstats"><span><b>'+count(sum(growth,"products_added"))+'</b> total additions</span><span><b>'+count(sum(growth,"products_added")/growth.length)+'</b> average/month</span><span><b>'+growth.length+'</b> reporting months</span></div>', "lci-growth");
     return kpis + '<div class="lci-grid quality"><div>'+funnelCard+growthCard+'</div>'+reasonCard+'</div>';
   }
 
   function mlLab() {
     var m = metrics.price_model;
-    var kpis = '<div class="lci-kpis">' + metric("spark","teal","PRICE MODEL",esc(m.model),"Gradient-boosted regressor") + metric("trend","blue","VALIDATION R²",n(m.r2).toFixed(4),"Out-of-sample explanatory power") + metric("alert","copper","MAE",money(m.mae_zar,false),"Mean absolute price error") + metric("search","gold","ANOMALIES FLAGGED",count(metrics.anomalies_flagged),"Decision-review queue") + '</div>';
-    var gauge = '<div class="lci-gauge"><svg viewBox="0 0 240 140"><path d="M30 120a90 90 0 0 1 180 0" pathLength="100"/><path class="value" d="M30 120a90 90 0 0 1 180 0" pathLength="100" style="stroke-dasharray:'+n(m.r2)*100+' 100"/></svg><span><b>'+n(m.r2).toFixed(3)+'</b><small>validation R²</small></span></div><div class="lci-modelmeta"><div><b>'+count(m.train_rows)+'</b><span>training rows</span></div><div><b>'+money(m.mean_price_zar,false)+'</b><span>mean price</span></div><div><b>'+money(m.mae_zar,false)+'</b><span>MAE</span></div></div>';
+    var kpis = '<div class="lci-kpis">' + metric("spark","teal","PRICE MODEL",esc(m.model),"Gradient-boosted regressor") + metric("trend","blue","VALIDATION RÂ²",n(m.r2).toFixed(4),"Out-of-sample explanatory power") + metric("alert","copper","MAE",money(m.mae_zar,false),"Mean absolute price error") + metric("search","gold","ANOMALIES FLAGGED",count(metrics.anomalies_flagged),"Decision-review queue") + '</div>';
+    var gauge = '<div class="lci-gauge"><svg viewBox="0 0 240 140"><path d="M30 120a90 90 0 0 1 180 0" pathLength="100"/><path class="value" d="M30 120a90 90 0 0 1 180 0" pathLength="100" style="stroke-dasharray:'+n(m.r2)*100+' 100"/></svg><span><b>'+n(m.r2).toFixed(3)+'</b><small>validation RÂ²</small></span></div><div class="lci-modelmeta"><div><b>'+count(m.train_rows)+'</b><span>training rows</span></div><div><b>'+money(m.mean_price_zar,false)+'</b><span>mean price</span></div><div><b>'+money(m.mae_zar,false)+'</b><span>MAE</span></div></div>';
     var model = card("Model performance", "Directional pricing intelligence with transparent validation", gauge, "lci-model");
-    var seg = card("Four product behavior segments", "Price, demand and margin archetypes", '<div class="lci-segments">'+segments.map(function(r,i){return '<article class="seg'+i+'"><span>0'+(i+1)+'</span><div><b>'+count(r.products)+' products</b><p>'+money(r.avg_price,false)+' avg price · '+pct(r.avg_margin_pct)+' margin</p></div><strong>'+money(r.revenue_12m,true)+'</strong><small>modeled value</small></article>';}).join("")+'</div>', "lci-segmentcard");
+    var seg = card("Four product behavior segments", "Price, demand and margin archetypes", '<div class="lci-segments">'+segments.map(function(r,i){return '<article class="seg'+i+'"><span>0'+(i+1)+'</span><div><b>'+count(r.products)+' products</b><p>'+money(r.avg_price,false)+' avg price Â· '+pct(r.avg_margin_pct)+' margin</p></div><strong>'+money(r.revenue_12m,true)+'</strong><small>modeled value</small></article>';}).join("")+'</div>', "lci-segmentcard");
     var sample = anomalies.slice(0,7);
     var anomaly = card("Exception review sample", "High-deviation products ranked for commercial context", '<table class="lci-table"><thead><tr><th>Product</th><th>Category</th><th>Brand</th><th>Price</th><th>Margin</th><th>Review</th></tr></thead><tbody>'+sample.map(function(r){return '<tr><td><b>'+esc(r.product_name)+'</b><small>'+esc(r.product_id)+'</small></td><td>'+esc(r.category)+'</td><td>'+esc(r.brand)+'</td><td>'+money(r.price_zar,false)+'</td><td>'+pct(r.margin_pct)+'</td><td><span class="lci-pill">Commercial context</span></td></tr>';}).join("")+'</tbody></table>', "lci-anomaly");
     return kpis + '<div class="lci-grid ml"><div>'+model+seg+'</div>'+anomaly+'</div>';
@@ -204,7 +204,7 @@ define([
 
   function explorer() {
     var rows = anomalies.slice(0,30);
-    var kpis = '<div class="lci-kpis">' + metric("search","teal","REVIEW UNIVERSE",count(metrics.anomalies_flagged),"ML-ranked exceptions") + metric("box","blue","CATEGORIES REPRESENTED",String(new Set(rows.map(function(r){return r.category;})).size),"In displayed sample") + metric("factory","copper","BRANDS REPRESENTED",String(new Set(rows.map(function(r){return r.brand;})).size),"Cross-portfolio view") + metric("shield","gold","DECISION RULE","Review—not delete","Human context required") + '</div>';
+    var kpis = '<div class="lci-kpis">' + metric("search","teal","REVIEW UNIVERSE",count(metrics.anomalies_flagged),"ML-ranked exceptions") + metric("box","blue","CATEGORIES REPRESENTED",String(new Set(rows.map(function(r){return r.category;})).size),"In displayed sample") + metric("factory","copper","BRANDS REPRESENTED",String(new Set(rows.map(function(r){return r.brand;})).size),"Cross-portfolio view") + metric("shield","gold","DECISION RULE","Reviewâ€”not delete","Human context required") + '</div>';
     var filters = '<div class="lci-tools"><label>Find product<input type="search" class="lci-search" placeholder="Name, brand or category"></label><label>Category<select class="lci-cat"><option value="">All categories</option>'+Array.from(new Set(rows.map(function(r){return r.category;}))).sort().map(function(v){return '<option>'+esc(v)+'</option>';}).join("")+'</select></label><span><b>'+rows.length+'</b> sample rows shown</span></div>';
     var table = '<table class="lci-table explorer"><thead><tr><th>Product ID</th><th>Product</th><th>Category</th><th>Brand</th><th>Price</th><th>Cost</th><th>Margin</th><th>Signal</th></tr></thead><tbody>'+rows.map(function(r){return '<tr data-search="'+esc((r.product_name+' '+r.brand+' '+r.category).toLowerCase())+'" data-cat="'+esc(r.category)+'"><td>'+esc(r.product_id)+'</td><td><b>'+esc(r.product_name)+'</b></td><td>'+esc(r.category)+'</td><td>'+esc(r.brand)+'</td><td>'+money(r.price_zar,false)+'</td><td>'+money(r.cost_zar,false)+'</td><td>'+pct(r.margin_pct)+'</td><td><span class="lci-pill danger">'+n(r.anomaly_raw).toFixed(3)+'</span></td></tr>';}).join("")+'</tbody></table>';
     return kpis + card("Product exception explorer", "Search and filter the decision-review sample; exceptions are candidates for investigation, not automatic errors", filters + '<div class="lci-tablewrap">'+table+'</div>', "lci-explorer");
@@ -220,7 +220,7 @@ define([
       explorer: ["EVIDENCE-LEVEL REVIEW", "A searchable product queue for analyst and commercial follow-up."]
     };
     var body = page === "portfolio" ? portfolio() : page === "network" ? network() : page === "quality" ? dataQuality() : page === "ml" ? mlLab() : page === "explorer" ? explorer() : executive();
-    return '<div class="lci-shell">'+nav(page)+'<main class="lci-main">'+header(page,summaries[page][0],summaries[page][1])+'<div class="lci-content">'+body+'<footer>Source: synthetic Libstar-style product analytics case study · Exact aggregate reporting layer · Not affiliated with Libstar Holdings</footer></div></main></div>';
+    return '<div class="lci-shell">'+nav(page)+'<main class="lci-main">'+header(page,summaries[page][0],summaries[page][1])+'<div class="lci-content">'+body+'<footer>Source: synthetic Libstar-style product analytics case study Â· Exact aggregate reporting layer Â· Not affiliated with Libstar Holdings</footer></div></main></div>';
   }
 
   function bind($element) {
@@ -251,3 +251,4 @@ define([
     }
   };
 });
+

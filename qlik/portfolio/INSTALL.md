@@ -2,7 +2,7 @@
 
 ## Required files
 
-- `Libstar Retail and Manufacturing Intelligence.qvf`
+- `ShelfLine Retail and Manufacturing Intelligence.qvf`
 - `extension/libstar-command-intelligence/`
 
 ## Windows paths

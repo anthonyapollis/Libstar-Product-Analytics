@@ -1,4 +1,4 @@
-# Libstar Retail & Manufacturing Intelligence
+# ShelfLine Retail & Manufacturing Intelligence
 
 An employer-facing Qlik Sense Desktop case study that turns the verified Libstar-style aggregate and ML layers into a six-page executive decision system.
 
@@ -23,7 +23,7 @@ An employer-facing Qlik Sense Desktop case study that turns the verified Libstar
 
 ## Open in Qlik Sense Desktop
 
-1. Copy `Libstar Retail and Manufacturing Intelligence.qvf` to `Documents/Qlik/Sense/Apps`.
+1. Copy `ShelfLine Retail and Manufacturing Intelligence.qvf` to `Documents/Qlik/Sense/Apps`.
 2. Copy the `libstar-command-intelligence` extension folder to `Documents/Qlik/Sense/Extensions`.
 3. Launch Qlik Sense Desktop and open the app.
 
