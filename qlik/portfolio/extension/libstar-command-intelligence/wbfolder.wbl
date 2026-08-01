@@ -1,0 +1,14 @@
+libstar-command-intelligence.js;
+libstar-command-intelligence.qext;
+libstar-command-intelligence.css;
+data/kpi_summary.csv;
+data/category_performance.csv;
+data/brand_performance.csv;
+data/channel_performance.csv;
+data/province_performance.csv;
+data/catalog_growth.csv;
+data/data_quality.csv;
+data/metrics.json;
+data/price_anomalies.csv;
+data/segments_summary.csv;
+assets/libstar-fmcg-hero.png;

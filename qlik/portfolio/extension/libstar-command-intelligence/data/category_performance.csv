@@ -1,0 +1,13 @@
+product_group,category,sku_count,revenue_12m_zar,avg_margin_pct,avg_price_zar,avg_rating
+Ambient products,Spreads,526813,160395514139.92,35.0,87.63,3.0
+Ambient products,Meal ingredients,554781,155347925714.84,35.0,74.2,3.0
+Ambient products,Wet condiments,580617,154977096220.1,35.01,68.2,3.0
+Ambient products,Beverages,428482,135697476592.37,34.99,94.98,3.0
+Ambient products,Dry condiments,452143,122903791559.97,34.99,69.79,3.0
+Ambient products,Baking,427832,94861638384.88,34.99,46.87,3.0
+Perishable products,Convenience Meals,295388,85861274104.59,35.03,79.71,3.0
+Ambient products,Snacking,311271,79899697158.53,34.98,62.37,3.0
+Perishable products,Value-added Meats,176523,57959630789.66,35.01,102.24,3.0
+Perishable products,Dairy,194459,48642328236.88,35.0,59.31,3.0
+Perishable products,Baby,168555,39589869571.62,35.02,52.17,3.0
+Perishable products,Fresh Mushrooms,168107,34146064405.41,35.02,39.17,3.0

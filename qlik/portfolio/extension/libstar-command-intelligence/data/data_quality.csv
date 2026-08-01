@@ -1,0 +1,12 @@
+reject_reason,row_count
+bad_date;,328279
+bad_price;,230750
+unknown_brand;,127137
+bad_price;bad_date;,17200
+bad_date;unknown_brand;,9759
+unknown_brand;unknown_category;,8039
+bad_price;unknown_brand;,6615
+bad_date;unknown_brand;unknown_category;,657
+bad_price;bad_date;unknown_brand;,516
+bad_price;unknown_brand;unknown_category;,450
+bad_price;bad_date;unknown_brand;unknown_category;,36

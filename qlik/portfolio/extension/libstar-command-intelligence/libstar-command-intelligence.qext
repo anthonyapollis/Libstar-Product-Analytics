@@ -1,0 +1,8 @@
+{
+  "name": "Libstar Retail & Manufacturing Intelligence",
+  "description": "Executive retail, portfolio, manufacturing, quality and ML intelligence for the Libstar analytics case study.",
+  "type": "visualization",
+  "version": "1.0.0",
+  "author": "Anthony Apollis",
+  "icon": "extension"
+}
