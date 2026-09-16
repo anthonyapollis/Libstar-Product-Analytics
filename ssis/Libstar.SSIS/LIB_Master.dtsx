@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTS:Executable DTS:CreationDate="09/16/2026 19:07:22" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{A8E05EB5-1CB8-4866-BD10-39B8AD613627}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_Master" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{9DC231AD-7EDE-4922-BF31-A5D5E101C28D}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{C517C4D3-7248-4F8F-8672-45866EB615C1}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ServerName">@[$Package::ServerName]</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{10E154CC-DCD7-4690-90AD-DEFD5DB09320}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{D0F9424C-FF75-4BE6-B78D-DD89F9B83E18}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{7AA66398-5AA2-41AC-BED2-F7E9CEFE51A6}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{3CBF0961-18F0-4A92-BBF3-26FB5C6D4F11}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{7CFAB87D-BBA0-4615-A7EE-4EF61977B8B7}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{64577AAC-B5B0-4127-978F-0CC3D4DBE8B4}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{CAA6B584-B21B-43C6-A9AB-7774E5BAAC13}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{025A3838-A93D-4EDF-9AE0-39BBDA13FA30}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D6B25F54-75B3-4746-8574-E90A2A6BC923}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::ServerName]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ServerNameValue">
+      <DTS:VariableValue DTS:DataType="8">localhost</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{3EEB61D9-DDB6-4DD1-BD2D-1F104A0A9C75}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::RawFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="RawFolderValue">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{2FE9E7F2-34FC-4319-B8A3-B5196B985AEB}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::WorkFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="WorkFolderValue">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{BDBC905D-1A9A-4F92-8FD2-68B39B48D472}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::ReferenceFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ReferenceFolderValue">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{AAEC17AB-EEE4-4714-92DF-8934AE6AF304}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ExecutionInstanceGUID" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="50" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RunId" SQLTask:ResultName="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecutePackageTask" DTS:DTSID="{AB9353B7-42DC-4F68-9234-051CC892A7CD}" DTS:ExecutableType="Microsoft.ExecutePackageTask" DTS:LocaleID="-1" DTS:ObjectName="EPT LIB_00_LoadReference" DTS:refId="Package\EPT LIB_00_LoadReference" DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <PackageName>LIB_00_LoadReference.dtsx</PackageName>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ServerNameValue</BindedVariableOrParameterName>
+            <ParameterName>ServerName</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::RawFolderValue</BindedVariableOrParameterName>
+            <ParameterName>RawFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::WorkFolderValue</BindedVariableOrParameterName>
+            <ParameterName>WorkFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ReferenceFolderValue</BindedVariableOrParameterName>
+            <ParameterName>ReferenceFolder</ParameterName>
+          </ParameterAssignment>
+          <UseProjectReference>True</UseProjectReference>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecutePackageTask" DTS:DTSID="{AE862020-7B60-4DCF-B4DC-9F79B95267E0}" DTS:ExecutableType="Microsoft.ExecutePackageTask" DTS:LocaleID="-1" DTS:ObjectName="EPT LIB_01_StageRawProducts" DTS:refId="Package\EPT LIB_01_StageRawProducts" DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <PackageName>LIB_01_StageRawProducts.dtsx</PackageName>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ServerNameValue</BindedVariableOrParameterName>
+            <ParameterName>ServerName</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::RawFolderValue</BindedVariableOrParameterName>
+            <ParameterName>RawFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::WorkFolderValue</BindedVariableOrParameterName>
+            <ParameterName>WorkFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ReferenceFolderValue</BindedVariableOrParameterName>
+            <ParameterName>ReferenceFolder</ParameterName>
+          </ParameterAssignment>
+          <UseProjectReference>True</UseProjectReference>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecutePackageTask" DTS:DTSID="{D383EF27-1E12-4510-8242-435B3E6DCD9B}" DTS:ExecutableType="Microsoft.ExecutePackageTask" DTS:LocaleID="-1" DTS:ObjectName="EPT LIB_02_CleanseProducts" DTS:refId="Package\EPT LIB_02_CleanseProducts" DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <PackageName>LIB_02_CleanseProducts.dtsx</PackageName>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ServerNameValue</BindedVariableOrParameterName>
+            <ParameterName>ServerName</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::RawFolderValue</BindedVariableOrParameterName>
+            <ParameterName>RawFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::WorkFolderValue</BindedVariableOrParameterName>
+            <ParameterName>WorkFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ReferenceFolderValue</BindedVariableOrParameterName>
+            <ParameterName>ReferenceFolder</ParameterName>
+          </ParameterAssignment>
+          <UseProjectReference>True</UseProjectReference>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecutePackageTask" DTS:DTSID="{CC5A4ABA-386A-4977-9A57-562E89CF1009}" DTS:ExecutableType="Microsoft.ExecutePackageTask" DTS:LocaleID="-1" DTS:ObjectName="EPT LIB_03_PublishProducts" DTS:refId="Package\EPT LIB_03_PublishProducts" DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <PackageName>LIB_03_PublishProducts.dtsx</PackageName>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ServerNameValue</BindedVariableOrParameterName>
+            <ParameterName>ServerName</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::RawFolderValue</BindedVariableOrParameterName>
+            <ParameterName>RawFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::WorkFolderValue</BindedVariableOrParameterName>
+            <ParameterName>WorkFolder</ParameterName>
+          </ParameterAssignment>
+          <ParameterAssignment>
+            <BindedVariableOrParameterName>User::ReferenceFolderValue</BindedVariableOrParameterName>
+            <ParameterName>ReferenceFolder</ParameterName>
+          </ParameterAssignment>
+          <UseProjectReference>True</UseProjectReference>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{61B5B892-E4C6-475A-8830-A6CB5F8E98A8}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRejected" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="3" SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{F7E54CD0-BBFC-41A9-A381-2E20615C3F90}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_EPT LIB_00_LoadReference" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_EPT LIB_00_LoadReference]" DTS:To="Package\EPT LIB_00_LoadReference" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{3147800F-BBE4-4092-B2DB-535006DFB033}" DTS:From="Package\EPT LIB_00_LoadReference" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_EPT LIB_00_LoadReference_To_EPT LIB_01_StageRawProducts" DTS:refId="Package.PrecedenceConstraints[Constraint_EPT LIB_00_LoadReference_To_EPT LIB_01_StageRawProducts]" DTS:To="Package\EPT LIB_01_StageRawProducts" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{7314CE9A-28D8-498F-B380-B511330D5A54}" DTS:From="Package\EPT LIB_01_StageRawProducts" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_EPT LIB_01_StageRawProducts_To_EPT LIB_02_CleanseProducts" DTS:refId="Package.PrecedenceConstraints[Constraint_EPT LIB_01_StageRawProducts_To_EPT LIB_02_CleanseProducts]" DTS:To="Package\EPT LIB_02_CleanseProducts" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{4B430A9E-7362-4B5E-82E7-B10171513788}" DTS:From="Package\EPT LIB_02_CleanseProducts" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_EPT LIB_02_CleanseProducts_To_EPT LIB_03_PublishProducts" DTS:refId="Package.PrecedenceConstraints[Constraint_EPT LIB_02_CleanseProducts_To_EPT LIB_03_PublishProducts]" DTS:To="Package\EPT LIB_03_PublishProducts" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{098578EC-3D57-464C-8482-CF8126457BC2}" DTS:From="Package\EPT LIB_03_PublishProducts" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_EPT LIB_03_PublishProducts_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_EPT LIB_03_PublishProducts_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{8E72C795-C97C-446F-A149-5DC08BB371EC}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+      <DTS:Variables>
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{89DFAE2A-4EC9-40FD-90E4-D17FC22B23B4}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+          <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4FD09F71-63C4-448F-BFFC-115741A72C7F}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />
+              <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+</DTS:Executable>

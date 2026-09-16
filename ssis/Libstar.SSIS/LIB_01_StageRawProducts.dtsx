@@ -1,0 +1,838 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTS:Executable DTS:CreationDate="09/16/2026 19:07:17" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{817A00E8-3C62-4749-91FA-4F324DCEECC4}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_01_StageRawProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{F17DF937-DD34-4660-B871-E260FC577521}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{F1C605BF-B045-4F44-BD55-6E183E4F43FA}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ServerName">@[$Package::ServerName]</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager DTS:CreationName="FLATFILE" DTS:DTSID="{1E199404-40F9-44F2-85FB-51C67119CDE8}" DTS:ObjectName="FF_RawProducts" DTS:refId="Package.ConnectionManagers[FF_RawProducts]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:CodePage="65001" DTS:ColumnNamesInFirstDataRow="True" DTS:ConnectionString="C:\Libstar\work\products_part_00.csv" DTS:Format="Delimited" DTS:HeaderRowDelimiter="_x000D__x000A_" DTS:LocaleID="7177" DTS:RowDelimiter="_x000D__x000A_" DTS:TextQualifier="_x0022_">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{2B4ABAD5-DCB1-4BEC-80FC-CB587F2FAB9D}" DTS:MaximumWidth="255" DTS:ObjectName="raw_product_id" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{F179B4A3-E1D1-4EBB-A661-6CF7B6331686}" DTS:MaximumWidth="255" DTS:ObjectName="raw_sku" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{B958FF32-3B05-4F83-AECA-80AD624817E4}" DTS:MaximumWidth="255" DTS:ObjectName="raw_product_name" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{3E7DBDDE-B298-4511-A949-314BAB597486}" DTS:MaximumWidth="255" DTS:ObjectName="raw_category" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{4BD32BE6-5E2A-4A57-9280-6A91CBB4F856}" DTS:MaximumWidth="255" DTS:ObjectName="raw_brand" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{243C6569-FD4D-4828-BB27-081C769F6940}" DTS:MaximumWidth="255" DTS:ObjectName="raw_sales_channel" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{D49650B2-1DCF-4CA5-A1BA-8A6B36AF7B6C}" DTS:MaximumWidth="255" DTS:ObjectName="raw_province" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{FDFD5270-07A7-4C5E-8A4F-7C7DDDD0171A}" DTS:MaximumWidth="255" DTS:ObjectName="raw_price_zar" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{8E4D4999-B506-4584-81C1-E3D8753CBA4D}" DTS:MaximumWidth="255" DTS:ObjectName="raw_cost_zar" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{E08CA89A-C777-431E-91D8-781C81656ED0}" DTS:MaximumWidth="255" DTS:ObjectName="raw_weight_kg" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{1B5B8CD9-0242-4849-867A-7FC10BBE68EB}" DTS:MaximumWidth="255" DTS:ObjectName="raw_stock_qty" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{0B869A99-2F21-4961-868C-D720730048D7}" DTS:MaximumWidth="255" DTS:ObjectName="raw_units_sold_12m" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{764AA663-42C6-44C9-830A-0B8E12F87B93}" DTS:MaximumWidth="255" DTS:ObjectName="raw_date_added" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{41B3D659-CE4F-4FAA-821E-257D31D5FA50}" DTS:MaximumWidth="255" DTS:ObjectName="raw_is_active" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x000D__x000A_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{AB393813-F573-45AC-884D-B4416B51910B}" DTS:MaximumWidth="255" DTS:ObjectName="raw_rating" DTS:TextQualified="True" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ConnectionString">@[User::CurrentFile]</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{7BD0D648-A288-4E3E-AF16-F08E33C21C3C}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{25400F1C-B221-462E-BE63-C7F79A06CC28}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{E0789E28-13BD-4D1C-B523-EDDBBDCC6851}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{ED618404-B683-48AC-BEF5-AE722E9715CA}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D6BF099D-2F95-4328-B18C-1DC513AC38DD}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{BD4DF3FE-E6A6-4D0E-B3BD-5EE000FEEF4A}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{DFE284B3-3BF8-42C3-879B-C810764F48CC}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{FAF6006F-1CCA-42E9-BF7F-DB9FEFB29AA6}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{A2B348B6-6E05-4195-8A0E-B69E69C17484}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::RawFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="RawFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{72705C60-04C4-470E-B137-6209F2B0DAFB}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::WorkFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="WorkFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{8BAB6A88-1687-443F-A14F-CF1407936E79}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::ReferenceFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ReferenceFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{0AA68A77-4984-4431-B5B7-52D34F07CBF6}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="RawFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\data\raw</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{43290DDC-F007-4E3F-B33B-28439E2A8E66}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="WorkFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\work</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{AD19524D-9363-4B71-B2A4-278C89D2895D}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ReferenceFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\data\reference</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{FAC39311-278D-4CC2-AFA9-EBC9BD6E102B}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="CurrentFile">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\work\products_part_00.csv</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{1842D648-F060-4ED5-B2A1-71842FEAB0F4}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ExecutionInstanceGUID" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="50" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RunId" SQLTask:ResultName="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{78B4CED0-8DBE-4EF9-B070-764FEF366C5B}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Resolve folders from parameters or etl_Config" DTS:refId="Package\SQL Resolve folders from parameters or etl_Config" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="&#xA;SET NOCOUNT ON;&#xA;DECLARE @raw nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'RawFolder'));&#xA;DECLARE @work nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'WorkFolder'));&#xA;DECLARE @ref nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'ReferenceFolder'));&#xA;IF @raw IS NULL OR @work IS NULL OR @ref IS NULL&#xA;    THROW 50010, 'Folder locations are not configured. Pass the RawFolder/WorkFolder/ReferenceFolder parameters or run ssis\run_ssis.ps1 -Configure.', 1;&#xA;SELECT @raw AS RawFolderPath, @work AS WorkFolderPath, @ref AS ReferenceFolderPath;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::RawFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="400" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::WorkFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="400" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::ReferenceFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="400" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RawFolderPath" SQLTask:ResultName="0" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::WorkFolderPath" SQLTask:ResultName="1" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::ReferenceFolderPath" SQLTask:ResultName="2" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{AFBB5AD5-4E68-4C5D-A30F-3BA3F68A9B35}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Truncate stg products_raw" DTS:refId="Package\SQL Truncate stg products_raw" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="TRUNCATE TABLE stg.products_raw;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ScriptTask" DTS:DTSID="{E2005EAD-E12D-48BB-A6DD-76C1EDD79B64}" DTS:ExecutableType="Microsoft.ScriptTask" DTS:LocaleID="-1" DTS:ObjectName="SCR Decompress gz to work folder" DTS:refId="Package\SCR Decompress gz to work folder">
+      <DTS:ObjectData>
+        <ScriptProject Language="CSharp" Name="ST_DecompressRawProducts" ReadOnlyVariables="User::RawFolderPath,User::WorkFolderPath" ReadWriteVariables="" VSTAMajorVersion="15" VSTAMinorVersion="0">
+          <BinaryItem Name="\bin\release\ST_DecompressRawProducts.csproj.dll">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U2V0dGluZ3MAU1RfRGVjb21wcmVzc1Jhd1Byb2R1Y3RzLmNzcHJvai5Qcm9wZXJ0aWVzAFJlc291cmNlcwBNaWNyb3NvZnQuU3FsU2VydmVyLlNjcmlwdFRhc2sATWljcm9zb2Z0LlNxbFNlcnZlci5EdHMuVGFza3MuU2NyaXB0VGFzawBWU1RBUlRTY3JpcHRPYmplY3RNb2RlbEJhc2UAbXNjb3JsaWIAU3lzdGVtAEVudW0AU3lzdGVtLkNvbmZpZ3VyYXRpb24AQXBwbGljYXRpb25TZXR0aW5nc0Jhc2UAT2JqZWN0AE1haW4ALmN0b3IAdmFsdWVfXwBTdWNjZXNzAEZhaWx1cmUAZGVmYXVsdEluc3RhbmNlAGdldF9EZWZhdWx0AERlZmF1bHQAU3lzdGVtLlJlc291cmNlcwBSZXNvdXJjZU1hbmFnZXIAcmVzb3VyY2VNYW4AU3lzdGVtLkdsb2JhbGl6YXRpb24AQ3VsdHVyZUluZm8AcmVzb3VyY2VDdWx0dXJlAGdldF9SZXNvdXJjZU1hbmFnZXIAZ2V0X0N1bHR1cmUAc2V0X0N1bHR1cmUAQ3VsdHVyZQB2YWx1ZQBTeXN0ZW0uUmVmbGVjdGlvbgBBc3NlbWJseVRpdGxlQXR0cmlidXRlAEFzc2VtYmx5VmVyc2lvbkF0dHJpYnV0ZQBTeXN0ZW0uUnVudGltZS5Db21waWxlclNlcnZpY2VzAENvbXBpbGF0aW9uUmVsYXhhdGlvbnNBdHRyaWJ1dGUAUnVudGltZUNvbXBhdGliaWxpdHlBdHRyaWJ1dGUAU1RfRGVjb21wcmVzc1Jhd1Byb2R1Y3RzLmNzcHJvagBTU0lTU2NyaXB0VGFza0VudHJ5UG9pbnRBdHRyaWJ1dGUAU2NyaXB0T2JqZWN0TW9kZWwAZ2V0X0R0cwBNaWNyb3NvZnQuU3FsU2VydmVyLk1hbmFnZWREVFMATWljcm9zb2Z0LlNxbFNlcnZlci5EdHMuUnVudGltZQBWYXJpYWJsZXMAZ2V0X1ZhcmlhYmxlcwBWYXJpYWJsZQBnZXRfSXRlbQBnZXRfVmFsdWUAU3RyaW5nAEV2ZW50c09iamVjdFdyYXBwZXIAZ2V0X0V2ZW50cwBFbnZpcm9ubWVudABnZXRfQ3VycmVudERpcmVjdG9yeQBTeXN0ZW0uSU8AUGF0aABHZXRGdWxsUGF0aABDb25jYXQARmlyZUluZm9ybWF0aW9uAERpcmVjdG9yeQBFeGlzdHMARGlyZWN0b3J5Tm90Rm91bmRFeGNlcHRpb24ARGlyZWN0b3J5SW5mbwBDcmVhdGVEaXJlY3RvcnkAR2V0RmlsZXMARmlsZU5vdEZvdW5kRXhjZXB0aW9uAEdldEZpbGVOYW1lV2l0aG91dEV4dGVuc2lvbgBDb21iaW5lAEZpbGUARGF0ZVRpbWUAR2V0TGFzdFdyaXRlVGltZVV0YwBvcF9HcmVhdGVyVGhhbk9yRXF1YWwARmlsZUluZm8AZ2V0X0xlbmd0aABGaWxlU3RyZWFtAE9wZW5SZWFkAFN5c3RlbS5JTy5Db21wcmVzc2lvbgBHWmlwU3RyZWFtAFN0cmVhbQBDb21wcmVzc2lvbk1vZGUAQ3JlYXRlAENvcHlUbwBJRGlzcG9zYWJsZQBEaXNwb3NlAHNldF9UYXNrUmVzdWx0AEV4Y2VwdGlvbgBnZXRfTWVzc2FnZQBGaXJlRXJyb3IAQ29tcGlsZXJHZW5lcmF0ZWRBdHRyaWJ1dGUALmNjdG9yAFN5c3RlbS5Db2RlRG9tLkNvbXBpbGVyAEdlbmVyYXRlZENvZGVBdHRyaWJ1dGUAU3lzdGVtLkRpYWdub3N0aWNzAERlYnVnZ2VyTm9uVXNlckNvZGVBdHRyaWJ1dGUAVHlwZQBSdW50aW1lVHlwZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBBc3NlbWJseQBnZXRfQXNzZW1ibHkAU3lzdGVtLkNvbXBvbmVudE1vZGVsAEVkaXRvckJyb3dzYWJsZUF0dHJpYnV0ZQBFZGl0b3JCcm93c2FibGVTdGF0ZQAAJ1UAcwBlAHIAOgA6AFIAYQB3AEYAbwBsAGQAZQByAFAAYQB0AGgAAClVAHMAZQByADoAOgBXAG8AcgBrAEYAbwBsAGQAZQByAFAAYQB0AGgAABVEAGUAYwBvAG0AcAByAGUAcwBzAAAnVwBvAHIAawBpAG4AZwAgAGQAaQByAGUAYwB0AG8AcgB5ADoAIAAAMzsAIAByAGEAdwAgAGYAbwBsAGQAZQByACAAcgBlAHMAbwBsAHYAZQBzACAAdABvACAAAAEALVIAYQB3ACAAZgBvAGwAZABlAHIA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</BinaryItem>
+          <ProjectItem Encoding="UTF8" Name="Properties\AssemblyInfo.cs"><![CDATA[
+using System.Reflection;
+[assembly: AssemblyTitle("ST_DecompressRawProducts")]
+[assembly: AssemblyVersion("1.0.*")]
+        ]]></ProjectItem>
+          <ProjectItem Encoding="UTF8" Name="ScriptMain.cs"><![CDATA[
+using System;
+using System.IO;
+using System.IO.Compression;
+using Microsoft.SqlServer.Dts.Runtime;
+
+namespace ST_DecompressRawProducts
+{
+    /// <summary>
+    /// SSIS cannot read gzip natively. Expands every products_part_*.csv.gz in the raw
+    /// folder into the work folder. Skips a file whose expanded copy is already newer
+    /// than the archive, so a re-run after a downstream failure does not redo the work.
+    /// </summary>
+    [Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+    public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+    {
+        public void Main()
+        {
+            bool fireAgain = true;
+            string rawFolder = (string)Dts.Variables["User::RawFolderPath"].Value;
+            string workFolder = (string)Dts.Variables["User::WorkFolderPath"].Value;
+            try
+            {
+                Dts.Events.FireInformation(0, "Decompress", "Working directory: " + Environment.CurrentDirectory + "; raw folder resolves to " + Path.GetFullPath(rawFolder), "", 0, ref fireAgain);
+                if (!Directory.Exists(rawFolder))
+                    throw new DirectoryNotFoundException("Raw folder not found: " + Path.GetFullPath(rawFolder) + " (parameter RawFolder = '" + rawFolder + "', working directory = " + Environment.CurrentDirectory + ")");
+                Directory.CreateDirectory(workFolder);
+
+                string[] archives = Directory.GetFiles(rawFolder, "products_part_*.csv.gz");
+                if (archives.Length == 0)
+                    throw new FileNotFoundException("No products_part_*.csv.gz files in " + rawFolder);
+
+                foreach (string gz in archives)
+                {
+                    string csv = Path.Combine(workFolder, Path.GetFileNameWithoutExtension(gz));
+                    if (File.Exists(csv) && File.GetLastWriteTimeUtc(csv) >= File.GetLastWriteTimeUtc(gz) && new FileInfo(csv).Length > 0)
+                    {
+                        Dts.Events.FireInformation(0, "Decompress", "Up to date, skipped: " + csv, "", 0, ref fireAgain);
+                        continue;
+                    }
+                    using (FileStream input = File.OpenRead(gz))
+                    using (GZipStream unzip = new GZipStream(input, CompressionMode.Decompress))
+                    using (FileStream output = File.Create(csv))
+                    {
+                        unzip.CopyTo(output, 1 << 20);
+                    }
+                    Dts.Events.FireInformation(0, "Decompress", "Expanded " + gz + " -> " + csv, "", 0, ref fireAgain);
+                }
+                Dts.TaskResult = (int)ScriptResults.Success;
+            }
+            catch (Exception ex)
+            {
+                Dts.Events.FireError(0, "Decompress", ex.Message, "", 0);
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            }
+        }
+
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+    }
+}
+]]></ProjectItem>
+          <ProjectItem Encoding="UTF8" Name="Properties\settings.settings"><![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"  >
+    <Profiles>
+        <Profile Name="(Default)" />
+    </Profiles>
+    <Settings /></SettingsFile>
+]]></ProjectItem>
+          <ProjectItem Encoding="UTF8" Name="Properties\settings.designer.cs"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_DecompressRawProducts.csproj.Properties.Settings.get_Default():ST_DecompressRawProducts.csproj.Properties.Settings")]
+
+namespace ST_DecompressRawProducts.csproj.Properties
+{
+
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        private static Settings defaultInstance = new Settings();
+
+        public static Settings Default
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+          <ProjectItem Encoding="UTF8" Name="Properties\resources.resx"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    </root>
+]]></ProjectItem>
+          <ProjectItem Encoding="UTF8" Name="Properties\resources.designer.cs"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_DecompressRawProducts.csproj.Properties.Resources.get_ResourceManager():System.Resources.ResourceManager")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_DecompressRawProducts.csproj.Properties.Resources.get_Culture():System.Globalization.CultureInfo")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_DecompressRawProducts.csproj.Properties.Resources.set_Culture(System.Globalization.CultureInfo):Void")]
+
+namespace ST_DecompressRawProducts.csproj.Properties {
+    using System;
+
+
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    internal class Resources
+    {
+
+        private static global::System.Resources.ResourceManager resourceMan;
+
+        private static global::System.Globalization.CultureInfo resourceCulture;
+
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources() {
+        }
+
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get {
+                if ((resourceMan == null))
+                {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ST_DecompressRawProducts.csproj.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+          <ProjectItem Encoding="UTF16LE" Name="ST_DecompressRawProducts.csproj"><![CDATA[<?xml version="1.0" encoding="utf-16"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+	    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <OutputType>Library</OutputType>
+        <RootNamespace>ST_DecompressRawProducts.csproj</RootNamespace>
+        <AssemblyName>ST_DecompressRawProducts.csproj</AssemblyName>
+        <ProjectGuid>{C792B577-3187-41B4-A778-35BF1292DEDE}</ProjectGuid>
+		        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+        <TargetFrameworkProfile></TargetFrameworkProfile>			    <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
+				        <ProjectTypeGuids>{30D016F9-3734-4E33-A861-5E7D899E18F3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+        <NoStandardLibraries>false</NoStandardLibraries>
+		    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+        <OutputPath>.\bin\Debug\</OutputPath>
+        <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <WarningLevel>4</WarningLevel>
+		    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+        <OutputPath>.\bin\Release\</OutputPath>
+        <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+        <DefineConstants>TRACE</DefineConstants>
+        <WarningLevel>4</WarningLevel>
+		    </PropertyGroup>
+    <PropertyGroup>
+        <PreBuildEvent>
+        </PreBuildEvent>
+        <PostBuildEvent>
+        </PostBuildEvent>
+    </PropertyGroup>
+    <ItemGroup>
+                <Reference Include="Microsoft.SqlServer.ManagedDTS, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+                <Reference Include="Microsoft.SqlServer.ScriptTask, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+                <Reference Include="System.dll" />
+                <Reference Include="System.AddIn.dll" />
+                <Reference Include="System.Data.dll" />
+                <Reference Include="System.Windows.Forms.dll" />
+                <Reference Include="System.Xml.dll" />
+            </ItemGroup>
+	    <ItemGroup>
+        <Folder Include="Resources\" />
+        <AppDesigner Include="Properties\" />
+        <EmbeddedResource Include="Properties\Resources.resx">
+						<Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			        </EmbeddedResource>
+        <Compile Include="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+        </Compile>
+		        <None Include="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+        <Compile Include="Properties\Settings.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Settings.settings</DependentUpon>
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        </Compile>
+
+				<Compile Include="Properties\AssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+				<Compile Include="ScriptMain.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		
+		
+		
+		
+		    </ItemGroup>
+		<!-- Include the build rules for a C# project.-->
+    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+		<!-- This section defines VSTA properties that describe the host-changable project properties. -->
+    <ProjectExtensions>
+        <VisualStudio>
+            <FlavorProperties GUID="{30D016F9-3734-4E33-A861-5E7D899E18F3}">
+                <ProjectProperties HostName="VSTAHostName" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="#HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\9.0\InstallDir#\devenv.exe" />
+                <Host Name="SSIS_ScriptTask" />
+                <ProjectClient>
+                    <HostIdentifier>SSIS_ST130</HostIdentifier>
+                </ProjectClient>
+            </FlavorProperties>
+        </VisualStudio>
+    </ProjectExtensions>
+</Project>
+]]></ProjectItem>
+          <ProjectItem Encoding="UTF16LE" Name="Project"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
+<c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="4.0" schemaVersion="1.0">
+	<msb:PropertyGroup>
+		<msb:ProjectId>{f91e93b9-2f20-49e4-8cff-85563175357d}</msb:ProjectId>
+		<msb:NoContent>Reference;Import;Folder</msb:NoContent>
+		<msb:Language>msBuild</msb:Language>
+		<msb:DisplayName>ST_DecompressRawProducts</msb:DisplayName>
+		<msb:CodeName>ST_DecompressRawProducts</msb:CodeName>
+	</msb:PropertyGroup>
+	<msb:ItemGroup>
+				<msb:File Include="Properties\Resources.resx"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
+				<msb:File Include="Properties\Resources.Designer.cs"/>
+				<msb:File Include="Properties\AssemblyInfo.cs"/>
+				<msb:File Include="ScriptMain.cs"/>
+								<msb:File Include="Properties\Settings.settings"/>
+						<msb:Project Include="ST_DecompressRawProducts.csproj"/>
+	</msb:ItemGroup>
+</c:Project>]]></ProjectItem>
+        </ScriptProject>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="STOCK:FOREACHLOOP" DTS:DelayValidation="True" DTS:DTSID="{150AE721-8BA9-4193-9B25-486389F7C5D1}" DTS:ExecutableType="STOCK:FOREACHLOOP" DTS:LocaleID="-1" DTS:ObjectName="FELC Each raw products csv" DTS:refId="Package\FELC Each raw products csv">
+      <DTS:Executables>
+        <DTS:Executable DTS:CreationName="Microsoft.Pipeline" DTS:DelayValidation="True" DTS:DTSID="{9FB5CE04-85A5-4025-914E-389766A1A631}" DTS:ExecutableType="Microsoft.Pipeline" DTS:LocaleID="-1" DTS:ObjectName="DFT Stage one csv" DTS:refId="Package\FELC Each raw products csv\DFT Stage one csv" DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:ObjectData>
+            <pipeline BLOBTempStoragePath="" bufferTempStoragePath="" name="pipelineXml" version="1">
+              <components>
+                <component componentClassID="Microsoft.FlatFileSource" contactInfo="Flat File Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1" localeId="7177" name="FF products csv" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv" usesDispositions="true" version="1">
+                  <connections>
+                    <connection connectionManagerID="{1E199404-40F9-44F2-85FB-51C67119CDE8}:external" connectionManagerRefId="Package.ConnectionManagers[FF_RawProducts]" name="FlatFileConnection" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Connections[FlatFileConnection]" />
+                  </connections>
+                  <outputs>
+                    <output name="Output" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output]">
+                      <externalMetadataColumns isUsed="True">
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_product_id" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_product_id]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_sku" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_sku]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_product_name" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_product_name]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_category" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_category]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_brand" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_brand]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_sales_channel" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_sales_channel]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_province" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_province]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_price_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_price_zar]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_cost_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_cost_zar]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_weight_kg" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_weight_kg]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_stock_qty" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_stock_qty]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_units_sold_12m" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_units_sold_12m]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_date_added" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_date_added]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_is_active" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_is_active]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_rating" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_rating]" />
+                      </externalMetadataColumns>
+                      <outputColumns>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_product_id]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_id]" name="raw_product_id" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_id]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_sku]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sku]" name="raw_sku" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sku]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_product_name]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_name]" name="raw_product_name" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_name]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_category]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_category]" name="raw_category" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_category]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_brand]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_brand]" name="raw_brand" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_brand]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_sales_channel]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sales_channel]" name="raw_sales_channel" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sales_channel]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_province]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_province]" name="raw_province" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_province]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_price_zar]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_price_zar]" name="raw_price_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_price_zar]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_cost_zar]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_cost_zar]" name="raw_cost_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_cost_zar]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_weight_kg]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_weight_kg]" name="raw_weight_kg" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_weight_kg]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_stock_qty]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_stock_qty]" name="raw_stock_qty" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_stock_qty]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_units_sold_12m]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_units_sold_12m]" name="raw_units_sold_12m" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_units_sold_12m]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_date_added]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_date_added]" name="raw_date_added" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_date_added]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_is_active]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_is_active]" name="raw_is_active" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_is_active]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].ExternalColumns[raw_rating]" length="255" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_rating]" name="raw_rating" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_rating]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                            <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                    </output>
+                    <output isErrorOut="true" name="Error" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error]">
+                      <externalMetadataColumns />
+                      <outputColumns>
+                        <outputColumn codePage="65001" dataType="text" description="Flat File Source Error Output Column" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[Flat File Source Error Output Column]" name="Flat File Source Error Output Column" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[Flat File Source Error Output Column]" />
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                      </outputColumns>
+                    </output>
+                  </outputs>
+                  <properties>
+                    <property dataType="System.Boolean" description="Specifies whether zero-length columns are treated as null." name="RetainNulls">false</property>
+                    <property dataType="System.String" description="Specifies the name of an output column containing the file name. If no name is specified, no output column containing the file name will be generated." name="FileNameColumnName" />
+                  </properties>
+                </component>
+                <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Add lineage" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage" usesDispositions="true">
+                  <inputs>
+                    <input name="FF products csv_Output_DC Add lineage" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Inputs[FF products csv_Output_DC Add lineage]">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output exclusionGroup="1" name="Output" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output]" synchronousInputId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Inputs[FF products csv_Output_DC Add lineage]">
+                      <externalMetadataColumns />
+                      <outputColumns>
+                        <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="260" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[source_file]" name="source_file" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[source_file]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.String" description="Derived Column Expression" name="Expression">@[User::CurrentFile]</property>
+                            <property dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">@[User::CurrentFile]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn dataType="i4" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[load_run_id]" name="load_run_id" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[load_run_id]" truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property dataType="System.String" description="Derived Column Expression" name="Expression">@[User::RunId]</property>
+                            <property dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">@[User::RunId]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                    </output>
+                    <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Error]" synchronousInputId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Inputs[FF products csv_Output_DC Add lineage]">
+                      <externalMetadataColumns />
+                      <outputColumns>
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                      </outputColumns>
+                    </output>
+                  </outputs>
+                </component>
+                <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST stg products_raw" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw" usesDispositions="true" version="4">
+                  <connections>
+                    <connection connectionManagerID="{F1C605BF-B045-4F44-BD55-6E183E4F43FA}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Connections[OleDbConnection]" />
+                  </connections>
+                  <inputs>
+                    <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="DC Add lineage_Output_DST stg products_raw" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw]">
+                      <externalMetadataColumns isUsed="True">
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_product_id" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_product_id]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_sku" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_sku]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_product_name" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_product_name]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_category" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_category]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_brand" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_brand]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_sales_channel" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_sales_channel]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_province" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_province]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_price_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_price_zar]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_cost_zar" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_cost_zar]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_weight_kg" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_weight_kg]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_stock_qty" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_stock_qty]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_units_sold_12m" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_units_sold_12m]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_date_added" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_date_added]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_is_active" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_is_active]" />
+                        <externalMetadataColumn dataType="wstr" length="255" name="raw_rating" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_rating]" />
+                        <externalMetadataColumn dataType="wstr" length="260" name="source_file" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[source_file]" />
+                        <externalMetadataColumn dataType="i4" name="load_run_id" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[load_run_id]" />
+                      </externalMetadataColumns>
+                      <inputColumns>
+                        <inputColumn cachedDataType="wstr" cachedLength="260" cachedName="source_file" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[source_file]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[source_file]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[source_file]" />
+                        <inputColumn cachedDataType="i4" cachedName="load_run_id" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[load_run_id]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output].Columns[load_run_id]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[load_run_id]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_id" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_product_id]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_id]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_product_id]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sku" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_sku]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sku]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_sku]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_name" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_product_name]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_product_name]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_product_name]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_category" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_category]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_category]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_category]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_brand" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_brand]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_brand]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_brand]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sales_channel" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_sales_channel]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_sales_channel]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_sales_channel]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_province" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_province]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_province]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_province]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_price_zar" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_price_zar]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_price_zar]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_price_zar]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_cost_zar" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_cost_zar]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_cost_zar]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_cost_zar]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_weight_kg" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_weight_kg]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_weight_kg]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_weight_kg]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_stock_qty" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_stock_qty]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_stock_qty]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_stock_qty]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_units_sold_12m" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_units_sold_12m]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_units_sold_12m]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_units_sold_12m]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_date_added" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_date_added]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_date_added]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_date_added]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_is_active" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_is_active]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_is_active]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_is_active]" />
+                        <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_rating" externalMetadataColumnId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].ExternalColumns[raw_rating]" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output].Columns[raw_rating]" name="" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw].Columns[raw_rating]" />
+                      </inputColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Outputs[Error]" synchronousInputId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw]">
+                      <externalMetadataColumns />
+                      <outputColumns>
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                        <outputColumn dataType="i4" lineageId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                      </outputColumns>
+                    </output>
+                  </outputs>
+                  <properties>
+                    <property dataType="System.Int32" description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out." name="CommandTimeout">0</property>
+                    <property dataType="System.String" description="Specifies the name of the database object used to open a rowset." name="OpenRowset">[stg].[products_raw]</property>
+                    <property dataType="System.String" description="Specifies the variable that contains the name of the database object used to open a rowset." name="OpenRowsetVariable" />
+                    <property dataType="System.String" description="The SQL command to be executed." name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor" />
+                    <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                    <property dataType="System.Boolean" description="Forces the use of the DefaultCodePage property value when describing character data." name="AlwaysUseDefaultCodePage">false</property>
+                    <property dataType="System.Int32" description="Specifies the mode used to access the database." name="AccessMode">3</property>
+                    <property dataType="System.Boolean" description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on." name="FastLoadKeepIdentity">false</property>
+                    <property dataType="System.Boolean" description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on." name="FastLoadKeepNulls">false</property>
+                    <property dataType="System.String" description="Specifies options to be used with fast load.  Applies only if fast load is turned on." name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property dataType="System.Int32" description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on." name="FastLoadMaxInsertCommitSize">500000</property>
+                  </properties>
+                </component>
+              </components>
+              <paths>
+                <path endId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Inputs[FF products csv_Output_DC Add lineage]" name="FF products csv_Output_DC Add lineage" refId="Package\FELC Each raw products csv\DFT Stage one csv.Paths[FF products csv_Output_DC Add lineage]" startId="Package\FELC Each raw products csv\DFT Stage one csv\FF products csv.Outputs[Output]" />
+                <path endId="Package\FELC Each raw products csv\DFT Stage one csv\DST stg products_raw.Inputs[DC Add lineage_Output_DST stg products_raw]" name="DC Add lineage_Output_DST stg products_raw" refId="Package\FELC Each raw products csv\DFT Stage one csv.Paths[DC Add lineage_Output_DST stg products_raw]" startId="Package\FELC Each raw products csv\DFT Stage one csv\DC Add lineage.Outputs[Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:ForEachEnumerator DTS:CreationName="Microsoft.ForEachFileEnumerator" DTS:DTSID="{147A25DE-1950-46E9-B689-6F8332FE4678}" DTS:ObjectName="{147A25DE-1950-46E9-B689-6F8332FE4678}">
+        <DTS:ObjectData>
+          <ForEachFileEnumeratorProperties>
+            <FEFEProperty Folder="C:\Libstar\work" />
+            <FEFEProperty FileSpec="products_part_*.csv" />
+            <FEFEProperty FileNameRetrievalType="0" />
+            <FEFEProperty Recurse="0" />
+          </ForEachFileEnumeratorProperties>
+        </DTS:ObjectData>
+        <DTS:PropertyExpression DTS:Name="Directory">@[User::WorkFolderPath]</DTS:PropertyExpression>
+      </DTS:ForEachEnumerator>
+      <DTS:ForEachVariableMappings>
+        <DTS:ForEachVariableMapping DTS:CreationName="" DTS:DTSID="{E91EF514-5FC6-41D1-92D8-7F7C65D2791E}" DTS:ObjectName="{E91EF514-5FC6-41D1-92D8-7F7C65D2791E}" DTS:ValueIndex="0" DTS:VariableName="User::CurrentFile" />
+      </DTS:ForEachVariableMappings>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4086E377-7B0F-4488-AF3A-5A6DA611BC3E}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Count staged rows" DTS:refId="Package\SQL Count staged rows" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SELECT CAST(COUNT_BIG(*) AS int) AS RowsStaged FROM stg.products_raw;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ResultName="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4AA4557C-4F1E-4CD3-BBF6-7D0D12831843}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRejected" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="3" SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{BD625345-AA35-48BC-A0E0-8131478BAAD4}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Resolve folders from parameters or etl_Config" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Resolve folders from parameters or etl_Config]" DTS:To="Package\SQL Resolve folders from parameters or etl_Config" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{576CC41D-16BE-4A22-837F-7EFE487C8B3F}" DTS:From="Package\SQL Resolve folders from parameters or etl_Config" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Resolve folders from parameters or etl_Config_To_SQL Truncate stg products_raw" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Resolve folders from parameters or etl_Config_To_SQL Truncate stg products_raw]" DTS:To="Package\SQL Truncate stg products_raw" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{C8F403E9-671D-4539-80E9-1F3EDEEDB16E}" DTS:From="Package\SQL Truncate stg products_raw" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Truncate stg products_raw_To_SCR Decompress gz to work folder" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Truncate stg products_raw_To_SCR Decompress gz to work folder]" DTS:To="Package\SCR Decompress gz to work folder" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{F6861A68-969A-409B-BA8D-CCB17918BB8F}" DTS:From="Package\SCR Decompress gz to work folder" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SCR Decompress gz to work folder_To_FELC Each raw products csv" DTS:refId="Package.PrecedenceConstraints[Constraint_SCR Decompress gz to work folder_To_FELC Each raw products csv]" DTS:To="Package\FELC Each raw products csv" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{7FE344BD-9263-436D-9004-B061B89369FB}" DTS:From="Package\FELC Each raw products csv" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_FELC Each raw products csv_To_SQL Count staged rows" DTS:refId="Package.PrecedenceConstraints[Constraint_FELC Each raw products csv_To_SQL Count staged rows]" DTS:To="Package\SQL Count staged rows" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{98EA4900-A92B-4DCD-B885-FEF1EDCB379F}" DTS:From="Package\SQL Count staged rows" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Count staged rows_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Count staged rows_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{11377DEC-90A2-457B-A13E-AF5114A23E2B}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+      <DTS:Variables>
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{C6F83BE3-BC3E-4614-9448-53F72EC79DA7}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+          <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4B5360F0-3CF3-4313-BD5A-2C60DD112874}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />
+              <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+</DTS:Executable>

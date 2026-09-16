@@ -1,0 +1,563 @@
+<#@ template language="C#" hostspecific="true" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+/*
+  Libstar - SSIS port of the Azure Data Factory mapping data flow df_clean_products.
+
+  Folder locations are environment settings: pass the RawFolder/WorkFolder/ReferenceFolder package
+  parameters, or leave them empty and the packages read this machine's etl.Config rows
+  (written by ssis/run_ssis.ps1 -Configure).
+
+  One Biml file generates the whole project (right-click > Generate SSIS Packages):
+    LIB_00_LoadReference      brand_map.csv            -> ref.brand_map
+    LIB_01_StageRawProducts   10 x products_part_*.gz  -> stg.products_raw   (gunzip + ForEach file loop)
+    LIB_02_CleanseProducts    stg.products_raw         -> stg.products_valid | dq.products_quarantine
+    LIB_03_PublishProducts    stg.products_valid       -> dw.products_clean   (dedupe + reconciliation gate)
+    LIB_Master                runs 00..03 in order, binding the environment parameters
+
+  Every package writes a row to etl.PackageRun on start, closes it on success,
+  and marks it Failed with the error text from an OnError event handler.
+*/
+var target = "Libstar_SSIS";
+var rawCols = new[] { "product_id","sku","product_name","category","brand","sales_channel","province",
+                      "price_zar","cost_zar","weight_kg","stock_qty","units_sold_12m","date_added","is_active","rating" };
+var childPackages = new[] { "LIB_00_LoadReference", "LIB_01_StageRawProducts", "LIB_02_CleanseProducts", "LIB_03_PublishProducts" };
+#>
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+
+  <Connections>
+    <OleDbConnection Name="<#= target #>" ConnectionString="Data Source=localhost;Initial Catalog=<#= target #>;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+    <FlatFileConnection Name="FF_RawProducts" FilePath="C:\Libstar\work\products_part_00.csv" FileFormat="FFF_RawProducts" />
+    <FlatFileConnection Name="FF_BrandMap" FilePath="C:\Libstar\data\reference\brand_map.csv" FileFormat="FFF_BrandMap" />
+  </Connections>
+
+  <FileFormats>
+    <FlatFileFormat Name="FFF_RawProducts" CodePage="65001" IsUnicode="false" ColumnNamesInFirstDataRow="true" RowDelimiter="CRLF" TextQualifier="&quot;">
+      <Columns>
+<# for (int i = 0; i < rawCols.Length; i++) { #>
+        <Column Name="raw_<#= rawCols[i] #>" DataType="String" Length="255" Delimiter="<#= i == rawCols.Length - 1 ? "CRLF" : "Comma" #>" />
+<# } #>
+      </Columns>
+    </FlatFileFormat>
+    <FlatFileFormat Name="FFF_BrandMap" CodePage="65001" IsUnicode="false" ColumnNamesInFirstDataRow="true" RowDelimiter="CRLF" TextQualifier="&quot;">
+      <Columns>
+        <Column Name="bm_brand_key" DataType="String" Length="100" Delimiter="Comma" />
+        <Column Name="bm_brand" DataType="String" Length="100" Delimiter="Comma" />
+        <Column Name="bm_brand_solution" DataType="String" Length="100" Delimiter="Comma" />
+        <Column Name="bm_primary_category" DataType="String" Length="50" Delimiter="Comma" />
+        <Column Name="bm_product_group" DataType="String" Length="50" Delimiter="CRLF" />
+      </Columns>
+    </FlatFileFormat>
+  </FileFormats>
+
+  <ScriptProjects>
+    <ScriptTaskProject ProjectCoreName="ST_DecompressRawProducts" Name="ST_DecompressRawProducts" VstaMajorVersion="0">
+      <ReadOnlyVariables>
+        <Variable Namespace="User" VariableName="RawFolderPath" DataType="String" />
+        <Variable Namespace="User" VariableName="WorkFolderPath" DataType="String" />
+      </ReadOnlyVariables>
+      <AssemblyReferences>
+        <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+        <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+        <AssemblyReference AssemblyPath="System.dll" />
+        <AssemblyReference AssemblyPath="System.AddIn.dll" />
+        <AssemblyReference AssemblyPath="System.Data.dll" />
+        <AssemblyReference AssemblyPath="System.Windows.Forms.dll" />
+        <AssemblyReference AssemblyPath="System.Xml.dll" />
+      </AssemblyReferences>
+      <Files>
+        <File Path="Properties\AssemblyInfo.cs" BuildAction="Compile">
+using System.Reflection;
+[assembly: AssemblyTitle("ST_DecompressRawProducts")]
+[assembly: AssemblyVersion("1.0.*")]
+        </File>
+        <File Path="ScriptMain.cs" BuildAction="Compile"><![CDATA[
+using System;
+using System.IO;
+using System.IO.Compression;
+using Microsoft.SqlServer.Dts.Runtime;
+
+namespace ST_DecompressRawProducts
+{
+    /// <summary>
+    /// SSIS cannot read gzip natively. Expands every products_part_*.csv.gz in the raw
+    /// folder into the work folder. Skips a file whose expanded copy is already newer
+    /// than the archive, so a re-run after a downstream failure does not redo the work.
+    /// </summary>
+    [Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+    public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+    {
+        public void Main()
+        {
+            bool fireAgain = true;
+            string rawFolder = (string)Dts.Variables["User::RawFolderPath"].Value;
+            string workFolder = (string)Dts.Variables["User::WorkFolderPath"].Value;
+            try
+            {
+                Dts.Events.FireInformation(0, "Decompress", "Working directory: " + Environment.CurrentDirectory + "; raw folder resolves to " + Path.GetFullPath(rawFolder), "", 0, ref fireAgain);
+                if (!Directory.Exists(rawFolder))
+                    throw new DirectoryNotFoundException("Raw folder not found: " + Path.GetFullPath(rawFolder) + " (parameter RawFolder = '" + rawFolder + "', working directory = " + Environment.CurrentDirectory + ")");
+                Directory.CreateDirectory(workFolder);
+
+                string[] archives = Directory.GetFiles(rawFolder, "products_part_*.csv.gz");
+                if (archives.Length == 0)
+                    throw new FileNotFoundException("No products_part_*.csv.gz files in " + rawFolder);
+
+                foreach (string gz in archives)
+                {
+                    string csv = Path.Combine(workFolder, Path.GetFileNameWithoutExtension(gz));
+                    if (File.Exists(csv) && File.GetLastWriteTimeUtc(csv) >= File.GetLastWriteTimeUtc(gz) && new FileInfo(csv).Length > 0)
+                    {
+                        Dts.Events.FireInformation(0, "Decompress", "Up to date, skipped: " + csv, "", 0, ref fireAgain);
+                        continue;
+                    }
+                    using (FileStream input = File.OpenRead(gz))
+                    using (GZipStream unzip = new GZipStream(input, CompressionMode.Decompress))
+                    using (FileStream output = File.Create(csv))
+                    {
+                        unzip.CopyTo(output, 1 << 20);
+                    }
+                    Dts.Events.FireInformation(0, "Decompress", "Expanded " + gz + " -> " + csv, "", 0, ref fireAgain);
+                }
+                Dts.TaskResult = (int)ScriptResults.Success;
+            }
+            catch (Exception ex)
+            {
+                Dts.Events.FireError(0, "Decompress", ex.Message, "", 0);
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            }
+        }
+
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+    }
+}
+]]></File>
+      </Files>
+    </ScriptTaskProject>
+  </ScriptProjects>
+
+  <Packages>
+
+    <!-- ===================================================================== -->
+    <Package Name="LIB_00_LoadReference" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
+      <#= PackageParameters() #>
+      <#= PackageConnections(target, "FF_BrandMap", "@[User::ReferenceFolderPath] + \"\\\\brand_map.csv\"") #>
+      <Variables>
+        <#= StandardVariables() #>
+        <#= FolderVariables() #>
+      </Variables>
+      <#= OnErrorHandler(target) #>
+      <Tasks>
+        <#= RunStart(target) #>
+        <#= ResolveFolders(target) #>
+        <ExecuteSQL Name="SQL Truncate ref brand_map" ConnectionName="<#= target #>">
+          <DirectInput>TRUNCATE TABLE ref.brand_map;</DirectInput>
+        </ExecuteSQL>
+        <Dataflow Name="DFT Load brand_map" DelayValidation="true">
+          <Transformations>
+            <FlatFileSource Name="FF brand_map csv" ConnectionName="FF_BrandMap" />
+            <RowCount Name="RC Read" VariableName="User.RowsRead" />
+            <OleDbDestination Name="DST ref brand_map" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true">
+              <ExternalTableOutput Table="[ref].[brand_map]" />
+            </OleDbDestination>
+          </Transformations>
+        </Dataflow>
+        <#= RunEnd(target, "User.RowsRead", "User.RowsRead", "User.RowsRejected") #>
+      </Tasks>
+    </Package>
+
+    <!-- ===================================================================== -->
+    <Package Name="LIB_01_StageRawProducts" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
+      <#= PackageParameters() #>
+      <#= PackageConnections(target, "FF_RawProducts", "@[User::CurrentFile]") #>
+      <Variables>
+        <#= StandardVariables() #>
+        <#= FolderVariables() #>
+        <Variable Name="CurrentFile" DataType="String">C:\Libstar\work\products_part_00.csv</Variable>
+      </Variables>
+      <#= OnErrorHandler(target) #>
+      <Tasks>
+        <#= RunStart(target) #>
+        <#= ResolveFolders(target) #>
+        <ExecuteSQL Name="SQL Truncate stg products_raw" ConnectionName="<#= target #>">
+          <DirectInput>TRUNCATE TABLE stg.products_raw;</DirectInput>
+        </ExecuteSQL>
+        <Script Name="SCR Decompress gz to work folder" ProjectCoreName="ST_DecompressRawProducts">
+          <ScriptTaskProjectReference ScriptTaskProjectName="ST_DecompressRawProducts" />
+        </Script>
+        <ForEachFileLoop Name="FELC Each raw products csv" Folder="C:\Libstar\work" FileSpecification="products_part_*.csv" ConstraintMode="Linear" DelayValidation="true">
+          <Expressions>
+            <Expression ExternalProperty="Directory">@[User::WorkFolderPath]</Expression>
+          </Expressions>
+          <VariableMappings>
+            <VariableMapping Name="0" VariableName="User.CurrentFile" />
+          </VariableMappings>
+          <Tasks>
+            <Dataflow Name="DFT Stage one csv" DelayValidation="true">
+              <Transformations>
+                <FlatFileSource Name="FF products csv" ConnectionName="FF_RawProducts" />
+                <DerivedColumns Name="DC Add lineage">
+                  <Columns>
+                    <Column Name="source_file" DataType="String" Length="260">@[User::CurrentFile]</Column>
+                    <Column Name="load_run_id" DataType="Int32">@[User::RunId]</Column>
+                  </Columns>
+                </DerivedColumns>
+                <OleDbDestination Name="DST stg products_raw" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true" MaximumInsertCommitSize="500000">
+                  <ExternalTableOutput Table="[stg].[products_raw]" />
+                </OleDbDestination>
+              </Transformations>
+            </Dataflow>
+          </Tasks>
+        </ForEachFileLoop>
+        <ExecuteSQL Name="SQL Count staged rows" ConnectionName="<#= target #>" ResultSet="SingleRow">
+          <DirectInput>SELECT CAST(COUNT_BIG(*) AS int) AS RowsStaged FROM stg.products_raw;</DirectInput>
+          <Results>
+            <Result Name="0" VariableName="User.RowsWritten" />
+          </Results>
+        </ExecuteSQL>
+        <#= RunEnd(target, "User.RowsWritten", "User.RowsWritten", "User.RowsRejected") #>
+      </Tasks>
+    </Package>
+
+    <!-- ===================================================================== -->
+    <Package Name="LIB_02_CleanseProducts" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
+      <#= PackageParameters() #>
+      <#= PackageConnections(target, null, null) #>
+      <Variables>
+        <#= StandardVariables() #>
+      </Variables>
+      <#= OnErrorHandler(target) #>
+      <Tasks>
+        <#= RunStart(target) #>
+        <ExecuteSQL Name="SQL Truncate valid and quarantine" ConnectionName="<#= target #>">
+          <DirectInput>TRUNCATE TABLE stg.products_valid; TRUNCATE TABLE dq.products_quarantine;</DirectInput>
+        </ExecuteSQL>
+        <Dataflow Name="DFT Cleanse products" DefaultBufferMaxRows="50000">
+          <Transformations>
+            <OleDbSource Name="SRC stg products_raw" ConnectionName="<#= target #>">
+              <DirectInput>SELECT <#= string.Join(", ", System.Linq.Enumerable.Select(rawCols, c => "raw_" + c)) #> FROM stg.products_raw;</DirectInput>
+            </OleDbSource>
+            <RowCount Name="RC Read" VariableName="User.RowsRead" />
+
+            <!-- 1. Normalise text: the ADF trim/lower/replace steps -->
+            <DerivedColumns Name="DC Normalise text">
+              <Columns>
+                <Column Name="product_id" DataType="String" Length="50"><![CDATA[TRIM(REPLACENULL(raw_product_id,""))]]></Column>
+                <Column Name="sku" DataType="String" Length="50"><![CDATA[TRIM(REPLACENULL(raw_sku,"")) == "" ? NULL(DT_WSTR,50) : TRIM(raw_sku)]]></Column>
+                <Column Name="product_name" DataType="String" Length="255"><![CDATA[REPLACE(REPLACE(TRIM(REPLACENULL(raw_product_name,"")),"   "," "),"  "," ")]]></Column>
+                <Column Name="brand_key" DataType="String" Length="100"><![CDATA[LOWER(REPLACE(TRIM(REPLACENULL(raw_brand,""))," and "," & "))]]></Column>
+                <Column Name="category_key" DataType="String" Length="100"><![CDATA[LOWER(REPLACE(TRIM(REPLACENULL(raw_category,""))," and "," & "))]]></Column>
+                <Column Name="channel_key" DataType="String" Length="100"><![CDATA[LOWER(TRIM(REPLACENULL(raw_sales_channel,"")))]]></Column>
+                <Column Name="province_key" DataType="String" Length="50"><![CDATA[LOWER(TRIM(REPLACENULL(raw_province,"")))]]></Column>
+                <Column Name="price_text" DataType="String" Length="255"><![CDATA[TRIM(REPLACE(REPLACE(REPLACE(UPPER(TRIM(REPLACENULL(raw_price_zar,""))),"ZAR",""),"R",""),",",""))]]></Column>
+                <Column Name="date_text" DataType="String" Length="50"><![CDATA[TRIM(REPLACENULL(raw_date_added,""))]]></Column>
+                <Column Name="active_text" DataType="String" Length="50"><![CDATA[UPPER(TRIM(REPLACENULL(raw_is_active,"")))]]></Column>
+              </Columns>
+            </DerivedColumns>
+
+            <!-- 2. Type conversion: a failed cast becomes NULL instead of failing the row (ADF toDouble/toDate semantics) -->
+            <DerivedColumns Name="DC Cast types" LocaleId="Lcid1033">
+              <!-- A failed cast becomes NULL for that column instead of failing the row -->
+              <ErrorHandling ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure" />
+              <Columns>
+                <Column Name="price_zar" DataType="Double"><![CDATA[(DT_R8)price_text]]></Column>
+                <Column Name="cost_zar" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_cost_zar,""))]]></Column>
+                <Column Name="weight_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_weight_kg,""))]]></Column>
+                <Column Name="stock_value" DataType="Int32"><![CDATA[(DT_I4)TRIM(REPLACENULL(raw_stock_qty,""))]]></Column>
+                <Column Name="units_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_units_sold_12m,""))]]></Column>
+                <Column Name="rating_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_rating,""))]]></Column>
+                <!-- ISO yyyy-MM-dd, dd/MM/yyyy and MM-dd-yyyy are rewritten to ISO, then cast; anything else is NULL -->
+                <Column Name="date_added" DataType="Date"><![CDATA[(DT_DBDATE)(LEN(date_text) == 10 && SUBSTRING(date_text,5,1) == "-" ? date_text : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "/" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,4,2) + "-" + SUBSTRING(date_text,1,2) : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "-" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,1,2) + "-" + SUBSTRING(date_text,4,2) : "")))]]></Column>
+              </Columns>
+            </DerivedColumns>
+
+            <!-- 3. Business rules on typed values -->
+            <DerivedColumns Name="DC Apply value rules">
+              <Columns>
+                <Column Name="weight_kg" DataType="Double"><![CDATA[ISNULL(weight_value) ? NULL(DT_R8) : (weight_value > 50 ? weight_value / 1000 : (weight_value > 0 ? weight_value : NULL(DT_R8)))]]></Column>
+                <Column Name="stock_qty" DataType="Int32"><![CDATA[ISNULL(stock_value) ? NULL(DT_I4) : (stock_value < 0 ? 0 : stock_value)]]></Column>
+                <Column Name="units_sold_12m" DataType="Int32"><![CDATA[ISNULL(units_value) ? NULL(DT_I4) : (units_value >= 0 ? (DT_I4)units_value : NULL(DT_I4))]]></Column>
+                <Column Name="rating" DataType="Double"><![CDATA[ISNULL(rating_value) ? NULL(DT_R8) : (rating_value >= 0 && rating_value <= 5 ? rating_value : NULL(DT_R8))]]></Column>
+                <Column Name="is_active" DataType="Boolean"><![CDATA[active_text == "Y" || active_text == "1" || active_text == "TRUE" || active_text == "YES" || active_text == "ACTIVE" ? TRUE : (active_text == "N" || active_text == "0" || active_text == "FALSE" || active_text == "NO" ? FALSE : NULL(DT_BOOL))]]></Column>
+              </Columns>
+            </DerivedColumns>
+
+            <!-- 4. Lookup-driven conformance: rule tables replace the ADF case() chains -->
+            <Lookup Name="LKP Province" OleDbConnectionName="<#= target #>" NoMatchBehavior="IgnoreFailure" CacheMode="Full">
+              <DirectInput>SELECT match_key, province FROM ref.province_map;</DirectInput>
+              <Inputs><Column SourceColumn="province_key" TargetColumn="match_key" /></Inputs>
+              <Outputs><Column SourceColumn="province" /></Outputs>
+            </Lookup>
+            <Lookup Name="LKP Sales channel" OleDbConnectionName="<#= target #>" NoMatchBehavior="IgnoreFailure" CacheMode="Full">
+              <DirectInput>SELECT match_key, sales_channel FROM ref.channel_map;</DirectInput>
+              <Inputs><Column SourceColumn="channel_key" TargetColumn="match_key" /></Inputs>
+              <Outputs><Column SourceColumn="sales_channel" /></Outputs>
+            </Lookup>
+            <Lookup Name="LKP Category" OleDbConnectionName="<#= target #>" NoMatchBehavior="IgnoreFailure" CacheMode="Full">
+              <DirectInput>SELECT match_key, category AS category_mapped FROM ref.category_map;</DirectInput>
+              <Inputs><Column SourceColumn="category_key" TargetColumn="match_key" /></Inputs>
+              <Outputs><Column SourceColumn="category_mapped" /></Outputs>
+            </Lookup>
+            <Lookup Name="LKP Brand" OleDbConnectionName="<#= target #>" NoMatchBehavior="IgnoreFailure" CacheMode="Full">
+              <DirectInput>SELECT bm_brand_key, bm_brand, bm_brand_solution, bm_primary_category FROM ref.brand_map;</DirectInput>
+              <Inputs><Column SourceColumn="brand_key" TargetColumn="bm_brand_key" /></Inputs>
+              <Outputs>
+                <Column SourceColumn="bm_brand" TargetColumn="brand" />
+                <Column SourceColumn="bm_brand_solution" TargetColumn="brand_solution" />
+                <Column SourceColumn="bm_primary_category" />
+              </Outputs>
+            </Lookup>
+
+            <!-- 5. Derived measures and the reject reason (same order and wording as ADF) -->
+            <DerivedColumns Name="DC Derive measures and reject reason">
+              <Columns>
+                <Column Name="category" DataType="String" Length="50"><![CDATA[ISNULL(category_mapped) ? bm_primary_category : category_mapped]]></Column>
+                <Column Name="margin_pct" DataType="Double"><![CDATA[ISNULL(price_zar) || ISNULL(cost_zar) ? NULL(DT_R8) : (price_zar > 0 ? ROUND((price_zar - cost_zar) / price_zar * 100, 2) : NULL(DT_R8))]]></Column>
+                <Column Name="revenue_12m_zar" DataType="Double"><![CDATA[ISNULL(price_zar) || ISNULL(units_sold_12m) ? NULL(DT_R8) : (price_zar > 0 ? ROUND(price_zar * units_sold_12m, 2) : NULL(DT_R8))]]></Column>
+                <Column Name="load_run_id" DataType="Int32">@[User::RunId]</Column>
+                <Column Name="reject_reason" DataType="String" Length="100"><![CDATA[(product_id == "" ? "missing_id;" : "") + (ISNULL(price_zar) ? "bad_price;" : (price_zar <= 0 ? "bad_price;" : "")) + (ISNULL(date_added) ? "bad_date;" : "") + (ISNULL(brand) ? "unknown_brand;" : "") + (ISNULL(category_mapped) && ISNULL(bm_primary_category) ? "unknown_category;" : "")]]></Column>
+              </Columns>
+            </DerivedColumns>
+            <DerivedColumns Name="DC Product group">
+              <Columns>
+                <Column Name="product_group" DataType="String" Length="50"><![CDATA[ISNULL(category) ? NULL(DT_WSTR,50) : (category == "Dairy" || category == "Convenience Meals" || category == "Value-added Meats" || category == "Baby" || category == "Fresh Mushrooms" ? "Perishable products" : "Ambient products")]]></Column>
+              </Columns>
+            </DerivedColumns>
+
+            <ConditionalSplit Name="CSPL Valid or quarantine">
+              <OutputPaths>
+                <OutputPath Name="Quarantine"><Expression><![CDATA[LEN(reject_reason) > 0]]></Expression></OutputPath>
+              </OutputPaths>
+            </ConditionalSplit>
+
+            <RowCount Name="RC Valid" VariableName="User.RowsWritten">
+              <InputPath OutputPathName="CSPL Valid or quarantine.Default" />
+            </RowCount>
+            <OleDbDestination Name="DST stg products_valid" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true" MaximumInsertCommitSize="500000">
+              <ExternalTableOutput Table="[stg].[products_valid]" />
+            </OleDbDestination>
+
+            <RowCount Name="RC Quarantine" VariableName="User.RowsRejected">
+              <InputPath OutputPathName="CSPL Valid or quarantine.Quarantine" />
+            </RowCount>
+            <OleDbDestination Name="DST dq products_quarantine" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true" MaximumInsertCommitSize="500000">
+              <ExternalTableOutput Table="[dq].[products_quarantine]" />
+            </OleDbDestination>
+          </Transformations>
+        </Dataflow>
+        <#= RunEnd(target, "User.RowsRead", "User.RowsWritten", "User.RowsRejected") #>
+      </Tasks>
+    </Package>
+
+    <!-- ===================================================================== -->
+    <Package Name="LIB_03_PublishProducts" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
+      <#= PackageParameters() #>
+      <#= PackageConnections(target, null, null) #>
+      <Variables>
+        <#= StandardVariables() #>
+      </Variables>
+      <#= OnErrorHandler(target) #>
+      <Tasks>
+        <#= RunStart(target) #>
+        <ExecuteSQL Name="SQL Reconciliation gate" ConnectionName="<#= target #>">
+          <DirectInput><![CDATA[
+/* Nothing is published unless every staged row is accounted for. */
+DECLARE @raw bigint = (SELECT COUNT_BIG(*) FROM stg.products_raw),
+        @valid bigint = (SELECT COUNT_BIG(*) FROM stg.products_valid),
+        @quarantine bigint = (SELECT COUNT_BIG(*) FROM dq.products_quarantine);
+IF @raw = 0
+    THROW 50001, 'Reconciliation gate: stg.products_raw is empty.', 1;
+IF @raw <> @valid + @quarantine
+BEGIN
+    DECLARE @msg nvarchar(400) = CONCAT('Reconciliation gate: raw ', @raw, ' <> valid ', @valid, ' + quarantine ', @quarantine);
+    THROW 50002, @msg, 1;
+END]]></DirectInput>
+        </ExecuteSQL>
+        <ExecuteSQL Name="SQL Publish deduplicated products" ConnectionName="<#= target #>" ResultSet="SingleRow">
+          <DirectInput><![CDATA[
+/* Latest date_added wins per product_id, as in ADF. Deduplicating 4M+ rows in one statement sorts the
+   whole set in tempdb, which filled a small server's disk; hash buckets keep each sort to 1/8 of the rows.
+   Each bucket commits on its own and the step truncates first, so a rerun after a failure starts clean. */
+SET NOCOUNT ON;
+DECLARE @buckets int = 8, @b int = 0, @published int = 0;
+TRUNCATE TABLE dw.products_clean;
+WHILE @b < @buckets
+BEGIN
+    INSERT INTO dw.products_clean WITH (TABLOCK)
+        (product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
+         price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id)
+    SELECT product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
+           price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id
+    FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY date_added DESC) AS rn
+        FROM stg.products_valid
+        WHERE (CHECKSUM(product_id) & 2147483647) % @buckets = @b
+    ) v
+    WHERE rn = 1;
+    SET @published += @@ROWCOUNT;
+    SET @b += 1;
+    CHECKPOINT;
+END;
+SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsRead,
+       @published AS RowsWritten,
+       (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) - @published AS RowsRejected;]]></DirectInput>
+          <Results>
+            <Result Name="0" VariableName="User.RowsRead" />
+            <Result Name="1" VariableName="User.RowsWritten" />
+            <Result Name="2" VariableName="User.RowsRejected" />
+          </Results>
+        </ExecuteSQL>
+        <#= RunEnd(target, "User.RowsRead", "User.RowsWritten", "User.RowsRejected") #>
+      </Tasks>
+    </Package>
+
+    <!-- ===================================================================== -->
+    <Package Name="LIB_Master" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
+      <#= PackageParameters() #>
+      <#= PackageConnections(target, null, null) #>
+      <Variables>
+        <#= StandardVariables() #>
+        <Variable Name="ServerNameValue" DataType="String" EvaluateAsExpression="true">@[$Package::ServerName]</Variable>
+        <Variable Name="RawFolderValue" DataType="String" EvaluateAsExpression="true">@[$Package::RawFolder]</Variable>
+        <Variable Name="WorkFolderValue" DataType="String" EvaluateAsExpression="true">@[$Package::WorkFolder]</Variable>
+        <Variable Name="ReferenceFolderValue" DataType="String" EvaluateAsExpression="true">@[$Package::ReferenceFolder]</Variable>
+      </Variables>
+      <#= OnErrorHandler(target) #>
+      <Tasks>
+        <#= RunStart(target) #>
+<# foreach (var child in childPackages) { #>
+        <ExecutePackage Name="EPT <#= child #>">
+          <ExternalProjectPackage Package="<#= child #>.dtsx" />
+          <ParameterBindings>
+            <ParameterBinding Name="ServerName" VariableName="User.ServerNameValue" />
+            <ParameterBinding Name="RawFolder" VariableName="User.RawFolderValue" />
+            <ParameterBinding Name="WorkFolder" VariableName="User.WorkFolderValue" />
+            <ParameterBinding Name="ReferenceFolder" VariableName="User.ReferenceFolderValue" />
+          </ParameterBindings>
+        </ExecutePackage>
+<# } #>
+        <#= RunEnd(target, "User.RowsRead", "User.RowsWritten", "User.RowsRejected") #>
+      </Tasks>
+    </Package>
+
+  </Packages>
+</Biml>
+<#+
+    // ---- shared framework fragments -------------------------------------------------
+
+    string PackageParameters()
+    {
+        return @"<Parameters>
+        <Parameter Name=""ServerName"" DataType=""String"">localhost</Parameter>
+        <Parameter Name=""RawFolder"" DataType=""String""></Parameter>
+        <Parameter Name=""WorkFolder"" DataType=""String""></Parameter>
+        <Parameter Name=""ReferenceFolder"" DataType=""String""></Parameter>
+      </Parameters>";
+    }
+
+    // Parameter values copied into variables so Execute SQL can map them.
+    string FolderVariables()
+    {
+        return @"<Variable Name=""RawFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::RawFolder]</Variable>
+        <Variable Name=""WorkFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::WorkFolder]</Variable>
+        <Variable Name=""ReferenceFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::ReferenceFolder]</Variable>
+        <Variable Name=""RawFolderPath"" DataType=""String"">C:\Libstar\data\raw</Variable>
+        <Variable Name=""WorkFolderPath"" DataType=""String"">C:\Libstar\work</Variable>
+        <Variable Name=""ReferenceFolderPath"" DataType=""String"">C:\Libstar\data\reference</Variable>";
+    }
+
+    // A non-empty package parameter wins; otherwise the machine's etl.Config row is used.
+    // Folder locations are environment settings, so they are not baked into the packages.
+    string ResolveFolders(string conn)
+    {
+        return @"<ExecuteSQL Name=""SQL Resolve folders from parameters or etl.Config"" ConnectionName=""" + conn + @""" ResultSet=""SingleRow"">
+          <DirectInput><![CDATA[
+SET NOCOUNT ON;
+DECLARE @raw nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'RawFolder'));
+DECLARE @work nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'WorkFolder'));
+DECLARE @ref nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'ReferenceFolder'));
+IF @raw IS NULL OR @work IS NULL OR @ref IS NULL
+    THROW 50010, 'Folder locations are not configured. Pass the RawFolder/WorkFolder/ReferenceFolder parameters or run ssis\run_ssis.ps1 -Configure.', 1;
+SELECT @raw AS RawFolderPath, @work AS WorkFolderPath, @ref AS ReferenceFolderPath;]]></DirectInput>
+          <Parameters>
+            <Parameter Name=""0"" VariableName=""User.RawFolderParam"" DataType=""String"" Length=""400"" />
+            <Parameter Name=""1"" VariableName=""User.WorkFolderParam"" DataType=""String"" Length=""400"" />
+            <Parameter Name=""2"" VariableName=""User.ReferenceFolderParam"" DataType=""String"" Length=""400"" />
+          </Parameters>
+          <Results>
+            <Result Name=""0"" VariableName=""User.RawFolderPath"" />
+            <Result Name=""1"" VariableName=""User.WorkFolderPath"" />
+            <Result Name=""2"" VariableName=""User.ReferenceFolderPath"" />
+          </Results>
+        </ExecuteSQL>";
+    }
+
+    string PackageConnections(string oleDb, string flatFile, string flatFileExpression)
+    {
+        var s = @"<Connections>
+        <Connection ConnectionName=""" + oleDb + @""">
+          <Expressions><Expression ExternalProperty=""ServerName"">@[$Package::ServerName]</Expression></Expressions>
+        </Connection>";
+        if (flatFile != null)
+            s += @"
+        <Connection ConnectionName=""" + flatFile + @""">
+          <Expressions><Expression ExternalProperty=""ConnectionString"">" + flatFileExpression + @"</Expression></Expressions>
+        </Connection>";
+        return s + @"
+      </Connections>";
+    }
+
+    string StandardVariables()
+    {
+        return @"<Variable Name=""RunId"" DataType=""Int32"">0</Variable>
+        <Variable Name=""RowsRead"" DataType=""Int32"">0</Variable>
+        <Variable Name=""RowsWritten"" DataType=""Int32"">0</Variable>
+        <Variable Name=""RowsRejected"" DataType=""Int32"">0</Variable>";
+    }
+
+    string RunStart(string conn)
+    {
+        return @"<ExecuteSQL Name=""SQL Log run start"" ConnectionName=""" + conn + @""" ResultSet=""SingleRow"">
+          <DirectInput>SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);</DirectInput>
+          <Parameters>
+            <Parameter Name=""0"" VariableName=""System.PackageName"" DataType=""String"" Length=""200"" />
+            <Parameter Name=""1"" VariableName=""System.ExecutionInstanceGUID"" DataType=""String"" Length=""50"" />
+          </Parameters>
+          <Results><Result Name=""0"" VariableName=""User.RunId"" /></Results>
+        </ExecuteSQL>";
+    }
+
+    string RunEnd(string conn, string read, string written, string rejected)
+    {
+        return @"<ExecuteSQL Name=""SQL Log run success"" ConnectionName=""" + conn + @""">
+          <DirectInput>UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;</DirectInput>
+          <Parameters>
+            <Parameter Name=""0"" VariableName=""" + read + @""" DataType=""Int32"" />
+            <Parameter Name=""1"" VariableName=""" + written + @""" DataType=""Int32"" />
+            <Parameter Name=""2"" VariableName=""" + rejected + @""" DataType=""Int32"" />
+            <Parameter Name=""3"" VariableName=""User.RunId"" DataType=""Int32"" />
+          </Parameters>
+        </ExecuteSQL>";
+    }
+
+    string OnErrorHandler(string conn)
+    {
+        return @"<Events>
+        <Event Name=""OnError"" EventType=""OnError"" ConstraintMode=""Linear"">
+          <Tasks>
+            <ExecuteSQL Name=""SQL Log run failure"" ConnectionName=""" + conn + @""">
+              <DirectInput>UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;</DirectInput>
+              <Parameters>
+                <Parameter Name=""0"" VariableName=""System.ErrorDescription"" DataType=""String"" Length=""4000"" />
+                <Parameter Name=""1"" VariableName=""User.RunId"" DataType=""Int32"" />
+              </Parameters>
+            </ExecuteSQL>
+          </Tasks>
+        </Event>
+      </Events>";
+    }
+#>
