@@ -4,6 +4,10 @@
 /*
   Libstar - SSIS port of the Azure Data Factory mapping data flow df_clean_products.
 
+  Folder locations are environment settings: pass the RawFolder/WorkFolder/ReferenceFolder package
+  parameters, or leave them empty and the packages read this machine's etl.Config rows
+  (written by ssis/run_ssis.ps1 -Configure).
+
   One Biml file generates the whole project (right-click > Generate SSIS Packages):
     LIB_00_LoadReference      brand_map.csv            -> ref.brand_map
     LIB_01_StageRawProducts   10 x products_part_*.gz  -> stg.products_raw   (gunzip + ForEach file loop)
@@ -90,8 +94,9 @@ namespace ST_DecompressRawProducts
             string workFolder = (string)Dts.Variables["User::WorkFolderPath"].Value;
             try
             {
+                Dts.Events.FireInformation(0, "Decompress", "Working directory: " + Environment.CurrentDirectory + "; raw folder resolves to " + Path.GetFullPath(rawFolder), "", 0, ref fireAgain);
                 if (!Directory.Exists(rawFolder))
-                    throw new DirectoryNotFoundException("Raw folder not found: " + rawFolder);
+                    throw new DirectoryNotFoundException("Raw folder not found: " + Path.GetFullPath(rawFolder) + " (parameter RawFolder = '" + rawFolder + "', working directory = " + Environment.CurrentDirectory + ")");
                 Directory.CreateDirectory(workFolder);
 
                 string[] archives = Directory.GetFiles(rawFolder, "products_part_*.csv.gz");
@@ -140,13 +145,15 @@ namespace ST_DecompressRawProducts
     <!-- ===================================================================== -->
     <Package Name="LIB_00_LoadReference" ConstraintMode="Linear" ProtectionLevel="DontSaveSensitive">
       <#= PackageParameters() #>
-      <#= PackageConnections(target, "FF_BrandMap", "@[$Package::ReferenceFolder] + \"\\\\brand_map.csv\"") #>
+      <#= PackageConnections(target, "FF_BrandMap", "@[User::ReferenceFolderPath] + \"\\\\brand_map.csv\"") #>
       <Variables>
         <#= StandardVariables() #>
+        <#= FolderVariables() #>
       </Variables>
       <#= OnErrorHandler(target) #>
       <Tasks>
         <#= RunStart(target) #>
+        <#= ResolveFolders(target) #>
         <ExecuteSQL Name="SQL Truncate ref brand_map" ConnectionName="<#= target #>">
           <DirectInput>TRUNCATE TABLE ref.brand_map;</DirectInput>
         </ExecuteSQL>
@@ -169,13 +176,13 @@ namespace ST_DecompressRawProducts
       <#= PackageConnections(target, "FF_RawProducts", "@[User::CurrentFile]") #>
       <Variables>
         <#= StandardVariables() #>
-        <Variable Name="RawFolderPath" DataType="String" EvaluateAsExpression="true">@[$Package::RawFolder]</Variable>
-        <Variable Name="WorkFolderPath" DataType="String" EvaluateAsExpression="true">@[$Package::WorkFolder]</Variable>
+        <#= FolderVariables() #>
         <Variable Name="CurrentFile" DataType="String">C:\Libstar\work\products_part_00.csv</Variable>
       </Variables>
       <#= OnErrorHandler(target) #>
       <Tasks>
         <#= RunStart(target) #>
+        <#= ResolveFolders(target) #>
         <ExecuteSQL Name="SQL Truncate stg products_raw" ConnectionName="<#= target #>">
           <DirectInput>TRUNCATE TABLE stg.products_raw;</DirectInput>
         </ExecuteSQL>
@@ -254,15 +261,17 @@ namespace ST_DecompressRawProducts
 
             <!-- 2. Type conversion: a failed cast becomes NULL instead of failing the row (ADF toDouble/toDate semantics) -->
             <DerivedColumns Name="DC Cast types" LocaleId="Lcid1033">
+              <!-- A failed cast becomes NULL for that column instead of failing the row -->
+              <ErrorHandling ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure" />
               <Columns>
-                <Column Name="price_zar" DataType="Double" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_R8)price_text]]></Column>
-                <Column Name="cost_zar" DataType="Double" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_cost_zar,""))]]></Column>
-                <Column Name="weight_value" DataType="Double" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_weight_kg,""))]]></Column>
-                <Column Name="stock_value" DataType="Int32" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_I4)TRIM(REPLACENULL(raw_stock_qty,""))]]></Column>
-                <Column Name="units_value" DataType="Double" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_units_sold_12m,""))]]></Column>
-                <Column Name="rating_value" DataType="Double" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_rating,""))]]></Column>
+                <Column Name="price_zar" DataType="Double"><![CDATA[(DT_R8)price_text]]></Column>
+                <Column Name="cost_zar" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_cost_zar,""))]]></Column>
+                <Column Name="weight_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_weight_kg,""))]]></Column>
+                <Column Name="stock_value" DataType="Int32"><![CDATA[(DT_I4)TRIM(REPLACENULL(raw_stock_qty,""))]]></Column>
+                <Column Name="units_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_units_sold_12m,""))]]></Column>
+                <Column Name="rating_value" DataType="Double"><![CDATA[(DT_R8)TRIM(REPLACENULL(raw_rating,""))]]></Column>
                 <!-- ISO yyyy-MM-dd, dd/MM/yyyy and MM-dd-yyyy are rewritten to ISO, then cast; anything else is NULL -->
-                <Column Name="date_added" DataType="Date" ErrorRowDisposition="IgnoreFailure" TruncationRowDisposition="IgnoreFailure"><![CDATA[(DT_DBDATE)(LEN(date_text) == 10 && SUBSTRING(date_text,5,1) == "-" ? date_text : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "/" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,4,2) + "-" + SUBSTRING(date_text,1,2) : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "-" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,1,2) + "-" + SUBSTRING(date_text,4,2) : "")))]]></Column>
+                <Column Name="date_added" DataType="Date"><![CDATA[(DT_DBDATE)(LEN(date_text) == 10 && SUBSTRING(date_text,5,1) == "-" ? date_text : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "/" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,4,2) + "-" + SUBSTRING(date_text,1,2) : (LEN(date_text) == 10 && SUBSTRING(date_text,3,1) == "-" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,1,2) + "-" + SUBSTRING(date_text,4,2) : "")))]]></Column>
               </Columns>
             </DerivedColumns>
 
@@ -370,21 +379,29 @@ END]]></DirectInput>
         </ExecuteSQL>
         <ExecuteSQL Name="SQL Publish deduplicated products" ConnectionName="<#= target #>" ResultSet="SingleRow">
           <DirectInput><![CDATA[
+/* Latest date_added wins per product_id, as in ADF. Deduplicating 4M+ rows in one statement sorts the
+   whole set in tempdb, which filled a small server's disk; hash buckets keep each sort to 1/8 of the rows.
+   Each bucket commits on its own and the step truncates first, so a rerun after a failure starts clean. */
 SET NOCOUNT ON;
-BEGIN TRANSACTION;
+DECLARE @buckets int = 8, @b int = 0, @published int = 0;
 TRUNCATE TABLE dw.products_clean;
-INSERT INTO dw.products_clean WITH (TABLOCK)
-    (product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
-     price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id)
-SELECT product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
-       price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id
-FROM (
-    SELECT *, ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY date_added DESC) AS rn   -- latest wins, as in ADF
-    FROM stg.products_valid
-) v
-WHERE rn = 1;
-DECLARE @published int = @@ROWCOUNT;
-COMMIT TRANSACTION;
+WHILE @b < @buckets
+BEGIN
+    INSERT INTO dw.products_clean WITH (TABLOCK)
+        (product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
+         price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id)
+    SELECT product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,
+           price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id
+    FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY date_added DESC) AS rn
+        FROM stg.products_valid
+        WHERE (CHECKSUM(product_id) & 2147483647) % @buckets = @b
+    ) v
+    WHERE rn = 1;
+    SET @published += @@ROWCOUNT;
+    SET @b += 1;
+    CHECKPOINT;
+END;
 SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsRead,
        @published AS RowsWritten,
        (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) - @published AS RowsRejected;]]></DirectInput>
@@ -436,10 +453,47 @@ SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsRead,
     {
         return @"<Parameters>
         <Parameter Name=""ServerName"" DataType=""String"">localhost</Parameter>
-        <Parameter Name=""RawFolder"" DataType=""String"">C:\Libstar\data\raw</Parameter>
-        <Parameter Name=""WorkFolder"" DataType=""String"">C:\Libstar\work</Parameter>
-        <Parameter Name=""ReferenceFolder"" DataType=""String"">C:\Libstar\data\reference</Parameter>
+        <Parameter Name=""RawFolder"" DataType=""String""></Parameter>
+        <Parameter Name=""WorkFolder"" DataType=""String""></Parameter>
+        <Parameter Name=""ReferenceFolder"" DataType=""String""></Parameter>
       </Parameters>";
+    }
+
+    // Parameter values copied into variables so Execute SQL can map them.
+    string FolderVariables()
+    {
+        return @"<Variable Name=""RawFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::RawFolder]</Variable>
+        <Variable Name=""WorkFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::WorkFolder]</Variable>
+        <Variable Name=""ReferenceFolderParam"" DataType=""String"" EvaluateAsExpression=""true"">@[$Package::ReferenceFolder]</Variable>
+        <Variable Name=""RawFolderPath"" DataType=""String"">C:\Libstar\data\raw</Variable>
+        <Variable Name=""WorkFolderPath"" DataType=""String"">C:\Libstar\work</Variable>
+        <Variable Name=""ReferenceFolderPath"" DataType=""String"">C:\Libstar\data\reference</Variable>";
+    }
+
+    // A non-empty package parameter wins; otherwise the machine's etl.Config row is used.
+    // Folder locations are environment settings, so they are not baked into the packages.
+    string ResolveFolders(string conn)
+    {
+        return @"<ExecuteSQL Name=""SQL Resolve folders from parameters or etl.Config"" ConnectionName=""" + conn + @""" ResultSet=""SingleRow"">
+          <DirectInput><![CDATA[
+SET NOCOUNT ON;
+DECLARE @raw nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'RawFolder'));
+DECLARE @work nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'WorkFolder'));
+DECLARE @ref nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'ReferenceFolder'));
+IF @raw IS NULL OR @work IS NULL OR @ref IS NULL
+    THROW 50010, 'Folder locations are not configured. Pass the RawFolder/WorkFolder/ReferenceFolder parameters or run ssis\run_ssis.ps1 -Configure.', 1;
+SELECT @raw AS RawFolderPath, @work AS WorkFolderPath, @ref AS ReferenceFolderPath;]]></DirectInput>
+          <Parameters>
+            <Parameter Name=""0"" VariableName=""User.RawFolderParam"" DataType=""String"" Length=""400"" />
+            <Parameter Name=""1"" VariableName=""User.WorkFolderParam"" DataType=""String"" Length=""400"" />
+            <Parameter Name=""2"" VariableName=""User.ReferenceFolderParam"" DataType=""String"" Length=""400"" />
+          </Parameters>
+          <Results>
+            <Result Name=""0"" VariableName=""User.RawFolderPath"" />
+            <Result Name=""1"" VariableName=""User.WorkFolderPath"" />
+            <Result Name=""2"" VariableName=""User.ReferenceFolderPath"" />
+          </Results>
+        </ExecuteSQL>";
     }
 
     string PackageConnections(string oleDb, string flatFile, string flatFileExpression)

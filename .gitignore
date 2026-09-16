@@ -22,3 +22,4 @@ ssis/**/bin/
 ssis/**/obj/
 ssis/**/*.dtproj.user
 ssis/work/
+ssis/.vs/

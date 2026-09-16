@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTS:Executable DTS:CreationDate="09/16/2026 19:07:22" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{8EB226DD-7C20-4E01-862C-C0F53DB495A9}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_02_CleanseProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{A3DD7375-DE00-4B56-AE4D-4020C999D701}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{735950B4-AC75-430C-93CA-C246A004A7D9}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ServerName">@[$Package::ServerName]</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{AC685179-E9E4-420D-B832-83FB858C4B9D}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{BBB3A006-DA3E-4D79-87E1-B78935B542CC}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{6F612D79-4BA1-4289-9D16-534F211102FC}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{3DAFB18A-ABD2-4ACF-BB4D-07B5A827EA3D}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{18C013B3-FB57-4E7B-B9FE-E27D4557E12C}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{4F625414-3411-405F-ADD2-3FBC7F39C44E}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{ABEDE867-1E69-44BC-9772-293424769D15}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{5AE48DDA-56CD-4C01-A2B4-C334EC5148BD}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{C3BB5F69-4E23-4205-8AC9-7696424CE8B1}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ExecutionInstanceGUID" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="50" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RunId" SQLTask:ResultName="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4FBD3370-9BEC-4A35-8E3E-DE62F975CE75}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Truncate valid and quarantine" DTS:refId="Package\SQL Truncate valid and quarantine" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="TRUNCATE TABLE stg.products_valid; TRUNCATE TABLE dq.products_quarantine;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.Pipeline" DTS:DTSID="{E9B03274-1E45-4175-9A6B-666785BD1773}" DTS:ExecutableType="Microsoft.Pipeline" DTS:LocaleID="-1" DTS:ObjectName="DFT Cleanse products" DTS:refId="Package\DFT Cleanse products" DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <pipeline BLOBTempStoragePath="" bufferTempStoragePath="" defaultBufferMaxRows="50000" name="pipelineXml" version="1">
+          <components>
+            <component componentClassID="Microsoft.OLEDBSource" contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7" name="SRC stg products_raw" refId="Package\DFT Cleanse products\SRC stg products_raw" usesDispositions="true" version="7">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\SRC stg products_raw.Connections[OleDbConnection]" />
+              </connections>
+              <outputs>
+                <output name="Output" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output]">
+                  <externalMetadataColumns isUsed="True">
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_product_id" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_product_id]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_sku" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_sku]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_product_name" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_product_name]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_category" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_category]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_brand" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_brand]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_sales_channel" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_sales_channel]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_province" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_province]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_price_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_price_zar]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_cost_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_cost_zar]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_weight_kg" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_weight_kg]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_stock_qty" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_stock_qty]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_units_sold_12m" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_units_sold_12m]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_date_added" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_date_added]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_is_active" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_is_active]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_rating" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_rating]" />
+                  </externalMetadataColumns>
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_product_id]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_id]" name="raw_product_id" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_id]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_sku]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]" name="raw_sku" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_product_name]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_name]" name="raw_product_name" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_name]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_category]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_category]" name="raw_category" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_category]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_brand]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_brand]" name="raw_brand" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_brand]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_sales_channel]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sales_channel]" name="raw_sales_channel" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sales_channel]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_province]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_province]" name="raw_province" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_province]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_price_zar]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_price_zar]" name="raw_price_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_price_zar]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_cost_zar]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_cost_zar]" name="raw_cost_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_cost_zar]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_weight_kg]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_weight_kg]" name="raw_weight_kg" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_weight_kg]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_stock_qty]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_stock_qty]" name="raw_stock_qty" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_stock_qty]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_units_sold_12m]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_units_sold_12m]" name="raw_units_sold_12m" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_units_sold_12m]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_date_added]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_date_added]" name="raw_date_added" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_date_added]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_is_active]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_is_active]" name="raw_is_active" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_is_active]" truncationRowDisposition="FailComponent" />
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].ExternalColumns[raw_rating]" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_rating]" name="raw_rating" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_rating]" truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                </output>
+                <output isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_product_id]" name="raw_product_id" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_product_id]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_sku]" name="raw_sku" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_sku]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_product_name]" name="raw_product_name" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_product_name]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_category]" name="raw_category" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_category]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_brand]" name="raw_brand" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_brand]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_sales_channel]" name="raw_sales_channel" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_sales_channel]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_province]" name="raw_province" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_province]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_price_zar]" name="raw_price_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_price_zar]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_cost_zar]" name="raw_cost_zar" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_cost_zar]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_weight_kg]" name="raw_weight_kg" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_weight_kg]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_stock_qty]" name="raw_stock_qty" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_stock_qty]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_units_sold_12m]" name="raw_units_sold_12m" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_units_sold_12m]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_date_added]" name="raw_date_added" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_date_added]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_is_active]" name="raw_is_active" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_is_active]" />
+                    <outputColumn dataType="wstr" length="255" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_rating]" name="raw_rating" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[raw_rating]" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.Int32" description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out." name="CommandTimeout">0</property>
+                <property dataType="System.String" description="Specifies the name of the database object used to open a rowset." name="OpenRowset" />
+                <property dataType="System.String" description="Specifies the variable that contains the name of the database object used to open a rowset." name="OpenRowsetVariable" />
+                <property dataType="System.String" description="The SQL command to be executed." name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT raw_product_id, raw_sku, raw_product_name, raw_category, raw_brand, raw_sales_channel, raw_province, raw_price_zar, raw_cost_zar, raw_weight_kg, raw_stock_qty, raw_units_sold_12m, raw_date_added, raw_is_active, raw_rating FROM stg.products_raw;</property>
+                <property dataType="System.String" description="The variable that contains the SQL command to be executed." name="SqlCommandVariable" />
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Forces the use of the DefaultCodePage property value when describing character data." name="AlwaysUseDefaultCodePage">false</property>
+                <property dataType="System.Int32" description="Specifies the mode used to access the database." name="AccessMode" typeConverter="AccessMode">2</property>
+                <property dataType="System.String" description="The mappings between the parameters in the SQL command and variables." name="ParameterMapping" />
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.RowCount" contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="RC Read" refId="Package\DFT Cleanse products\RC Read">
+              <inputs>
+                <input hasSideEffects="true" name="SRC stg products_raw_Output_RC Read" refId="Package\DFT Cleanse products\RC Read.Inputs[SRC stg products_raw_Output_RC Read]">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output name="Output" refId="Package\DFT Cleanse products\RC Read.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\RC Read.Inputs[SRC stg products_raw_Output_RC Read]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsRead</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Normalise text" refId="Package\DFT Cleanse products\DC Normalise text" usesDispositions="true">
+              <inputs>
+                <input name="RC Read_Output_DC Normalise text" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_id" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_id]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_product_id]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sku" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_sku]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_name" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_name]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_product_name]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_brand" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_brand]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_brand]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_category" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_category]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_category]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sales_channel" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sales_channel]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_sales_channel]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_province" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_province]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_province]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_price_zar" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_price_zar]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_price_zar]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_date_added" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_date_added]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_date_added]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_is_active" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_is_active]" name="" refId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text].Columns[raw_is_active]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" name="Output" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_id]" name="product_id" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_id]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_id]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">TRIM(REPLACENULL(raw_product_id,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[sku]" name="sku" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[sku]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]},"")) == "" ? NULL(DT_WSTR,50) : TRIM(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]})</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">TRIM(REPLACENULL(raw_sku,"")) == "" ? NULL(DT_WSTR,50) : TRIM(raw_sku)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="255" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_name]" name="product_name" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_name]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">REPLACE(REPLACE(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_name]},"")),"   "," "),"  "," ")</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">REPLACE(REPLACE(TRIM(REPLACENULL(raw_product_name,"")),"   "," "),"  "," ")</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="100" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[brand_key]" name="brand_key" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[brand_key]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">LOWER(REPLACE(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_brand]},""))," and "," &amp; "))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">LOWER(REPLACE(TRIM(REPLACENULL(raw_brand,""))," and "," &amp; "))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="100" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[category_key]" name="category_key" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[category_key]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">LOWER(REPLACE(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_category]},""))," and "," &amp; "))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">LOWER(REPLACE(TRIM(REPLACENULL(raw_category,""))," and "," &amp; "))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="100" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[channel_key]" name="channel_key" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[channel_key]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">LOWER(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sales_channel]},"")))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">LOWER(TRIM(REPLACENULL(raw_sales_channel,"")))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[province_key]" name="province_key" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[province_key]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">LOWER(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_province]},"")))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">LOWER(TRIM(REPLACENULL(raw_province,"")))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="255" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[price_text]" name="price_text" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[price_text]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">TRIM(REPLACE(REPLACE(REPLACE(UPPER(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_price_zar]},""))),"ZAR",""),"R",""),",",""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">TRIM(REPLACE(REPLACE(REPLACE(UPPER(TRIM(REPLACENULL(raw_price_zar,""))),"ZAR",""),"R",""),",",""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]" name="date_text" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_date_added]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">TRIM(REPLACENULL(raw_date_added,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]" name="active_text" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">UPPER(TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_is_active]},"")))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">UPPER(TRIM(REPLACENULL(raw_is_active,"")))</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DC Normalise text.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" localeId="1033" name="DC Cast types" refId="Package\DFT Cleanse products\DC Cast types" usesDispositions="true">
+              <inputs>
+                <input name="DC Normalise text_Output_DC Cast types" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="price_text" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[price_text]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[price_text]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_cost_zar" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_cost_zar]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[raw_cost_zar]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_weight_kg" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_weight_kg]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[raw_weight_kg]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_stock_qty" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_stock_qty]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[raw_stock_qty]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_units_sold_12m" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_units_sold_12m]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[raw_units_sold_12m]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_rating" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_rating]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[raw_rating]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="date_text" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]" name="" refId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types].Columns[date_text]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" name="Output" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]" name="price_zar" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_R8)#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[price_text]}</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_R8)price_text</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]" name="cost_zar" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_R8)TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_cost_zar]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_R8)TRIM(REPLACENULL(raw_cost_zar,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]" name="weight_value" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_R8)TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_weight_kg]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_R8)TRIM(REPLACENULL(raw_weight_kg,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="i4" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]" name="stock_value" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_I4)TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_stock_qty]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_I4)TRIM(REPLACENULL(raw_stock_qty,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]" name="units_value" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_R8)TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_units_sold_12m]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_R8)TRIM(REPLACENULL(raw_units_sold_12m,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]" name="rating_value" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_R8)TRIM(REPLACENULL(#{Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_rating]},""))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_R8)TRIM(REPLACENULL(raw_rating,""))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="dbDate" errorOrTruncationOperation="Computation" errorRowDisposition="IgnoreFailure" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[date_added]" name="date_added" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[date_added]" truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(DT_DBDATE)(LEN(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]}) == 10 &amp;&amp; SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},5,1) == "-" ? #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]} : (LEN(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]}) == 10 &amp;&amp; SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},3,1) == "/" ? SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},7,4) + "-" + SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},4,2) + "-" + SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},1,2) : (LEN(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]}) == 10 &amp;&amp; SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},3,1) == "-" ? SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},7,4) + "-" + SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},1,2) + "-" + SUBSTRING(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[date_text]},4,2) : "")))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(DT_DBDATE)(LEN(date_text) == 10 &amp;&amp; SUBSTRING(date_text,5,1) == "-" ? date_text : (LEN(date_text) == 10 &amp;&amp; SUBSTRING(date_text,3,1) == "/" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,4,2) + "-" + SUBSTRING(date_text,1,2) : (LEN(date_text) == 10 &amp;&amp; SUBSTRING(date_text,3,1) == "-" ? SUBSTRING(date_text,7,4) + "-" + SUBSTRING(date_text,1,2) + "-" + SUBSTRING(date_text,4,2) : "")))</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DC Cast types.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Apply value rules" refId="Package\DFT Cleanse products\DC Apply value rules" usesDispositions="true">
+              <inputs>
+                <input name="DC Cast types_Output_DC Apply value rules" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="r8" cachedName="weight_value" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]" name="" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules].Columns[weight_value]" />
+                    <inputColumn cachedDataType="i4" cachedName="stock_value" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]" name="" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules].Columns[stock_value]" />
+                    <inputColumn cachedDataType="r8" cachedName="units_value" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]" name="" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules].Columns[units_value]" />
+                    <inputColumn cachedDataType="r8" cachedName="rating_value" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]" name="" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules].Columns[rating_value]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="active_text" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]" name="" refId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules].Columns[active_text]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" name="Output" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[weight_kg]" name="weight_kg" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[weight_kg]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]}) ? NULL(DT_R8) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]} &gt; 50 ? #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]} / 1000 : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]} &gt; 0 ? #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[weight_value]} : NULL(DT_R8)))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(weight_value) ? NULL(DT_R8) : (weight_value &gt; 50 ? weight_value / 1000 : (weight_value &gt; 0 ? weight_value : NULL(DT_R8)))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="i4" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[stock_qty]" name="stock_qty" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[stock_qty]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]}) ? NULL(DT_I4) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]} &lt; 0 ? 0 : #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[stock_value]})</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(stock_value) ? NULL(DT_I4) : (stock_value &lt; 0 ? 0 : stock_value)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="i4" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]" name="units_sold_12m" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]}) ? NULL(DT_I4) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]} &gt;= 0 ? (DT_I4)#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[units_value]} : NULL(DT_I4))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(units_value) ? NULL(DT_I4) : (units_value &gt;= 0 ? (DT_I4)units_value : NULL(DT_I4))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[rating]" name="rating" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[rating]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]}) ? NULL(DT_R8) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]} &gt;= 0 &amp;&amp; #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]} &lt;= 5 ? #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[rating_value]} : NULL(DT_R8))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(rating_value) ? NULL(DT_R8) : (rating_value &gt;= 0 &amp;&amp; rating_value &lt;= 5 ? rating_value : NULL(DT_R8))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="bool" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[is_active]" name="is_active" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[is_active]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "Y" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "1" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "TRUE" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "YES" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "ACTIVE" ? TRUE : (#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "N" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "0" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "FALSE" || #{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[active_text]} == "NO" ? FALSE : NULL(DT_BOOL))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">active_text == "Y" || active_text == "1" || active_text == "TRUE" || active_text == "YES" || active_text == "ACTIVE" ? TRUE : (active_text == "N" || active_text == "0" || active_text == "FALSE" || active_text == "NO" ? FALSE : NULL(DT_BOOL))</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Province" refId="Package\DFT Cleanse products\LKP Province" usesDispositions="true" version="6">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Province.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input name="DC Apply value rules_Output_LKP Province" refId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="province_key" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[province_key]" name="" refId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province].Columns[province_key]">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table that a column joins." name="JoinToReferenceColumn">match_key</property>
+                        <property dataType="System.Null" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output errorOrTruncationOperation="Lookup" errorRowDisposition="IgnoreFailure" exclusionGroup="1" name="Match" refId="Package\DFT Cleanse products\LKP Province.Outputs[Match]" synchronousInputId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="50" lineageId="Package\DFT Cleanse products\LKP Province.Outputs[Match].Columns[province]" name="province" refId="Package\DFT Cleanse products\LKP Province.Outputs[Match].Columns[province]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">province</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;" exclusionGroup="1" name="NoMatch" refId="Package\DFT Cleanse products\LKP Province.Outputs[NoMatch]" synchronousInputId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]">
+                  <externalMetadataColumns />
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\LKP Province.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Province.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\LKP Province.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Province.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\LKP Province.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the SQL statement that generates the lookup table." expressionType="Notify" name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT match_key, province FROM ref.province_map;</property>
+                <property dataType="System.String" description="Specifies a SQL statement that uses parameters to generate the lookup table." expressionType="Notify" name="SqlCommandParam" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT match_key, province FROM ref.province_map;) [refTable] where [refTable].[match_key] = ?</property>
+                <property dataType="System.Int32" description="Specifies the type of connection used to access the reference dataset." name="ConnectionType" typeConverter="LookupConnectionType">0</property>
+                <property dataType="System.Int32" description="Specifies the cache type of the lookup table." name="CacheType" typeConverter="CacheType">0</property>
+                <property dataType="System.Int32" description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set." name="NoMatchBehavior" typeConverter="LookupNoMatchBehavior">0</property>
+                <property dataType="System.Int32" description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset." name="NoMatchCachePercentage">0</property>
+                <property dataType="System.Int32" description="Maximum Memory Usage for Reference Cache on a 32 bit platform." name="MaxMemoryUsage">25</property>
+                <property dataType="System.Int64" description="Maximum Memory Usage for Reference Cache on a 64 bit platform." name="MaxMemoryUsage64">25</property>
+                <property dataType="System.String" description="Indicates whether to reference metadata in an XML format." name="ReferenceMetadataXml">&lt;referenceMetadata&gt;
+  &lt;referenceColumns&gt;
+    &lt;referenceColumn name="match_key" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="province" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0" /&gt;
+  &lt;/referenceColumns&gt;
+&lt;/referenceMetadata&gt;</property>
+                <property containsID="true" dataType="System.String" description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons." name="ParameterMap">#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[province_key]};</property>
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used." name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Sales channel" refId="Package\DFT Cleanse products\LKP Sales channel" usesDispositions="true" version="6">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Sales channel.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input name="LKP Province_Match_LKP Sales channel" refId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="channel_key" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[channel_key]" name="" refId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel].Columns[channel_key]">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table that a column joins." name="JoinToReferenceColumn">match_key</property>
+                        <property dataType="System.Null" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output errorOrTruncationOperation="Lookup" errorRowDisposition="IgnoreFailure" exclusionGroup="1" name="Match" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Match]" synchronousInputId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="100" lineageId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Match].Columns[sales_channel]" name="sales_channel" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Match].Columns[sales_channel]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">sales_channel</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;" exclusionGroup="1" name="NoMatch" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[NoMatch]" synchronousInputId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]">
+                  <externalMetadataColumns />
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the SQL statement that generates the lookup table." expressionType="Notify" name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT match_key, sales_channel FROM ref.channel_map;</property>
+                <property dataType="System.String" description="Specifies a SQL statement that uses parameters to generate the lookup table." expressionType="Notify" name="SqlCommandParam" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT match_key, sales_channel FROM ref.channel_map;) [refTable] where [refTable].[match_key] = ?</property>
+                <property dataType="System.Int32" description="Specifies the type of connection used to access the reference dataset." name="ConnectionType" typeConverter="LookupConnectionType">0</property>
+                <property dataType="System.Int32" description="Specifies the cache type of the lookup table." name="CacheType" typeConverter="CacheType">0</property>
+                <property dataType="System.Int32" description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set." name="NoMatchBehavior" typeConverter="LookupNoMatchBehavior">0</property>
+                <property dataType="System.Int32" description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset." name="NoMatchCachePercentage">0</property>
+                <property dataType="System.Int32" description="Maximum Memory Usage for Reference Cache on a 32 bit platform." name="MaxMemoryUsage">25</property>
+                <property dataType="System.Int64" description="Maximum Memory Usage for Reference Cache on a 64 bit platform." name="MaxMemoryUsage64">25</property>
+                <property dataType="System.String" description="Indicates whether to reference metadata in an XML format." name="ReferenceMetadataXml">&lt;referenceMetadata&gt;
+  &lt;referenceColumns&gt;
+    &lt;referenceColumn name="match_key" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="sales_channel" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0" /&gt;
+  &lt;/referenceColumns&gt;
+&lt;/referenceMetadata&gt;</property>
+                <property containsID="true" dataType="System.String" description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons." name="ParameterMap">#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[channel_key]};</property>
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used." name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Category" refId="Package\DFT Cleanse products\LKP Category" usesDispositions="true" version="6">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Category.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input name="LKP Sales channel_Match_LKP Category" refId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="category_key" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[category_key]" name="" refId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category].Columns[category_key]">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table that a column joins." name="JoinToReferenceColumn">match_key</property>
+                        <property dataType="System.Null" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output errorOrTruncationOperation="Lookup" errorRowDisposition="IgnoreFailure" exclusionGroup="1" name="Match" refId="Package\DFT Cleanse products\LKP Category.Outputs[Match]" synchronousInputId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="50" lineageId="Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]" name="category_mapped" refId="Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">category_mapped</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;" exclusionGroup="1" name="NoMatch" refId="Package\DFT Cleanse products\LKP Category.Outputs[NoMatch]" synchronousInputId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]">
+                  <externalMetadataColumns />
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\LKP Category.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Category.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\LKP Category.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Category.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\LKP Category.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the SQL statement that generates the lookup table." expressionType="Notify" name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT match_key, category AS category_mapped FROM ref.category_map;</property>
+                <property dataType="System.String" description="Specifies a SQL statement that uses parameters to generate the lookup table." expressionType="Notify" name="SqlCommandParam" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT match_key, category AS category_mapped FROM ref.category_map;) [refTable] where [refTable].[match_key] = ?</property>
+                <property dataType="System.Int32" description="Specifies the type of connection used to access the reference dataset." name="ConnectionType" typeConverter="LookupConnectionType">0</property>
+                <property dataType="System.Int32" description="Specifies the cache type of the lookup table." name="CacheType" typeConverter="CacheType">0</property>
+                <property dataType="System.Int32" description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set." name="NoMatchBehavior" typeConverter="LookupNoMatchBehavior">0</property>
+                <property dataType="System.Int32" description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset." name="NoMatchCachePercentage">0</property>
+                <property dataType="System.Int32" description="Maximum Memory Usage for Reference Cache on a 32 bit platform." name="MaxMemoryUsage">25</property>
+                <property dataType="System.Int64" description="Maximum Memory Usage for Reference Cache on a 64 bit platform." name="MaxMemoryUsage64">25</property>
+                <property dataType="System.String" description="Indicates whether to reference metadata in an XML format." name="ReferenceMetadataXml">&lt;referenceMetadata&gt;
+  &lt;referenceColumns&gt;
+    &lt;referenceColumn name="match_key" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="category_mapped" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0" /&gt;
+  &lt;/referenceColumns&gt;
+&lt;/referenceMetadata&gt;</property>
+                <property containsID="true" dataType="System.String" description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons." name="ParameterMap">#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[category_key]};</property>
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used." name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Brand" refId="Package\DFT Cleanse products\LKP Brand" usesDispositions="true" version="6">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Brand.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input name="LKP Category_Match_LKP Brand" refId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="brand_key" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[brand_key]" name="" refId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand].Columns[brand_key]">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table that a column joins." name="JoinToReferenceColumn">bm_brand_key</property>
+                        <property dataType="System.Null" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output errorOrTruncationOperation="Lookup" errorRowDisposition="IgnoreFailure" exclusionGroup="1" name="Match" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Match]" synchronousInputId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="100" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand]" name="brand" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">bm_brand</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="100" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand_solution]" name="brand_solution" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand_solution]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">bm_brand_solution</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="CopyColumn" length="50" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[bm_primary_category]" name="bm_primary_category" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[bm_primary_category]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Specifies the column in the reference table from which a column is copied." name="CopyFromReferenceColumn">bm_primary_category</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;" exclusionGroup="1" name="NoMatch" refId="Package\DFT Cleanse products\LKP Brand.Outputs[NoMatch]" synchronousInputId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]">
+                  <externalMetadataColumns />
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\LKP Brand.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the SQL statement that generates the lookup table." expressionType="Notify" name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT bm_brand_key, bm_brand, bm_brand_solution, bm_primary_category FROM ref.brand_map;</property>
+                <property dataType="System.String" description="Specifies a SQL statement that uses parameters to generate the lookup table." expressionType="Notify" name="SqlCommandParam" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT bm_brand_key, bm_brand, bm_brand_solution, bm_primary_category FROM ref.brand_map;) [refTable] where [refTable].[bm_brand_key] = ?</property>
+                <property dataType="System.Int32" description="Specifies the type of connection used to access the reference dataset." name="ConnectionType" typeConverter="LookupConnectionType">0</property>
+                <property dataType="System.Int32" description="Specifies the cache type of the lookup table." name="CacheType" typeConverter="CacheType">0</property>
+                <property dataType="System.Int32" description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set." name="NoMatchBehavior" typeConverter="LookupNoMatchBehavior">0</property>
+                <property dataType="System.Int32" description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset." name="NoMatchCachePercentage">0</property>
+                <property dataType="System.Int32" description="Maximum Memory Usage for Reference Cache on a 32 bit platform." name="MaxMemoryUsage">25</property>
+                <property dataType="System.Int64" description="Maximum Memory Usage for Reference Cache on a 64 bit platform." name="MaxMemoryUsage64">25</property>
+                <property dataType="System.String" description="Indicates whether to reference metadata in an XML format." name="ReferenceMetadataXml">&lt;referenceMetadata&gt;
+  &lt;referenceColumns&gt;
+    &lt;referenceColumn name="bm_brand_key" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="bm_brand" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="bm_brand_solution" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0" /&gt;
+    &lt;referenceColumn name="bm_primary_category" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0" /&gt;
+  &lt;/referenceColumns&gt;
+&lt;/referenceMetadata&gt;</property>
+                <property containsID="true" dataType="System.String" description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons." name="ParameterMap">#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[brand_key]};</property>
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used." name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Derive measures and reject reason" refId="Package\DFT Cleanse products\DC Derive measures and reject reason" usesDispositions="true">
+              <inputs>
+                <input name="LKP Brand_Match_DC Derive measures and reject reason" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="bm_primary_category" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[bm_primary_category]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[bm_primary_category]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="category_mapped" lineageId="Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[category_mapped]" />
+                    <inputColumn cachedDataType="r8" cachedName="price_zar" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[price_zar]" />
+                    <inputColumn cachedDataType="r8" cachedName="cost_zar" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[cost_zar]" />
+                    <inputColumn cachedDataType="i4" cachedName="units_sold_12m" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[units_sold_12m]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="product_id" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_id]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[product_id]" />
+                    <inputColumn cachedDataType="dbDate" cachedName="date_added" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[date_added]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[date_added]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="brand" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand]" name="" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason].Columns[brand]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" name="Output" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]" name="category" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]}) ? #{Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[bm_primary_category]} : #{Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]}</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(category_mapped) ? bm_primary_category : category_mapped</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[margin_pct]" name="margin_pct" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[margin_pct]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]}) || ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]}) ? NULL(DT_R8) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} &gt; 0 ? ROUND((#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} - #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]}) / #{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} * 100, 2) : NULL(DT_R8))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(price_zar) || ISNULL(cost_zar) ? NULL(DT_R8) : (price_zar &gt; 0 ? ROUND((price_zar - cost_zar) / price_zar * 100, 2) : NULL(DT_R8))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="r8" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[revenue_12m_zar]" name="revenue_12m_zar" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[revenue_12m_zar]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]}) || ISNULL(#{Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]}) ? NULL(DT_R8) : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} &gt; 0 ? ROUND(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} * #{Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]}, 2) : NULL(DT_R8))</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(price_zar) || ISNULL(units_sold_12m) ? NULL(DT_R8) : (price_zar &gt; 0 ? ROUND(price_zar * units_sold_12m, 2) : NULL(DT_R8))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="i4" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[load_run_id]" name="load_run_id" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[load_run_id]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.String" description="Derived Column Expression" name="Expression">@[User::RunId]</property>
+                        <property dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">@[User::RunId]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="100" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[reject_reason]" name="reject_reason" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[reject_reason]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">(#{Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_id]} == "" ? "missing_id;" : "") + (ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]}) ? "bad_price;" : (#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]} &lt;= 0 ? "bad_price;" : "")) + (ISNULL(#{Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[date_added]}) ? "bad_date;" : "") + (ISNULL(#{Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand]}) ? "unknown_brand;" : "") + (ISNULL(#{Package\DFT Cleanse products\LKP Category.Outputs[Match].Columns[category_mapped]}) &amp;&amp; ISNULL(#{Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[bm_primary_category]}) ? "unknown_category;" : "")</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">(product_id == "" ? "missing_id;" : "") + (ISNULL(price_zar) ? "bad_price;" : (price_zar &lt;= 0 ? "bad_price;" : "")) + (ISNULL(date_added) ? "bad_date;" : "") + (ISNULL(brand) ? "unknown_brand;" : "") + (ISNULL(category_mapped) &amp;&amp; ISNULL(bm_primary_category) ? "unknown_category;" : "")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Product group" refId="Package\DFT Cleanse products\DC Product group" usesDispositions="true">
+              <inputs>
+                <input name="DC Derive measures and reject reason_Output_DC Product group" refId="Package\DFT Cleanse products\DC Product group.Inputs[DC Derive measures and reject reason_Output_DC Product group]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="category" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]" name="" refId="Package\DFT Cleanse products\DC Product group.Inputs[DC Derive measures and reject reason_Output_DC Product group].Columns[category]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" name="Output" refId="Package\DFT Cleanse products\DC Product group.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\DC Product group.Inputs[DC Derive measures and reject reason_Output_DC Product group]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" length="50" lineageId="Package\DFT Cleanse products\DC Product group.Outputs[Output].Columns[product_group]" name="product_group" refId="Package\DFT Cleanse products\DC Product group.Outputs[Output].Columns[product_group]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property containsID="true" dataType="System.String" description="Derived Column Expression" name="Expression">ISNULL(#{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]}) ? NULL(DT_WSTR,50) : (#{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]} == "Dairy" || #{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]} == "Convenience Meals" || #{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]} == "Value-added Meats" || #{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]} == "Baby" || #{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]} == "Fresh Mushrooms" ? "Perishable products" : "Ambient products")</property>
+                        <property containsID="true" dataType="System.String" description="Derived Column Friendly Expression" expressionType="Notify" name="FriendlyExpression">ISNULL(category) ? NULL(DT_WSTR,50) : (category == "Dairy" || category == "Convenience Meals" || category == "Value-added Meats" || category == "Baby" || category == "Fresh Mushrooms" ? "Perishable products" : "Ambient products")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DC Product group.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DC Product group.Inputs[DC Derive measures and reject reason_Output_DC Product group]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Product group.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DC Product group.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DC Product group.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DC Product group.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.ConditionalSplit" contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="CSPL Valid or quarantine" refId="Package\DFT Cleanse products\CSPL Valid or quarantine" usesDispositions="true">
+              <inputs>
+                <input name="DC Product group_Output_CSPL Valid or quarantine" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine]">
+                  <externalMetadataColumns />
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="reject_reason" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[reject_reason]" name="" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine].Columns[reject_reason]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output errorOrTruncationOperation="Computation" errorRowDisposition="FailComponent" exclusionGroup="1" name="Quarantine" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Quarantine]" synchronousInputId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine]" truncationRowDisposition="FailComponent">
+                  <externalMetadataColumns />
+                  <properties>
+                    <property containsID="true" dataType="System.String" name="Expression">LEN(#{Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[reject_reason]}) &gt; 0</property>
+                    <property containsID="true" dataType="System.String" expressionType="Notify" name="FriendlyExpression">LEN(reject_reason) &gt; 0</property>
+                    <property dataType="System.Int32" name="EvaluationOrder">0</property>
+                  </properties>
+                </output>
+                <output exclusionGroup="1" name="Default" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Default]" synchronousInputId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine]">
+                  <externalMetadataColumns />
+                  <properties>
+                    <property dataType="System.Boolean" name="IsDefaultOut">true</property>
+                  </properties>
+                </output>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.RowCount" contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="RC Quarantine" refId="Package\DFT Cleanse products\RC Quarantine">
+              <inputs>
+                <input hasSideEffects="true" name="CSPL Valid or quarantine_Quarantine_RC Quarantine" refId="Package\DFT Cleanse products\RC Quarantine.Inputs[CSPL Valid or quarantine_Quarantine_RC Quarantine]">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output name="Output" refId="Package\DFT Cleanse products\RC Quarantine.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\RC Quarantine.Inputs[CSPL Valid or quarantine_Quarantine_RC Quarantine]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsRejected</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST dq products_quarantine" refId="Package\DFT Cleanse products\DST dq products_quarantine" usesDispositions="true" version="4">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST dq products_quarantine.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="RC Quarantine_Output_DST dq products_quarantine" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine]">
+                  <externalMetadataColumns isUsed="True">
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_product_id" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_product_id]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_sku" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_sku]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_product_name" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_product_name]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_category" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_category]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_brand" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_brand]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_sales_channel" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_sales_channel]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_province" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_province]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_price_zar" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_price_zar]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_cost_zar" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_cost_zar]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_weight_kg" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_weight_kg]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_stock_qty" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_stock_qty]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_units_sold_12m" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_units_sold_12m]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_date_added" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_date_added]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_is_active" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_is_active]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="raw_rating" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_rating]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="reject_reason" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[reject_reason]" />
+                    <externalMetadataColumn dataType="i4" name="load_run_id" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[load_run_id]" />
+                  </externalMetadataColumns>
+                  <inputColumns>
+                    <inputColumn cachedDataType="i4" cachedName="load_run_id" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[load_run_id]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[load_run_id]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[load_run_id]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="reject_reason" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[reject_reason]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[reject_reason]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[reject_reason]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_id" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_product_id]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_id]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_product_id]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sku" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_sku]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sku]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_sku]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_product_name" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_product_name]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_product_name]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_product_name]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_category" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_category]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_category]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_category]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_brand" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_brand]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_brand]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_brand]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_sales_channel" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_sales_channel]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_sales_channel]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_sales_channel]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_province" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_province]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_province]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_province]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_price_zar" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_price_zar]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_price_zar]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_price_zar]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_cost_zar" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_cost_zar]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_cost_zar]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_cost_zar]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_weight_kg" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_weight_kg]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_weight_kg]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_weight_kg]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_stock_qty" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_stock_qty]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_stock_qty]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_stock_qty]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_units_sold_12m" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_units_sold_12m]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_units_sold_12m]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_units_sold_12m]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_date_added" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_date_added]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_date_added]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_date_added]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_is_active" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_is_active]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_is_active]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_is_active]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="raw_rating" externalMetadataColumnId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].ExternalColumns[raw_rating]" lineageId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output].Columns[raw_rating]" name="" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine].Columns[raw_rating]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DST dq products_quarantine.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DST dq products_quarantine.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DST dq products_quarantine.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DST dq products_quarantine.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DST dq products_quarantine.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.Int32" description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out." name="CommandTimeout">0</property>
+                <property dataType="System.String" description="Specifies the name of the database object used to open a rowset." name="OpenRowset">[dq].[products_quarantine]</property>
+                <property dataType="System.String" description="Specifies the variable that contains the name of the database object used to open a rowset." name="OpenRowsetVariable" />
+                <property dataType="System.String" description="The SQL command to be executed." name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor" />
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Forces the use of the DefaultCodePage property value when describing character data." name="AlwaysUseDefaultCodePage">false</property>
+                <property dataType="System.Int32" description="Specifies the mode used to access the database." name="AccessMode">3</property>
+                <property dataType="System.Boolean" description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on." name="FastLoadKeepIdentity">false</property>
+                <property dataType="System.Boolean" description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on." name="FastLoadKeepNulls">false</property>
+                <property dataType="System.String" description="Specifies options to be used with fast load.  Applies only if fast load is turned on." name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property dataType="System.Int32" description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on." name="FastLoadMaxInsertCommitSize">500000</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.RowCount" contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="RC Valid" refId="Package\DFT Cleanse products\RC Valid">
+              <inputs>
+                <input hasSideEffects="true" name="CSPL Valid or quarantine_Default_RC Valid" refId="Package\DFT Cleanse products\RC Valid.Inputs[CSPL Valid or quarantine_Default_RC Valid]">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output name="Output" refId="Package\DFT Cleanse products\RC Valid.Outputs[Output]" synchronousInputId="Package\DFT Cleanse products\RC Valid.Inputs[CSPL Valid or quarantine_Default_RC Valid]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsWritten</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST stg products_valid" refId="Package\DFT Cleanse products\DST stg products_valid" usesDispositions="true" version="4">
+              <connections>
+                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST stg products_valid.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="RC Valid_Output_DST stg products_valid" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid]">
+                  <externalMetadataColumns isUsed="True">
+                    <externalMetadataColumn dataType="wstr" length="50" name="product_id" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_id]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="sku" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[sku]" />
+                    <externalMetadataColumn dataType="wstr" length="255" name="product_name" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_name]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="product_group" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_group]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="category" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[category]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="brand" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[brand]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="brand_solution" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[brand_solution]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="sales_channel" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[sales_channel]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="province" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[province]" />
+                    <externalMetadataColumn dataType="r8" name="price_zar" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[price_zar]" />
+                    <externalMetadataColumn dataType="r8" name="cost_zar" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[cost_zar]" />
+                    <externalMetadataColumn dataType="r8" name="margin_pct" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[margin_pct]" />
+                    <externalMetadataColumn dataType="r8" name="weight_kg" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[weight_kg]" />
+                    <externalMetadataColumn dataType="i4" name="stock_qty" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[stock_qty]" />
+                    <externalMetadataColumn dataType="i4" name="units_sold_12m" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[units_sold_12m]" />
+                    <externalMetadataColumn dataType="r8" name="revenue_12m_zar" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[revenue_12m_zar]" />
+                    <externalMetadataColumn dataType="dbDate" name="date_added" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[date_added]" />
+                    <externalMetadataColumn dataType="bool" name="is_active" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[is_active]" />
+                    <externalMetadataColumn dataType="r8" name="rating" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[rating]" />
+                    <externalMetadataColumn dataType="i4" name="load_run_id" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[load_run_id]" />
+                  </externalMetadataColumns>
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="product_group" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_group]" lineageId="Package\DFT Cleanse products\DC Product group.Outputs[Output].Columns[product_group]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[product_group]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="category" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[category]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[category]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[category]" />
+                    <inputColumn cachedDataType="r8" cachedName="margin_pct" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[margin_pct]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[margin_pct]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[margin_pct]" />
+                    <inputColumn cachedDataType="r8" cachedName="revenue_12m_zar" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[revenue_12m_zar]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[revenue_12m_zar]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[revenue_12m_zar]" />
+                    <inputColumn cachedDataType="i4" cachedName="load_run_id" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[load_run_id]" lineageId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output].Columns[load_run_id]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[load_run_id]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="brand" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[brand]" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[brand]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="brand_solution" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[brand_solution]" lineageId="Package\DFT Cleanse products\LKP Brand.Outputs[Match].Columns[brand_solution]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[brand_solution]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="sales_channel" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[sales_channel]" lineageId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Match].Columns[sales_channel]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[sales_channel]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="province" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[province]" lineageId="Package\DFT Cleanse products\LKP Province.Outputs[Match].Columns[province]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[province]" />
+                    <inputColumn cachedDataType="r8" cachedName="weight_kg" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[weight_kg]" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[weight_kg]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[weight_kg]" />
+                    <inputColumn cachedDataType="i4" cachedName="stock_qty" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[stock_qty]" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[stock_qty]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[stock_qty]" />
+                    <inputColumn cachedDataType="i4" cachedName="units_sold_12m" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[units_sold_12m]" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[units_sold_12m]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[units_sold_12m]" />
+                    <inputColumn cachedDataType="r8" cachedName="rating" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[rating]" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[rating]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[rating]" />
+                    <inputColumn cachedDataType="bool" cachedName="is_active" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[is_active]" lineageId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output].Columns[is_active]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[is_active]" />
+                    <inputColumn cachedDataType="r8" cachedName="price_zar" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[price_zar]" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[price_zar]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[price_zar]" />
+                    <inputColumn cachedDataType="r8" cachedName="cost_zar" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[cost_zar]" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[cost_zar]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[cost_zar]" />
+                    <inputColumn cachedDataType="dbDate" cachedName="date_added" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[date_added]" lineageId="Package\DFT Cleanse products\DC Cast types.Outputs[Output].Columns[date_added]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[date_added]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="product_id" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_id]" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_id]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[product_id]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="sku" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[sku]" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[sku]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[sku]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="255" cachedName="product_name" externalMetadataColumnId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].ExternalColumns[product_name]" lineageId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output].Columns[product_name]" name="" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid].Columns[product_name]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Cleanse products\DST stg products_valid.Outputs[Error]" synchronousInputId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DST stg products_valid.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Cleanse products\DST stg products_valid.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Cleanse products\DST stg products_valid.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Cleanse products\DST stg products_valid.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.Int32" description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out." name="CommandTimeout">0</property>
+                <property dataType="System.String" description="Specifies the name of the database object used to open a rowset." name="OpenRowset">[stg].[products_valid]</property>
+                <property dataType="System.String" description="Specifies the variable that contains the name of the database object used to open a rowset." name="OpenRowsetVariable" />
+                <property dataType="System.String" description="The SQL command to be executed." name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor" />
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Forces the use of the DefaultCodePage property value when describing character data." name="AlwaysUseDefaultCodePage">false</property>
+                <property dataType="System.Int32" description="Specifies the mode used to access the database." name="AccessMode">3</property>
+                <property dataType="System.Boolean" description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on." name="FastLoadKeepIdentity">false</property>
+                <property dataType="System.Boolean" description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on." name="FastLoadKeepNulls">false</property>
+                <property dataType="System.String" description="Specifies options to be used with fast load.  Applies only if fast load is turned on." name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property dataType="System.Int32" description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on." name="FastLoadMaxInsertCommitSize">500000</property>
+              </properties>
+            </component>
+          </components>
+          <paths>
+            <path endId="Package\DFT Cleanse products\RC Read.Inputs[SRC stg products_raw_Output_RC Read]" name="SRC stg products_raw_Output_RC Read" refId="Package\DFT Cleanse products.Paths[SRC stg products_raw_Output_RC Read]" startId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\DC Normalise text.Inputs[RC Read_Output_DC Normalise text]" name="RC Read_Output_DC Normalise text" refId="Package\DFT Cleanse products.Paths[RC Read_Output_DC Normalise text]" startId="Package\DFT Cleanse products\RC Read.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\DC Cast types.Inputs[DC Normalise text_Output_DC Cast types]" name="DC Normalise text_Output_DC Cast types" refId="Package\DFT Cleanse products.Paths[DC Normalise text_Output_DC Cast types]" startId="Package\DFT Cleanse products\DC Normalise text.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\DC Apply value rules.Inputs[DC Cast types_Output_DC Apply value rules]" name="DC Cast types_Output_DC Apply value rules" refId="Package\DFT Cleanse products.Paths[DC Cast types_Output_DC Apply value rules]" startId="Package\DFT Cleanse products\DC Cast types.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]" name="DC Apply value rules_Output_LKP Province" refId="Package\DFT Cleanse products.Paths[DC Apply value rules_Output_LKP Province]" startId="Package\DFT Cleanse products\DC Apply value rules.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]" name="LKP Province_Match_LKP Sales channel" refId="Package\DFT Cleanse products.Paths[LKP Province_Match_LKP Sales channel]" startId="Package\DFT Cleanse products\LKP Province.Outputs[Match]" />
+            <path endId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]" name="LKP Sales channel_Match_LKP Category" refId="Package\DFT Cleanse products.Paths[LKP Sales channel_Match_LKP Category]" startId="Package\DFT Cleanse products\LKP Sales channel.Outputs[Match]" />
+            <path endId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]" name="LKP Category_Match_LKP Brand" refId="Package\DFT Cleanse products.Paths[LKP Category_Match_LKP Brand]" startId="Package\DFT Cleanse products\LKP Category.Outputs[Match]" />
+            <path endId="Package\DFT Cleanse products\DC Derive measures and reject reason.Inputs[LKP Brand_Match_DC Derive measures and reject reason]" name="LKP Brand_Match_DC Derive measures and reject reason" refId="Package\DFT Cleanse products.Paths[LKP Brand_Match_DC Derive measures and reject reason]" startId="Package\DFT Cleanse products\LKP Brand.Outputs[Match]" />
+            <path endId="Package\DFT Cleanse products\DC Product group.Inputs[DC Derive measures and reject reason_Output_DC Product group]" name="DC Derive measures and reject reason_Output_DC Product group" refId="Package\DFT Cleanse products.Paths[DC Derive measures and reject reason_Output_DC Product group]" startId="Package\DFT Cleanse products\DC Derive measures and reject reason.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\CSPL Valid or quarantine.Inputs[DC Product group_Output_CSPL Valid or quarantine]" name="DC Product group_Output_CSPL Valid or quarantine" refId="Package\DFT Cleanse products.Paths[DC Product group_Output_CSPL Valid or quarantine]" startId="Package\DFT Cleanse products\DC Product group.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\RC Valid.Inputs[CSPL Valid or quarantine_Default_RC Valid]" name="CSPL Valid or quarantine_Default_RC Valid" refId="Package\DFT Cleanse products.Paths[CSPL Valid or quarantine_Default_RC Valid]" startId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Default]" />
+            <path endId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid]" name="RC Valid_Output_DST stg products_valid" refId="Package\DFT Cleanse products.Paths[RC Valid_Output_DST stg products_valid]" startId="Package\DFT Cleanse products\RC Valid.Outputs[Output]" />
+            <path endId="Package\DFT Cleanse products\RC Quarantine.Inputs[CSPL Valid or quarantine_Quarantine_RC Quarantine]" name="CSPL Valid or quarantine_Quarantine_RC Quarantine" refId="Package\DFT Cleanse products.Paths[CSPL Valid or quarantine_Quarantine_RC Quarantine]" startId="Package\DFT Cleanse products\CSPL Valid or quarantine.Outputs[Quarantine]" />
+            <path endId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine]" name="RC Quarantine_Output_DST dq products_quarantine" refId="Package\DFT Cleanse products.Paths[RC Quarantine_Output_DST dq products_quarantine]" startId="Package\DFT Cleanse products\RC Quarantine.Outputs[Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{A249BCDF-01F5-4E5D-9CCE-9F09FD02044A}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRejected" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="3" SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{3F296CFE-6143-457D-8DEF-08C164270AAC}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Truncate valid and quarantine" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Truncate valid and quarantine]" DTS:To="Package\SQL Truncate valid and quarantine" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{BF339CB7-3062-42BC-AEB9-A753D3095FE2}" DTS:From="Package\SQL Truncate valid and quarantine" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products]" DTS:To="Package\DFT Cleanse products" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{A91DE350-1157-4893-8209-728A14FF66A4}" DTS:From="Package\DFT Cleanse products" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_DFT Cleanse products_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_DFT Cleanse products_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{EEED2842-21A7-4F15-A832-084A2A9BE9EE}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+      <DTS:Variables>
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{6EAFAB6A-A143-401D-A04D-65CB86DD617D}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+          <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{F0EFE1B0-0CBC-448C-9FC9-C93CD2D8ABEB}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />
+              <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+</DTS:Executable>

@@ -7,6 +7,12 @@ Excel reporting** — designed to run a full demo on an Azure free-trial credit.
 > Synthetic data built on Libstar's public brand/category model
 > (libstar.co.za). Not affiliated with Libstar Holdings.
 
+> **Also built on-premises in SSIS.** The ADF cleaning flow was rebuilt as SQL Server Integration
+> Services packages generated from one Biml file, with a run log, config table, quarantine and a
+> reconciliation gate. Run against the same 5.1M rows, it reproduces the ADF result exactly:
+> 4,284,971 clean SKUs, 729,438 quarantined, and identical revenue, margin and reject reasons.
+> See [`ssis/`](ssis/README.md).
+
 ## Why this exists
 
 Consumer packaged goods companies run on catalog data that arrives messy —

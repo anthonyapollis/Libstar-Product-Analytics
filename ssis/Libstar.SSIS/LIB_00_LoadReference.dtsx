@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTS:Executable DTS:CreationDate="09/16/2026 19:07:16" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{46E07C8F-0A5C-4DC5-925A-0AE33389C467}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_00_LoadReference" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{FF4A7098-8DE6-4350-B89E-9CFA31454E82}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+  <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{8DCA44EE-44C3-4A0C-AE4D-1F444C914C38}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ServerName">@[$Package::ServerName]</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager DTS:CreationName="FLATFILE" DTS:DTSID="{009B05C6-9FE0-4CFB-901A-F048188060BC}" DTS:ObjectName="FF_BrandMap" DTS:refId="Package.ConnectionManagers[FF_BrandMap]">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager DTS:CodePage="65001" DTS:ColumnNamesInFirstDataRow="True" DTS:ConnectionString="C:\Libstar\data\reference\brand_map.csv" DTS:Format="Delimited" DTS:HeaderRowDelimiter="_x000D__x000A_" DTS:LocaleID="7177" DTS:RowDelimiter="_x000D__x000A_" DTS:TextQualifier="_x0022_">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{DE26A343-B30A-4F2B-8926-8D43070B5FF4}" DTS:MaximumWidth="100" DTS:ObjectName="bm_brand_key" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{11704181-5465-4CCB-9546-E18DDEAEE700}" DTS:MaximumWidth="100" DTS:ObjectName="bm_brand" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{89E02910-5D9F-413C-ACF1-858E1874D88D}" DTS:MaximumWidth="100" DTS:ObjectName="bm_brand_solution" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x002C_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{A592881C-A9A9-4D23-B3B8-42ECF86D0164}" DTS:MaximumWidth="50" DTS:ObjectName="bm_primary_category" DTS:TextQualified="True" />
+            <DTS:FlatFileColumn DTS:ColumnDelimiter="_x000D__x000A_" DTS:ColumnType="Delimited" DTS:CreationName="" DTS:DataType="130" DTS:DTSID="{7E069851-C98E-4BF2-B74B-C5FEB231A6E4}" DTS:MaximumWidth="50" DTS:ObjectName="bm_product_group" DTS:TextQualified="True" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+      <DTS:PropertyExpression DTS:Name="ConnectionString">@[User::ReferenceFolderPath] + "\\brand_map.csv"</DTS:PropertyExpression>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{A5C4FBD1-EC29-49FE-AE30-026A13216EF3}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{2910EB7B-1360-4D0F-BBB2-8A57D006338C}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{DB67FEDF-4F65-4E17-8C2D-16CA37897DF9}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{E5EF1A4F-7043-49D7-B56D-AEBDE0F554D4}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+      <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{2C1C6645-4CA3-4AF9-A912-2FADE34AAF0C}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{BFBA6C62-BD76-4779-863F-ECFF498467E8}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{BD1FE40A-9275-42F7-BA8B-8EF7E88981A4}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D8DCB721-B09C-4F5F-936C-FA8EDD7C8CC7}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{B337A3CA-A79B-45AF-B07E-678E9A766036}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::RawFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="RawFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{C849A0D0-CDC9-4E0A-AB19-181F836901BE}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::WorkFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="WorkFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D48F6A31-D8BB-4F50-848E-DD29AAD11493}" DTS:EvaluateAsExpression="True" DTS:Expression="@[$Package::ReferenceFolder]" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ReferenceFolderParam">
+      <DTS:VariableValue DTS:DataType="8" />
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D433C8E9-629E-435B-8A12-7933409CEC22}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="RawFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\data\raw</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{7ECEF763-00C7-4DC3-9F74-54E7D6BC8802}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="WorkFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\work</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{D904E55B-1727-4BE9-975E-A94EC187DA61}" DTS:IncludeInDebugDump="2345" DTS:Namespace="User" DTS:ObjectName="ReferenceFolderPath">
+      <DTS:VariableValue DTS:DataType="8">C:\Libstar\data\reference</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{D7F1E924-3C30-458A-9028-07914C9ECC05}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ExecutionInstanceGUID" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="50" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RunId" SQLTask:ResultName="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{EAEBF334-9020-427F-A2B5-CE34766DA511}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Resolve folders from parameters or etl_Config" DTS:refId="Package\SQL Resolve folders from parameters or etl_Config" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="&#xA;SET NOCOUNT ON;&#xA;DECLARE @raw nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'RawFolder'));&#xA;DECLARE @work nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'WorkFolder'));&#xA;DECLARE @ref nvarchar(400) = COALESCE(NULLIF(?, N''), (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'ReferenceFolder'));&#xA;IF @raw IS NULL OR @work IS NULL OR @ref IS NULL&#xA;    THROW 50010, 'Folder locations are not configured. Pass the RawFolder/WorkFolder/ReferenceFolder parameters or run ssis\run_ssis.ps1 -Configure.', 1;&#xA;SELECT @raw AS RawFolderPath, @work AS WorkFolderPath, @ref AS ReferenceFolderPath;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::RawFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="400" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::WorkFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="400" />
+          <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="User::ReferenceFolderParam" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="400" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RawFolderPath" SQLTask:ResultName="0" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::WorkFolderPath" SQLTask:ResultName="1" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::ReferenceFolderPath" SQLTask:ResultName="2" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{06821B10-7F30-4EB1-B6E7-AC8DA930C605}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Truncate ref brand_map" DTS:refId="Package\SQL Truncate ref brand_map" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="TRUNCATE TABLE ref.brand_map;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.Pipeline" DTS:DelayValidation="True" DTS:DTSID="{6E444C49-523B-4C56-A2E7-3118131B1EE5}" DTS:ExecutableType="Microsoft.Pipeline" DTS:LocaleID="-1" DTS:ObjectName="DFT Load brand_map" DTS:refId="Package\DFT Load brand_map" DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <pipeline BLOBTempStoragePath="" bufferTempStoragePath="" name="pipelineXml" version="1">
+          <components>
+            <component componentClassID="Microsoft.FlatFileSource" contactInfo="Flat File Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1" localeId="7177" name="FF brand_map csv" refId="Package\DFT Load brand_map\FF brand_map csv" usesDispositions="true" version="1">
+              <connections>
+                <connection connectionManagerID="{009B05C6-9FE0-4CFB-901A-F048188060BC}:external" connectionManagerRefId="Package.ConnectionManagers[FF_BrandMap]" name="FlatFileConnection" refId="Package\DFT Load brand_map\FF brand_map csv.Connections[FlatFileConnection]" />
+              </connections>
+              <outputs>
+                <output name="Output" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output]">
+                  <externalMetadataColumns isUsed="True">
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand_key" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand_key]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand_solution" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand_solution]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="bm_primary_category" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_primary_category]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="bm_product_group" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_product_group]" />
+                  </externalMetadataColumns>
+                  <outputColumns>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand_key]" length="100" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_key]" name="bm_brand_key" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_key]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                        <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand]" length="100" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand]" name="bm_brand" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                        <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_brand_solution]" length="100" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_solution]" name="bm_brand_solution" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_solution]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                        <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_primary_category]" length="50" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_primary_category]" name="bm_primary_category" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_primary_category]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                        <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn dataType="wstr" errorOrTruncationOperation="Conversion" errorRowDisposition="FailComponent" externalMetadataColumnId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].ExternalColumns[bm_product_group]" length="50" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_product_group]" name="bm_product_group" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_product_group]" truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property dataType="System.Boolean" description="Indicates whether the column uses the faster, locale-neutral parsing routines." name="FastParse">false</property>
+                        <property dataType="System.Boolean" description="Indicates whether the data is in binary format." name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+                <output isErrorOut="true" name="Error" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn codePage="65001" dataType="text" description="Flat File Source Error Output Column" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[Flat File Source Error Output Column]" name="Flat File Source Error Output Column" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[Flat File Source Error Output Column]" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.Boolean" description="Specifies whether zero-length columns are treated as null." name="RetainNulls">false</property>
+                <property dataType="System.String" description="Specifies the name of an output column containing the file name. If no name is specified, no output column containing the file name will be generated." name="FileNameColumnName" />
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.RowCount" contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="RC Read" refId="Package\DFT Load brand_map\RC Read">
+              <inputs>
+                <input hasSideEffects="true" name="FF brand_map csv_Output_RC Read" refId="Package\DFT Load brand_map\RC Read.Inputs[FF brand_map csv_Output_RC Read]">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output name="Output" refId="Package\DFT Load brand_map\RC Read.Outputs[Output]" synchronousInputId="Package\DFT Load brand_map\RC Read.Inputs[FF brand_map csv_Output_RC Read]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsRead</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST ref brand_map" refId="Package\DFT Load brand_map\DST ref brand_map" usesDispositions="true" version="4">
+              <connections>
+                <connection connectionManagerID="{8DCA44EE-44C3-4A0C-AE4D-1F444C914C38}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Load brand_map\DST ref brand_map.Connections[OleDbConnection]" />
+              </connections>
+              <inputs>
+                <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="RC Read_Output_DST ref brand_map" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map]">
+                  <externalMetadataColumns isUsed="True">
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand_key" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand_key]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand]" />
+                    <externalMetadataColumn dataType="wstr" length="100" name="bm_brand_solution" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand_solution]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="bm_primary_category" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_primary_category]" />
+                    <externalMetadataColumn dataType="wstr" length="50" name="bm_product_group" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_product_group]" />
+                  </externalMetadataColumns>
+                  <inputColumns>
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="bm_brand_key" externalMetadataColumnId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand_key]" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_key]" name="" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].Columns[bm_brand_key]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="bm_brand" externalMetadataColumnId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand]" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand]" name="" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].Columns[bm_brand]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="100" cachedName="bm_brand_solution" externalMetadataColumnId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_brand_solution]" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_brand_solution]" name="" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].Columns[bm_brand_solution]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="bm_primary_category" externalMetadataColumnId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_primary_category]" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_primary_category]" name="" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].Columns[bm_primary_category]" />
+                    <inputColumn cachedDataType="wstr" cachedLength="50" cachedName="bm_product_group" externalMetadataColumnId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].ExternalColumns[bm_product_group]" lineageId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output].Columns[bm_product_group]" name="" refId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map].Columns[bm_product_group]" />
+                  </inputColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output exclusionGroup="1" isErrorOut="true" name="Error" refId="Package\DFT Load brand_map\DST ref brand_map.Outputs[Error]" synchronousInputId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map]">
+                  <externalMetadataColumns />
+                  <outputColumns>
+                    <outputColumn dataType="i4" lineageId="Package\DFT Load brand_map\DST ref brand_map.Outputs[Error].Columns[ErrorCode]" name="ErrorCode" refId="Package\DFT Load brand_map\DST ref brand_map.Outputs[Error].Columns[ErrorCode]" specialFlags="1" />
+                    <outputColumn dataType="i4" lineageId="Package\DFT Load brand_map\DST ref brand_map.Outputs[Error].Columns[ErrorColumn]" name="ErrorColumn" refId="Package\DFT Load brand_map\DST ref brand_map.Outputs[Error].Columns[ErrorColumn]" specialFlags="2" />
+                  </outputColumns>
+                </output>
+              </outputs>
+              <properties>
+                <property dataType="System.Int32" description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out." name="CommandTimeout">0</property>
+                <property dataType="System.String" description="Specifies the name of the database object used to open a rowset." name="OpenRowset">[ref].[brand_map]</property>
+                <property dataType="System.String" description="Specifies the variable that contains the name of the database object used to open a rowset." name="OpenRowsetVariable" />
+                <property dataType="System.String" description="The SQL command to be executed." name="SqlCommand" UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor" />
+                <property dataType="System.Int32" description="Specifies the column code page to use when code page information is unavailable from the data source." name="DefaultCodePage">1252</property>
+                <property dataType="System.Boolean" description="Forces the use of the DefaultCodePage property value when describing character data." name="AlwaysUseDefaultCodePage">false</property>
+                <property dataType="System.Int32" description="Specifies the mode used to access the database." name="AccessMode">3</property>
+                <property dataType="System.Boolean" description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on." name="FastLoadKeepIdentity">false</property>
+                <property dataType="System.Boolean" description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on." name="FastLoadKeepNulls">false</property>
+                <property dataType="System.String" description="Specifies options to be used with fast load.  Applies only if fast load is turned on." name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property dataType="System.Int32" description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on." name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+            </component>
+          </components>
+          <paths>
+            <path endId="Package\DFT Load brand_map\RC Read.Inputs[FF brand_map csv_Output_RC Read]" name="FF brand_map csv_Output_RC Read" refId="Package\DFT Load brand_map.Paths[FF brand_map csv_Output_RC Read]" startId="Package\DFT Load brand_map\FF brand_map csv.Outputs[Output]" />
+            <path endId="Package\DFT Load brand_map\DST ref brand_map.Inputs[RC Read_Output_DST ref brand_map]" name="RC Read_Output_DST ref brand_map" refId="Package\DFT Load brand_map.Paths[RC Read_Output_DST ref brand_map]" startId="Package\DFT Load brand_map\RC Read.Outputs[Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{057D33F3-A605-493D-A325-5343F41A93F3}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRejected" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="2" SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="3" SQLTask:ParameterSize="0" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{7A61A50C-7CAB-4454-8D5E-319C4246C8A7}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Resolve folders from parameters or etl_Config" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Resolve folders from parameters or etl_Config]" DTS:To="Package\SQL Resolve folders from parameters or etl_Config" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{2DEED032-0A93-4346-8211-25B5F0E25EA6}" DTS:From="Package\SQL Resolve folders from parameters or etl_Config" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Resolve folders from parameters or etl_Config_To_SQL Truncate ref brand_map" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Resolve folders from parameters or etl_Config_To_SQL Truncate ref brand_map]" DTS:To="Package\SQL Truncate ref brand_map" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{03528B20-2A68-40B2-AA81-0F8D66BE5873}" DTS:From="Package\SQL Truncate ref brand_map" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Truncate ref brand_map_To_DFT Load brand_map" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Truncate ref brand_map_To_DFT Load brand_map]" DTS:To="Package\DFT Load brand_map" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{E41EB52D-B3CC-4D33-A5D9-65A1E2689386}" DTS:From="Package\DFT Load brand_map" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_DFT Load brand_map_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_DFT Load brand_map_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{C52B1E22-FB83-402E-ACAC-55246A6C54BA}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+      <DTS:Variables>
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{27AD1CBF-41C5-449D-971A-441368F0AFE3}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+          <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{01B9A777-4516-4F41-9C9D-F0D0465B6E7F}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />
+              <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RunId" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="1" SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+</DTS:Executable>

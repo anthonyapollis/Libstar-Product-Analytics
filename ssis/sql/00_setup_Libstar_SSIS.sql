@@ -19,6 +19,9 @@ Re-runnable.
 */
 IF DB_ID('Libstar_SSIS') IS NULL CREATE DATABASE Libstar_SSIS;
 GO
+-- staging/warehouse loads are re-runnable from source, so point-in-time log backups are not needed
+ALTER DATABASE Libstar_SSIS SET RECOVERY SIMPLE;
+GO
 USE Libstar_SSIS;
 GO
 IF SCHEMA_ID('etl') IS NULL EXEC('CREATE SCHEMA etl');
@@ -41,6 +44,17 @@ CREATE TABLE etl.PackageRun (
     RowsWritten    bigint         NULL,
     RowsRejected   bigint         NULL,
     Message        nvarchar(4000) NULL
+);
+GO
+
+/* ---------------- environment config ----------------
+   Folder locations differ per machine, so they live here rather than in the packages.
+   run_ssis.ps1 -Configure writes this machine's paths. A non-empty package parameter wins. */
+IF OBJECT_ID('etl.Config') IS NULL
+CREATE TABLE etl.Config (
+    ConfigKey   varchar(50)    NOT NULL PRIMARY KEY,
+    ConfigValue nvarchar(400)  NOT NULL,
+    UpdatedAt   datetime2(0)   NOT NULL DEFAULT SYSDATETIME()
 );
 GO
 
@@ -202,6 +216,7 @@ SELECT
     CAST(AVG(rating) AS decimal(4,2))                   AS avg_rating,
     SUM(CAST(stock_qty AS bigint))                      AS total_stock_units,
     (SELECT COUNT_BIG(*) FROM dq.products_quarantine)   AS quarantined_rows,
+    (SELECT COUNT_BIG(*) FROM stg.products_valid) - COUNT_BIG(*) AS duplicate_rows_removed,
     (SELECT COUNT_BIG(*) FROM stg.products_raw)         AS raw_rows
 FROM dw.products_clean;
 GO
