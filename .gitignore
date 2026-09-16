@@ -16,3 +16,9 @@ data/local/*.csv
 # Transient .txt copies staged for the Qlik Cloud DataFiles upload —
 # byte-identical duplicates of data/local + ml/outputs, not source data.
 qlik/upload/
+
+# SSIS build outputs and decompressed working files
+ssis/**/bin/
+ssis/**/obj/
+ssis/**/*.dtproj.user
+ssis/work/
