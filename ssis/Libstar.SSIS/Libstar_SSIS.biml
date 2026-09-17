@@ -10,7 +10,7 @@
 
   One Biml file generates the whole project (right-click > Generate SSIS Packages):
     LIB_00_LoadReference      brand_map.csv            -> ref.brand_map
-    LIB_01_StageRawProducts   10 x products_part_*.gz  -> stg.products_raw   (gunzip + ForEach file loop)
+    LIB_01_StageRawProducts   10 x products_part_*.gz  -> stg.products_raw   (disk check; per archive: expand, stage, delete)
     LIB_02_CleanseProducts    stg.products_raw         -> stg.products_valid | dq.products_quarantine
     LIB_03_PublishProducts    stg.products_valid       -> dw.products_clean   (dedupe + reconciliation gate)
     LIB_Master                runs 00..03 in order, binding the environment parameters
@@ -53,9 +53,12 @@ var childPackages = new[] { "LIB_00_LoadReference", "LIB_01_StageRawProducts", "
   <ScriptProjects>
     <ScriptTaskProject ProjectCoreName="ST_DecompressRawProducts" Name="ST_DecompressRawProducts" VstaMajorVersion="0">
       <ReadOnlyVariables>
-        <Variable Namespace="User" VariableName="RawFolderPath" DataType="String" />
+        <Variable Namespace="User" VariableName="CurrentArchive" DataType="String" />
         <Variable Namespace="User" VariableName="WorkFolderPath" DataType="String" />
       </ReadOnlyVariables>
+      <ReadWriteVariables>
+        <Variable Namespace="User" VariableName="CurrentFile" DataType="String" />
+      </ReadWriteVariables>
       <AssemblyReferences>
         <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
         <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
@@ -80,9 +83,10 @@ using Microsoft.SqlServer.Dts.Runtime;
 namespace ST_DecompressRawProducts
 {
     /// <summary>
-    /// SSIS cannot read gzip natively. Expands every products_part_*.csv.gz in the raw
-    /// folder into the work folder. Skips a file whose expanded copy is already newer
-    /// than the archive, so a re-run after a downstream failure does not redo the work.
+    /// SSIS cannot read gzip natively. Expands the archive in User::CurrentArchive into the work
+    /// folder and returns the CSV path in User::CurrentFile. The loop stages that CSV and deletes it
+    /// before expanding the next archive, so only one ~80 MB file is ever on disk (all ten at once
+    /// filled a small development disk).
     /// </summary>
     [Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
     public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
@@ -90,35 +94,22 @@ namespace ST_DecompressRawProducts
         public void Main()
         {
             bool fireAgain = true;
-            string rawFolder = (string)Dts.Variables["User::RawFolderPath"].Value;
+            string archive = (string)Dts.Variables["User::CurrentArchive"].Value;
             string workFolder = (string)Dts.Variables["User::WorkFolderPath"].Value;
             try
             {
-                Dts.Events.FireInformation(0, "Decompress", "Working directory: " + Environment.CurrentDirectory + "; raw folder resolves to " + Path.GetFullPath(rawFolder), "", 0, ref fireAgain);
-                if (!Directory.Exists(rawFolder))
-                    throw new DirectoryNotFoundException("Raw folder not found: " + Path.GetFullPath(rawFolder) + " (parameter RawFolder = '" + rawFolder + "', working directory = " + Environment.CurrentDirectory + ")");
+                if (!File.Exists(archive))
+                    throw new FileNotFoundException("Archive not found: " + archive);
                 Directory.CreateDirectory(workFolder);
-
-                string[] archives = Directory.GetFiles(rawFolder, "products_part_*.csv.gz");
-                if (archives.Length == 0)
-                    throw new FileNotFoundException("No products_part_*.csv.gz files in " + rawFolder);
-
-                foreach (string gz in archives)
+                string csv = Path.Combine(workFolder, Path.GetFileNameWithoutExtension(archive));
+                using (FileStream input = File.OpenRead(archive))
+                using (GZipStream unzip = new GZipStream(input, CompressionMode.Decompress))
+                using (FileStream output = File.Create(csv))
                 {
-                    string csv = Path.Combine(workFolder, Path.GetFileNameWithoutExtension(gz));
-                    if (File.Exists(csv) && File.GetLastWriteTimeUtc(csv) >= File.GetLastWriteTimeUtc(gz) && new FileInfo(csv).Length > 0)
-                    {
-                        Dts.Events.FireInformation(0, "Decompress", "Up to date, skipped: " + csv, "", 0, ref fireAgain);
-                        continue;
-                    }
-                    using (FileStream input = File.OpenRead(gz))
-                    using (GZipStream unzip = new GZipStream(input, CompressionMode.Decompress))
-                    using (FileStream output = File.Create(csv))
-                    {
-                        unzip.CopyTo(output, 1 << 20);
-                    }
-                    Dts.Events.FireInformation(0, "Decompress", "Expanded " + gz + " -> " + csv, "", 0, ref fireAgain);
+                    unzip.CopyTo(output, 1 << 20);
                 }
+                Dts.Variables["User::CurrentFile"].Value = csv;
+                Dts.Events.FireInformation(0, "Decompress", "Expanded " + archive + " -> " + csv, "", 0, ref fireAgain);
                 Dts.TaskResult = (int)ScriptResults.Success;
             }
             catch (Exception ex)
@@ -177,32 +168,48 @@ namespace ST_DecompressRawProducts
       <Variables>
         <#= StandardVariables() #>
         <#= FolderVariables() #>
+        <Variable Name="CurrentArchive" DataType="String">C:\Libstar\data\raw\products_part_00.csv.gz</Variable>
         <Variable Name="CurrentFile" DataType="String">C:\Libstar\work\products_part_00.csv</Variable>
       </Variables>
       <#= OnErrorHandler(target) #>
       <Tasks>
         <#= RunStart(target) #>
         <#= ResolveFolders(target) #>
+        <ExecuteSQL Name="SQL Check free disk space" ConnectionName="<#= target #>">
+          <DirectInput><![CDATA[
+/* Fail in seconds, not 25 minutes in: a full reload filled this disk twice during development.
+   Threshold from etl.Config MinFreeDiskMB (default 1500). */
+DECLARE @freeMB bigint = (SELECT MIN(vs.available_bytes) / 1048576
+                          FROM sys.database_files f
+                          CROSS APPLY sys.dm_os_volume_stats(DB_ID(), f.file_id) vs);
+DECLARE @needMB bigint = COALESCE(TRY_CONVERT(bigint, (SELECT ConfigValue FROM etl.Config WHERE ConfigKey = 'MinFreeDiskMB')), 1500);
+IF @freeMB < @needMB
+BEGIN
+    DECLARE @msg nvarchar(400) = CONCAT('Free disk space check: ', @freeMB, ' MB free on the database volume, ', @needMB,
+                                        ' MB required. Free space or lower etl.Config MinFreeDiskMB.');
+    THROW 50020, @msg, 1;
+END]]></DirectInput>
+        </ExecuteSQL>
         <ExecuteSQL Name="SQL Truncate stg products_raw" ConnectionName="<#= target #>">
           <DirectInput>TRUNCATE TABLE stg.products_raw;</DirectInput>
         </ExecuteSQL>
-        <Script Name="SCR Decompress gz to work folder" ProjectCoreName="ST_DecompressRawProducts">
-          <ScriptTaskProjectReference ScriptTaskProjectName="ST_DecompressRawProducts" />
-        </Script>
-        <ForEachFileLoop Name="FELC Each raw products csv" Folder="C:\Libstar\work" FileSpecification="products_part_*.csv" ConstraintMode="Linear" DelayValidation="true">
+        <ForEachFileLoop Name="FELC Each raw products archive" Folder="C:\Libstar\data\raw" FileSpecification="products_part_*.csv.gz" ConstraintMode="Linear" DelayValidation="true">
           <Expressions>
-            <Expression ExternalProperty="Directory">@[User::WorkFolderPath]</Expression>
+            <Expression ExternalProperty="Directory">@[User::RawFolderPath]</Expression>
           </Expressions>
           <VariableMappings>
-            <VariableMapping Name="0" VariableName="User.CurrentFile" />
+            <VariableMapping Name="0" VariableName="User.CurrentArchive" />
           </VariableMappings>
           <Tasks>
+            <Script Name="SCR Expand archive to work folder" ProjectCoreName="ST_DecompressRawProducts">
+              <ScriptTaskProjectReference ScriptTaskProjectName="ST_DecompressRawProducts" />
+            </Script>
             <Dataflow Name="DFT Stage one csv" DelayValidation="true">
               <Transformations>
                 <FlatFileSource Name="FF products csv" ConnectionName="FF_RawProducts" />
                 <DerivedColumns Name="DC Add lineage">
                   <Columns>
-                    <Column Name="source_file" DataType="String" Length="260">@[User::CurrentFile]</Column>
+                    <Column Name="source_file" DataType="String" Length="260">@[User::CurrentArchive]</Column>
                     <Column Name="load_run_id" DataType="Int32">@[User::RunId]</Column>
                   </Columns>
                 </DerivedColumns>
@@ -211,10 +218,17 @@ namespace ST_DecompressRawProducts
                 </OleDbDestination>
               </Transformations>
             </Dataflow>
+            <FileSystem Name="FST Delete staged csv" Operation="DeleteFile">
+              <VariableInput VariableName="User.CurrentFile" />
+            </FileSystem>
           </Tasks>
         </ForEachFileLoop>
         <ExecuteSQL Name="SQL Count staged rows" ConnectionName="<#= target #>" ResultSet="SingleRow">
-          <DirectInput>SELECT CAST(COUNT_BIG(*) AS int) AS RowsStaged FROM stg.products_raw;</DirectInput>
+          <DirectInput><![CDATA[
+SET NOCOUNT ON;
+DECLARE @staged int = (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_raw);
+IF @staged = 0 THROW 50021, 'No rows staged: no products_part_*.csv.gz archives found in the raw folder.', 1;
+SELECT @staged AS RowsStaged;]]></DirectInput>
           <Results>
             <Result Name="0" VariableName="User.RowsWritten" />
           </Results>
@@ -229,6 +243,9 @@ namespace ST_DecompressRawProducts
       <#= PackageConnections(target, null, null) #>
       <Variables>
         <#= StandardVariables() #>
+        <Variable Name="ChunkRead" DataType="Int32">0</Variable>
+        <Variable Name="ChunkValid" DataType="Int32">0</Variable>
+        <Variable Name="ChunkQuarantine" DataType="Int32">0</Variable>
       </Variables>
       <#= OnErrorHandler(target) #>
       <Tasks>
@@ -236,12 +253,15 @@ namespace ST_DecompressRawProducts
         <ExecuteSQL Name="SQL Truncate valid and quarantine" ConnectionName="<#= target #>">
           <DirectInput>TRUNCATE TABLE stg.products_valid; TRUNCATE TABLE dq.products_quarantine;</DirectInput>
         </ExecuteSQL>
-        <Dataflow Name="DFT Cleanse products" DefaultBufferMaxRows="50000">
+        <!-- Rows here are ~12 KB wide. With default 10 MB buffers, ~50 in-flight buffers failed with
+             "Unspecified error" when the laptop ran out of free RAM; 3 MB buffers cap in-flight memory.
+             (Splitting into one flow per source file fixed memory but re-scanned the staging heap 10 times.) -->
+        <Dataflow Name="DFT Cleanse products" DefaultBufferMaxRows="10000" DefaultBufferSize="3145728">
           <Transformations>
             <OleDbSource Name="SRC stg products_raw" ConnectionName="<#= target #>">
               <DirectInput>SELECT <#= string.Join(", ", System.Linq.Enumerable.Select(rawCols, c => "raw_" + c)) #> FROM stg.products_raw;</DirectInput>
             </OleDbSource>
-            <RowCount Name="RC Read" VariableName="User.RowsRead" />
+            <RowCount Name="RC Read" VariableName="User.ChunkRead" />
 
             <!-- 1. Normalise text: the ADF trim/lower/replace steps -->
             <DerivedColumns Name="DC Normalise text">
@@ -334,14 +354,14 @@ namespace ST_DecompressRawProducts
               </OutputPaths>
             </ConditionalSplit>
 
-            <RowCount Name="RC Valid" VariableName="User.RowsWritten">
+            <RowCount Name="RC Valid" VariableName="User.ChunkValid">
               <InputPath OutputPathName="CSPL Valid or quarantine.Default" />
             </RowCount>
             <OleDbDestination Name="DST stg products_valid" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true" MaximumInsertCommitSize="500000">
               <ExternalTableOutput Table="[stg].[products_valid]" />
             </OleDbDestination>
 
-            <RowCount Name="RC Quarantine" VariableName="User.RowsRejected">
+            <RowCount Name="RC Quarantine" VariableName="User.ChunkQuarantine">
               <InputPath OutputPathName="CSPL Valid or quarantine.Quarantine" />
             </RowCount>
             <OleDbDestination Name="DST dq products_quarantine" ConnectionName="<#= target #>" UseFastLoadIfAvailable="true" TableLock="true" MaximumInsertCommitSize="500000">
@@ -349,6 +369,14 @@ namespace ST_DecompressRawProducts
             </OleDbDestination>
           </Transformations>
         </Dataflow>
+        <ExecuteSQL Name="SQL Count cleansed rows" ConnectionName="<#= target #>" ResultSet="SingleRow">
+          <DirectInput>SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_raw) AS RowsRead, (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsWritten, (SELECT CAST(COUNT_BIG(*) AS int) FROM dq.products_quarantine) AS RowsRejected;</DirectInput>
+          <Results>
+            <Result Name="0" VariableName="User.RowsRead" />
+            <Result Name="1" VariableName="User.RowsWritten" />
+            <Result Name="2" VariableName="User.RowsRejected" />
+          </Results>
+        </ExecuteSQL>
         <#= RunEnd(target, "User.RowsRead", "User.RowsWritten", "User.RowsRejected") #>
       </Tasks>
     </Package>

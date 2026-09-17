@@ -9,9 +9,10 @@ Excel reporting** — designed to run a full demo on an Azure free-trial credit.
 
 > **Also built on-premises in SSIS.** The ADF cleaning flow was rebuilt as SQL Server Integration
 > Services packages generated from one Biml file, with a run log, config table, quarantine and a
-> reconciliation gate. Run against the same 5.1M rows, it reproduces the ADF result exactly:
-> 4,284,971 clean SKUs, 729,438 quarantined, and identical revenue, margin and reject reasons.
-> See [`ssis/`](ssis/README.md).
+> reconciliation gate. Run against the same 5.1M rows, it reproduces the ADF result: 4,284,971 clean
+> SKUs, 729,438 quarantined, identical reject reasons and margin, and revenue equal to within 1 cent
+> of floating-point rounding on R1.17 trillion. It also includes an incident log of the disk and memory
+> failures hit along the way, with their fixes. See [`ssis/`](ssis/README.md).
 
 ## Why this exists
 

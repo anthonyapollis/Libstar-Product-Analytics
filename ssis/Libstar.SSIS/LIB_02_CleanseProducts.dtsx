@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DTS:Executable DTS:CreationDate="09/16/2026 19:07:22" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{8EB226DD-7C20-4E01-862C-C0F53DB495A9}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_02_CleanseProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{A3DD7375-DE00-4B56-AE4D-4020C999D701}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+<DTS:Executable DTS:CreationDate="09/17/2026 00:09:14" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{EEC69818-4501-4356-8F32-8045D65E3B72}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_02_CleanseProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{E1B1B461-E758-4E3E-BA2E-B9CD6AF9750B}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
   <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
-    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{735950B4-AC75-430C-93CA-C246A004A7D9}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{92D23543-47D1-4401-B894-217A90AFCE47}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
       <DTS:ObjectData>
         <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
       </DTS:ObjectData>
@@ -10,35 +10,44 @@
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
   <DTS:PackageParameters>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{AC685179-E9E4-420D-B832-83FB858C4B9D}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{D212F514-E037-4CF4-9876-1E80C26B358A}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{BBB3A006-DA3E-4D79-87E1-B78935B542CC}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{A8758B2D-51E8-48A5-9C22-688E13AB0644}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{6F612D79-4BA1-4289-9D16-534F211102FC}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{C8DB8AA4-E8C8-4D8E-9BB8-A01425240E84}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{3DAFB18A-ABD2-4ACF-BB4D-07B5A827EA3D}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{1346BF02-35B0-44A4-827D-C3D3EFCFD10F}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
   </DTS:PackageParameters>
   <DTS:Variables>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{18C013B3-FB57-4E7B-B9FE-E27D4557E12C}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{E65BB108-A240-4F7D-A5E5-241435E725E6}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{4F625414-3411-405F-ADD2-3FBC7F39C44E}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{64019141-30E7-46CF-ACD4-5205329B99D7}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{ABEDE867-1E69-44BC-9772-293424769D15}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{263F4E7C-2806-45BB-9BC1-0D498D6EF18D}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{5AE48DDA-56CD-4C01-A2B4-C334EC5148BD}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{A98962E7-4CA2-4D87-805D-4C078556F16B}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{02C0C994-A268-4EEA-8E65-A5E137AC96D7}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="ChunkRead">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{1B3661DF-ED0B-4EB0-B703-5C1D34BCB8DB}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="ChunkValid">
+      <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{A036E3FD-1DF8-41B5-8F63-3BE9A49E0950}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="ChunkQuarantine">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
   </DTS:Variables>
   <DTS:Executables>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{C3BB5F69-4E23-4205-8AC9-7696424CE8B1}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{06DE814D-F8B5-439A-98C3-097EE31E2AE7}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
@@ -47,18 +56,18 @@
         </SQLTask:SqlTaskData>
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{4FBD3370-9BEC-4A35-8E3E-DE62F975CE75}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Truncate valid and quarantine" DTS:refId="Package\SQL Truncate valid and quarantine" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{A335AC90-8DA5-4646-A4AE-23F2A6FFD07A}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Truncate valid and quarantine" DTS:refId="Package\SQL Truncate valid and quarantine" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="TRUNCATE TABLE stg.products_valid; TRUNCATE TABLE dq.products_quarantine;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.Pipeline" DTS:DTSID="{E9B03274-1E45-4175-9A6B-666785BD1773}" DTS:ExecutableType="Microsoft.Pipeline" DTS:LocaleID="-1" DTS:ObjectName="DFT Cleanse products" DTS:refId="Package\DFT Cleanse products" DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.Pipeline" DTS:DTSID="{A8B8B89B-3BE8-4D15-8156-297D56B6C9C6}" DTS:ExecutableType="Microsoft.Pipeline" DTS:LocaleID="-1" DTS:ObjectName="DFT Cleanse products" DTS:refId="Package\DFT Cleanse products" DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
-        <pipeline BLOBTempStoragePath="" bufferTempStoragePath="" defaultBufferMaxRows="50000" name="pipelineXml" version="1">
+        <pipeline BLOBTempStoragePath="" bufferTempStoragePath="" defaultBufferSize="3145728" name="pipelineXml" version="1">
           <components>
             <component componentClassID="Microsoft.OLEDBSource" contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7" name="SRC stg products_raw" refId="Package\DFT Cleanse products\SRC stg products_raw" usesDispositions="true" version="7">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\SRC stg products_raw.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\SRC stg products_raw.Connections[OleDbConnection]" />
               </connections>
               <outputs>
                 <output name="Output" refId="Package\DFT Cleanse products\SRC stg products_raw.Outputs[Output]">
@@ -144,7 +153,7 @@
                 </output>
               </outputs>
               <properties>
-                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsRead</property>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::ChunkRead</property>
               </properties>
             </component>
             <component componentClassID="Microsoft.DerivedColumn" contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0" name="DC Normalise text" refId="Package\DFT Cleanse products\DC Normalise text" usesDispositions="true">
@@ -372,7 +381,7 @@
             </component>
             <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Province" refId="Package\DFT Cleanse products\LKP Province" usesDispositions="true" version="6">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Province.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Province.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input name="DC Apply value rules_Output_LKP Province" refId="Package\DFT Cleanse products\LKP Province.Inputs[DC Apply value rules_Output_LKP Province]">
@@ -431,7 +440,7 @@
             </component>
             <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Sales channel" refId="Package\DFT Cleanse products\LKP Sales channel" usesDispositions="true" version="6">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Sales channel.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Sales channel.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input name="LKP Province_Match_LKP Sales channel" refId="Package\DFT Cleanse products\LKP Sales channel.Inputs[LKP Province_Match_LKP Sales channel]">
@@ -490,7 +499,7 @@
             </component>
             <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Category" refId="Package\DFT Cleanse products\LKP Category" usesDispositions="true" version="6">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Category.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Category.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input name="LKP Sales channel_Match_LKP Category" refId="Package\DFT Cleanse products\LKP Category.Inputs[LKP Sales channel_Match_LKP Category]">
@@ -549,7 +558,7 @@
             </component>
             <component componentClassID="Microsoft.Lookup" contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6" name="LKP Brand" refId="Package\DFT Cleanse products\LKP Brand" usesDispositions="true" version="6">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Brand.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="Connection manager used to access lookup data." name="OleDbConnection" refId="Package\DFT Cleanse products\LKP Brand.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input name="LKP Category_Match_LKP Brand" refId="Package\DFT Cleanse products\LKP Brand.Inputs[LKP Category_Match_LKP Brand]">
@@ -754,12 +763,12 @@
                 </output>
               </outputs>
               <properties>
-                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsRejected</property>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::ChunkQuarantine</property>
               </properties>
             </component>
             <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST dq products_quarantine" refId="Package\DFT Cleanse products\DST dq products_quarantine" usesDispositions="true" version="4">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST dq products_quarantine.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST dq products_quarantine.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="RC Quarantine_Output_DST dq products_quarantine" refId="Package\DFT Cleanse products\DST dq products_quarantine.Inputs[RC Quarantine_Output_DST dq products_quarantine]">
@@ -838,12 +847,12 @@
                 </output>
               </outputs>
               <properties>
-                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::RowsWritten</property>
+                <property dataType="System.String" description="Specifies the variable to hold the row count." name="VariableName">User::ChunkValid</property>
               </properties>
             </component>
             <component componentClassID="Microsoft.OLEDBDestination" contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4" name="DST stg products_valid" refId="Package\DFT Cleanse products\DST stg products_valid" usesDispositions="true" version="4">
               <connections>
-                <connection connectionManagerID="{735950B4-AC75-430C-93CA-C246A004A7D9}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST stg products_valid.Connections[OleDbConnection]" />
+                <connection connectionManagerID="{92D23543-47D1-4401-B894-217A90AFCE47}:external" connectionManagerRefId="Package.ConnectionManagers[Libstar_SSIS]" description="The OLE DB runtime connection used to access the database." name="OleDbConnection" refId="Package\DFT Cleanse products\DST stg products_valid.Connections[OleDbConnection]" />
               </connections>
               <inputs>
                 <input errorOrTruncationOperation="Insert" errorRowDisposition="FailComponent" hasSideEffects="true" name="RC Valid_Output_DST stg products_valid" refId="Package\DFT Cleanse products\DST stg products_valid.Inputs[RC Valid_Output_DST stg products_valid]">
@@ -937,7 +946,16 @@
         </pipeline>
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{A249BCDF-01F5-4E5D-9CCE-9F09FD02044A}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{1D99DAC1-491B-4702-B684-1F9386413301}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Count cleansed rows" DTS:refId="Package\SQL Count cleansed rows" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_raw) AS RowsRead, (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsWritten, (SELECT CAST(COUNT_BIG(*) AS int) FROM dq.products_quarantine) AS RowsRejected;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RowsRead" SQLTask:ResultName="0" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RowsWritten" SQLTask:ResultName="1" />
+          <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RowsRejected" SQLTask:ResultName="2" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{56DF6FE0-3C68-4B3F-BF83-19171254437C}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
@@ -949,19 +967,20 @@
     </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{3F296CFE-6143-457D-8DEF-08C164270AAC}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Truncate valid and quarantine" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Truncate valid and quarantine]" DTS:To="Package\SQL Truncate valid and quarantine" />
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{BF339CB7-3062-42BC-AEB9-A753D3095FE2}" DTS:From="Package\SQL Truncate valid and quarantine" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products]" DTS:To="Package\DFT Cleanse products" />
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{A91DE350-1157-4893-8209-728A14FF66A4}" DTS:From="Package\DFT Cleanse products" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_DFT Cleanse products_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_DFT Cleanse products_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{8BDF37F4-AB0E-4F63-857B-4C981FD3E178}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Truncate valid and quarantine" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Truncate valid and quarantine]" DTS:To="Package\SQL Truncate valid and quarantine" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{6632FDC6-FF9E-486A-94A4-4934462F49F6}" DTS:From="Package\SQL Truncate valid and quarantine" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Truncate valid and quarantine_To_DFT Cleanse products]" DTS:To="Package\DFT Cleanse products" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{7815432B-3DF3-4077-969B-E91EC197EDAD}" DTS:From="Package\DFT Cleanse products" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_DFT Cleanse products_To_SQL Count cleansed rows" DTS:refId="Package.PrecedenceConstraints[Constraint_DFT Cleanse products_To_SQL Count cleansed rows]" DTS:To="Package\SQL Count cleansed rows" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{AC7FE59B-E7EB-4E65-8679-6BFE4EDBE737}" DTS:From="Package\SQL Count cleansed rows" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Count cleansed rows_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Count cleansed rows_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
   </DTS:PrecedenceConstraints>
   <DTS:EventHandlers>
-    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{EEED2842-21A7-4F15-A832-084A2A9BE9EE}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{8DBE5DF6-5998-4F19-B00D-721FFA8FB031}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
       <DTS:Variables>
-        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{6EAFAB6A-A143-401D-A04D-65CB86DD617D}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{96203E09-6F51-4422-A5E0-4BCBC0EF54A0}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
           <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
         </DTS:Variable>
       </DTS:Variables>
       <DTS:Executables>
-        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{F0EFE1B0-0CBC-448C-9FC9-C93CD2D8ABEB}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{F68B8DC0-C4A4-43FF-A2F0-94DBABBBAE54}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
           <DTS:ObjectData>
             <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />

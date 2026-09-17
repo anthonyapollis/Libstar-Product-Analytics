@@ -6,6 +6,9 @@ Creates the on-premises SQL Server target the Biml-generated SSIS packages load.
 Run once before generating packages: Biml reads external column metadata from
 these tables at compile time.
 
+Storage: the four large tables use PAGE compression. A full reload uses ~2.4 GB instead of
+~7.1 GB, after the uncompressed load filled a small development disk.
+
 Layers (same contract as the ADF version, different engine):
   stg.products_raw        every CSV field landed as text, untouched
   ref.*                   lookup-driven cleansing rules (replace ADF case() chains)
@@ -78,7 +81,7 @@ CREATE TABLE stg.products_raw (
     raw_rating         nvarchar(255) NULL,
     source_file        nvarchar(260) NULL,
     load_run_id        int           NULL
-);
+) WITH (DATA_COMPRESSION = PAGE);
 GO
 
 /* ---------------- reference / rule tables ---------------- */
@@ -152,7 +155,7 @@ CREATE TABLE stg.products_valid (
     is_active       bit           NULL,
     rating          float         NULL,
     load_run_id     int           NULL
-);
+) WITH (DATA_COMPRESSION = PAGE);
 
 DROP TABLE IF EXISTS dq.products_quarantine;
 CREATE TABLE dq.products_quarantine (
@@ -173,7 +176,7 @@ CREATE TABLE dq.products_quarantine (
     raw_rating         nvarchar(255) NULL,
     reject_reason      nvarchar(100) NOT NULL,
     load_run_id        int           NULL
-);
+) WITH (DATA_COMPRESSION = PAGE);
 
 DROP TABLE IF EXISTS dw.products_clean;
 CREATE TABLE dw.products_clean (
@@ -197,7 +200,7 @@ CREATE TABLE dw.products_clean (
     is_active       bit           NULL,
     rating          float         NULL,
     load_run_id     int           NULL
-);
+) WITH (DATA_COMPRESSION = PAGE);
 GO
 
 /* ---------------- reconciliation views ---------------- */

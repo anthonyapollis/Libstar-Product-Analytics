@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DTS:Executable DTS:CreationDate="09/16/2026 19:07:22" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{8B339A3A-B132-48F1-8ED2-B00AC0473F7D}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_03_PublishProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{DDE9A83D-2241-42D5-BBEA-9C6008CF6D45}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+<DTS:Executable DTS:CreationDate="09/17/2026 00:09:14" DTS:CreationName="Microsoft.Package" DTS:CreatorComputerName="DESKTOP-ES5HL78" DTS:CreatorName="Anthony" DTS:DTSID="{A95D9D4E-F6D8-4211-A9B5-9FD5DDFF81EA}" DTS:ExecutableType="Microsoft.Package" DTS:LastModifiedProductVersion="" DTS:LocaleID="7177" DTS:ObjectName="LIB_03_PublishProducts" DTS:ProtectionLevel="0" DTS:refId="Package" DTS:VersionBuild="0" DTS:VersionGUID="{02DBD27D-9FA4-406D-B2FB-B1FBD9194B58}" DTS:VersionMajor="0" xmlns:DTS="www.microsoft.com/SqlServer/Dts">
   <DTS:Property DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
-    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{2F6D96A0-A7C6-4693-A6AB-F83459F8C602}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
+    <DTS:ConnectionManager DTS:CreationName="OLEDB" DTS:DTSID="{20C063BF-7602-4AF9-B371-3AFC33462F3A}" DTS:ObjectName="Libstar_SSIS" DTS:refId="Package.ConnectionManagers[Libstar_SSIS]">
       <DTS:ObjectData>
         <DTS:ConnectionManager DTS:ConnectionString="data source=localhost;initial catalog=Libstar_SSIS;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False" />
       </DTS:ObjectData>
@@ -10,35 +10,35 @@
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
   <DTS:PackageParameters>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{4DE670E0-7620-4ED6-B156-C6F9E86724E1}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{6D6AA8FF-D7E1-4B6D-B0CB-BEAF135B1343}" DTS:ObjectName="ServerName" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue">localhost</DTS:Property>
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{F483561A-B5BE-4B16-9DE4-46DB860BA31E}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{BD8A81ED-8553-4AA0-94B4-990ED20630D5}" DTS:ObjectName="RawFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{A91DC4ED-5855-4DBF-8B87-983D2D0F6AE0}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{F73966D2-E647-434B-90FD-33B2D5F93465}" DTS:ObjectName="WorkFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
-    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{A4A1E18B-4A76-402A-89C0-FFF2753A23EE}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
+    <DTS:PackageParameter DTS:CreationName="" DTS:DataType="8" DTS:Description="" DTS:DTSID="{B87C1643-C10F-4F39-874B-99E6C4BC86E3}" DTS:ObjectName="ReferenceFolder" DTS:Required="0" DTS:Sensitive="0">
       <DTS:Property DTS:DataType="8" DTS:Name="ParameterValue" />
     </DTS:PackageParameter>
   </DTS:PackageParameters>
   <DTS:Variables>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{5E78F508-5017-4C3A-A4F7-F2431B34434C}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{14CFABBD-E2B1-4070-9296-7CD4212016EE}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RunId">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{CBBD2254-9E18-47C7-AB0F-084FD1EDEA39}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{6361D7C5-367B-4875-B76F-FA3A6200759B}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRead">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{F76D4052-FD95-4DBF-9D5C-DCB0E4F02B2C}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{F8813072-BC85-48B8-BD6F-F43C0DBB3DB5}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsWritten">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
-    <DTS:Variable DTS:CreationName="" DTS:DTSID="{C648E8DA-0020-4309-AFD6-8BB95EAB52FC}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
+    <DTS:Variable DTS:CreationName="" DTS:DTSID="{CD2199B3-682A-48B1-8CEC-0C39B9D1ED12}" DTS:IncludeInDebugDump="6789" DTS:Namespace="User" DTS:ObjectName="RowsRejected">
       <DTS:VariableValue DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
   </DTS:Variables>
   <DTS:Executables>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{AFF2BCE6-3483-4427-8F55-75DD3CE01716}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{7D88BF8E-DD36-4601-AA30-A05BFA93A48F}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run start" DTS:refId="Package\SQL Log run start" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="SET NOCOUNT ON; INSERT INTO etl.PackageRun (PackageName, ExecutionGuid) OUTPUT inserted.RunId VALUES (?, ?);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::PackageName" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="200" />
@@ -47,12 +47,12 @@
         </SQLTask:SqlTaskData>
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{DCADC7AB-DE78-44EC-86F2-C46CD964DA9F}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Reconciliation gate" DTS:refId="Package\SQL Reconciliation gate" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{078B729B-0C40-4B56-B1CD-B0FD76652788}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Reconciliation gate" DTS:refId="Package\SQL Reconciliation gate" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="&#xA;/* Nothing is published unless every staged row is accounted for. */&#xA;DECLARE @raw bigint = (SELECT COUNT_BIG(*) FROM stg.products_raw),&#xA;        @valid bigint = (SELECT COUNT_BIG(*) FROM stg.products_valid),&#xA;        @quarantine bigint = (SELECT COUNT_BIG(*) FROM dq.products_quarantine);&#xA;IF @raw = 0&#xA;    THROW 50001, 'Reconciliation gate: stg.products_raw is empty.', 1;&#xA;IF @raw &lt;&gt; @valid + @quarantine&#xA;BEGIN&#xA;    DECLARE @msg nvarchar(400) = CONCAT('Reconciliation gate: raw ', @raw, ' &lt;&gt; valid ', @valid, ' + quarantine ', @quarantine);&#xA;    THROW 50002, @msg, 1;&#xA;END" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{B1A5BC16-4E5D-4C33-ADF8-9097B76F06E9}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Publish deduplicated products" DTS:refId="Package\SQL Publish deduplicated products" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{9D65EDC0-DB84-43F2-BFF8-ED2FA9C228DB}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Publish deduplicated products" DTS:refId="Package\SQL Publish deduplicated products" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:ResultType="ResultSetType_SingleRow" SQLTask:SqlStatementSource="&#xA;/* Latest date_added wins per product_id, as in ADF. Deduplicating 4M+ rows in one statement sorts the&#xA;   whole set in tempdb, which filled a small server's disk; hash buckets keep each sort to 1/8 of the rows.&#xA;   Each bucket commits on its own and the step truncates first, so a rerun after a failure starts clean. */&#xA;SET NOCOUNT ON;&#xA;DECLARE @buckets int = 8, @b int = 0, @published int = 0;&#xA;TRUNCATE TABLE dw.products_clean;&#xA;WHILE @b &lt; @buckets&#xA;BEGIN&#xA;    INSERT INTO dw.products_clean WITH (TABLOCK)&#xA;        (product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,&#xA;         price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id)&#xA;    SELECT product_id, sku, product_name, product_group, category, brand, brand_solution, sales_channel, province,&#xA;           price_zar, cost_zar, margin_pct, weight_kg, stock_qty, units_sold_12m, revenue_12m_zar, date_added, is_active, rating, load_run_id&#xA;    FROM (&#xA;        SELECT *, ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY date_added DESC) AS rn&#xA;        FROM stg.products_valid&#xA;        WHERE (CHECKSUM(product_id) &amp; 2147483647) % @buckets = @b&#xA;    ) v&#xA;    WHERE rn = 1;&#xA;    SET @published += @@ROWCOUNT;&#xA;    SET @b += 1;&#xA;    CHECKPOINT;&#xA;END;&#xA;SELECT (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) AS RowsRead,&#xA;       @published AS RowsWritten,&#xA;       (SELECT CAST(COUNT_BIG(*) AS int) FROM stg.products_valid) - @published AS RowsRejected;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding SQLTask:DtsVariableName="User::RowsRead" SQLTask:ResultName="0" />
@@ -61,7 +61,7 @@
         </SQLTask:SqlTaskData>
       </DTS:ObjectData>
     </DTS:Executable>
-    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{30C1BC90-E846-40BA-BC90-84BDE217D0AF}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+    <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{97A786BF-5FFD-4542-A3CE-9AD6FC4D9E9E}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run success" DTS:refId="Package\SQL Log run success" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
       <DTS:ObjectData>
         <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Succeeded', RowsRead = ?, RowsWritten = ?, RowsRejected = ? WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ParameterBinding SQLTask:DataType="3" SQLTask:DtsVariableName="User::RowsRead" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="0" />
@@ -73,19 +73,19 @@
     </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{766B1A9C-3C90-4DD5-A937-95F653ABFDE7}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Reconciliation gate" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Reconciliation gate]" DTS:To="Package\SQL Reconciliation gate" />
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{3434BA77-DEDC-474D-8114-562A5AA5274B}" DTS:From="Package\SQL Reconciliation gate" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Reconciliation gate_To_SQL Publish deduplicated products" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Reconciliation gate_To_SQL Publish deduplicated products]" DTS:To="Package\SQL Publish deduplicated products" />
-    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{F5BE0D96-F916-419A-AE1E-667FBD08AFF1}" DTS:From="Package\SQL Publish deduplicated products" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Publish deduplicated products_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Publish deduplicated products_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{3AEC8106-AC7B-40BA-B7A1-95126877DED1}" DTS:From="Package\SQL Log run start" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Log run start_To_SQL Reconciliation gate" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Log run start_To_SQL Reconciliation gate]" DTS:To="Package\SQL Reconciliation gate" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{36F7353E-4A1A-4D39-891E-175D8E4AE800}" DTS:From="Package\SQL Reconciliation gate" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Reconciliation gate_To_SQL Publish deduplicated products" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Reconciliation gate_To_SQL Publish deduplicated products]" DTS:To="Package\SQL Publish deduplicated products" />
+    <DTS:PrecedenceConstraint DTS:CreationName="" DTS:DTSID="{37CDE00C-5E85-4D45-ADA6-1EE1EE35BE85}" DTS:From="Package\SQL Publish deduplicated products" DTS:LogicalAnd="True" DTS:ObjectName="Constraint_SQL Publish deduplicated products_To_SQL Log run success" DTS:refId="Package.PrecedenceConstraints[Constraint_SQL Publish deduplicated products_To_SQL Log run success]" DTS:To="Package\SQL Log run success" />
   </DTS:PrecedenceConstraints>
   <DTS:EventHandlers>
-    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{EC2FA1F1-690E-4F05-9D3A-2A84729687E1}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
+    <DTS:EventHandler DTS:CreationName="OnError" DTS:DTSID="{997C5175-16D1-4802-95C8-233E5EE53E89}" DTS:EventID="0" DTS:EventName="OnError" DTS:LocaleID="-1" DTS:refId="Package.EventHandlers[OnError]">
       <DTS:Variables>
-        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{C892DDBB-CAA3-4FE1-BDDD-6E6BD4EEFC28}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
+        <DTS:Variable DTS:CreationName="" DTS:Description="The propagate property of the event" DTS:DTSID="{06D1C98B-A6F2-4158-8212-3C851B36CF2E}" DTS:IncludeInDebugDump="6789" DTS:Namespace="System" DTS:ObjectName="Propagate">
           <DTS:VariableValue DTS:DataType="11">True</DTS:VariableValue>
         </DTS:Variable>
       </DTS:Variables>
       <DTS:Executables>
-        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{83F3B689-644A-4081-B72A-969840DE1626}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+        <DTS:Executable DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:DTSID="{D6E9C6DE-C271-4D51-93DE-AA295B2EE60F}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="SQL Log run failure" DTS:refId="Package.EventHandlers[OnError]\SQL Log run failure" DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
           <DTS:ObjectData>
             <SQLTask:SqlTaskData SQLTask:Connection="Libstar_SSIS" SQLTask:SqlStatementSource="UPDATE etl.PackageRun SET EndTime = SYSDATETIME(), Status = 'Failed', Message = LEFT(CONCAT(Message, CASE WHEN Message IS NULL THEN '' ELSE ' | ' END, ?), 4000) WHERE RunId = ?;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding SQLTask:DataType="130" SQLTask:DtsVariableName="System::ErrorDescription" SQLTask:ParameterDirection="Input" SQLTask:ParameterName="0" SQLTask:ParameterSize="4000" />
