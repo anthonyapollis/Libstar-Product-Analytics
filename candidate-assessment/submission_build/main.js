@@ -49,7 +49,7 @@ function financeSummary() {
     small("Week 1–7 September 2026 (UTC) · NAD · internal_deposits (326 rows) vs gateway_settlement (306 rows)", { italics: true, color: GREY }),
     new Paragraph({ spacing: { after: 80 }, children: [
       new TextRun({ text: "274 of 306 gateway settlements (90%) match exactly ", bold: true, size: 20 }),
-      new TextRun({ text: "on reference, gross, fee and net. The bridge from our R218,280.00 to the gateway's R217,979.97 leaves R0.00 unexplained. Two of its timing lines are provisional until the adjacent weeks' files confirm them (see assumptions).", size: 20 }),
+      new TextRun({ text: "on reference, gross, fee and net. The 49 differences are 34 genuine breaks, 6 timing differences and 9 that are not a problem (exceptions.csv). The bridge from our R218,280.00 to the gateway's R217,979.97 leaves R0.00 unexplained; its two timing lines are provisional (see assumptions).", size: 20 }),
     ] }),
     subhead("Bridge on gross amounts: internal total → gateway total"),
     compactTable(
@@ -105,25 +105,32 @@ ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliat
   "Actual output of sql/03_reconciliation.sql against MySQL 8.0, and of the independent row-by-row check."));
 
 ex1.push(h3("Exceptions by category"));
+ex1.push(p("Every one of the 49 rows in exceptions.csv carries exactly one classification, as the brief asks: genuine break (34), timing difference (6) or not a problem (9), plus a row-specific explanation, next step and owner. Reconciliation_Workbook.xlsx holds the same rows and the two raw files, with the bridge and category totals as live SUMIFS/COUNTIFS formulas that recalculate to a 0.00 residual."));
 ex1.push(table(
-  ["Category", "Type", "Rows", "Impact (NAD)"],
+  ["Category", "Classification", "Rows", "Impact (NAD)"],
   [
-    ["Payment confirmed, wallet not credited", "Break — act now", "2", "250.00"],
-    ["Unrecognised settlement (no internal record)", "Break — act now", "4", "2,900.00"],
-    ["Net amount is not gross minus fee", "Break — dispute", "2", "4.00 short-paid"],
-    ["Settled fee differs from contract", "Break — dispute", "4", "3.75 overcharged"],
-    ["Settled amount differs from internal amount", "Break — dispute", "4", "-900.00 (net)"],
-    ["Duplicate gateway settlement", "Break — dispute", "4", "0.00*"],
-    ["Duplicate internal deposit", "Break — dedupe", "6", "0.00*"],
-    ["Reversal / chargeback", "Business event", "3", "850.00"],
-    ["Deposit SUCCESS, no settlement found", "Timing / possible break", "5", "2,700.00"],
-    ["Created in the last 15 min (expected next week)", "Timing — provisional", "3", "3,650.00"],
-    ["Settled in the first 15 min (likely last week's)", "Timing — provisional", "3", "2,600.00"],
+    ["Payment confirmed, wallet not credited", "Genuine break — act today", "2", "250.00 owed"],
+    ["Unrecognised settlement (no internal record)", "Genuine break — act today", "4", "2,900.00"],
+    ["Net amount is not gross minus fee", "Genuine break — dispute", "2", "4.00 short-paid"],
+    ["Settled fee differs from contract", "Genuine break — dispute", "4", "3.75 overcharged"],
+    ["Settled amount differs from internal amount", "Genuine break — dispute", "4", "-900.00 (net)"],
+    ["Duplicate gateway settlement", "Genuine break — dispute", "4", "1,550.00*"],
+    ["Duplicate internal deposit", "Genuine break — reverse credit", "6", "1,300.00*"],
+    ["Reversal / chargeback", "Genuine break — claw back", "3", "850.00"],
+    ["Deposit SUCCESS, no settlement found", "Genuine break — chase", "5", "2,700.00"],
+    ["Created in the last 15 min (expected next week)", "Timing difference", "3", "3,650.00"],
+    ["Settled in the first 15 min (likely last week's)", "Timing difference", "3", "2,600.00"],
     ["Rounding, exactly 1 cent", "Not a problem", "3", "0.03"],
+    ["Reference formatting differs (matched)", "Not a problem", "6", "0.00"],
   ],
-  [3700, 1900, 700, 1760]
+  [3700, 2560, 700, 1400]
 ));
-ex1.push(p("* The deposit and settlement amounts match on these rows, so the row-level impact is 0. The real cost is the duplicate itself: a double-credit risk, or a disputed double settlement. The bridge accounts for each separately. A dbt test (assert_recon_bridge_reconciles) fails the build if the bridge residual is ever not exactly zero.", { italics: true, color: GREY, size: 18 }));
+ex1.push(p("* Amount carried by the duplicate row only; the original row in each pair is 0. Only SUCCESS deposits credit a wallet, so each duplicate internal deposit credited the player twice for one payment. A dbt test (assert_recon_bridge_reconciles) fails the build if the bridge residual is ever not exactly zero.", { italics: true, color: GREY, size: 18 }));
+ex1.push(h3("Assumptions"));
+ex1.push(bullet("Period 2026-09-01 00:00:00 to 2026-09-07 23:59:59 UTC inclusive; all times UTC; both files NAD only. Internal total = SUCCESS deposits; gateway total = SETTLED rows."));
+ex1.push(bullet("References match after upper-casing and keeping only letters and digits. Fee = ROUND(2% × gross + 1.00, 2); any fee or net difference of 1 cent or more is a break; a gross difference of exactly 1 cent is rounding (Finance to confirm)."));
+ex1.push(bullet("Cut-off window of 15 minutes at each end. Settlements arrive 28 min after the deposit on median, 50 min at most, and the nearest unexplained items are 2 hours or more from either boundary, so the result doesn't depend on the window. The six timing items stay provisional until matched."));
+ex1.push(bullet("Reversals are genuine breaks until the wallet debit is confirmed. For duplicates, the later row is the duplicate. The bridge is on gross, so fee and net errors are actions, not bridge lines. FAILED deposits with no settlement agree on both sides and aren't listed."));
 
 ex1.push(h3("How the figures were checked"));
 ex1.push(p("The categorisation was implemented three times: the MySQL script, the dbt model, and separately written pandas code (sql/04_independent_check.py) that works per deposit and per settlement instead of through a join. All three agree on all 317 rows individually, and on every category's count and rand total."));

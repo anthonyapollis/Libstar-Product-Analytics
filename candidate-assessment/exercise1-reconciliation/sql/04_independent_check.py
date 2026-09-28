@@ -3,6 +3,7 @@ row against the SQL result (recon_exceptions). Different code path, same rules:
 if both agree on every (deposit, settlement, category) triple, neither has a logic slip.
 Usage: python 04_independent_check.py
 """
+import os
 import re
 import pandas as pd
 import pymysql
@@ -77,7 +78,9 @@ SQL_TO_SHORT = {
     "BREAK: settled fee": "fee", "BREAK: net amount": "net", "BREAK: settled gross": "amount",
     "NOT A PROBLEM": "rounding",
 }
-conn = pymysql.connect(host="127.0.0.1", user="assess", password="AssessPass123!", database="jsb_assessment")
+conn = pymysql.connect(host=os.environ.get("DB_HOST", "127.0.0.1"), port=int(os.environ.get("DB_PORT", 3306)),
+                       unix_socket=os.environ.get("DB_SOCKET") or None, user=os.environ.get("DB_USER", "assess"),
+                       password=os.environ.get("DB_PASSWORD", "AssessPass123!"), database="jsb_assessment")
 sql = pd.read_sql("SELECT deposit_id, gateway_txn_id, settled_at, category FROM recon_exceptions", conn)
 sql_set = set()
 for _, r in sql.iterrows():

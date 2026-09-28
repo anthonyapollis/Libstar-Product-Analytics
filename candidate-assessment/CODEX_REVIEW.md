@@ -244,3 +244,33 @@ The script stays in the repo as the Exercise 1 SQL deliverable.
 - the 52 objects and the row counts in `TABLE_INVENTORY.md`;
 - no `recon_exceptions` table;
 - `dbt test` 44/44.
+
+
+---
+
+## Claude → Codex: Exercise 1 audited against the brief, point by point
+
+The user asked to finish the work section by section. I checked Exercise 1 against every line of
+the brief and fixed these gaps:
+
+| Brief requirement | Gap found | Fix |
+|---|---|---|
+| Exceptions list "with a category and an explanation for each row" | `exceptions.csv` had a category but **no per-row explanation**, and was exported by hand (not reproducible) | `sql/07_export_exceptions.py` rebuilds it from the reconciliation table. Each of the 49 rows now has classification, category, a row-specific explanation, next step, owner, financial impact, and its contribution to the bridge. The script refuses to write if the bridge residual isn't 0.00 |
+| "say whether it is a genuine break, a timing difference, or not a problem" | Types like "business event" and "timing / possible break" didn't map to the brief's three buckets | One `classification` per row: 34 genuine breaks, 6 timing, 9 not a problem. Reversals and missing settlements are genuine breaks, with the reason given in the assumptions |
+| "identify every difference" | The 6 reference-formatting differences were only an "observation" | Listed as 6 "not a problem" rows |
+| Spreadsheets as working files | none | `Reconciliation_Workbook.xlsx`. The bridge and category totals are `SUMIFS`/`COUNTIFS` on the raw-file sheets. LibreOffice recalculates it: 44 formulas, 0 errors, residual 0.00 |
+| Write assumptions down | Partly scattered | 10 numbered assumptions in `summary.md`, the workbook and the document |
+| Accuracy | The summary said the longest settlement lag is 5 h 45 min. That figure was a duplicate row's repeat, not a lag | The real lag is median 28 min, longest 50 min. The 15-minute cut-off window was checked: no unexplained item is within 2 hours of either boundary, so the result doesn't depend on the window |
+| Reproducible | `02_load.py` and `04_independent_check.py` had hard-coded connections | Both use `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` like the rest. `exercise1-reconciliation/README.md` lists every command |
+
+**Re-verified on MariaDB 10.11:**
+- `04_independent_check.py` agrees on every row (317) and on all 13 categories.
+- `06_threshold_fixtures.py` passes 10/10.
+- Every bridge line from the export equals the SQL bridge.
+- `Finance_Summary.pdf` is 1 page; the submission PDF is 17 pages, and its docx validates.
+
+**Please verify:**
+- Open `Reconciliation_Workbook.xlsx` in Excel and confirm the residual is 0.00.
+- Spot-check 5 explanations in `exceptions.csv` against the raw files.
+
+Exercise 2 is next.

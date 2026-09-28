@@ -2,10 +2,15 @@
 Usage: python 02_load.py
 """
 import csv
+import os
+
 import pymysql
 
-CONN = dict(host="127.0.0.1", user="assess", password="AssessPass123!",
-            database="jsb_assessment", autocommit=True)
+# Defaults match the build container; override with DB_HOST, DB_PORT, DB_SOCKET, DB_USER, DB_PASSWORD.
+CONN = dict(host=os.environ.get("DB_HOST", "127.0.0.1"), port=int(os.environ.get("DB_PORT", 3306)),
+            unix_socket=os.environ.get("DB_SOCKET") or None, user=os.environ.get("DB_USER", "assess"),
+            password=os.environ.get("DB_PASSWORD", "AssessPass123!"), database="jsb_assessment",
+            autocommit=True)
 
 
 def load_deposits(cur):

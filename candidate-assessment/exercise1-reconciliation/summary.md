@@ -55,23 +55,71 @@ timing lines are provisional until the adjacent weeks' files confirm them (see a
 ## Supporting detail
 
 ### Exceptions by category
-| Category | Type | Rows | Impact (NAD) | Likely cause | Next step / owner |
-|---|---|---:|---:|---|---|
-| Payment confirmed, wallet not credited | **Break — act now** | 2 | 250.00 | Internal status set to FAILED but the gateway actually settled the payment (callback lost or a timeout misread as a failure) | **Payments engineering**: re-credit the two players' wallets today; check callback/webhook logs for the same failure mode across other rails |
-| Unrecognised settlement (no internal record) | **Break — act now** | 4 | 2,900.00 | Settled mid-week for references that appear nowhere in our records, not even as failed attempts. Could be an unlogged transaction, another merchant's reference, or an integration gap | **Payments + Finance**: request the gateway's transaction detail for GW-000301 to GW-000304 before treating any of it as ours |
-| Net amount is not gross minus fee | Break — dispute | 2 | 4.00 short-paid | The gateway's own arithmetic is wrong: GT900133 and GT900289 each paid R2 less than gross − fee | **Finance**: claim the R4.00; ask the gateway how net is calculated |
-| Settled fee differs from contract (2% + R1.00) | Break — dispute | 4 | 3.75 overcharged | Fee above contract on four settlements (R0.50 to R1.50 each) | **Finance**: raise a fee dispute. The contract fee is deterministic, so every settlement can be checked automatically |
-| Settled amount differs from internal amount | Break — dispute | 4 | 900.00 (net) | Gateway settled a different gross amount from the one we recorded. Three are higher than ours (R100, R800, R50: players under-credited); one is R50 lower (we over-credited) | **Finance**: dispute each with source evidence; correct the player wallets once agreed |
-| Duplicate gateway settlement | Break — dispute | 2 pairs (4 rows) | 1,550.00 gross | Gateway reported the same transaction twice, at different times (webhook retry without idempotency on their side) | **Payments engineering**: confirm with the gateway whether money moved twice or only the report duplicated |
-| Duplicate internal deposit | Break — dedupe | 3 pairs (6 rows) | 1,300.00 (double-credit risk) | The same deposit was submitted twice, 40 seconds apart, creating two deposit_ids for one gateway_ref | **Engineering**: add an idempotency key on deposit initiation; audit whether these wallets were credited twice |
-| Reversal / chargeback | Business event, not a break | 3 | 850.00 | Gateway reversed a previously settled payment (chargeback or goodwill reversal) | **Finance**: confirm the matching wallet debit was applied; if not, claw back |
-| Deposit SUCCESS, no settlement found | Timing / possible break | 5 | 2,700.00 | Mid-week deposits with no settlement at all, well beyond the normal lag (median 28 min, longest 5 h 45 min) | **Finance**: re-check on the next file; escalate if still missing after 3 days |
-| Created in the last 15 min, no settlement yet | Timing — provisional | 3 | 3,650.00 | Created at 23:54–23:55 on the last day. The settlement is expected in next week's file, but this week's data can't prove it | **Finance**: match against the 8–14 Sep gateway file; any still missing becomes a break |
-| Settled in the first 15 min, no internal record | Timing — provisional | 3 | 2,600.00 | Settled at 00:04–00:06 on the first day, with references that appear nowhere in this week's deposits. Likely deposits created just before midnight last week, but this week's data can't prove it | **Finance**: match against the 25–31 Aug internal file (GW-000331 to 333); any unmatched becomes an unrecognised settlement |
-| Rounding difference of exactly 1 cent | Not a problem (materiality choice) | 3 | 0.03 | Rounding noise | **Finance**: confirm 1 cent is immaterial |
-| *(observation, not an exception)* Reference formatting variance | Not a problem | 6 | — | The gateway returns our reference with different punctuation, case or spacing (`GW_000020`, `GW000102`, `gw-000196 `, `gw-000227`, ` GW-000267 `, `gw-000284`). These match once normalised to upper-case letters and digits | **Engineering**: ask the gateway to return references verbatim. An exact-match reconciliation would misclassify these as breaks. A case-insensitive database collation hides three of them, which is how an earlier count of 4 undercounted |
+Each of the 49 rows in `exceptions.csv` has exactly one classification, as the brief asks: **genuine
+break** (34 rows), **timing difference** (6) or **not a problem** (9). "Urgency" says how fast to act.
 
-Full row-level detail, one line per exception with its category and explanation, is in `exceptions.csv`.
+| Category | Classification | Urgency | Rows | Impact (NAD) | Likely cause | Next step / owner |
+|---|---|---|---:|---:|---|---|
+| Payment confirmed, wallet not credited | Genuine break | **Act today** | 2 | 250.00 owed to players | We marked the deposit FAILED, but the gateway settled it (callback lost, or a timeout misread as a failure) | **Payments engineering**: credit the two players today; check callback/webhook logs for the same failure elsewhere |
+| Unrecognised settlement (no internal record) | Genuine break | **Act today** | 4 | 2,900.00 not identified | Settled 2 h to 4 days into the period for references that appear nowhere in our records, not even as failed attempts. Could be an unlogged transaction, another merchant's reference, or an integration gap | **Payments + Finance**: get the gateway's transaction detail for GW-000301 to 304 before treating any of it as ours |
+| Net amount is not gross minus fee | Genuine break | Dispute this week | 2 | 4.00 short-paid | The gateway's own arithmetic is wrong: GT900133 and GT900289 each paid R2 less than gross − fee | **Finance**: claim the R4.00; ask the gateway how net is calculated |
+| Settled fee differs from contract (2% + R1.00) | Genuine break | Dispute this week | 4 | 3.75 overcharged | Fee above contract on four settlements (R0.50 to R1.50 each) | **Finance**: raise a fee dispute. The contract fee is deterministic, so every settlement is checked automatically |
+| Settled amount differs from internal amount | Genuine break | Dispute this week | 4 | −900.00 (internal − gateway) | The gateway settled a different gross amount from ours. Three are higher (R100, R800, R50: players under-credited); one is R50 lower (over-credited) | **Finance**: dispute each with the payment evidence; correct the wallets once agreed |
+| Duplicate gateway settlement | Genuine break | Dispute this week | 2 pairs (4 rows) | 1,550.00 extra in the gateway total | The gateway reported the same transaction twice, 5 hours apart (a retry without idempotency on their side) | **Payments engineering**: confirm with the gateway whether money moved twice or only the report repeated |
+| Duplicate internal deposit | Genuine break | Fix this week | 3 pairs (6 rows) | 1,300.00 credited twice | One payment recorded twice, 40 seconds apart: two SUCCESS deposit_ids for one reference and one settlement. Both SUCCESS rows credited the wallet | **Engineering**: reverse the extra credit; add an idempotency key on deposit initiation |
+| Reversal / chargeback | Genuine break | This week | 3 | 850.00 to claw back | The gateway pulled back a settled payment (chargeback or goodwill reversal); our deposit is still SUCCESS | **Finance**: confirm the matching wallet debit was posted; if not, claw back |
+| Deposit SUCCESS, no settlement found | Genuine break | Chase: 3 days | 5 | 2,700.00 credited, not received | Created 15 to 137 hours before period end with no settlement, far beyond the longest settlement lag (50 min; median 28 min) | **Finance**: re-check the next file; escalate to the gateway if still missing after 3 days |
+| Created in the last 15 min, no settlement yet | Timing difference | Watch | 3 | 3,650.00 awaiting settlement | Created 23:54–23:55 on the last day; expected in next week's file, but this week's data can't prove it | **Finance**: match against the 8–14 Sep gateway file; any still missing becomes a break |
+| Settled in the first 15 min, no internal record | Timing difference | Watch | 3 | 2,600.00 awaiting match | Settled 00:04–00:06 on the first day for references not in this week's deposits: most likely deposits made just before midnight on 31 Aug | **Finance**: match against the 25–31 Aug internal file (GW-000331 to 333); any unmatched becomes unrecognised |
+| Rounding difference of exactly 1 cent | Not a problem | None | 3 | 0.03 | Rounding noise | **Finance**: confirm 1 cent is immaterial |
+| Reference formatting differs | Not a problem | None | 6 | 0.00 | The gateway returns our reference with different punctuation, case or spacing (`GW_000020`, `GW000102`, `gw-000196 `, `gw-000227`, ` GW-000267 `, `gw-000284`). They match once normalised to upper-case letters and digits, and the amounts agree | **Payments engineering**: ask the gateway to return references verbatim. An exact-match reconciliation would misread these as breaks |
+
+**Impact column:** "Impact" is the amount at stake for that category. The bridge above shows how
+each category moves the internal total to the gateway total.
+
+**Row-level detail:** `exceptions.csv` has one line per difference: exception id, classification,
+category, a row-specific explanation, next step, owner, financial impact, and the row's
+contribution to the bridge. `Reconciliation_Workbook.xlsx` has the same rows plus the two raw files,
+with the bridge and category totals as live `SUMIFS`/`COUNTIFS` formulas. Finance can audit every
+number, and the residual stays 0.00.
+
+### Assumptions
+The brief asks for assumptions to be written down. These are also on the Assumptions sheet of the
+workbook.
+1. **Period and units.** 2026-09-01 00:00:00 to 2026-09-07 23:59:59 UTC, inclusive. All timestamps
+   are UTC. Both files are NAD only (checked).
+2. **What is compared.** The internal total is SUCCESS deposits only, since only SUCCESS credits a
+   wallet. The gateway total is SETTLED rows only; REVERSED rows are listed as reversals.
+3. **Matching.** Our `gateway_ref` equals the gateway's `merchant_ref` after upper-casing and
+   keeping only letters and digits. Without this, 6 clean matches would look like breaks.
+4. **Fee rule.** Fee = ROUND(2% × gross + 1.00, 2). Any fee or net difference of 1 cent or more is a
+   break. Boundary tests at 1, 2 and 3 cents are in `sql/06_threshold_fixtures.py`.
+5. **Rounding.** A gross difference of exactly 1 cent is rounding; 2 cents or more is a break. This
+   is a materiality choice for Finance to confirm.
+6. **Cut-off window.** 15 minutes at each end of the period. Matched settlements arrive 28 min after
+   the deposit on median, 50 min at most. The nearest unexplained items to either boundary are 2
+   hours or more away, so the result doesn't depend on the window chosen. The six timing items stay
+   provisional until matched in the adjacent weeks' files.
+7. **Reversals.** A REVERSED row means the gateway pulled the money back after settling. It's
+   treated as a genuine break until the matching wallet debit is confirmed; wallet postings aren't
+   in these files.
+8. **Duplicates.**
+   - Two SUCCESS deposits for one reference, seconds apart, are one payment recorded twice; the
+     later one is the duplicate.
+   - Two settlement rows with the same `gateway_txn_id` are one transaction reported twice; the
+     later one is the duplicate.
+9. **Bridge basis.** The bridge is on gross, which is what deposits record. Fee and net differences
+   don't move gross, so they are actions, not bridge lines.
+10. **Not listed.** FAILED deposits with no settlement agree on both sides (nothing paid, nothing
+    settled), so they aren't differences.
+
+### Files (deliverables)
+| Deliverable in the brief | File |
+|---|---|
+| List of exceptions with a category and an explanation for each row | `exceptions.csv` (49 rows), also on the Exceptions sheet of `Reconciliation_Workbook.xlsx` |
+| One-page summary for the Finance Manager, with the bridge | `Finance_Summary.pdf` (and the top of this file) |
+| Code or formulas | `sql/01_schema.sql` → `02_load.py` → `03_reconciliation.sql` → `07_export_exceptions.py`; checks in `04_independent_check.py` and `06_threshold_fixtures.py`; formulas in the workbook; the same logic as a dbt model (`../dbt_jsb_assessment/models/marts/fct_recon_exceptions.sql`) |
+| How to automate daily, and alerts | "Automating this daily", below |
 
 ### Automating this daily
 This is no longer just a proposal: the same categorisation logic lives as a dbt model
