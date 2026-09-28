@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['recon_key'], indexes=[['category'], ['deposit_id'], ['gateway_txn_id']]) }}") }}
 -- Exercise 1's reconciliation logic as a dbt model, so it can be scheduled
 -- (dbt run, daily) rather than run as a one-off script -- the automation
 -- summary.md describes in prose, made real. Same categorisation as
@@ -93,5 +94,7 @@ from matched
 )
 select
     categorised.*,
-    substring_index(category, ':', 1) as category_type  -- OK / BREAK / TIMING / REVERSAL / NOT A PROBLEM
+    substring_index(category, ':', 1) as category_type,  -- OK / BREAK / TIMING / REVERSAL / NOT A PROBLEM
+    -- primary key: one row per (deposit, settlement) pair; either side can be missing
+    concat(coalesce(deposit_id, '-'), '|', coalesce(cast(settlement_row_id as char), '-')) as recon_key
 from categorised

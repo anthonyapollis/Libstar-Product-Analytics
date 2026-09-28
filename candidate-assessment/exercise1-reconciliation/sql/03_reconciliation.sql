@@ -155,6 +155,13 @@ SELECT
     END AS financial_impact
 FROM matched m;
 
+-- Every table gets a primary key: one row per (deposit, settlement) pair, numbered here.
+ALTER TABLE recon_exceptions
+    ADD COLUMN recon_id INT AUTO_INCREMENT PRIMARY KEY,
+    ADD KEY ix_recon_category (category),
+    ADD KEY ix_recon_deposit (deposit_id),
+    ADD KEY ix_recon_gateway_txn (gateway_txn_id);
+
 -- Helper tables no longer needed once recon_exceptions is built.
 DROP TABLE IF EXISTS dep_dupe_flag;
 DROP TABLE IF EXISTS gw_dupe_flag;

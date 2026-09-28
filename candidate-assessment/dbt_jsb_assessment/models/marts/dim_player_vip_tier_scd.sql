@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['player_id', 'valid_from_utc']) }}") }}
 -- Type 2 dimension: exactly the SCD pattern used for player_vip_tier_history
 -- in the operational schema, carried through to the reporting layer so a fact
 -- can be joined to "the tier that was true when the event happened", not just

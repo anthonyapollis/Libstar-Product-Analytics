@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['bet_id'], indexes=[['player_id'], ['placed_date'], ['product', 'placed_date']]) }}") }}
 -- Grain: one row per accepted bet. Do not combine with fact_wallet_transaction
 -- (different grain: a bet is one row here, but produces 1-2 ledger rows --
 -- stake and, if it wins, a separate win). See design_notes.md, "three rules".

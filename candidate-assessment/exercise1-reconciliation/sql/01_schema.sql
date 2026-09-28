@@ -38,6 +38,8 @@ CREATE TABLE gateway_settlement (
     status          VARCHAR(10)     NOT NULL,   -- SETTLED | REVERSED
     merchant_ref_norm VARCHAR(30) GENERATED ALWAYS AS
         (UPPER(REGEXP_REPLACE(merchant_ref, '[^A-Za-z0-9]', ''))) STORED,
-    KEY ix_gw_ref_norm (merchant_ref_norm),
-    KEY ix_gw_txn (gateway_txn_id)
+    -- The file's genuine duplicates (one txn reported twice) differ in settled_at and are kept, since
+    -- reporting them is the point. An identical row twice would mean the file was loaded twice.
+    UNIQUE KEY ux_gw_txn_settled (gateway_txn_id, settled_at),
+    KEY ix_gw_ref_norm (merchant_ref_norm)
 ) ENGINE=InnoDB;

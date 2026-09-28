@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['date_day']) }}") }}
 -- Small date spine covering the assessment period. A production build would
 -- generate this far wider (e.g. 10 years) once, not per-run.
 with recursive dates as (

@@ -15,15 +15,22 @@ import ingest  # noqa: E402
 
 class FakeCursor:
     lastrowid = 1
+    rowcount = 0
+    lock_free = True
 
     def execute(self, sql, params=None):
-        pass
+        self.last = sql
 
     def executemany(self, sql, params=None):
         pass
 
     def fetchone(self):
+        if "GET_LOCK" in self.last:
+            return (1 if FakeCursor.lock_free else 0,)
         return None           # no checkpoint -> full load
+
+    def fetchall(self):
+        return []             # nothing stored yet
 
 
 class FakeConn:
@@ -78,6 +85,15 @@ class ExitCodeTests(unittest.TestCase):
 
     def test_completed_run_exits_zero(self):
         self.assertEqual(self.run_main(one_page), 0)
+
+    def test_second_run_skips_while_lock_held(self):
+        FakeCursor.lock_free = False
+        try:
+            calls = []
+            self.assertEqual(self.run_main(lambda req, timeout=10: calls.append(req)), 0)
+            self.assertEqual(calls, [], "a skipped run must not call the API")
+        finally:
+            FakeCursor.lock_free = True
 
 
 if __name__ == "__main__":

@@ -67,3 +67,20 @@ lost. It never touches other tables.
 ## History
 The old builds were removed from the local server by Codex on 2026-09-28, after a full backup (see
 `../CODEX_REVIEW.md`). `00_drop_other_build_tables.sql` is withdrawn and does nothing.
+
+## If MySQL Workbench closes while running the script
+Workbench doesn't officially support MariaDB and quits on large scripts, even split into parts.
+Use Workbench only to look at the tables afterwards, and load the script in one of these ways:
+- **phpMyAdmin (point and click, part of XAMPP).**
+  1. Start Apache and MySQL in the XAMPP Control Panel.
+  2. Open http://localhost/phpmyadmin and click the **Import** tab, without selecting a database.
+  3. Choose `01_load_submission_tables.sql`, then click **Import**.
+- **Run it from the command line instead.** MySQL Workbench doesn't officially support MariaDB
+  (the "Warning – not supported" on its tab) and can crash on a large script. `setup_local.bat`
+  uses XAMPP's `mysql.exe` instead. You can also run the script directly:
+  `C:\xampp\mysql\bin\mysql.exe -u root < 01_load_submission_tables.sql`
+- **Or run it in three smaller parts, in this order:** `01a_exercise1.sql`, `01b_exercise2.sql`,
+  `01c_exercise3.sql`. The result is the same, and if something closes you'll know which part
+  caused it.
+- **If the XAMPP MySQL server stops** (red in the XAMPP Control Panel), the reason is in
+  `C:\xampp\mysql\data\mysql_error.log`. The last 20 lines are what's needed to fix it.

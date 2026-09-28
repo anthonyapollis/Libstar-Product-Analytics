@@ -36,8 +36,10 @@ from urllib.parse import urlencode
 
 import pymysql
 
-API_BASE = "http://127.0.0.1:8000"
-API_KEY = "test-key"
+# Settings come from the environment. The defaults are the mock API's documented values and the
+# build container's database; in production the key and password come from a secrets manager.
+API_BASE = os.environ.get("INGEST_API_BASE", "http://127.0.0.1:8000")
+API_KEY = os.environ.get("INGEST_API_KEY", "test-key")
 SOURCE = "mock_provider"
 PAGE_LIMIT = int(os.environ.get("INGEST_PAGE_LIMIT", 200))
 MAX_RETRIES = 6
@@ -46,8 +48,11 @@ MAX_RETRIES = 6
 # Not used in normal operation (defaults to 0).
 DEMO_DELAY = float(os.environ.get("INGEST_DEMO_DELAY", 0))
 
-DB = dict(host="127.0.0.1", user="assess", password="AssessPass123!",
-          database="jsb_assessment", autocommit=False)
+DB = dict(host=os.environ.get("DB_HOST", "127.0.0.1"), port=int(os.environ.get("DB_PORT", 3306)),
+          unix_socket=os.environ.get("DB_SOCKET") or None, user=os.environ.get("DB_USER", "assess"),
+          password=os.environ.get("DB_PASSWORD", "AssessPass123!"),
+          database=os.environ.get("DB_NAME", "jsb_assessment"), autocommit=False)
+LOCK_NAME = f"ingest:{SOURCE}"
 
 
 def api_get(params, stats):
@@ -107,6 +112,35 @@ def validate(rec):
     }, None
 
 
+def classify(cur, clean_rows):
+    """Split a page's valid records into new / changed / unchanged against what is stored.
+    Only new and changed records need writing; unchanged ones are boundary re-reads."""
+    ids = [r["id"] for r in clean_rows]
+    stored = {}
+    if ids:
+        cur.execute(f"SELECT id, updated_at FROM transactions WHERE id IN ({','.join(['%s'] * len(ids))})", ids)
+        stored = dict(cur.fetchall())
+    new, changed, unchanged = [], [], []
+    for r in clean_rows:
+        if r["id"] not in stored:
+            new.append(r)
+        elif r["updated_at"] > stored[r["id"]]:
+            changed.append(r)
+        else:               # same version re-read, or an older version: never overwrite newer data
+            unchanged.append(r)
+    return new, changed, unchanged
+
+
+def save_checkpoint(cur, next_cursor, last_updated_at, last_id):
+    """Move the checkpoint forward, never backwards (guards against an out-of-order writer)."""
+    cur.execute("INSERT INTO ingest_checkpoint (source_system) VALUES (%s) "
+                "ON DUPLICATE KEY UPDATE source_system = source_system", (SOURCE,))
+    cur.execute(
+        """UPDATE ingest_checkpoint SET next_cursor=%s, last_updated_at=%s, last_id=%s
+           WHERE source_system=%s AND (last_updated_at IS NULL OR (last_updated_at, last_id) <= (%s, %s))""",
+        (next_cursor, last_updated_at, last_id, SOURCE, last_updated_at, last_id))
+
+
 def get_checkpoint(cur):
     cur.execute("SELECT last_updated_at, last_id FROM ingest_checkpoint WHERE source_system=%s", (SOURCE,))
     row = cur.fetchone()
@@ -124,6 +158,21 @@ def start_run(cur):
 def run_once():
     conn = pymysql.connect(**DB)
     cur = conn.cursor()
+    # One run at a time: a scheduled run that starts while the previous one is still going
+    # exits instead of racing it. The lock belongs to this connection, so a killed process
+    # releases it automatically.
+    cur.execute("SELECT GET_LOCK(%s, 0)", (LOCK_NAME,))
+    if cur.fetchone()[0] != 1:
+        print("another run holds the ingestion lock; exiting without doing anything")
+        conn.close()
+        return "SKIPPED"
+    # Holding the lock proves no other run is alive, so any run still RUNNING died mid-way.
+    cur.execute(
+        """UPDATE ingest_runs SET status='ABANDONED',
+             error_message='process stopped without finishing (killed or crashed); later runs resumed from the checkpoint'
+           WHERE source_system=%s AND status='RUNNING'""", (SOURCE,))
+    if cur.rowcount:
+        print(f"marked {cur.rowcount} earlier run(s) ABANDONED (they were killed mid-run)")
     run_id = start_run(cur)
     conn.commit()
     print(f"=== run {run_id} starting ===")
@@ -138,6 +187,7 @@ def run_once():
 
     cursor = None
     pages = upserted = rejected = 0
+    counts = {"new": 0, "changed": 0, "unchanged": 0}
     stats = {"rate_hits": 0, "server_hits": 0}
     status = "COMPLETED"
     error_message = None
@@ -168,30 +218,35 @@ def run_once():
                     reject_rows.append((rec.get("id"), reason, json.dumps(rec)))
 
             # Atomic unit: data + rejects + checkpoint + run counters, or nothing.
-            if clean_rows:
+            new_rows, changed_rows, unchanged_rows = classify(cur, clean_rows)
+            if new_rows or changed_rows:
+                # Each column is updated only if the incoming version is not older than the stored
+                # one. updated_at must be assigned last: MySQL evaluates the assignments in order.
                 cur.executemany(
                     """INSERT INTO transactions (id, player_id, type, amount, currency, status, updated_at, source_system)
                        VALUES (%(id)s, %(player_id)s, %(type)s, %(amount)s, %(currency)s, %(status)s, %(updated_at)s, %(source)s)
                        ON DUPLICATE KEY UPDATE
-                         player_id=VALUES(player_id), type=VALUES(type), amount=VALUES(amount),
-                         currency=VALUES(currency), status=VALUES(status), updated_at=VALUES(updated_at)""",
-                    [dict(c, source=SOURCE) for c in clean_rows],
+                         player_id = IF(VALUES(updated_at) >= updated_at, VALUES(player_id), player_id),
+                         type      = IF(VALUES(updated_at) >= updated_at, VALUES(type), type),
+                         amount    = IF(VALUES(updated_at) >= updated_at, VALUES(amount), amount),
+                         currency  = IF(VALUES(updated_at) >= updated_at, VALUES(currency), currency),
+                         status    = IF(VALUES(updated_at) >= updated_at, VALUES(status), status),
+                         updated_at = GREATEST(updated_at, VALUES(updated_at))""",
+                    [dict(c, source=SOURCE) for c in new_rows + changed_rows],
                 )
             if reject_rows:
+                # The same bad payload seen again (e.g. a restart re-reads the boundary page) is
+                # recorded once; last_seen_run_id shows it came back.
                 cur.executemany(
-                    "INSERT INTO ingest_rejects (run_id, record_id, reason, raw_payload) VALUES (%s,%s,%s,%s)",
-                    [(run_id, rid, reason, payload) for rid, reason, payload in reject_rows],
+                    """INSERT INTO ingest_rejects (run_id, last_seen_run_id, record_id, reason, raw_payload)
+                       VALUES (%s,%s,%s,%s,%s)
+                       ON DUPLICATE KEY UPDATE last_seen_run_id = VALUES(last_seen_run_id)""",
+                    [(run_id, run_id, rid, reason, payload) for rid, reason, payload in reject_rows],
                 )
 
             if page_records:
                 last_rec = sorted(page_records, key=lambda r: (r["updated_at"], r["id"]))[-1]
-                cur.execute(
-                    """INSERT INTO ingest_checkpoint (source_system, next_cursor, last_updated_at, last_id)
-                       VALUES (%s,%s,%s,%s)
-                       ON DUPLICATE KEY UPDATE next_cursor=VALUES(next_cursor),
-                         last_updated_at=VALUES(last_updated_at), last_id=VALUES(last_id)""",
-                    (SOURCE, body.get("next_cursor"), last_rec["updated_at"], last_rec["id"]),
-                )
+                save_checkpoint(cur, body.get("next_cursor"), last_rec["updated_at"], last_rec["id"])
 
             if DEMO_DELAY:
                 print(f"  [demo] sleeping {DEMO_DELAY}s before commit (kill now to test safety)")
@@ -200,15 +255,19 @@ def run_once():
             pages += 1
             upserted += len(clean_rows)
             rejected += len(reject_rows)
+            counts["new"] += len(new_rows)
+            counts["changed"] += len(changed_rows)
+            counts["unchanged"] += len(unchanged_rows)
             cur.execute(
-                """UPDATE ingest_runs SET pages_fetched=%s, rows_upserted=%s, rows_rejected=%s,
-                   rate_limit_hits=%s, server_error_hits=%s, final_cursor=%s WHERE run_id=%s""",
-                (pages, upserted, rejected, stats["rate_hits"], stats["server_hits"],
-                 body.get("next_cursor"), run_id),
+                """UPDATE ingest_runs SET pages_fetched=%s, rows_upserted=%s, rows_new=%s, rows_changed=%s,
+                   rows_unchanged=%s, rows_rejected=%s, rate_limit_hits=%s, server_error_hits=%s, final_cursor=%s
+                   WHERE run_id=%s""",
+                (pages, upserted, counts["new"], counts["changed"], counts["unchanged"], rejected,
+                 stats["rate_hits"], stats["server_hits"], body.get("next_cursor"), run_id),
             )
             conn.commit()  # <-- the whole page's work becomes durable here, atomically
-            print(f"  page {pages}: {len(clean_rows)} upserted, {len(reject_rows)} rejected, "
-                  f"has_more={body.get('has_more')}")
+            print(f"  page {pages}: {len(new_rows)} new, {len(changed_rows)} changed, "
+                  f"{len(unchanged_rows)} unchanged, {len(reject_rows)} rejected, has_more={body.get('has_more')}")
 
             if not body.get("has_more"):
                 break
@@ -230,14 +289,15 @@ def run_once():
         (datetime.now(timezone.utc), status, stats["rate_hits"], stats["server_hits"], error_message, run_id),
     )
     conn.commit()
-    print(f"=== run {run_id} {status}: {pages} pages, {upserted} upserted, {rejected} rejected "
+    print(f"=== run {run_id} {status}: {pages} pages, {counts['new']} new, {counts['changed']} changed, "
+          f"{counts['unchanged']} unchanged, {rejected} rejected "
           f"(429s: {stats['rate_hits']}, 500s: {stats['server_hits']}) ===")
     conn.close()
     return status
 
 
 # Process exit code per run status, so a scheduler or CI step sees a failed load as a failure.
-EXIT_CODES = {"COMPLETED": 0, "FAILED": 1, "INTERRUPTED": 130}
+EXIT_CODES = {"COMPLETED": 0, "SKIPPED": 0, "FAILED": 1, "INTERRUPTED": 130}
 
 
 def main():

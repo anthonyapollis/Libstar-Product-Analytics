@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['product', 'month_start']) }}") }}
 -- Reusable version of example_queries.sql query (a): NGR by product, by month.
 with product_ggr as (
     select

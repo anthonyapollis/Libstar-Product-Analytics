@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['step_order']) }}") }}
 -- The bridge from summary.md as rows, one per step, so a report can draw it as a
 -- waterfall: start at the internal total, add or subtract each explained
 -- difference, and the running total ends at the gateway total. gateway_settled_total

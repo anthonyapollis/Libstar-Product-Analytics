@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['player_bonus_id'], indexes=[['player_id'], ['campaign_id']]) }}") }}
 -- Grain: one row per player_bonus (grant), enriched with campaign and realised
 -- cost. This is what example_queries.sql query (b) becomes as a reusable model.
 select

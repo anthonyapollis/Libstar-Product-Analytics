@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['campaign_name', 'month_start']) }}") }}
 -- Reusable version of example_queries.sql query (b): bonus cost as % of NGR, by campaign.
 with campaign_cost as (
     select

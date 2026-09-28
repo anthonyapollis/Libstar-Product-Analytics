@@ -1,57 +1,110 @@
-EVIDENCE: kill / restart / new-activity demonstration
-======================================================
 
-1) Fresh load, small page size + artificial pre-commit delay, killed with
-   SIGKILL mid-page-2 (after page 1 committed, while page 2 was "in flight"):
+==============================================================================
+1. Start the mock API on port 8765 (faults on)
+==============================================================================
+  mock API is up
 
-$ INGEST_PAGE_LIMIT=50 INGEST_DEMO_DELAY=2 python3 ingest.py &
-=== run 1 starting ===
-no checkpoint found: full initial load
-  [demo] sleeping 2.0s before commit (kill now to test safety)
-  page 1: 50 upserted, 0 rejected, has_more=True
-  [demo] sleeping 2.0s before commit (kill now to test safety)
-$ kill -9 <pid>          # simulates a hard crash mid-page-2, before its commit
+==============================================================================
+2. Fresh schema in database `jsb_assessment`
+==============================================================================
+  created transactions, ingest_checkpoint, ingest_runs, ingest_rejects
 
-Database state immediately after the kill:
-  transactions:        50 rows, 50 distinct ids   (exactly page 1 -- page 2 never landed)
-  ingest_checkpoint:    last_updated_at=2026-09-01T00:35:00Z, last_id=TX000050
-  ingest_runs (run 1):  status=RUNNING, pages_fetched=1, rows_upserted=50
-                         (stays RUNNING forever -- this is the signal a
-                         "stale run" monitor alerts on in production)
+==============================================================================
+3. Run 1: 50-record pages, 2 s pause before each commit; kill it mid-page
+==============================================================================
+  | === run 1 starting ===
+  | no checkpoint found: full initial load
+  |   [demo] sleeping 2.0s before commit (kill now to test safety)
+  |   page 1: 50 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  |   [demo] sleeping 2.0s before commit (kill now to test safety)
+  >>> process hard-killed mid-page (page 2 fetched, not committed)
 
-2) Restart with normal settings -- resumes from the checkpoint, no special
-   recovery step needed, completes the full initial load:
+==============================================================================
+4. State right after the kill: only page 1 is in the table
+==============================================================================
+  rows_loaded  distinct_ids
+  50           50          
+  last_updated_at       last_id 
+  2026-09-01T00:35:00Z  TX000050
+  run_id  status   pages_fetched  rows_new
+  1       RUNNING  1              50      
 
-$ python3 ingest.py
-=== run 2 starting ===
-resuming from updated_since=2026-09-01T00:35:00Z (last id seen: TX000050)
-  page 1: 200 upserted, 0 rejected, has_more=True
-  page 2: 200 upserted, 0 rejected, has_more=True
-  page 3: 200 upserted, 0 rejected, has_more=True
-  page 4: 199 upserted, 1 rejected, has_more=True
-  page 5: 151 upserted, 0 rejected, has_more=False
-=== run 2 COMPLETED: 5 pages, 950 upserted, 1 rejected (429s: 0, 500s: 0) ===
+==============================================================================
+5. Run 2: restart with normal settings; resumes from the checkpoint
+==============================================================================
+  | marked 1 earlier run(s) ABANDONED (they were killed mid-run)
+  | === run 2 starting ===
+  | resuming from updated_since=2026-09-01T00:35:00Z (last id seen: TX000050)
+  |   page 1: 199 new, 0 changed, 1 unchanged, 0 rejected, has_more=True
+  |   page 2: 200 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  |   page 3: 200 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  |   page 4: 199 new, 0 changed, 0 unchanged, 1 rejected, has_more=True
+  |   page 5: 151 new, 0 changed, 0 unchanged, 0 rejected, has_more=False
+  | === run 2 COMPLETED: 5 pages, 949 new, 0 changed, 1 unchanged, 1 rejected (429s: 0, 500s: 0) ===
+  rows_loaded  distinct_ids
+  999          999         
+  record_id  reason             run_id  last_seen_run_id
+  TX000777   missing player_id  2       2               
+  id        amount
+  TX000500  250.00
 
-Verification -- no duplicates, no missing rows, bad record quarantined not lost:
-  transactions:      999 rows, 999 distinct ids   (1000 source records - 1 rejected)
-  ingest_rejects:    1 row -- TX000777, reason "missing player_id", raw JSON kept
-  TX000500.amount:   250.00  (source sent the string "250.00"; coerced correctly)
+==============================================================================
+6. Check every record against the API
+==============================================================================
+  |   [429 rate limited] sleeping 1.0s (attempt 1)
+  | API records (unique ids):      1,000
+  | loaded in transactions:        999
+  | quarantined in ingest_rejects: 1 ['TX000777']
+  | accounted for (loaded + quarantined): 1,000
+  | missing: 0 []
+  | unexpected: 0 []
+  | stale (change not loaded): 0 []
+  | duplicate rows: 0
+  | VERIFIED: the table matches the API exactly
 
-3) Interviewer-style "new activity" simulation, then rerun:
+==============================================================================
+7. Run 3: run again straight away (nothing has changed at the provider)
+==============================================================================
+  | === run 3 starting ===
+  | resuming from updated_since=2026-09-01T11:40:00Z (last id seen: TX001000)
+  |   [500 server error] backing off 2s (attempt 1)
+  |   page 1: 0 new, 0 changed, 1 unchanged, 0 rejected, has_more=False
+  | === run 3 COMPLETED: 1 pages, 0 new, 0 changed, 1 unchanged, 0 rejected (429s: 0, 500s: 1) ===
 
-$ curl -X POST http://127.0.0.1:8000/admin/advance
-{"ok": true, "total_records": 1025}
+==============================================================================
+8. Interviewer step: POST /admin/advance (new activity at the provider)
+==============================================================================
+  {"ok": true, "total_records": 1025}
 
-$ python3 ingest.py
-=== run 3 starting ===
-resuming from updated_since=2026-09-01T11:40:00Z (last id seen: TX001000)
-  [429 rate limited] sleeping 1.0s (attempt 1)
-  page 1: 66 upserted, 0 rejected, has_more=False
-=== run 3 COMPLETED: 1 pages, 66 upserted, 0 rejected (429s: 1, 500s: 0) ===
+==============================================================================
+9. Run 4: loads only the new and changed records
+==============================================================================
+  | === run 4 starting ===
+  | resuming from updated_since=2026-09-01T11:40:00Z (last id seen: TX001000)
+  |   page 1: 25 new, 40 changed, 1 unchanged, 0 rejected, has_more=False
+  | === run 4 COMPLETED: 1 pages, 25 new, 40 changed, 1 unchanged, 0 rejected (429s: 0, 500s: 0) ===
+  |   [429 rate limited] sleeping 1.0s (attempt 1)
+  | API records (unique ids):      1,025
+  | loaded in transactions:        1,024
+  | quarantined in ingest_rejects: 1 ['TX000777']
+  | accounted for (loaded + quarantined): 1,025
+  | missing: 0 []
+  | unexpected: 0 []
+  | stale (change not loaded): 0 []
+  | duplicate rows: 0
+  | VERIFIED: the table matches the API exactly
 
-Final verification:
-  transactions: 1024 rows, 1024 distinct ids (999 + 25 new; 40 changed rows
-                 upserted in place, not duplicated; a live 429 was hit and
-                 retried automatically per Retry-After)
-  status breakdown now includes 'reversed' (16 rows) -- proof the advance()
-  status changes were picked up, not just the 25 new rows.
+==============================================================================
+10. Final state
+==============================================================================
+  rows_loaded  distinct_ids  duplicates
+  1024         1024          0         
+  run_id  status     pages_fetched  rows_new  rows_changed  rows_unchanged  rows_rejected  rate_limit_hits  server_error_hits  seconds
+  1       ABANDONED  1              50        0             0               0              0                0                         
+  2       COMPLETED  5              949       0             1               1              0                0                  0      
+  3       COMPLETED  1              0         0             1               0              0                1                  2      
+  4       COMPLETED  1              25        40            1               0              0                0                  0      
+  last_updated_at       last_id 
+  2026-09-04T00:16:00Z  TX001024
+
+RESULT: PASS: after a hard kill, a restart and new provider activity, the table matches the API exactly: no duplicates, nothing missing, every change loaded, bad record quarantined.

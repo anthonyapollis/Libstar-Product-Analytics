@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['campaign_id']) }}") }}
 select
     campaign_id,
     name        as campaign_name,

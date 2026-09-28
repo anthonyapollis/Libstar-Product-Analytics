@@ -1,44 +1,98 @@
-# Exercise 2 — Incremental, restartable API ingestion
+# Exercise 2: incremental, restartable API ingestion
 
-**Tools:** Python 3 (stdlib only), MySQL 8.0, Postman/Newman.
+Loads the mock provider's transactions into MySQL/MariaDB. The first run loads everything; later
+runs load only new and changed records. It is safe to kill at any moment, never creates
+duplicates, and quarantines bad records rather than dropping them. The design is in
+`design_note.md` (half a page).
+
+## Deliverables
+| Brief asks for | File |
+|---|---|
+| Code | `ingest.py` (the loader), `schema.sql` (its 4 tables) |
+| Instructions to run it | this file |
+| Half-page design note | `design_note.md` |
+| Queries used to check correctness | `checks.sql` (SQL) and `verify_against_api.py` (every id against the API) |
+| Evidence: run, interrupt, rerun, new activity | `demo.py` → `evidence/run_transcript.txt` |
+| Tests | `tests/`: exit codes, lock, validation, new/changed classification (no network or DB needed) |
+
+## Requirements
+- Python 3.9+ with `pip install pymysql`. The mock API itself needs only the standard library.
+- MySQL 8 or MariaDB 10.4+.
+
+Connection settings are read from the environment. The defaults are the mock API and the build
+container:
+
+| Variable | Default | XAMPP example |
+|---|---|---|
+| `DB_HOST` / `DB_PORT` | `127.0.0.1` / `3306` | same |
+| `DB_USER` / `DB_PASSWORD` | `assess` / `AssessPass123!` | `root` / *(empty)* |
+| `DB_NAME` | `jsb_assessment` | same |
+| `INGEST_API_BASE` / `INGEST_API_KEY` | `http://127.0.0.1:8000` / `test-key` (from the API doc) | same |
+
+On Windows (Command Prompt), set them like this:
+```bat
+set DB_USER=root
+set DB_PASSWORD=
+```
 
 ## Run it
 ```bash
-# 1. schema (once)
-mysql -u assess -p jsb_assessment < schema.sql
-
-# 2. start the mock provider
-python mock_api.py
-
-# 3. run the ingestion (repeat every few minutes on a schedule)
-python ingest.py
-
-# 4. verify
-mysql -u assess -p jsb_assessment < checks.sql
-
-# 5. exercise the API contract directly
-newman run postman/JSB_Assessment_Exercise2.postman_collection.json \
-  -e postman/JSB_Assessment.postman_environment.json
+mysql -u root jsb_assessment < schema.sql   # once: creates the 4 tables (drops them if present)
+python mock_api.py                          # terminal 1: the provider on port 8000
+python ingest.py                            # terminal 2: run it every few minutes (cron / Task Scheduler)
+python verify_against_api.py                # every id in the table vs the API: missing / stale / duplicates
+mysql -u root jsb_assessment < checks.sql   # correctness and monitoring queries
 ```
 
-## Viewing the record count in the Postman app
-Import `postman/JSB_Assessment_Exercise2.postman_collection.json` (File → Import) and, with
-`mock_api.py` running, open request **"6. Count ALL records (auto-paginates to the end)"** and click
-**Send** once. It re-sends itself request-by-request (`setNextRequest`) until the API says
-`has_more: false`, and each page's running total shows up as a passing test name in the **Test Results**
-tab -- the last line is the grand total, no Collection Runner or console needed. Run
-**"0. Reset record counter"** first if you've already run it once and want to start over. It also
-auto-retries the mock API's deliberate 429/500 faults instead of breaking the count.
+**Exit codes:**
+
+| Code | Meaning |
+|---|---|
+| 0 | Completed, or skipped because another run holds the lock |
+| 1 | Failed: retries exhausted or an API error |
+| 130 | Interrupted with Ctrl+C |
+
+## Reproduce the evidence in one command
+```bash
+python demo.py                     # uses its own database, jsb_ingest_demo
+python -m unittest discover -s tests
+```
+
+`demo.py` does the following, and writes everything it prints to `evidence/run_transcript.txt`:
+1. Starts the mock API with faults on (429s, 500s and repeated rows).
+2. Hard-kills a run mid-page, then shows that only the committed page is in the table.
+3. Restarts the run. It marks the killed run ABANDONED and resumes from the checkpoint.
+4. Checks every id against the API.
+5. Reruns with no provider changes: 0 new, 0 changed.
+6. Calls `POST /admin/advance`, the interviewer's step.
+7. Reruns: 25 new, 40 changed.
+8. Checks against the API again: 1,025 ids = 1,024 loaded + 1 quarantined, with 0 missing, 0 stale
+   and 0 duplicates.
+
+## Postman
+The collection in `postman/` exercises the API contract: the auth header, paging, 429/500 handling
+and a full record count.
+
+**Count every record:**
+1. Import the collection and the environment.
+2. Run the collection with the **Collection Runner**. In the app, **Send** on a single request
+   doesn't follow `setNextRequest`, so it won't page through.
+3. The last test name shows the total number of rows returned. That total includes the mock's
+   deliberately repeated rows, so it's a little higher than the number of unique ids.
+
+**From the command line:**
+```bash
+newman run postman/JSB_Assessment_Exercise2.postman_collection.json -e postman/JSB_Assessment.postman_environment.json
+```
 
 ## Files
 | File | What it is |
 |---|---|
-| `schema.sql` | `transactions`, `ingest_checkpoint`, `ingest_runs`, `ingest_rejects` |
-| `ingest.py` | The ingestion program |
-| `checks.sql` | Correctness + monitoring queries |
-| `design_note.md` | How it tracks progress, avoids duplicates, handles failures; production changes |
-| `postman/` | API-contract collection + environment, run with Newman |
-| `evidence/` | Transcript of the kill/restart/new-activity demonstration, Newman run output |
-
-See `evidence/run_transcript.txt` for the full kill → restart → `/admin/advance` → rerun demonstration
-(0 duplicates, 0 missing rows, 1 bad record quarantined not lost, 1 live 429 retried automatically).
+| `schema.sql` | `transactions` (primary key `id`), `ingest_checkpoint`, `ingest_runs`, `ingest_rejects` (unique per bad payload) |
+| `ingest.py` | The loader |
+| `verify_against_api.py` | Checks the table against the API |
+| `demo.py` | The end-to-end evidence run |
+| `checks.sql` | SQL checks: duplicates, reject accounting, run history, stale runs, checkpoint |
+| `design_note.md` | Design, and what would change in production |
+| `tests/` | Unit tests |
+| `postman/`, `evidence/`, `screenshots/` | Postman collection, transcripts, screenshots |

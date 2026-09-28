@@ -7,6 +7,9 @@ models:
         tests: [unique, not_null]
   - name: dim_player_vip_tier_scd
     description: Type 2 dimension; one row per tier period per player.
+    tests:
+      - unique:
+          column_name: "concat(player_id, '|', valid_from_utc)"
   - name: dim_campaign
     columns:
       - name: campaign_id
@@ -39,11 +42,20 @@ models:
         tests: [unique, not_null]
   - name: mart_ngr_by_product_monthly
     description: Answers example_queries.sql query (a) as a reusable dbt model.
+    tests:
+      - unique:
+          column_name: "concat(product, '|', month_start)"
   - name: mart_bonus_cost_pct_of_ngr
     description: Answers example_queries.sql query (b) as a reusable dbt model.
+    tests:
+      - unique:
+          column_name: "concat(campaign_name, '|', month_start)"
   - name: fct_recon_exceptions
     description: "Exercise 1's reconciliation categorisation, as a dbt model (see exercise1-reconciliation/sql/03_reconciliation.sql for the equivalent standalone SQL)."
     columns:
+      - name: recon_key
+        description: "Primary key: deposit_id|settlement_row_id, '-' for a missing side."
+        tests: [unique, not_null]
       - name: deposit_id
         description: Null for gateway-only rows (no matching internal record).
       - name: settlement_row_id
@@ -67,8 +79,18 @@ models:
                 - "BREAK: net amount is not gross minus fee"
   - name: mart_recon_summary_by_category
     description: "The daily close-pack: exception count and impact total per category."
+    columns:
+      - name: category
+        tests: [unique, not_null]
   - name: mart_recon_bridge
     description: "The reconciliation bridge as ordered steps, for a waterfall chart."
     columns:
       - name: step_order
         tests: [unique, not_null]
+  - name: fct_api_transactions
+    description: "Exercise 2's API transactions, latest version per id. Incremental on ingested_at."
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: updated_at
+        tests: [not_null]

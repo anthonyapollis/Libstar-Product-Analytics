@@ -1,3 +1,4 @@
+{{ config(post_hook="{{ table_keys(['player_id']) }}") }}
 -- Conformed dimension: current player attributes only. Point-in-time VIP tier
 -- lives in dim_player_vip_tier_scd (Type 2) so "GGR by tier as it stood at bet
 -- time" doesn't silently use today's tier for a bet placed months ago.

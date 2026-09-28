@@ -69,9 +69,9 @@ VALUES
 INSERT INTO sports_events (event_id, sport, league, home_team, away_team, starts_at_utc) VALUES
   (1,'Football','Namibia Premier League','Blue Waters','African Stars','2026-09-05 15:00:00');
 
-INSERT INTO bets (bet_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
-  (1,1,'sportsbook','web',200.00,0.00,'won',360.00,'2026-09-05 14:00:00','2026-09-05 17:00:00'),
-  (2,3,'sportsbook','app',0.00,20.00,'lost',0.00,'2026-09-06 10:00:00','2026-09-06 12:00:00');
+INSERT INTO bets (bet_id, request_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
+  (1,'REQ-BET-0001',1,'sportsbook','web',200.00,0.00,'won',360.00,'2026-09-05 14:00:00','2026-09-05 17:00:00'),
+  (2,'REQ-BET-0002',3,'sportsbook','app',0.00,20.00,'lost',0.00,'2026-09-06 10:00:00','2026-09-06 12:00:00');
 
 INSERT INTO sports_bet_details (bet_id, bet_class, total_odds, leg_count, min_odds_rule_applied) VALUES
   (1,'single',1.800,1,NULL),
@@ -95,8 +95,8 @@ INSERT INTO bonus_rollover_events (player_bonus_id, bet_id, contribution_amount,
 -- Casino: player 1 plays a round.
 INSERT INTO game_providers (provider_id, name) VALUES (1,'Pragmatic Play');
 INSERT INTO games (game_id, provider_id, name, category, rtp_theoretical) VALUES (1,1,'Gates of Olympus','slots',96.500);
-INSERT INTO bets (bet_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
-  (3,1,'casino','app',50.00,0.00,'won',80.00,'2026-09-07 20:00:00','2026-09-07 20:00:05');
+INSERT INTO bets (bet_id, request_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
+  (3,'REQ-BET-0003',1,'casino','app',50.00,0.00,'won',80.00,'2026-09-07 20:00:00','2026-09-07 20:00:05');
 INSERT INTO casino_round_details (bet_id, game_id, provider_round_ref) VALUES (3,1,'PP-ROUND-000123');
 INSERT INTO wallet_transactions
   (wallet_txn_id, wallet_id, player_id, txn_type, balance_type, amount, direction,
@@ -108,8 +108,8 @@ VALUES
 -- Retail: player 2 places a bet at a location.
 INSERT INTO retail_locations (location_id, name, address_city) VALUES (1,'JSB Retail - Independence Ave','Windhoek');
 INSERT INTO devices (device_id, fingerprint, device_type) VALUES (1,'POS-TERM-0007','pos_terminal');
-INSERT INTO bets (bet_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
-  (4,2,'retail','retail',100.00,0.00,'lost',0.00,'2026-09-11 13:00:00','2026-09-11 16:00:00');
+INSERT INTO bets (bet_id, request_id, player_id, product, channel, stake_real_amount, stake_bonus_amount, status, payout_amount, placed_at_utc, settled_at_utc) VALUES
+  (4,'REQ-BET-0004',2,'retail','retail',100.00,0.00,'lost',0.00,'2026-09-11 13:00:00','2026-09-11 16:00:00');
 INSERT INTO retail_bet_details (bet_id, location_id, device_id, ticket_number) VALUES (4,1,1,'TCK-000456');
 INSERT INTO wallet_transactions
   (wallet_txn_id, wallet_id, player_id, txn_type, balance_type, amount, direction,

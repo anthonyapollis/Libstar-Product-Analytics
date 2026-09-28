@@ -13,8 +13,11 @@ Usage: python build_load_sql.py
 """
 import csv
 import json
+import os
 import sys
 from pathlib import Path
+
+import pymysql
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -28,7 +31,7 @@ def q(v):
     return "'" + str(v).replace("\\", "\\\\").replace("'", "''") + "'"
 
 
-def inserts(table, cols, rows, batch=200):
+def inserts(table, cols, rows, batch=50):
     out = []
     for i in range(0, len(rows), batch):
         values = ",\n".join("(" + ", ".join(q(r[c]) for c in cols) + ")" for r in rows[i:i + batch])
@@ -66,21 +69,23 @@ def main():
 
     L += ["", "-- ===================== Exercise 2 =====================",
           (ex2 / "schema.sql").read_text(encoding="utf-8")]
-    txn = read_csv(ROOT / "powerbi" / "data" / "transactions.csv")
-    L += inserts("transactions", ["id", "player_id", "type", "amount", "currency", "status", "updated_at",
-                                  "source_system", "ingested_at"], txn)
-    runs = read_csv(ROOT / "powerbi" / "data" / "ingest_runs.csv")
-    L += inserts("ingest_runs", ["run_id", "source_system", "started_at", "finished_at", "status",
-                                 "pages_fetched", "rows_upserted", "rows_rejected", "rate_limit_hits",
-                                 "server_error_hits"], runs)
-    bad = build()["TX000777"]                    # the record run 2 quarantined
-    L += inserts("ingest_rejects", ["run_id", "record_id", "reason", "raw_payload"],
-                 [{"run_id": 2, "record_id": "TX000777", "reason": "missing player_id",
-                   "raw_payload": json.dumps(bad)}])
-    last = max(txn, key=lambda r: (r["updated_at"], r["id"]))
-    L += inserts("ingest_checkpoint", ["source_system", "next_cursor", "last_updated_at", "last_id"],
-                 [{"source_system": "mock_provider", "next_cursor": None,
-                   "last_updated_at": last["updated_at"].replace(" ", "T") + "Z", "last_id": last["id"]}])
+    # Exercise 2: the tables exactly as the ingestion demo left them (exercise2-ingestion/demo.py
+    # --database jsb_assessment), read from the database so every column and row is reproduced.
+    conn = pymysql.connect(
+        host=os.environ.get("DB_HOST", "127.0.0.1"), port=int(os.environ.get("DB_PORT", 3306)),
+        unix_socket=os.environ.get("DB_SOCKET") or None, user=os.environ.get("DB_USER", "assess"),
+        password=os.environ.get("DB_PASSWORD", "AssessPass123!"), database="jsb_assessment")
+    ex2_counts = {}
+    for table, order in [("transactions", "id"), ("ingest_runs", "run_id"),
+                         ("ingest_rejects", "reject_id"), ("ingest_checkpoint", "source_system")]:
+        cur = conn.cursor(pymysql.cursors.DictCursor)
+        cur.execute(f"SELECT * FROM {table} ORDER BY {order}")
+        rows = cur.fetchall()
+        cols = [c for c in (rows[0].keys() if rows else []) if c != "payload_sha256"]   # generated column
+        L += inserts(table, cols, rows)
+        ex2_counts[table] = len(rows)
+    conn.close()
+    txn, runs = ex2_counts["transactions"], ex2_counts["ingest_runs"]
 
     L += ["", "-- ===================== Exercise 3 =====================",
           (ex3 / "ddl.sql").read_text(encoding="utf-8"),
@@ -95,10 +100,20 @@ def main():
           "UNION ALL SELECT 'ingest_rejects', COUNT(*) FROM jsb_assessment.ingest_rejects",
           "UNION ALL SELECT 'jsb_platform tables', COUNT(*) FROM information_schema.tables "
           "WHERE table_schema = 'jsb_platform';"]
+    text = "\n".join(L) + "\n"
     out = HERE / "01_load_submission_tables.sql"
-    out.write_text("\n".join(L) + "\n", encoding="utf-8")
-    print(f"wrote {out.name}: {len(dep)} deposits, {len(gw)} settlements, {len(txn)} transactions, "
-          f"{len(runs)} runs, 1 reject, checkpoint at {last['id']}")
+    out.write_text(text, encoding="utf-8")
+    # The same script in three parts (one per exercise), for clients that struggle with one
+    # large script. Run them in order; each starts with the same header.
+    header, rest = text.split("-- ===================== Exercise 1", 1)
+    ex1, rest = rest.split("-- ===================== Exercise 2", 1)
+    ex2, ex3 = rest.split("-- ===================== Exercise 3", 1)
+    for name, body in [("01a_exercise1.sql", "-- ===================== Exercise 1" + ex1),
+                       ("01b_exercise2.sql", "-- ===================== Exercise 2" + ex2),
+                       ("01c_exercise3.sql", "-- ===================== Exercise 3" + ex3)]:
+        (HERE / name).write_text(header + body, encoding="utf-8")
+    print(f"wrote {out.name}: {len(dep)} deposits, {len(gw)} settlements, {txn} transactions, "
+          f"{runs} runs, {ex2_counts['ingest_rejects']} reject(s), from the database")
 
 
 if __name__ == "__main__":

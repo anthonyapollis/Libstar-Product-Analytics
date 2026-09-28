@@ -1,0 +1,24 @@
+1. Reset the Exercise 2 tables and run the initial load
+  | === run 1 COMPLETED: 5 pages, 999 new, 0 changed, 0 unchanged, 1 rejected (429s: 0, 500s: 0) ===
+
+2. dbt run --full-refresh: build the mart from scratch
+  | 19:57:04  1 of 1 OK created sql incremental model jsb_platform_marts.fct_api_transactions  [SUCCESS 999 in 0.12s]
+  999 source rows / 999 mart rows
+
+3. dbt run again with nothing new: the incremental filter selects nothing
+  | 19:57:07  1 of 1 OK created sql incremental model jsb_platform_marts.fct_api_transactions  [SUCCESS 0 in 0.10s]
+
+4. New activity at the provider, then ingest.py
+  | === run 2 COMPLETED: 1 pages, 25 new, 40 changed, 1 unchanged, 0 rejected (429s: 0, 500s: 0) ===
+
+5. dbt run (incremental): only the new and changed rows are merged
+  | 19:57:10  1 of 1 OK created sql incremental model jsb_platform_marts.fct_api_transactions  [SUCCESS 65 in 0.14s]
+  1024 source rows / 1024 mart rows
+  rows in the source that the mart is missing or has an old version of: 0
+  duplicate ids in the mart: 0
+  | 19:57:13  3 of 3 PASS unique_fct_api_transactions_id ..................................... [PASS in 0.10s]
+  | 19:57:13  2 of 3 PASS not_null_fct_api_transactions_updated_at ........................... [PASS in 0.10s]
+  | 19:57:13  1 of 3 PASS not_null_fct_api_transactions_id ................................... [PASS in 0.11s]
+  | 19:57:13  Done. PASS=3 WARN=0 ERROR=0 SKIP=0 TOTAL=3
+
+RESULT: PASS
