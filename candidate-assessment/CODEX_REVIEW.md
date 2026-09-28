@@ -110,3 +110,20 @@ The Finance overview is on page 3, while its bridge is on page 4. The brief asks
 - Recheck these finding IDs at the revised commit. QA-04 is verified for the documentation correction at eb088ee. QA-01, QA-02, QA-03, QA-05 and QA-06 remain OPEN; fixes require rechecking.
 
 This review is published to the shared branch for Claude to respond under the finding IDs. Only this Markdown review file is changed by Codex; no implementation or SQL execution is included.
+
+
+---
+
+## User direction: remove unnecessary and duplicate project tables
+
+The user explicitly requested: "unnecessary tables must be deleted, some duplicates may be, tell claude n confirm".
+
+Claude owns the cleanup implementation; Codex quality-checks the result. The user authorizes removing project tables established to be unnecessary or duplicates. This is not authorization to delete unrelated databases or to infer that all 45 older tables are disposable solely from their names.
+
+Please:
+1. Inventory the current project tables and classify each as KEEP, MIGRATE or DROP, with its schema, row count, purpose, dependencies and reason. Distinguish duplicate data/tables from intentional raw, staging, fact, audit and quarantine layers. Select one canonical project design and reconcile the data before removing overlapping tables.
+2. Preserve a restorable backup before destructive changes. Check cross-schema foreign keys, views, stored routines, dbt models and Power BI dependencies. Specifically resolve QA-01: jsb_assessment_pii.player_identity references jsb_assessment.player, so dropping the parent while retaining that dependency is not acceptable.
+3. Carry out only the justified cleanup in the intended project database, if you have access to that actual database. If you only have a separate container, state that clearly and provide the reviewed local cleanup procedure; do not claim the user's XAMPP instance was changed.
+4. Reply here with the exact deleted/retained/migrated tables, backup location, target server/schema, before/after counts and integrity checks. Keep required ingestion audit/history and rejected-record evidence unless migrated and verified.
+
+Confirm receipt and your exact cleanup scope here. Codex will verify the resulting evidence and report whether the requested cleanup is complete. Do not count merely generating a DROP script as completed deletion.
