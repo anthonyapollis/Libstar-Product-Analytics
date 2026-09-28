@@ -10,10 +10,10 @@ can look at the result in Workbench.
 | 2 | Installs dbt 1.7 in a private Python environment (`local_load\.dbt-venv`, first run only) | nothing yet |
 | 3 | `dbt debug --target xampp`: checks dbt can connect | nothing yet |
 | 4 | `dbt run --select staging`: builds 11 views | `jsb_platform_staging` |
-| 5 | `dbt run --select marts`: builds 12 tables | `jsb_platform_marts` |
-| 6 | `dbt test`: runs 44 tests | nothing new; all should say PASS |
+| 5 | `dbt run --select marts`: builds 13 tables (2 incremental) | `jsb_platform_marts` |
+| 6 | `dbt test`: runs 54 tests | nothing new; all should say PASS |
 
-What each table is for, and why dbt adds 23 objects on top of the 29 base tables, is in
+What each table is for, and why dbt adds 24 objects on top of the 29 base tables, is in
 `../TABLE_INVENTORY.md`.
 
 **Requirements:**
@@ -58,7 +58,7 @@ They do the following, in order:
 
 ## Only the source data, without dbt
 Workbench → File → Open SQL Script → `01_load_submission_tables.sql` → Execute. It prints row
-counts at the end: 326 deposits, 306 settlements, 1,024 transactions, 3 runs, 1 reject, and 23
+counts at the end: 326 deposits, 306 settlements, 1,024 transactions, 4 runs, 1 reject, and 23
 `jsb_platform` tables.
 
 **Re-running resets the 29 base tables** to the submission data, so any later changes to them are

@@ -64,7 +64,7 @@ function caption(text) {
   });
 }
 function imgPara(path, widthPx, capText) {
-  const children = [new Paragraph({ children: [img(path, widthPx)], alignment: AlignmentType.CENTER, spacing: { before: 200 } })];
+  const children = [new Paragraph({ children: [img(path, widthPx)], alignment: AlignmentType.CENTER, keepNext: !!capText, spacing: { before: 200 } })];
   if (capText) children.push(caption(capText));
   return children;
 }

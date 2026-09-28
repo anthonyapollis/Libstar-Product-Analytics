@@ -1,9 +1,9 @@
 # Table inventory: what each table is, who creates it, and why
 
-A fresh local setup creates **52 objects in 4 databases**:
+A fresh local setup creates **53 objects in 4 databases**:
 
 - 29 base tables, loaded by one SQL script.
-- 23 objects built by dbt: 11 views and 12 tables.
+- 24 objects built by dbt: 11 views and 13 tables (2 of them incremental).
 
 Nothing else is created. Every derived object comes from dbt, so there are no hand-built copies.
 Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
@@ -13,9 +13,9 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | Source (Ex 1, 2) | `jsb_assessment` | 6 tables | `local_load/01_load_submission_tables.sql` | yes |
 | Source (Ex 3) | `jsb_platform` | 23 tables | the same script (`ddl.sql` + `seed.sql`) | yes |
 | Staging | `jsb_platform_staging` | 11 views | `dbt run --select staging` | **no**: views read the base tables live |
-| Marts | `jsb_platform_marts` | 12 tables | `dbt run --select marts` | yes, derived; rebuilt by every `dbt run` |
+| Marts | `jsb_platform_marts` | 13 tables | `dbt run --select marts` | yes, derived: 11 rebuilt each run, 2 incremental |
 
-## Why dbt adds 23 objects on top of the 29
+## Why dbt adds 24 objects on top of the 29
 - **Staging views (11)** give every source one consistent, typed, renamed shape. Examples: the
   normalised gateway reference, and deposit amounts as decimals. Each model then reads staging,
   never raw tables, so a source change is fixed in one place. They're **views**, so they duplicate
@@ -28,7 +28,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 
   Power BI reads these tables. They are materialised because they are what the report and the
   tests query.
-- **The 44 dbt tests run on these objects.** Examples: the bridge residual must be exactly 0, no
+- **The 54 dbt tests run on these objects.** Examples: the bridge residual must be exactly 0, no
   source row may be dropped, and the wallet balance cache must equal the ledger. That's the
   practical reason for doing the transformations in dbt rather than in ad-hoc SQL.
 
@@ -40,7 +40,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | `gateway_settlement` | 306 | Ex 1 supplied file, loaded as-is |
 | `transactions` | 1,024 | Ex 2 target table: API records, upserted by `id` |
 | `ingest_checkpoint` | 1 | Ex 2 resume point (cursor) for restartable loads |
-| `ingest_runs` | 3 | Ex 2 run log: monitoring and audit |
+| `ingest_runs` | 4 | Ex 2 run log: monitoring and audit (run 1 was killed mid-page: ABANDONED) |
 | `ingest_rejects` | 1 | Ex 2 quarantine: the bad record (TX000777) with its raw JSON, kept, not dropped |
 
 ### `jsb_platform`: Exercise 3 operational design (23 tables)
@@ -75,7 +75,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 `stg_deposit_attempts`, `stg_bonus_campaigns`, `stg_player_bonuses` (Ex 3);
 `stg_internal_deposits`, `stg_gateway_settlement` (Ex 1); `stg_transactions`, `stg_ingest_runs` (Ex 2).
 
-### `jsb_platform_marts`: dbt reporting tables (12 tables)
+### `jsb_platform_marts`: dbt reporting tables (13 tables)
 | Table | Rows | Purpose | Used by |
 |---|---:|---|---|
 | `dim_player` | 3 | Player dimension | Power BI |
@@ -90,6 +90,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | `mart_recon_summary_by_category` | 13 | Ex 1: rows and rand per category for Finance | Finance summary |
 | `mart_ngr_by_product_monthly` | 3 | Ex 3 query (a) as a table | Cross-check of the DAX |
 | `mart_bonus_cost_pct_of_ngr` | 1 | Ex 3 query (b) as a table | Cross-check of the DAX |
+| `fct_api_transactions` | 1,024 | Ex 2: latest version of each API transaction (incremental) | Power BI |
 
 ## Not created by the setup, on purpose
 - **`jsb_assessment.recon_exceptions`** is written by the standalone Exercise 1 script
@@ -99,3 +100,47 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
   `04_independent_check.py` compares the two.
 - **No backups or copies.** Codex took the backup of the old builds before removing them, and it
   lives outside the database on the user's machine.
+
+## Keys and duplicates
+- **Every table has a primary key.**
+  - The 29 base tables declare theirs in their DDL.
+  - The 13 mart tables get theirs, plus indexes on join and filter columns, from the
+    `table_keys` post-hook (`dbt_jsb_assessment/macros/table_keys.sql`). dbt's `CREATE TABLE AS`
+    doesn't carry keys on MySQL/MariaDB.
+  - Views hold no data; they read keyed tables.
+- **Natural keys are unique, so a retry or a reload can't create a duplicate:**
+  - wallet ledger `idempotency_key`
+  - bet and withdrawal `request_id`
+  - deposit `gateway_ref`
+  - one wallet per player and currency
+  - one identity per email
+  - campaign name + start
+  - game per provider
+  - bet leg per event and market
+  - tag start per player
+  - API transaction `id`
+  - one reject per distinct bad payload
+  - gateway settlement `gateway_txn_id` + `settled_at`
+- **Duplicates we keep on purpose:** the Exercise 1 source files contain real duplicates (a
+  deposit recorded twice; a settlement reported twice). They're loaded as supplied, because
+  finding them is the point, and reported as exceptions. A reload can't double them: deposits are
+  keyed on `deposit_id`, settlements on `gateway_txn_id` + `settled_at`.
+- **Tested on every build:** dbt runs a `unique` test on every mart's key (composite keys as an
+  expression) and on the staging keys. `exercise2-ingestion/checks.sql` and
+  `verify_against_api.py` check the ingested table.
+
+## Incremental loads
+| Load | How it's incremental | Evidence |
+|---|---|---|
+| API → `transactions` (`ingest.py`) | Resumes from the checkpoint; writes only new or changed records | `exercise2-ingestion/evidence/run_transcript.txt` |
+| `fct_api_transactions` (dbt) | Only rows `ingest.py` stamped after the last run (`ingested_at`); merged by `id` | `dbt_jsb_assessment/evidence/incremental_run.txt`: 999, then 0, then exactly the 65 new and changed |
+| `fact_wallet_transaction` (dbt) | Append-only ledger: only `wallet_txn_id` above the current maximum | second run adds 0 rows |
+| Everything else in dbt | Rebuilt each run, on purpose | |
+
+Why the rest is rebuilt each run:
+- **The reconciliation** matches two files against each other, and a late settlement changes the
+  category of earlier rows, so it's recomputed for the period.
+- **`fact_bet`:** bets change after they're placed (settlement) and have no `updated_at`, so
+  incremental would miss changes.
+- **Dimensions and summaries** are small.
+

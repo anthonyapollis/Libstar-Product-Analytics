@@ -1,7 +1,7 @@
 # Power BI — JSB reporting model and report
 
 A finished Power BI project covering all three exercises. The semantic model has 11 tables,
-7 relationships and 26 DAX measures (20 calculations and 6 colour rules for the KPI tiles), and the report has four pages. **The data is embedded in the
+7 relationships and 28 DAX measures (22 calculations and 6 colour rules for the KPI tiles), and the report has four pages. **The data is embedded in the
 project**, so it opens and refreshes on any machine with no folder path to set.
 
 ## Open it

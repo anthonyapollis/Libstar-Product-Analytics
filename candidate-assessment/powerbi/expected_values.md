@@ -53,14 +53,14 @@ and the dbt marts.
 | Waterfall total bar | 217,979.97 (= gateway SETTLED total 217,979.97) |
 | Bar, BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk) | 6 |
 | Bar, BREAK: deposit SUCCESS, no gateway settlement found | 5 |
+| Bar, BREAK: unrecognised settlement (no internal record) | 4 |
 | Bar, BREAK: settled fee differs from contracted fee | 4 |
 | Bar, BREAK: settled gross amount differs from internal amount | 4 |
 | Bar, BREAK: duplicate gateway settlement for one reference (double-credit risk) | 4 |
-| Bar, BREAK: unrecognised settlement (no internal record) | 4 |
+| Bar, TIMING: prior-period deposit settled at start of period | 3 |
 | Bar, NOT A PROBLEM: rounding difference <= 1 cent | 3 |
 | Bar, REVERSAL: gateway reversed/charged back after settlement | 3 |
 | Bar, TIMING: settlement expected in next period (created near cut-off) | 3 |
-| Bar, TIMING: prior-period deposit settled at start of period | 3 |
 | Bar, BREAK: net amount is not gross minus fee | 2 |
 | Bar, BREAK: payment confirmed, wallet not credited | 2 |
 
@@ -69,9 +69,11 @@ and the dbt marts.
 | Visual | Expected |
 |---|---|
 | Card: Transactions Loaded | 1,024 |
-| Card: Ingestion Runs | 3 |
+| Card: Ingestion Runs | 4 |
 | Card: Rows Rejected | 1 |
-| Card: Rate-Limit Retries | 1 |
+| Card: API Retries (429 + 500) | 1 |
+| Run history: new / changed per run | run 1: 50 / 0 · run 2: 949 / 0 · run 3: 0 / 0 · run 4: 25 / 40 |
+| Run history: statuses | run 1 ABANDONED · run 2 COMPLETED · run 3 COMPLETED · run 4 COMPLETED |
 | Column, completed | 587 |
 | Column, failed | 214 |
 | Column, pending | 207 |
@@ -95,4 +97,4 @@ Status tiles are coloured by a rule on their own value; the others have a fixed 
 | Ingestion monitoring | Transactions Loaded | green (fixed) |
 | Ingestion monitoring | Ingestion Runs | navy (fixed: informational) |
 | Ingestion monitoring | Rows Rejected | amber (rule) |
-| Ingestion monitoring | Rate-Limit Retries | teal (fixed: informational, retries are handled) |
+| Ingestion monitoring | API Retries | teal (fixed: informational, retries are handled) |

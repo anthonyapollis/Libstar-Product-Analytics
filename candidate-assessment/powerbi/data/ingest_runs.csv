@@ -1,4 +1,5 @@
-run_id,source_system,started_at,finished_at,status,pages_fetched,rows_upserted,rows_rejected,rate_limit_hits,server_error_hits,duration_seconds
-1,mock_provider,2026-09-28 12:28:55.975457,,RUNNING,1,50,0,0,0,
-2,mock_provider,2026-09-28 12:29:14.462403,2026-09-28 12:29:14.534246,COMPLETED,5,950,1,0,0,0
-3,mock_provider,2026-09-28 12:29:30.031689,2026-09-28 12:29:31.047425,COMPLETED,1,66,0,1,0,1
+run_id,source_system,started_at,finished_at,status,pages_fetched,rows_upserted,rows_new,rows_changed,rows_unchanged,rows_rejected,rate_limit_hits,server_error_hits,duration_seconds
+1,mock_provider,2026-09-28 19:57:14.342218,,ABANDONED,1,50,50,0,0,0,0,0,
+2,mock_provider,2026-09-28 19:57:16.547671,2026-09-28 19:57:16.616323,COMPLETED,5,950,949,0,1,1,0,0,0
+3,mock_provider,2026-09-28 19:57:17.955577,2026-09-28 19:57:19.968512,COMPLETED,1,1,0,0,1,0,0,1,2
+4,mock_provider,2026-09-28 19:57:20.079206,2026-09-28 19:57:20.091923,COMPLETED,1,66,25,40,1,0,0,0,0

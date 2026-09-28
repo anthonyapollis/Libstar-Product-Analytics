@@ -7,8 +7,8 @@ rem    Step 1  load the 29 base tables (the source data)     -> jsb_assessment, 
 rem    Step 2  install dbt in a private Python environment   (first run only)
 rem    Step 3  dbt debug   : check dbt can reach the database
 rem    Step 4  dbt run     : staging layer, 11 views         -> jsb_platform_staging
-rem    Step 5  dbt run     : marts layer, 12 tables          -> jsb_platform_marts
-rem    Step 6  dbt test    : 44 data tests
+rem    Step 5  dbt run     : marts layer, 13 tables          -> jsb_platform_marts
+rem    Step 6  dbt test    : 54 data tests
 rem
 rem  Needs: XAMPP MySQL/MariaDB running on port 3306 (root, no password), Python 3.9-3.11.
 rem  Re-running is safe for a demo but resets the 29 base tables to the submission data.
@@ -81,11 +81,11 @@ echo Marts = the reporting tables built from staging: star schema (dim_/fact_),
 echo the reconciliation (fct_recon_exceptions, mart_recon_bridge) and query marts.
 "%DBT%" run --select marts --target xampp || goto :failed
 echo.
-echo Look in Workbench: jsb_platform_marts (12 tables). Power BI reads these.
+echo Look in Workbench: jsb_platform_marts (13 tables, each with a primary key). Power BI reads these.
 pause
 
 echo === Step 6 of 6: dbt test =====================================================
-echo 44 tests: unique / not-null keys, allowed categories, the R0.00 bridge,
+echo 54 tests: unique / not-null keys, allowed categories, the R0.00 bridge,
 echo no source row dropped, and wallet balance cache = ledger.
 "%DBT%" test --target xampp || goto :failed
 echo.

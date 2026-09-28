@@ -150,45 +150,51 @@ ex1.push(bullet("Ageing: unresolved after 3 days escalates to Finance management
 // ===========================================================================
 const ex2 = [];
 ex2.push(h1("Exercise 2 — Incremental, Restartable API Ingestion", { pageBreakBefore: true }));
-ex2.push(p("Tools used: Python 3 (standard library urllib only — no HTTP framework dependency), MySQL 8.0 for the checkpoint/ledger tables, Postman/Newman for exercising and documenting the API contract.", { italics: true, color: GREY, size: 20 }));
+ex2.push(p("Tools used: Python 3 (standard library HTTP, plus pymysql), MySQL 8 / MariaDB for the target and control tables (the brief allows any database; this one also holds the other exercises and dbt), Postman/Newman for the API contract.", { italics: true, color: GREY, size: 20 }));
 
 ex2.push(h2("Design"));
-ex2.push(bullet("Progress lives in MySQL (ingest_checkpoint), not memory or a local file, so any process on any host can resume it. Each run resumes from updated_since = last processed updated_at (inclusive), then paginates within the run via the server's cursor."));
-ex2.push(bullet("Every write is an upsert (INSERT … ON DUPLICATE KEY UPDATE) keyed on the provider's id — replaying a page is always safe. The data upsert, the reject-quarantine insert, the checkpoint update, and the run counters are committed together in one transaction per page."));
-ex2.push(bullet("429 (rate limited): sleep for Retry-After, retry the same request. 500 / network errors: exponential backoff. Bad records (unparseable amount, missing player_id): quarantined with the reason and the full raw JSON — never silently dropped."));
-ex2.push(bullet("Every run writes one row to ingest_runs: pages fetched, rows upserted/rejected, 429/500 counts, status. A run stuck RUNNING past one scheduling interval is the signal a stale-run monitor pages on."));
+ex2.push(bullet("Progress: a checkpoint table holds the last (updated_at, id) fully committed. Each run resumes with updated_since = that time (inclusive, per the API doc) and pages with the server's cursor. The API moves updated_at forward when a record changes, so one position covers new and changed records."));
+ex2.push(bullet("No duplicates: id is the primary key and every write is an upsert on it. Repeated rows within a page are collapsed; a record is written only if it is new or its updated_at moved forward, so an older version never overwrites a newer one. A page's rows, its rejects, the checkpoint and the run counters commit in one transaction, so a kill loses at most the uncommitted page, which the next run re-reads."));
+ex2.push(bullet("Failures: 429 waits for Retry-After; 500 and network errors retry with 2, 4, 8… s backoff, then the run ends FAILED with exit code 1 and the checkpoint unchanged. A database lock stops two scheduled runs overlapping; a run killed mid-way is marked ABANDONED by the next."));
+ex2.push(bullet("Unclean data: numbers sent as strings are coerced; records with a missing player_id, an unparseable amount or time, or a negative amount go to ingest_rejects with the reason and raw JSON, once per distinct payload. The run carries on."));
+ex2.push(bullet("Monitoring: ingest_runs records, per run, pages, new / changed / unchanged / rejected rows, 429 and 500 counts, start and end time, status and any error; the checkpoint is the last successful position. checks.sql holds the monitoring and alert queries."));
 
 ex2.push(h2("Evidence: kill, restart, new activity"));
-ex2.push(p("The process was started with a small page size and an artificial pre-commit delay, then killed with SIGKILL mid-page — a hard crash, not a graceful shutdown."));
+ex2.push(p("demo.py reproduces the whole sequence on any machine, with the mock API's faults switched on. Run 1 uses 50-record pages and a pause before each commit, and is hard-killed while page 2 is uncommitted. Only page 1 (50 rows) is in the table; the restart marks run 1 ABANDONED, resumes from the checkpoint and loads the rest."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/01_kill_restart_new_activity.png`, 560,
-  "Actual terminal output: kill mid-page → restart → complete → simulate new provider activity → rerun."));
-ex2.push(p("Result: 50 rows committed before the kill (exactly page 1 — page 2 never landed), the run left visibly RUNNING (the stale-run signal), and a clean restart resumed correctly with zero duplicates and zero missing rows. After simulating new activity (POST /admin/advance), a rerun correctly picked up 40 changed records and 25 new ones — including a live 429 that was retried automatically."));
+  "demo.py, steps 3–6: hard kill mid-page, restart from the checkpoint, check every id against the API."));
+ex2.push(p("Run 3, straight after, finds nothing new or changed. After the interviewer's step (POST /admin/advance), run 4 loads exactly the 25 new and 40 changed records. verify_against_api.py then reads the whole API and compares id by id: 1,025 ids = 1,024 loaded + 1 quarantined (TX000777, missing player_id), with 0 missing, 0 stale versions and 0 duplicates. A live 500 and a 429 were retried along the way."));
+ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/08_new_activity_final_state.png`, 560,
+  "demo.py, steps 7–10: rerun, new provider activity, incremental rerun, final state."));
+ex2.push(p("The load continues incrementally into the reporting layer: the dbt model fct_api_transactions picks up only rows the ingestion stamped since its last run. incremental_demo.py shows 999 rows on the first build, 0 on a rerun, and exactly the 65 new and changed rows after the new activity, with the mart then equal to the source."));
+
+ex2.push(h2("Checks and tests"));
+ex2.push(bullet("checks.sql: duplicates, reject accounting, run history, stale or failed runs, and the last successful position."));
+ex2.push(bullet("verify_against_api.py: every id in the table against the API (missing, unexpected, stale, duplicates); exits 1 on any mismatch."));
+ex2.push(bullet("9 unit tests with no network or database: exit codes (401, exhausted 429 and 500 retries, success), the run lock, validation of unclean records, and the new / changed / unchanged classification."));
 
 ex2.push(h2("API contract — Postman"));
-ex2.push(p("A Postman collection documents the API's pagination, filtering, auth and admin-simulation behaviour, and includes a self-paginating request that walks every page and reports the total record count directly in Postman's Test Results panel."));
+ex2.push(p("A Postman collection documents the API's pagination, filtering, auth and admin-simulation behaviour, and includes a self-paginating request that walks every page and reports the total record count."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/02_postman_newman_run.png`, 560,
-  "Newman run of the Exercise 2 collection: 5 requests, 10/10 assertions passing."));
+  "Newman run of the Exercise 2 collection."));
 
 ex2.push(h2("Live run — Postman Desktop against the local mock API"));
-ex2.push(p("The same collection was then imported into Postman Desktop on a Windows workstation and run against mock_api.py started from PyCharm — an independent environment from the one the code was built in."));
+ex2.push(p("The same collection was run in Postman Desktop on a Windows workstation against mock_api.py started from PyCharm, an independent environment from the one the code was built in."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png`, 600,
   "mock_api.py running in PyCharm: \"Mock API on http://127.0.0.1:8000 (faults on)\"."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/03_postman_runner_config.png`, 460,
   "Collection Runner configuration: all seven requests, one iteration."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png`, 480,
-  "Runner results, pages 1–4 of the self-paginating count. Page 1 returns 201 rows for limit=200 (the API's documented in-page duplicate); page 4 hits a live 500 and retries the same page."));
+  "Runner results, pages 1–4 of the self-paginating count. Page 1 returns 201 rows for limit=200 (an in-page repeated row); page 4 hits a live 500 and retries the same page."));
 ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/06_postman_runner_total_1027.png`, 480,
-  "Runner results, pages 4–6: DONE — total records returned by the API: 1,027 across 6 pages."));
-ex2.push(p("The run reports 16 of 18 assertions passing. The two failures are on request 2 (\"Next page\"), a one-shot documentation request with no retry logic, which happened to land on the mock API's injected 429. Only the counting request carries retry handling. That is by design, and it shows why the ingestion program retries every call."));
-ex2.push(p("Why 1,027 rather than 1,025: the runner executes /admin/advance (request 5) before the count, so the dataset is already 1,025 records; the extra rows are the API's deliberate in-page duplicates, counted raw here. ingest.py deduplicates them, which is why its loaded row count is lower than the raw count."));
+  "Runner results, pages 4–6: DONE — total rows returned by the API: 1,027 across 6 pages."));
+ex2.push(p("Two assertions fail on request 2 (\"Next page\"), a one-shot documentation request with no retry logic that happened to land on an injected 429; only the counting request retries. 1,027 rather than 1,025 because the raw count includes the API's in-page repeated rows, which ingest.py collapses."));
 
 ex2.push(h2("What I'd change for production"));
-ex2.push(bullet("A managed scheduler (Airflow / cron+systemd) with a concurrency lock, so two overlapping runs can't race."));
-ex2.push(bullet("Secrets (API key, DB credentials) out of source and into a secrets manager."));
-ex2.push(bullet("Page on FAILED runs, a stale RUNNING row, or a rejects-rate spike (usually a schema change, not random dirty data)."));
-ex2.push(bullet("At real volume: staging-table + bulk MERGE instead of row-by-row upserts; partition by date; multiple workers on disjoint id ranges if one API key's rate limit becomes the bottleneck."));
-// (page break handled by pageBreakBefore on the next heading)
-
+ex2.push(bullet("Scheduling: Airflow or cron every few minutes; the lock already makes overlapping runs harmless."));
+ex2.push(bullet("Alerting: page on a non-zero exit code, a run stuck RUNNING past one interval, a rising reject rate, or checkpoint lag."));
+ex2.push(bullet("Secrets: the API key and database password come from environment variables today; in production, from a secrets manager."));
+ex2.push(bullet("Scale: bulk-load each page into a staging table and MERGE; partition by date; split id ranges across workers if the rate limit becomes the bottleneck."));
 // ===========================================================================
 // EXERCISE 3
 // ===========================================================================
@@ -225,7 +231,7 @@ ex3.push(table(
 
 ex3.push(h2("Operational design → reporting model"));
 ex3.push(p("A dbt project (dbt_jsb_assessment/) builds a star schema on top of this operational design: conformed dimensions (dim_player, dim_date, dim_campaign — dim_player_vip_tier_scd carries the same Type-2 history pattern through to the reporting layer) surrounding grain-specific facts (fact_bet, fact_wallet_transaction, fact_bonus_transaction). Two reusable marts answer queries (a) and (b) directly, and — extended during this review — the project now also covers Exercise 1's reconciliation as a scheduled, tested model."));
-ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 67/67 pass (23 models, 44 tests), 0 errors."));
+ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 78/78 pass (24 models, 54 tests), 0 errors. Every mart has a primary key; two models load incrementally."));
 // (page break handled by pageBreakBefore on the next heading)
 
 // ===========================================================================
@@ -234,7 +240,7 @@ ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 4
 const pbi = [];
 pbi.push(h1("Power BI — Reporting Data Model and Report", { pageBreakBefore: true }));
 pbi.push(p("Tools used: Power BI project format (.pbip), generated by a Python script from one set of definitions, with the dbt marts embedded as data.", { italics: true, color: GREY, size: 20 }));
-pbi.push(p("The dbt marts become a Power BI project, JSB_Assessment.pbip, covering all three exercises. The semantic model has 11 tables, 7 relationships and 26 DAX measures (20 calculations and 6 colour rules for the KPI tiles), and the report has four pages. The data is embedded in the project, so it opens and refreshes on any machine with no folder path or database connection to set up. The same script writes the model, the report pages, the readable DAX file and a list of expected values, then validates them, so the four cannot drift apart."));
+pbi.push(p("The dbt marts become a Power BI project, JSB_Assessment.pbip, covering all three exercises. The semantic model has 11 tables, 7 relationships and 28 DAX measures (22 calculations and 6 colour rules for the KPI tiles), and the report has four pages. The data is embedded in the project, so it opens and refreshes on any machine with no folder path or database connection to set up. The same script writes the model, the report pages, the readable DAX file and a list of expected values, then validates them, so the four cannot drift apart."));
 pbi.push(...imgPara(`${BASE}/powerbi/model.png`, 600, "Power BI model view for Exercise 3: three dimensions filter three facts. Facts are not joined to each other."));
 pbi.push(h2("Modelling decisions worth calling out"));
 pbi.push(bullet("Facts are not joined to facts. fact_wallet_transaction keeps related_bet_id and related_player_bonus_id as drill-through keys only. Relating them would give dim_player two filter paths to the wallet table. Power BI rejects that as an ambiguous model, and in any tool it is a source of silently wrong numbers. The build script checks every pair of tables and refuses to build if any pair has more than one path."));
@@ -274,7 +280,7 @@ pbi.push(table(
     ["Settlements matched exactly / exceptions", "274 / 43"],
     ["Act Now Value / Bridge Residual", "3,150.00 / 0.00"],
     ["Waterfall", "218,280.00 → 217,979.97 in 10 adjustment steps"],
-    ["Transactions loaded / runs / rows rejected / retries", "1,024 / 3 / 1 / 1"],
+    ["Transactions loaded / runs / rows rejected / API retries", "1,024 / 4 / 1 / 1"],
     ["Transactions by status", "completed 587 · failed 214 · pending 207 · reversed 16"],
   ],
   [4200, 5160]

@@ -89,7 +89,7 @@ TABLES = {
         "gateway_ref": "text", "settlement_row_id": "int", "gateway_txn_id": "text",
         "merchant_ref": "text", "settled_at": "dt", "gross_amount": "money", "fee": "money",
         "net_amount": "money", "gw_status": "text", "expected_fee": "money", "category": "text",
-        "financial_impact": "money", "category_type": "text",
+        "financial_impact": "money", "category_type": "text", "recon_key": "text",
     },
     "mart_recon_bridge": {
         "step_order": "int", "step": "text", "amount": "money", "gateway_settled_total": "money",
@@ -97,12 +97,13 @@ TABLES = {
     # ---- Exercise 2: ingestion (dbt staging) ----
     "ingest_runs": {
         "run_id": "int", "source_system": "text", "started_at": "dt", "finished_at": "dt",
-        "status": "text", "pages_fetched": "int", "rows_upserted": "int", "rows_rejected": "int",
+        "status": "text", "pages_fetched": "int", "rows_upserted": "int", "rows_new": "int",
+        "rows_changed": "int", "rows_unchanged": "int", "rows_rejected": "int",
         "rate_limit_hits": "int", "server_error_hits": "int", "duration_seconds": "int",
     },
     "transactions": {
         "id": "text", "player_id": "text", "type": "text", "amount": "money", "currency": "text",
-        "status": "text", "updated_at": "dt", "source_system": "text", "ingested_at": "dt",
+        "status": "text", "updated_at": "dt", "ingested_at": "dt", "source_system": "text",
     },
 }
 SORT_BY = {("mart_recon_bridge", "step"): "step_order"}   # waterfall steps in bridge order
@@ -212,7 +213,9 @@ MEASURES = {
         ("Rejected Tile Colour", tile_rule("[Rows Rejected] > 0", TILE_AMBER, TILE_GREEN), None),
         ("Ingestion Runs", "COUNTROWS ( ingest_runs )", "#,0"),
         ("Rows Rejected", "SUM ( ingest_runs[rows_rejected] )", "#,0"),
-        ("Rate-Limit Retries", "SUM ( ingest_runs[rate_limit_hits] )", "#,0"),
+        ("API Retries", "SUM ( ingest_runs[rate_limit_hits] ) + SUM ( ingest_runs[server_error_hits] )", "#,0"),
+        ("Rows New", "SUM ( ingest_runs[rows_new] )", "#,0"),
+        ("Rows Changed", "SUM ( ingest_runs[rows_changed] )", "#,0"),
     ],
     "transactions": [
         ("Transactions Loaded", "DISTINCTCOUNT ( transactions[id] )", "#,0"),
@@ -504,17 +507,18 @@ def build_report():
                    title="Exception detail (matched rows hidden)"),
         ]),
         ("Ingestion monitoring", [
-            banner("title4", "API ingestion monitoring", "Exercise 2 · incremental, restartable load · 3 runs"),
+            banner("title4", "API ingestion monitoring", "Exercise 2 · incremental, restartable load · 4 runs"),
             card("card_loaded", txn, "Transactions Loaded", X[0], bg=GREEN),
             card("card_runs", runs, "Ingestion Runs", X[1]),
             card("card_rejected", runs, "Rows Rejected", X[2], rule=(runs, "Rejected Tile Colour")),
-            card("card_429", runs, "Rate-Limit Retries", X[3], bg=TEAL),
+            card("card_429", runs, "API Retries", X[3], bg=TEAL),
             visual("tbl_runs", "tableEx", (20, 200, 760, 220),
                    {"Values": [(runs, "run_id", "c"), (runs, "status", "c"), (runs, "started_at", "c"),
-                               (runs, "pages_fetched", "c"), (runs, "rows_upserted", "c"),
+                               (runs, "pages_fetched", "c"), (runs, "rows_new", "c"),
+                               (runs, "rows_changed", "c"), (runs, "rows_unchanged", "c"),
                                (runs, "rows_rejected", "c"), (runs, "rate_limit_hits", "c"),
-                               (runs, "duration_seconds", "c")]},
-                   title="Run history (run 1 was killed mid-page: it stays RUNNING)"),
+                               (runs, "server_error_hits", "c")]},
+                   title="Run history: run 1 was killed mid-page (ABANDONED); run 4 loaded only the new and changed records"),
             visual("col_status", "clusteredColumnChart", (800, 200, 460, 500),
                    {"Category": [(txn, "status", "c")], "Y": [(txn, "Transactions Loaded", "m")]},
                    title="Transactions loaded, by status", labels=True,
@@ -697,7 +701,10 @@ def expected_values():
           f"| Card: Transactions Loaded | {txn.id.nunique():,} |",
           f"| Card: Ingestion Runs | {len(runs)} |",
           f"| Card: Rows Rejected | {runs.rows_rejected.sum()} |",
-          f"| Card: Rate-Limit Retries | {runs.rate_limit_hits.sum()} |"]
+          f"| Card: API Retries (429 + 500) | {runs.rate_limit_hits.sum() + runs.server_error_hits.sum()} |",
+          f"| Run history: new / changed per run | " + " · ".join(
+              f"run {r.run_id}: {r.rows_new} / {r.rows_changed}" for r in runs.itertuples()) + " |",
+          f"| Run history: statuses | " + " · ".join(f"run {r.run_id} {r.status}" for r in runs.itertuples()) + " |"]
     for st, n in txn.status.value_counts().items():
         L.append(f"| Column, {st} | {n} |")
     rule = lambda bad, bad_colour: f"{bad_colour} (rule)" if bad else "green (rule)"
@@ -716,7 +723,7 @@ def expected_values():
           "| Ingestion monitoring | Transactions Loaded | green (fixed) |",
           "| Ingestion monitoring | Ingestion Runs | navy (fixed: informational) |",
           f"| Ingestion monitoring | Rows Rejected | {rule(runs.rows_rejected.sum() > 0, 'amber')} |",
-          "| Ingestion monitoring | Rate-Limit Retries | teal (fixed: informational, retries are handled) |"]
+          "| Ingestion monitoring | API Retries | teal (fixed: informational, retries are handled) |"]
     return "\n".join(L) + "\n"
 
 

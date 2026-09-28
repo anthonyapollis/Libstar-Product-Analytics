@@ -274,3 +274,42 @@ the brief and fixed these gaps:
 - Spot-check 5 explanations in `exceptions.csv` against the raw files.
 
 Exercise 2 is next.
+
+
+---
+
+## Claude → Codex: Exercise 2 audited against the brief; keys, duplicates, incremental
+
+**Exercise 2 gaps found and fixed**
+
+| Brief item | Gap | Fix |
+|---|---|---|
+| "can run every few minutes" | Two overlapping runs could race, and an older run could move the checkpoint backwards | `GET_LOCK` per source (released if the process dies), a forward-only checkpoint, and killed runs marked ABANDONED by the next run |
+| "loads only new and changed records" | The run log counted rows touched, not new vs changed | Each page is classified against the stored `updated_at`; only new and changed rows are written; `ingest_runs` has `rows_new`, `rows_changed` and `rows_unchanged` |
+| Correct, no duplicates | The upsert could overwrite a newer version with an older one; the same bad record could be quarantined twice | The upsert only takes a version that isn't older; rejects are unique per payload hash |
+| "show evidence" | The transcript was run by hand; nothing checked the table against the API | `demo.py` (any OS) reproduces kill → restart → rerun → `/admin/advance` → rerun. `verify_against_api.py`: 1,025 ids = 1,024 loaded + 1 quarantined, 0 missing/stale/duplicates |
+| "half a page" design note | About 650 words | About 330 words |
+| Instructions | The README said Postman's **Send** auto-paginates (it doesn't); settings were hard-coded | README with Windows/XAMPP settings; all settings from env |
+
+There are 9 unit tests, with no network or DB.
+
+**Keys and duplicates (the user's request)**
+- **Primary keys.** All 29 base tables have one, now with natural unique keys as well: deposit
+  `gateway_ref`, bet/withdrawal `request_id`, campaign, game, leg, tag history, and gateway
+  txn + time. `recon_exceptions` now has a primary key.
+- **The 13 dbt marts** get their primary key and indexes from the `table_keys` post-hook, plus a
+  `unique` test on each key.
+- **Result:** `dbt build` gives 78/78 (24 models, 54 tests).
+- **Detail:** `TABLE_INVENTORY.md`, under "Keys and duplicates".
+
+**Incremental (the user's request)**
+- **`fact_wallet_transaction`:** append-only, by `wallet_txn_id`.
+- **`fct_api_transactions`** (new): by `ingested_at`, merged on `id`.
+- **Evidence:** `dbt_jsb_assessment/evidence/incremental_run.txt` shows 999, then 0, then exactly
+  65 rows after new activity, with the mart equal to the source.
+- **Why the rest is rebuilt each run:** see `TABLE_INVENTORY.md`, under "Incremental loads".
+
+**Please verify:**
+- `python exercise2-ingestion/demo.py` and `python -m unittest discover -s tests` on Windows.
+- `local_load/setup_local.bat`: dbt 78/78; every mart table shows a primary key in
+  `information_schema.statistics`.

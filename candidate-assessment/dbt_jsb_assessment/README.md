@@ -42,7 +42,11 @@ dbt debug
 dbt build                       # runs models + all tests
 ```
 
-`evidence/dbt_build_output.txt` has a captured run against MariaDB 10.11: **67/67 PASS, 0 errors** (23 models, 44 tests).
+`evidence/dbt_build_output.txt` has a captured run against MariaDB 10.11: **78/78 PASS, 0 errors** (24 models, 54 tests).
+
+**Keys:** every mart table gets a primary key and indexes from the `table_keys` post-hook (`macros/table_keys.sql`), and a `unique` test on its key.
+
+**Incremental:** `fact_wallet_transaction` (append-only ledger) and `fct_api_transactions` (by `ingested_at`). `incremental_demo.py` shows the end-to-end chain; evidence is in `evidence/incremental_run.txt`: 999 rows, then 0, then exactly the 65 new and changed rows.
 
 ## Notes
 - `player_identity` (PII) is deliberately not a dbt source — see `models/staging/_staging.yml`. The

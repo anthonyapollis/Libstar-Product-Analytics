@@ -109,8 +109,16 @@ Rows Rejected =
     SUM ( ingest_runs[rows_rejected] )
     -- format: #,0
 
-Rate-Limit Retries =
-    SUM ( ingest_runs[rate_limit_hits] )
+API Retries =
+    SUM ( ingest_runs[rate_limit_hits] ) + SUM ( ingest_runs[server_error_hits] )
+    -- format: #,0
+
+Rows New =
+    SUM ( ingest_runs[rows_new] )
+    -- format: #,0
+
+Rows Changed =
+    SUM ( ingest_runs[rows_changed] )
     -- format: #,0
 
 -- ===== table: transactions =====

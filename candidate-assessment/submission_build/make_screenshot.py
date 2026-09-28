@@ -1,7 +1,8 @@
 """Render a text file as a terminal-style PNG screenshot.
 This environment is a headless cloud container with no GUI/X server, so
 these are rendered captures of real command output (not photos of a screen).
-Usage: python make_screenshot.py <input.txt> <output.png> "<title>" [max_lines]
+Usage: python make_screenshot.py <input.txt> <output.png> "<title>" [max_lines] [max_chars]
+max_chars (default 118) is the line width before wrapping; the image widens to fit it.
 """
 import sys
 from PIL import Image, ImageDraw, ImageFont
@@ -43,18 +44,19 @@ def wrap(line, max_chars=118):
 def main():
     infile, outfile, title = sys.argv[1], sys.argv[2], sys.argv[3]
     max_lines = int(sys.argv[4]) if len(sys.argv) > 4 else 60
+    max_chars = int(sys.argv[5]) if len(sys.argv) > 5 else 118
     with open(infile) as f:
         raw_lines = [l.rstrip("\n").expandtabs(14) for l in f.readlines()]
     lines = []
     for l in raw_lines:
-        lines.extend(wrap(l))
+        lines.extend(wrap(l, max_chars))
     lines = lines[:max_lines]
 
     font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
     bold_font = ImageFont.truetype(
         "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 13)
 
-    width = 1400
+    width = max(1400, int(PAD * 2 + max_chars * 9.1))
     height = PAD * 2 + 36 + len(lines) * LINE_H
     img = Image.new("RGB", (width, height), BG)
     draw = ImageDraw.Draw(img)
