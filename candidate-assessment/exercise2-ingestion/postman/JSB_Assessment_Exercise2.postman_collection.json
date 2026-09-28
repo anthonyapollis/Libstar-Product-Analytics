@@ -7,9 +7,38 @@
   "variable": [
     { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
     { "key": "apiKey", "value": "test-key" },
-    { "key": "next_cursor", "value": "" }
+    { "key": "next_cursor", "value": "" },
+    { "key": "count_cursor", "value": "" },
+    { "key": "count_total", "value": "0" },
+    { "key": "count_pages", "value": "0" }
   ],
   "item": [
+    {
+      "name": "0. Reset record counter (run this first)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('count_cursor', '');",
+              "pm.collectionVariables.set('count_total', '0');",
+              "pm.collectionVariables.set('count_pages', '0');",
+              "console.log('Counter reset. Now run \"6. Count ALL records\" -- it pages itself to the end.');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=1",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [{ "key": "limit", "value": "1" }]
+        }
+      }
+    },
     {
       "name": "1. First page (no cursor, no updated_since)",
       "event": [
@@ -150,6 +179,64 @@
           "raw": "{{baseUrl}}/admin/advance",
           "host": ["{{baseUrl}}"], "path": ["admin", "advance"]
         }
+      }
+    },
+    {
+      "name": "6. Count ALL records (auto-paginates to the end)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const cursor = pm.collectionVariables.get('count_cursor');",
+              "let url = pm.collectionVariables.get('baseUrl') + '/v1/transactions?limit=200';",
+              "if (cursor) { url += '&cursor=' + encodeURIComponent(cursor); }",
+              "pm.request.url = url;"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// A 429/500 is the mock API's deliberate fault injection (see mock_api.py).",
+              "// Retry the SAME page (cursor unchanged) rather than losing it.",
+              "if (pm.response.code === 429 || pm.response.code === 500) {",
+              "    pm.test('page ' + (+pm.collectionVariables.get('count_pages') + 1) + ': hit ' + pm.response.code + ', retrying same page', () => true);",
+              "    return postman.setNextRequest('6. Count ALL records (auto-paginates to the end)');",
+              "}",
+              "",
+              "const body = pm.response.json();",
+              "const pages = (+pm.collectionVariables.get('count_pages')) + 1;",
+              "const total = (+pm.collectionVariables.get('count_total')) + body.data.length;",
+              "pm.collectionVariables.set('count_pages', pages);",
+              "pm.collectionVariables.set('count_total', total);",
+              "",
+              "pm.test('page ' + pages + ': +' + body.data.length + ' records (running total: ' + total + ')', () => true);",
+              "",
+              "if (body.has_more) {",
+              "    pm.collectionVariables.set('count_cursor', body.next_cursor);",
+              "    postman.setNextRequest('6. Count ALL records (auto-paginates to the end)');",
+              "} else {",
+              "    pm.test('>>> DONE -- TOTAL RECORDS RETURNED BY API: ' + total + ' (across ' + pages + ' pages) <<<', () => true);",
+              "    console.log('TOTAL RECORDS:', total, 'PAGES:', pages);",
+              "    postman.setNextRequest(null);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=200",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [{ "key": "limit", "value": "200" }]
+        },
+        "description": "Run '0. Reset record counter' first, then click Send on THIS request once. It re-sends itself (via setNextRequest) until has_more is false, accumulating the total in the Test Results panel -- the last test name shown is the grand total. No Collection Runner needed, but it also works there. Note: this counts every row the wire sends, including the mock API's deliberate occasional duplicated row within a page (see mock_api.py) -- so it can read 1 higher than the API's own 'total_records' figure from /admin/advance. ingest.py's loaded row count is the deduplicated one; this is the raw one."
       }
     }
   ]

@@ -21,6 +21,15 @@ newman run postman/JSB_Assessment_Exercise2.postman_collection.json \
   -e postman/JSB_Assessment.postman_environment.json
 ```
 
+## Viewing the record count in the Postman app
+Import `postman/JSB_Assessment_Exercise2.postman_collection.json` (File → Import) and, with
+`mock_api.py` running, open request **"6. Count ALL records (auto-paginates to the end)"** and click
+**Send** once. It re-sends itself request-by-request (`setNextRequest`) until the API says
+`has_more: false`, and each page's running total shows up as a passing test name in the **Test Results**
+tab -- the last line is the grand total, no Collection Runner or console needed. Run
+**"0. Reset record counter"** first if you've already run it once and want to start over. It also
+auto-retries the mock API's deliberate 429/500 faults instead of breaking the count.
+
 ## Files
 | File | What it is |
 |---|---|
