@@ -15,7 +15,7 @@ Branch: `claude/sleepy-hawking-uiq0u9` · folder: `candidate-assessment/`
 | Ex 3 schema | 23 tables. The 4 required queries return the right results. | `exercise3-schema-design/` |
 | dbt | `dbt build`: 66/66 pass (23 models, 43 tests) | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
 | Power BI | 11 tables, 7 relationships, 20 measures, 4 pages. The data is embedded. The user opened the previous build in Desktop: all 4 pages rendered. This build adds the tile colours, a navy title banner, a grey page background, short category labels, the waterfall axis starting at 205,000, and status colours. | `powerbi/`, `powerbi/expected_values.md` |
-| Local database | `local_load/00_drop_other_build_tables.sql` drops the 45 tables another build left in `jsb_assessment`. `01_load_submission_tables.sql` loads this submission's 29 tables. Tested on MariaDB 10.11: the reconciliation re-runs to 274 matched and 317 rows. | `local_load/README.md` |
+| Local database | `local_load/00_drop_other_build_tables.sql` drops the 45 tables another build left in `jsb_assessment`. `01_load_submission_tables.sql` loads this submission's 29 tables (re-running drops and reloads them). Tested on MariaDB 10.11: the reconciliation re-runs to 274 matched and 317 rows. | `local_load/README.md` |
 | Write-up | `JSB_Candidate_Submission.docx` / `.pdf`, 16 pages | top-level folder |
 
 ## What the user still needs to do
