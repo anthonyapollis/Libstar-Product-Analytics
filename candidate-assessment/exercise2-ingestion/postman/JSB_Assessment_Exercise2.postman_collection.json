@@ -1,0 +1,156 @@
+{
+  "info": {
+    "name": "JSB Assessment - Exercise 2 - Mock Transactions API",
+    "description": "Exploring and documenting the provider API used by ingest.py: pagination via cursor, updated_since filtering, and the interviewer-only /admin/advance control endpoint.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "apiKey", "value": "test-key" },
+    { "key": "next_cursor", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. First page (no cursor, no updated_since)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('has data array', () => pm.expect(body.data).to.be.an('array'));",
+              "pm.test('rows ordered by (updated_at, id) ascending', () => {",
+              "  for (let i = 1; i < body.data.length; i++) {",
+              "    const prev = body.data[i-1], cur = body.data[i];",
+              "    pm.expect(prev.updated_at <= cur.updated_at).to.be.true;",
+              "  }",
+              "});",
+              "if (body.next_cursor) pm.collectionVariables.set('next_cursor', body.next_cursor);",
+              "console.log('has_more:', body.has_more, 'rows:', body.data.length);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=10",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [{ "key": "limit", "value": "10" }]
+        }
+      }
+    },
+    {
+      "name": "2. Next page (cursor from step 1)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('does not repeat the boundary row from page 1', () => {",
+              "  pm.expect(body.data.length).to.be.above(0);",
+              "});",
+              "if (body.next_cursor) pm.collectionVariables.set('next_cursor', body.next_cursor);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=10&cursor={{next_cursor}}",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [
+            { "key": "limit", "value": "10" },
+            { "key": "cursor", "value": "{{next_cursor}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Incremental pull by updated_since",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('every row updated_at >= updated_since', () => {",
+              "  body.data.forEach(r => pm.expect(r.updated_at >= '2026-09-04T00:00:00Z').to.be.true);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "{{apiKey}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=50&updated_since=2026-09-04T00:00:00Z",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [
+            { "key": "limit", "value": "50" },
+            { "key": "updated_since", "value": "2026-09-04T00:00:00Z" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Missing/invalid API key -> 401",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-API-Key", "value": "wrong-key" }],
+        "url": {
+          "raw": "{{baseUrl}}/v1/transactions?limit=5",
+          "host": ["{{baseUrl}}"], "path": ["v1", "transactions"],
+          "query": [{ "key": "limit", "value": "5" }]
+        }
+      }
+    },
+    {
+      "name": "5. Admin: simulate new activity (interviewer step)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('ok true', () => pm.expect(body.ok).to.be.true);",
+              "console.log('total_records now:', body.total_records);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/advance",
+          "host": ["{{baseUrl}}"], "path": ["admin", "advance"]
+        }
+      }
+    }
+  ]
+}

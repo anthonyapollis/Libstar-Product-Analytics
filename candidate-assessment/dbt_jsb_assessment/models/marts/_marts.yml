@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: dim_player
+    columns:
+      - name: player_id
+        tests: [unique, not_null]
+  - name: dim_player_vip_tier_scd
+    description: Type 2 dimension; one row per tier period per player.
+  - name: dim_campaign
+    columns:
+      - name: campaign_id
+        tests: [unique, not_null]
+  - name: dim_date
+    columns:
+      - name: date_day
+        tests: [unique, not_null]
+  - name: fact_bet
+    description: One row per accepted wager, any product.
+    columns:
+      - name: bet_id
+        tests: [unique, not_null]
+      - name: player_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_player')
+              field: player_id
+  - name: fact_wallet_transaction
+    description: One row per wallet ledger movement. The reconciliation spine.
+    columns:
+      - name: wallet_txn_id
+        tests: [unique, not_null]
+      - name: idempotency_key
+        tests: [unique, not_null]
+  - name: fact_bonus_transaction
+    columns:
+      - name: player_bonus_id
+        tests: [unique, not_null]
+  - name: mart_ngr_by_product_monthly
+    description: Answers example_queries.sql query (a) as a reusable dbt model.
+  - name: mart_bonus_cost_pct_of_ngr
+    description: Answers example_queries.sql query (b) as a reusable dbt model.

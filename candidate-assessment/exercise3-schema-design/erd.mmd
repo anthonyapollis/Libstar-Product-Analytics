@@ -1,0 +1,179 @@
+erDiagram
+    AFFILIATES ||--o{ PLAYERS : refers
+    PLAYERS ||--|| PLAYER_IDENTITY : has_restricted
+    PLAYERS ||--o{ PLAYER_VIP_TIER_HISTORY : tier_history
+    PLAYERS ||--o{ PLAYER_TAG_HISTORY : tag_history
+    PLAYERS ||--o{ WALLETS : owns
+    WALLETS ||--o{ WALLET_TRANSACTIONS : ledger
+    PLAYERS ||--o{ WALLET_TRANSACTIONS : posts
+    PLAYERS ||--o{ DEPOSIT_ATTEMPTS : attempts
+    PLAYERS ||--o{ WITHDRAWAL_REQUESTS : requests
+    PAYMENT_METHODS ||--o{ DEPOSIT_ATTEMPTS : via
+    PAYMENT_METHODS ||--o{ WITHDRAWAL_REQUESTS : via
+    DEPOSIT_ATTEMPTS ||--o| WALLET_TRANSACTIONS : funds
+    WITHDRAWAL_REQUESTS ||--o| WALLET_TRANSACTIONS : debits
+
+    PLAYERS ||--o{ BETS : places
+    BETS ||--o| SPORTS_BET_DETAILS : if_sportsbook
+    BETS ||--o| CASINO_ROUND_DETAILS : if_casino
+    BETS ||--o| RETAIL_BET_DETAILS : if_retail
+    SPORTS_BET_DETAILS ||--o{ BET_LEGS : legs
+    BET_LEGS }o--|| SPORTS_EVENTS : on
+    CASINO_ROUND_DETAILS }o--|| GAMES : plays
+    GAMES }o--|| GAME_PROVIDERS : supplied_by
+    RETAIL_BET_DETAILS }o--|| RETAIL_LOCATIONS : at
+    RETAIL_BET_DETAILS }o--|| DEVICES : on
+    BETS ||--o{ WALLET_TRANSACTIONS : stakes_wins
+
+    BONUS_CAMPAIGNS ||--o{ PLAYER_BONUSES : grants
+    PLAYERS ||--o{ PLAYER_BONUSES : receives
+    PLAYER_BONUSES ||--o{ BONUS_ROLLOVER_EVENTS : progress
+    BETS ||--o{ BONUS_ROLLOVER_EVENTS : qualifies_via
+    PLAYER_BONUSES ||--o{ WALLET_TRANSACTIONS : credits_debits
+
+    PLAYERS {
+        bigint player_id PK
+        enum kyc_status
+        varchar vip_tier
+        enum status
+        varchar traffic_source
+        int affiliate_id FK
+    }
+    PLAYER_IDENTITY {
+        bigint player_id PK
+        varchar first_name
+        varchar last_name
+        date date_of_birth
+        varbinary national_id_number
+        varchar email
+    }
+    WALLETS {
+        bigint wallet_id PK
+        bigint player_id FK
+        decimal real_balance
+        decimal bonus_balance
+    }
+    WALLET_TRANSACTIONS {
+        bigint wallet_txn_id PK
+        bigint wallet_id FK
+        enum txn_type
+        enum balance_type
+        decimal amount
+        enum direction
+        decimal balance_before
+        decimal balance_after
+        varchar idempotency_key UK
+        bigint reversal_of_wallet_txn_id FK
+    }
+    DEPOSIT_ATTEMPTS {
+        bigint deposit_attempt_id PK
+        bigint player_id FK
+        varchar gateway_ref
+        enum status
+    }
+    WITHDRAWAL_REQUESTS {
+        bigint withdrawal_id PK
+        bigint player_id FK
+        enum status
+    }
+    PAYMENT_METHODS {
+        int method_id PK
+        varchar method_code
+        varchar rail_family
+    }
+    BETS {
+        bigint bet_id PK
+        bigint player_id FK
+        enum product
+        enum channel
+        decimal stake_real_amount
+        decimal stake_bonus_amount
+        enum status
+        decimal payout_amount
+    }
+    SPORTS_BET_DETAILS {
+        bigint bet_id PK
+        enum bet_class
+        decimal total_odds
+        smallint leg_count
+    }
+    BET_LEGS {
+        bigint leg_id PK
+        bigint bet_id FK
+        bigint event_id FK
+        decimal odds
+        enum leg_result
+    }
+    SPORTS_EVENTS {
+        bigint event_id PK
+        varchar sport
+        varchar league
+    }
+    CASINO_ROUND_DETAILS {
+        bigint bet_id PK
+        int game_id FK
+        varchar provider_round_ref
+    }
+    GAMES {
+        int game_id PK
+        int provider_id FK
+        varchar name
+        decimal rtp_theoretical
+    }
+    GAME_PROVIDERS {
+        int provider_id PK
+        varchar name
+    }
+    RETAIL_BET_DETAILS {
+        bigint bet_id PK
+        int location_id FK
+        bigint device_id FK
+        varchar ticket_number
+    }
+    RETAIL_LOCATIONS {
+        int location_id PK
+        varchar name
+    }
+    DEVICES {
+        bigint device_id PK
+        varchar fingerprint
+    }
+    BONUS_CAMPAIGNS {
+        int campaign_id PK
+        varchar name
+        enum campaign_type
+        decimal rollover_multiple
+        decimal min_odds
+    }
+    PLAYER_BONUSES {
+        bigint player_bonus_id PK
+        bigint player_id FK
+        int campaign_id FK
+        decimal granted_amount
+        decimal rollover_required
+        decimal rollover_progress
+        enum status
+    }
+    BONUS_ROLLOVER_EVENTS {
+        bigint rollover_event_id PK
+        bigint player_bonus_id FK
+        bigint bet_id FK
+        decimal contribution_amount
+    }
+    PLAYER_VIP_TIER_HISTORY {
+        bigint player_id PK
+        varchar vip_tier
+        datetime valid_from_utc PK
+        datetime valid_to_utc
+    }
+    PLAYER_TAG_HISTORY {
+        bigint tag_history_id PK
+        bigint player_id FK
+        varchar tag
+        datetime valid_to_utc
+    }
+    AFFILIATES {
+        int affiliate_id PK
+        varchar affiliate_code
+        varchar traffic_source
+    }

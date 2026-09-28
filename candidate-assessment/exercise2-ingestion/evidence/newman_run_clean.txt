@@ -1,0 +1,54 @@
+newman
+
+JSB Assessment - Exercise 2 - Mock Transactions API
+
+→ 1. First page (no cursor, no updated_since)
+  GET http://127.0.0.1:8000/v1/transactions?limit=10 [200 OK, 1.82kB, 25ms]
+  ✓  200 OK
+  ✓  has data array
+  ✓  rows ordered by (updated_at, id) ascending
+  ┌
+  │ 'has_more:', true, 'rows:', 10
+  └
+
+→ 2. Next page (cursor from step 1)
+  GET http://127.0.0.1:8000/v1/transactions?limit=10&cursor=WyIyMDI2LTA5LTAxVDAwOjA3OjAwWiIsICJUWDAwMDAxMCJd [200 OK, 1.83kB, 6ms]
+  ✓  200 OK
+  ✓  does not repeat the boundary row from page 1
+
+→ 3. Incremental pull by updated_since
+  GET http://127.0.0.1:8000/v1/transactions?limit=50&updated_since=2026-09-04T00:00:00Z [200 OK, 197B, 4ms]
+  ✓  200 OK
+  ✓  every row updated_at >= updated_since
+
+→ 4. Missing/invalid API key -> 401
+  GET http://127.0.0.1:8000/v1/transactions?limit=5 [401 Unauthorized, 183B, 3ms]
+  ✓  401 Unauthorized
+
+→ 5. Admin: simulate new activity (interviewer step)
+  POST http://127.0.0.1:8000/admin/advance [200 OK, 180B, 4ms]
+  ✓  200 OK
+  ✓  ok true
+  ┌
+  │ 'total_records now:', 1025
+  └
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │               5 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │               5 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │              10 │               0 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 162ms                                   │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 3.47kB (approx)                        │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 8ms [min: 3ms, max: 25ms, s.d.: 8ms] │
+└─────────────────────────────────────────────────────────────┘

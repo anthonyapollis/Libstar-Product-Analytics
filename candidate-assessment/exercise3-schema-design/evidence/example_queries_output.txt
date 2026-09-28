@@ -1,0 +1,11 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
+product	turnover	payouts	ggr	bonus_cost	ngr
+sportsbook	220.0000	360.0000	-140.0000	20.0000	-160.0000
+casino	50.0000	80.0000	-30.0000	0.0000	-30.0000
+retail	100.0000	0.0000	100.0000	0.0000	100.0000
+campaign	bonus_cost	bonus_cost_pct_of_ngr
+Registration Bonus	25.0000	-35.71
+balance_type	balance_as_of
+real	1160.0000
+player_id	failed_attempt_id	failed_at	succeeded_attempt_id	succeeded_at	minutes_to_success	succeeded_amount
+2	1	2026-09-10 09:00:00.000000	2	2026-09-10 09:04:00.000000	4	500.0000

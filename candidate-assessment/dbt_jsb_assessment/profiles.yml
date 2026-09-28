@@ -1,0 +1,15 @@
+# Local dev profile for this assessment. In production, credentials come from
+# environment variables / a secrets manager, never committed like this — this
+# file is kept simple and in-repo only so a reviewer can run `dbt run` with no
+# setup beyond `mysql < ../exercise3-schema-design/ddl.sql`.
+jsb_assessment:
+  target: dev
+  outputs:
+    dev:
+      type: mysql
+      server: 127.0.0.1
+      port: 3306
+      schema: jsb_platform
+      username: assess
+      password: AssessPass123!
+      threads: 4

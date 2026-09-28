@@ -1,0 +1,57 @@
+EVIDENCE: kill / restart / new-activity demonstration
+======================================================
+
+1) Fresh load, small page size + artificial pre-commit delay, killed with
+   SIGKILL mid-page-2 (after page 1 committed, while page 2 was "in flight"):
+
+$ INGEST_PAGE_LIMIT=50 INGEST_DEMO_DELAY=2 python3 ingest.py &
+=== run 1 starting ===
+no checkpoint found: full initial load
+  [demo] sleeping 2.0s before commit (kill now to test safety)
+  page 1: 50 upserted, 0 rejected, has_more=True
+  [demo] sleeping 2.0s before commit (kill now to test safety)
+$ kill -9 <pid>          # simulates a hard crash mid-page-2, before its commit
+
+Database state immediately after the kill:
+  transactions:        50 rows, 50 distinct ids   (exactly page 1 -- page 2 never landed)
+  ingest_checkpoint:    last_updated_at=2026-09-01T00:35:00Z, last_id=TX000050
+  ingest_runs (run 1):  status=RUNNING, pages_fetched=1, rows_upserted=50
+                         (stays RUNNING forever -- this is the signal a
+                         "stale run" monitor alerts on in production)
+
+2) Restart with normal settings -- resumes from the checkpoint, no special
+   recovery step needed, completes the full initial load:
+
+$ python3 ingest.py
+=== run 2 starting ===
+resuming from updated_since=2026-09-01T00:35:00Z (last id seen: TX000050)
+  page 1: 200 upserted, 0 rejected, has_more=True
+  page 2: 200 upserted, 0 rejected, has_more=True
+  page 3: 200 upserted, 0 rejected, has_more=True
+  page 4: 199 upserted, 1 rejected, has_more=True
+  page 5: 151 upserted, 0 rejected, has_more=False
+=== run 2 COMPLETED: 5 pages, 950 upserted, 1 rejected (429s: 0, 500s: 0) ===
+
+Verification -- no duplicates, no missing rows, bad record quarantined not lost:
+  transactions:      999 rows, 999 distinct ids   (1000 source records - 1 rejected)
+  ingest_rejects:    1 row -- TX000777, reason "missing player_id", raw JSON kept
+  TX000500.amount:   250.00  (source sent the string "250.00"; coerced correctly)
+
+3) Interviewer-style "new activity" simulation, then rerun:
+
+$ curl -X POST http://127.0.0.1:8000/admin/advance
+{"ok": true, "total_records": 1025}
+
+$ python3 ingest.py
+=== run 3 starting ===
+resuming from updated_since=2026-09-01T11:40:00Z (last id seen: TX001000)
+  [429 rate limited] sleeping 1.0s (attempt 1)
+  page 1: 66 upserted, 0 rejected, has_more=False
+=== run 3 COMPLETED: 1 pages, 66 upserted, 0 rejected (429s: 1, 500s: 0) ===
+
+Final verification:
+  transactions: 1024 rows, 1024 distinct ids (999 + 25 new; 40 changed rows
+                 upserted in place, not duplicated; a live 429 was hit and
+                 retried automatically per Retry-After)
+  status breakdown now includes 'reversed' (16 rows) -- proof the advance()
+  status changes were picked up, not just the 25 new rows.

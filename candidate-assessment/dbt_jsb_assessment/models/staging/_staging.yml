@@ -1,0 +1,55 @@
+version: 2
+
+sources:
+  - name: jsb_platform
+    database: jsb_platform
+    schema: jsb_platform
+    tables:
+      - name: players
+      - name: player_vip_tier_history
+      - name: player_tag_history
+      - name: wallets
+      - name: wallet_transactions
+      - name: deposit_attempts
+      - name: withdrawal_requests
+      - name: bets
+      - name: sports_bet_details
+      - name: casino_round_details
+      - name: retail_bet_details
+      - name: bonus_campaigns
+      - name: player_bonuses
+      - name: bonus_rollover_events
+      # player_identity is intentionally NOT a source here: PII stays in the
+      # operational database only and is never pulled into the analytical layer.
+
+models:
+  - name: stg_players
+    description: One row per player, current attributes only (history is in stg_player_vip_tier_history).
+    columns:
+      - name: player_id
+        tests: [unique, not_null]
+  - name: stg_player_vip_tier_history
+    columns:
+      - name: player_id
+        tests: [not_null]
+  - name: stg_wallet_transactions
+    description: "The ledger, typed and renamed. Grain: one row per wallet movement."
+    columns:
+      - name: wallet_txn_id
+        tests: [unique, not_null]
+      - name: idempotency_key
+        tests: [unique, not_null]
+  - name: stg_bets
+    columns:
+      - name: bet_id
+        tests: [unique, not_null]
+      - name: player_id
+        tests: [not_null]
+  - name: stg_deposit_attempts
+    columns:
+      - name: deposit_attempt_id
+        tests: [unique, not_null]
+  - name: stg_player_bonuses
+    columns:
+      - name: player_bonus_id
+        tests: [unique, not_null]
