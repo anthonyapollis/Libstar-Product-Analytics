@@ -49,3 +49,47 @@ Balance as of selected date =
             fact_wallet_transaction[status] = "posted"
         )
     -- format: #,0.00
+
+-- ===== table: fct_recon_exceptions =====
+Settlements Matched Exactly =
+    CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] = "OK" )
+    -- format: #,0
+
+Exceptions =
+    CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] <> "OK" )
+    -- format: #,0
+
+Exception Impact =
+    CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category_type] <> "OK" )
+    -- format: #,0.00
+
+Act Now Value =
+    CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category] IN { "BREAK: payment confirmed, wallet not credited", "BREAK: unrecognised settlement (no internal record)" } )
+    -- format: #,0.00
+
+-- ===== table: mart_recon_bridge =====
+Bridge Amount =
+    SUM ( mart_recon_bridge[amount] )
+    -- format: #,0.00
+
+Bridge Residual =
+    SUM ( mart_recon_bridge[amount] ) - MAX ( mart_recon_bridge[gateway_settled_total] )
+    -- format: #,0.00
+
+-- ===== table: ingest_runs =====
+Ingestion Runs =
+    COUNTROWS ( ingest_runs )
+    -- format: #,0
+
+Rows Rejected =
+    SUM ( ingest_runs[rows_rejected] )
+    -- format: #,0
+
+Rate-Limit Retries =
+    SUM ( ingest_runs[rate_limit_hits] )
+    -- format: #,0
+
+-- ===== table: transactions =====
+Transactions Loaded =
+    DISTINCTCOUNT ( transactions[id] )
+    -- format: #,0

@@ -35,10 +35,10 @@ function h1(text, opts = {}) {
   });
 }
 function h2(text) {
-  return new Paragraph({ text, heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 150 } });
+  return new Paragraph({ text, heading: HeadingLevel.HEADING_2, keepNext: true, keepLines: true, spacing: { before: 300, after: 150 } });
 }
 function h3(text) {
-  return new Paragraph({ text, heading: HeadingLevel.HEADING_3, spacing: { before: 200, after: 100 } });
+  return new Paragraph({ text, heading: HeadingLevel.HEADING_3, keepNext: true, keepLines: true, spacing: { before: 200, after: 100 } });
 }
 function p(text, opts = {}) {
   return new Paragraph({

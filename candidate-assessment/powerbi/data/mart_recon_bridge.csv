@@ -1,0 +1,12 @@
+step_order,step,amount,gateway_settled_total
+1,Internal SUCCESS deposits,218280.00,217979.97
+2,Duplicate internal deposits,-1300.00,217979.97
+3,Reversals,-850.00,217979.97
+4,Not yet settled,-2700.00,217979.97
+5,Settles next period,-3650.00,217979.97
+6,Prior-period deposits,2600.00,217979.97
+7,Unrecognised settlements,2900.00,217979.97
+8,Settled but marked FAILED,250.00,217979.97
+9,Duplicate gateway rows,1550.00,217979.97
+10,Gross amount differences,900.00,217979.97
+11,Rounding,-0.03,217979.97

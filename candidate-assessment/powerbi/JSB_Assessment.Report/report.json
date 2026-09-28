@@ -31,7 +31,7 @@
           "z": 0,
           "width": 900,
           "height": 50,
-          "config": "{\"name\": \"title1\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"JSB \\u2014 NGR overview (seed data, September 2026)\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "config": "{\"name\": \"title1\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"NGR overview (seed data, September 2026)\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
           "filters": "[]"
         },
         {
@@ -76,7 +76,7 @@
           "z": 0,
           "width": 700,
           "height": 500,
-          "config": "{\"name\": \"col_ngr_product\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 200, \"z\": 0, \"width\": 700, \"height\": 500}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"fact_bet.product\", \"active\": true}], \"Y\": [{\"queryRef\": \"fact_bet.GGR\"}, {\"queryRef\": \"fact_bet.NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"product\"}, \"Name\": \"fact_bet.product\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"GGR\"}, \"Name\": \"fact_bet.GGR\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"NGR\"}, \"Name\": \"fact_bet.NGR\"}]}}}",
+          "config": "{\"name\": \"col_ngr_product\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 200, \"z\": 0, \"width\": 700, \"height\": 500}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"fact_bet.product\", \"active\": true}], \"Y\": [{\"queryRef\": \"fact_bet.GGR\"}, {\"queryRef\": \"fact_bet.NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"product\"}, \"Name\": \"fact_bet.product\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"GGR\"}, \"Name\": \"fact_bet.GGR\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"NGR\"}, \"Name\": \"fact_bet.NGR\"}]}, \"objects\": {\"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'GGR and NGR by product (NAD)'\"}}}}}]}}}",
           "filters": "[]"
         },
         {
@@ -85,7 +85,7 @@
           "z": 0,
           "width": 520,
           "height": 240,
-          "config": "{\"name\": \"tbl_campaign\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 740, \"y\": 200, \"z\": 0, \"width\": 520, \"height\": 240}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_campaign.campaign_name\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_campaign\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_bonus_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"campaign_name\"}, \"Name\": \"dim_campaign.campaign_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost % of NGR\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}}}",
+          "config": "{\"name\": \"tbl_campaign\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 740, \"y\": 200, \"z\": 0, \"width\": 520, \"height\": 240}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_campaign.campaign_name\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_campaign\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_bonus_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"campaign_name\"}, \"Name\": \"dim_campaign.campaign_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost % of NGR\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Bonus cost as % of NGR, by campaign'\"}}}}}]}}}",
           "filters": "[]"
         }
       ],
@@ -107,7 +107,7 @@
           "z": 0,
           "width": 900,
           "height": 50,
-          "config": "{\"name\": \"title2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"JSB \\u2014 player balances from the ledger\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "config": "{\"name\": \"title2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Player balances from the ledger\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
           "filters": "[]"
         },
         {
@@ -116,7 +116,7 @@
           "z": 0,
           "width": 400,
           "height": 120,
-          "config": "{\"name\": \"slicer_date\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 400, \"height\": 120}}], \"singleVisual\": {\"visualType\": \"slicer\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_date.date_day\", \"active\": true}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"date_day\"}, \"Name\": \"dim_date.date_day\"}]}}}",
+          "config": "{\"name\": \"slicer_date\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 400, \"height\": 120}}], \"singleVisual\": {\"visualType\": \"slicer\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_date.date_day\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"date_day\"}, \"Name\": \"dim_date.date_day\"}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Balance as of (drag the end date)'\"}}}}}]}}}",
           "filters": "[]"
         },
         {
@@ -134,7 +134,168 @@
           "z": 0,
           "width": 700,
           "height": 300,
-          "config": "{\"name\": \"tbl_balance\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 210, \"z\": 0, \"width\": 700, \"height\": 300}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_player.player_id\"}, {\"queryRef\": \"fact_wallet_transaction.balance_type\"}, {\"queryRef\": \"fact_wallet_transaction.Balance as of selected date\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_player\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_wallet_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"player_id\"}, \"Name\": \"dim_player.player_id\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"balance_type\"}, \"Name\": \"fact_wallet_transaction.balance_type\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Balance as of selected date\"}, \"Name\": \"fact_wallet_transaction.Balance as of selected date\"}]}}}",
+          "config": "{\"name\": \"tbl_balance\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 210, \"z\": 0, \"width\": 700, \"height\": 300}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_player.player_id\"}, {\"queryRef\": \"fact_wallet_transaction.balance_type\"}, {\"queryRef\": \"fact_wallet_transaction.Balance as of selected date\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_player\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_wallet_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"player_id\"}, \"Name\": \"dim_player.player_id\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"balance_type\"}, \"Name\": \"fact_wallet_transaction.balance_type\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Balance as of selected date\"}, \"Name\": \"fact_wallet_transaction.Balance as of selected date\"}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Balance per player, reconstructed from wallet transactions'\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "id": 2,
+      "name": "ReportSection3",
+      "displayName": "Reconciliation",
+      "filters": "[]",
+      "ordinal": 2,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 10,
+          "z": 0,
+          "width": 900,
+          "height": 50,
+          "config": "{\"name\": \"title3\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Gateway reconciliation, 1\\u20137 September 2026\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_matched\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fct_recon_exceptions.Settlements Matched Exactly\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fct_recon_exceptions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Settlements Matched Exactly\"}, \"Name\": \"fct_recon_exceptions.Settlements Matched Exactly\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 330,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_exceptions\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 330, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fct_recon_exceptions.Exceptions\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fct_recon_exceptions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Exceptions\"}, \"Name\": \"fct_recon_exceptions.Exceptions\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 640,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_actnow\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 640, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fct_recon_exceptions.Act Now Value\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fct_recon_exceptions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Act Now Value\"}, \"Name\": \"fct_recon_exceptions.Act Now Value\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 950,
+          "y": 70,
+          "z": 0,
+          "width": 310,
+          "height": 110,
+          "config": "{\"name\": \"card_residual\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 950, \"y\": 70, \"z\": 0, \"width\": 310, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"mart_recon_bridge.Bridge Residual\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"mart_recon_bridge\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Bridge Residual\"}, \"Name\": \"mart_recon_bridge.Bridge Residual\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 200,
+          "z": 0,
+          "width": 760,
+          "height": 500,
+          "config": "{\"name\": \"wf_bridge\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 200, \"z\": 0, \"width\": 760, \"height\": 500}}], \"singleVisual\": {\"visualType\": \"waterfallChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"mart_recon_bridge.step\", \"active\": true}], \"Y\": [{\"queryRef\": \"mart_recon_bridge.Bridge Amount\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"mart_recon_bridge\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"step\"}, \"Name\": \"mart_recon_bridge.step\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Bridge Amount\"}, \"Name\": \"mart_recon_bridge.Bridge Amount\"}], \"OrderBy\": [{\"Direction\": 1, \"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"step\"}}}]}, \"objects\": {\"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Bridge: internal SUCCESS total to gateway SETTLED total (NAD)'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 800,
+          "y": 200,
+          "z": 0,
+          "width": 460,
+          "height": 260,
+          "config": "{\"name\": \"bar_categories\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 800, \"y\": 200, \"z\": 0, \"width\": 460, \"height\": 260}}], \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"fct_recon_exceptions.category\", \"active\": true}], \"Y\": [{\"queryRef\": \"fct_recon_exceptions.Exceptions\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fct_recon_exceptions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"category\"}, \"Name\": \"fct_recon_exceptions.category\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Exceptions\"}, \"Name\": \"fct_recon_exceptions.Exceptions\"}], \"OrderBy\": [{\"Direction\": 2, \"Expression\": {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Exceptions\"}}}]}, \"objects\": {\"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Exceptions by category'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 800,
+          "y": 470,
+          "z": 0,
+          "width": 460,
+          "height": 230,
+          "config": "{\"name\": \"tbl_exceptions\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 800, \"y\": 470, \"z\": 0, \"width\": 460, \"height\": 230}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fct_recon_exceptions.category_type\"}, {\"queryRef\": \"fct_recon_exceptions.deposit_id\"}, {\"queryRef\": \"fct_recon_exceptions.gateway_txn_id\"}, {\"queryRef\": \"fct_recon_exceptions.Exception Impact\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fct_recon_exceptions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"category_type\"}, \"Name\": \"fct_recon_exceptions.category_type\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"deposit_id\"}, \"Name\": \"fct_recon_exceptions.deposit_id\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"gateway_txn_id\"}, \"Name\": \"fct_recon_exceptions.gateway_txn_id\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Exception Impact\"}, \"Name\": \"fct_recon_exceptions.Exception Impact\"}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Exception detail (matched rows hidden)'\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "id": 3,
+      "name": "ReportSection4",
+      "displayName": "Ingestion monitoring",
+      "filters": "[]",
+      "ordinal": 3,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 10,
+          "z": 0,
+          "width": 900,
+          "height": 50,
+          "config": "{\"name\": \"title4\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"API ingestion monitoring\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_loaded\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"transactions.Transactions Loaded\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"transactions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Transactions Loaded\"}, \"Name\": \"transactions.Transactions Loaded\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 330,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_runs\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 330, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"ingest_runs.Ingestion Runs\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"ingest_runs\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Ingestion Runs\"}, \"Name\": \"ingest_runs.Ingestion Runs\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 640,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_rejected\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 640, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"ingest_runs.Rows Rejected\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"ingest_runs\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Rows Rejected\"}, \"Name\": \"ingest_runs.Rows Rejected\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 950,
+          "y": 70,
+          "z": 0,
+          "width": 310,
+          "height": 110,
+          "config": "{\"name\": \"card_429\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 950, \"y\": 70, \"z\": 0, \"width\": 310, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"ingest_runs.Rate-Limit Retries\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"ingest_runs\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Rate-Limit Retries\"}, \"Name\": \"ingest_runs.Rate-Limit Retries\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 200,
+          "z": 0,
+          "width": 760,
+          "height": 220,
+          "config": "{\"name\": \"tbl_runs\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 200, \"z\": 0, \"width\": 760, \"height\": 220}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"ingest_runs.run_id\"}, {\"queryRef\": \"ingest_runs.status\"}, {\"queryRef\": \"ingest_runs.started_at\"}, {\"queryRef\": \"ingest_runs.pages_fetched\"}, {\"queryRef\": \"ingest_runs.rows_upserted\"}, {\"queryRef\": \"ingest_runs.rows_rejected\"}, {\"queryRef\": \"ingest_runs.rate_limit_hits\"}, {\"queryRef\": \"ingest_runs.duration_seconds\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"ingest_runs\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"run_id\"}, \"Name\": \"ingest_runs.run_id\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"status\"}, \"Name\": \"ingest_runs.status\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"started_at\"}, \"Name\": \"ingest_runs.started_at\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"pages_fetched\"}, \"Name\": \"ingest_runs.pages_fetched\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"rows_upserted\"}, \"Name\": \"ingest_runs.rows_upserted\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"rows_rejected\"}, \"Name\": \"ingest_runs.rows_rejected\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"rate_limit_hits\"}, \"Name\": \"ingest_runs.rate_limit_hits\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"duration_seconds\"}, \"Name\": \"ingest_runs.duration_seconds\"}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Run history (run 1 was killed mid-page: it stays RUNNING)'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 800,
+          "y": 200,
+          "z": 0,
+          "width": 460,
+          "height": 500,
+          "config": "{\"name\": \"col_status\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 800, \"y\": 200, \"z\": 0, \"width\": 460, \"height\": 500}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"transactions.status\", \"active\": true}], \"Y\": [{\"queryRef\": \"transactions.Transactions Loaded\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"status\"}, \"Name\": \"transactions.status\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Transactions Loaded\"}, \"Name\": \"transactions.Transactions Loaded\"}], \"OrderBy\": [{\"Direction\": 2, \"Expression\": {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Transactions Loaded\"}}}]}, \"objects\": {\"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Transactions loaded, by status'\"}}}}}]}}}",
           "filters": "[]"
         }
       ],

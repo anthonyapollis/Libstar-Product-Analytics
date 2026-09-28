@@ -1,17 +1,23 @@
-"""Generate the Power BI Project (.pbip) for the JSB reporting model.
+"""Generate the Power BI Project (.pbip) for the JSB assessment.
 
-One definition of tables, relationships and measures drives four outputs,
+One definition of tables, relationships, measures and pages drives every output,
 so they cannot drift apart:
   * JSB_Assessment.SemanticModel/model.bim  (tables, Power Query, relationships, DAX)
-  * JSB_Assessment.Report/report.json       (two report pages)
-  * measures.dax                            (the same DAX, for reading/pasting)
+  * JSB_Assessment.Report/report.json       (four report pages)
+  * measures.dax                            (the same DAX, readable)
   * expected_values.md                      (what each visual should show, computed
                                              independently from the CSVs with pandas)
-It then validates the result. Run: python build_pbip.py
+It validates the result before writing anything.
+
+  python build_pbip.py            data embedded in the model: opens and refreshes anywhere
+  python build_pbip.py --folder   reads data/*.csv from a DataFolder parameter instead
+                                  (use for full-volume extracts too big to embed)
 """
+import base64
 import json
 import re
 import shutil
+import sys
 import uuid
 from itertools import count
 from pathlib import Path
@@ -24,18 +30,20 @@ NAME = "JSB_Assessment"
 MODEL_DIR = HERE / f"{NAME}.SemanticModel"
 REPORT_DIR = HERE / f"{NAME}.Report"
 THEME_SRC = HERE / "theme" / "CY24SU06.json"   # taken from the supplied Demo.pbix
+FOLDER_MODE = "--folder" in sys.argv
 
 # M type, TOM dataType, TOM formatString
 T = {
-    "int":  ("Int64.Type",    "int64",    "0"),
-    "text": ("type text",     "string",   None),
-    "money": ("Currency.Type", "decimal", "#,0.00"),   # fixed decimal, 4dp, matches DECIMAL(18,4)
-    "num":  ("type number",   "double",   "#,0.000"),
-    "date": ("type date",     "dateTime", "yyyy-mm-dd"),
-    "dt":   ("type datetime", "dateTime", "yyyy-mm-dd hh:nn:ss"),
+    "int":   ("Int64.Type",    "int64",    "0"),
+    "text":  ("type text",     "string",   None),
+    "money": ("Currency.Type", "decimal",  "#,0.00"),   # fixed decimal, 4dp, matches DECIMAL(18,4)
+    "num":   ("type number",   "double",   "#,0.000"),
+    "date":  ("type date",     "dateTime", "yyyy-mm-dd"),
+    "dt":    ("type datetime", "dateTime", "yyyy-mm-dd hh:nn:ss"),
 }
 
 TABLES = {
+    # ---- Exercise 3: reporting star schema ----
     "dim_player": {
         "player_id": "int", "kyc_status": "text", "current_vip_tier": "text", "status": "text",
         "traffic_source": "text", "affiliate_id": "int", "preferred_currency": "text",
@@ -75,12 +83,35 @@ TABLES = {
         "rollover_progress": "money", "status": "text", "realised_bonus_cost": "money",
         "granted_at_utc": "dt", "expires_at_utc": "dt", "resolved_at_utc": "dt",
     },
+    # ---- Exercise 1: reconciliation (dbt marts) ----
+    "fct_recon_exceptions": {
+        "deposit_id": "text", "player_id": "text", "created_at": "dt", "dep_amount": "money",
+        "gateway_ref": "text", "settlement_row_id": "int", "gateway_txn_id": "text",
+        "merchant_ref": "text", "settled_at": "dt", "gross_amount": "money", "fee": "money",
+        "net_amount": "money", "gw_status": "text", "expected_fee": "money", "category": "text",
+        "financial_impact": "money", "category_type": "text",
+    },
+    "mart_recon_bridge": {
+        "step_order": "int", "step": "text", "amount": "money", "gateway_settled_total": "money",
+    },
+    # ---- Exercise 2: ingestion (dbt staging) ----
+    "ingest_runs": {
+        "run_id": "int", "source_system": "text", "started_at": "dt", "finished_at": "dt",
+        "status": "text", "pages_fetched": "int", "rows_upserted": "int", "rows_rejected": "int",
+        "rate_limit_hits": "int", "server_error_hits": "int", "duration_seconds": "int",
+    },
+    "transactions": {
+        "id": "text", "player_id": "text", "type": "text", "amount": "money", "currency": "text",
+        "status": "text", "updated_at": "dt", "source_system": "text", "ingested_at": "dt",
+    },
 }
+SORT_BY = {("mart_recon_bridge", "step"): "step_order"}   # waterfall steps in bridge order
 
 # (many side table, column) -> (one side table, column). Filters flow one -> many only.
 # fact_wallet_transaction.related_bet_id / related_player_bonus_id are kept as keys
 # for drill-through but NOT modelled as relationships: joining facts to facts would
 # give dim_player two filter paths to fact_wallet_transaction (ambiguous).
+# The Exercise 1 and 2 tables stand alone: they share no keys with the player model.
 RELATIONSHIPS = [
     ("fact_bet", "player_id", "dim_player", "player_id"),
     ("fact_wallet_transaction", "player_id", "dim_player", "player_id"),
@@ -91,18 +122,21 @@ RELATIONSHIPS = [
     ("fact_bonus_transaction", "campaign_id", "dim_campaign", "campaign_id"),
 ]
 
-# table -> [(measure, DAX, format)]. Definitions match exercise3-schema-design/example_queries.sql.
+ACT_NOW = ('"BREAK: payment confirmed, wallet not credited", '
+           '"BREAK: unrecognised settlement (no internal record)"')
+
+# table -> [(measure, DAX, format)]
 MEASURES = {
     "fact_bet": [
         ("Turnover", 'CALCULATE ( SUM ( fact_bet[total_stake] ), fact_bet[status] IN { "won", "lost" } )', "#,0.00"),
         ("Payouts", 'CALCULATE ( SUM ( fact_bet[payout_amount] ), fact_bet[status] IN { "won", "lost" } )', "#,0.00"),
         ("GGR", "[Turnover] - [Payouts]", "#,0.00"),
-        # Realised bonus cost = bonus money staked on bets that lost (query (a)).
+        # Realised bonus cost = bonus money staked on bets that lost (example query (a)).
         ("Bonus Cost (realised)", 'CALCULATE ( SUM ( fact_bet[stake_bonus_amount] ), fact_bet[status] = "lost" )', "#,0.00"),
         ("NGR", "[GGR] - [Bonus Cost (realised)]", "#,0.00"),
     ],
     "fact_bonus_transaction": [
-        # Campaign cost is recognised when a grant resolves (query (b)).
+        # Campaign cost is recognised when a grant resolves (example query (b)).
         ("Campaign Bonus Cost",
          'CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] IN { "completed", "expired", "forfeited" } )',
          "#,0.00"),
@@ -113,11 +147,34 @@ MEASURES = {
     ],
     "fact_wallet_transaction": [
         ("Deposits", 'CALCULATE ( SUM ( fact_wallet_transaction[amount] ), fact_wallet_transaction[txn_type] = "deposit" )', "#,0.00"),
-        # Point-in-time balance from the ledger (query (c)): everything posted up to the
-        # last date in the current date filter.
+        # Point-in-time balance from the ledger (example query (c)).
         ("Balance as of selected date",
          "VAR AsOf = MAX ( dim_date[date_day] )\nRETURN\n    CALCULATE (\n        SUM ( fact_wallet_transaction[signed_amount] ),\n        REMOVEFILTERS ( dim_date ),\n        fact_wallet_transaction[transaction_date] <= AsOf,\n        fact_wallet_transaction[status] = \"posted\"\n    )",
          "#,0.00"),
+    ],
+    "fct_recon_exceptions": [
+        ("Settlements Matched Exactly",
+         'CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] = "OK" )', "#,0"),
+        ("Exceptions",
+         'CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] <> "OK" )', "#,0"),
+        ("Exception Impact",
+         'CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category_type] <> "OK" )', "#,0.00"),
+        ("Act Now Value",
+         f"CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category] IN {{ {ACT_NOW} }} )",
+         "#,0.00"),
+    ],
+    "mart_recon_bridge": [
+        ("Bridge Amount", "SUM ( mart_recon_bridge[amount] )", "#,0.00"),
+        # Must be 0.00: every rand between the two totals is explained by a bridge step.
+        ("Bridge Residual", "SUM ( mart_recon_bridge[amount] ) - MAX ( mart_recon_bridge[gateway_settled_total] )", "#,0.00"),
+    ],
+    "ingest_runs": [
+        ("Ingestion Runs", "COUNTROWS ( ingest_runs )", "#,0"),
+        ("Rows Rejected", "SUM ( ingest_runs[rows_rejected] )", "#,0"),
+        ("Rate-Limit Retries", "SUM ( ingest_runs[rate_limit_hits] )", "#,0"),
+    ],
+    "transactions": [
+        ("Transactions Loaded", "DISTINCTCOUNT ( transactions[id] )", "#,0"),
     ],
 }
 
@@ -131,9 +188,14 @@ def guid():
 def m_query(table):
     cols = TABLES[table]
     types = ", ".join(f'{{"{c}", {T[t][0]}}}' for c, t in cols.items())
+    if FOLDER_MODE:
+        source = f'File.Contents(DataFolder & "{table}.csv")'
+    else:
+        b64 = base64.b64encode((DATA / f"{table}.csv").read_bytes()).decode()
+        source = f'Binary.FromText("{b64}", BinaryEncoding.Base64)'
     return [
         "let",
-        f'    Source = Csv.Document(File.Contents(DataFolder & "{table}.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),',
+        f"    Source = Csv.Document({source}, [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
         "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
         "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
         f'    Typed = Table.TransformColumnTypes(Blanks, {{{types}}}, "en-US")',
@@ -148,11 +210,11 @@ def build_model():
         columns = []
         for c, t in cols.items():
             col = {"name": c, "dataType": T[t][1], "sourceColumn": c, "lineageTag": guid(),
-                   "summarizeBy": "none"}
+                   "summarizeBy": "sum" if t == "money" else "none"}
             if T[t][2]:
                 col["formatString"] = T[t][2]
-            if t == "money":
-                col["summarizeBy"] = "sum"
+            if (tname, c) in SORT_BY:
+                col["sortByColumn"] = SORT_BY[(tname, c)]
             columns.append(col)
         table = {
             "name": tname,
@@ -170,67 +232,87 @@ def build_model():
             ]
         tables.append(table)
 
-    relationships = [
-        {"name": guid(), "fromTable": ft, "fromColumn": fc, "toTable": tt, "toColumn": tc}
-        for ft, fc, tt, tc in RELATIONSHIPS
-    ]
-    return {
-        "compatibilityLevel": 1567,
-        "model": {
-            "culture": "en-US",
-            "dataAccessOptions": {"legacyRedirects": True, "returnErrorValuesAsNull": True},
-            "defaultPowerBIDataSourceVersion": "powerBI_V3",
-            "sourceQueryCulture": "en-US",
-            "tables": tables,
-            "relationships": relationships,
-            "expressions": [{
-                "name": "DataFolder",
-                "kind": "m",
-                "expression": '"C:\\JSB\\powerbi\\data\\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]',
-                "lineageTag": guid(),
-                "annotations": [{"name": "PBI_ResultType", "value": "Text"}],
-            }],
-            "annotations": [
-                {"name": "__PBI_TimeIntelligenceEnabled", "value": "0"},
-                {"name": "PBI_QueryOrder", "value": json.dumps(["DataFolder", *TABLES])},
-            ],
-        },
+    model = {
+        "culture": "en-US",
+        "dataAccessOptions": {"legacyRedirects": True, "returnErrorValuesAsNull": True},
+        "defaultPowerBIDataSourceVersion": "powerBI_V3",
+        "sourceQueryCulture": "en-US",
+        "tables": tables,
+        "relationships": [
+            {"name": guid(), "fromTable": ft, "fromColumn": fc, "toTable": tt, "toColumn": tc}
+            for ft, fc, tt, tc in RELATIONSHIPS
+        ],
+        "annotations": [
+            {"name": "__PBI_TimeIntelligenceEnabled", "value": "0"},
+            {"name": "PBI_QueryOrder",
+             "value": json.dumps((["DataFolder"] if FOLDER_MODE else []) + list(TABLES))},
+        ],
     }
+    if FOLDER_MODE:
+        model["expressions"] = [{
+            "name": "DataFolder", "kind": "m",
+            "expression": '"C:\\JSB\\powerbi\\data\\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]',
+            "lineageTag": guid(),
+            "annotations": [{"name": "PBI_ResultType", "value": "Text"}],
+        }]
+    return {"compatibilityLevel": 1567, "model": model}
 
 
 # ---------------------------------------------------------------------------
 # Report
 # ---------------------------------------------------------------------------
+def lit(v):
+    return {"expr": {"Literal": {"Value": v}}}
+
+
 def field(table, name, kind, alias):
     key = "Measure" if kind == "m" else "Column"
     return {key: {"Expression": {"SourceRef": {"Source": alias}}, "Property": name},
             "Name": f"{table}.{name}"}
 
 
-def visual(name, vtype, pos, roles=None, objects=None):
-    """roles: {projection role: [(table, field, 'm'|'c'), ...]}"""
+def visual(name, vtype, pos, roles=None, title=None, labels=False, order=None, objects=None):
+    """roles: {projection role: [(table, field, 'm'|'c'), ...]};
+    order: (table, field, 'm'|'c', ascending)."""
     x, y, w, h = pos
     sv = {"visualType": vtype, "drillFilterOtherVisuals": True}
     if roles:
         aliases, froms, selects, projections = {}, [], [], {}
+
+        def alias_for(table):
+            if table not in aliases:
+                aliases[table] = f"t{len(aliases)}"
+                froms.append({"Name": aliases[table], "Entity": table, "Type": 0})
+            return aliases[table]
+
         for role, fields in roles.items():
             projections[role] = []
             for table, fname, kind in fields:
-                if table not in aliases:
-                    aliases[table] = f"t{len(aliases)}"
-                    froms.append({"Name": aliases[table], "Entity": table, "Type": 0})
                 ref = f"{table}.{fname}"
                 if ref not in [s["Name"] for s in selects]:
-                    selects.append(field(table, fname, kind, aliases[table]))
+                    selects.append(field(table, fname, kind, alias_for(table)))
                 proj = {"queryRef": ref}
-                if kind == "c" and role in ("Category", "Values") and vtype != "tableEx":
+                if kind == "c" and role == "Category":
                     proj["active"] = True
                 projections[role].append(proj)
         sv["projections"] = projections
         sv["prototypeQuery"] = {"Version": 2, "From": froms, "Select": selects}
-    if objects:
-        sv["objects"] = objects
-    cfg = {"name": name, "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": 0, "width": w, "height": h}}],
+        if order:
+            table, fname, kind, asc = order
+            key = "Measure" if kind == "m" else "Column"
+            sv["prototypeQuery"]["OrderBy"] = [{
+                "Direction": 1 if asc else 2,
+                "Expression": {key: {"Expression": {"SourceRef": {"Source": alias_for(table)}},
+                                     "Property": fname}}}]
+    objs = dict(objects or {})
+    if labels:
+        objs["labels"] = [{"properties": {"show": lit("true")}}]
+    if objs:
+        sv["objects"] = objs
+    if title:
+        sv["vcObjects"] = {"title": [{"properties": {"show": lit("true"), "text": lit(f"'{title}'")}}]}
+    cfg = {"name": name,
+           "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": 0, "width": w, "height": h}}],
            "singleVisual": sv}
     return {"x": x, "y": y, "z": 0, "width": w, "height": h, "config": json.dumps(cfg), "filters": "[]"}
 
@@ -240,33 +322,78 @@ def textbox(name, text, pos, size="20pt"):
         {"textRuns": [{"value": text, "textStyle": {"fontWeight": "bold", "fontSize": size}}]}]}}]})
 
 
+def card(name, table, measure, x, y=70, w=290, h=110):
+    return visual(name, "card", (x, y, w, h), {"Values": [(table, measure, "m")]})
+
+
 def build_report():
     fb, fbt, fwt = "fact_bet", "fact_bonus_transaction", "fact_wallet_transaction"
-    page1 = [
-        textbox("title1", "JSB — NGR overview (seed data, September 2026)", (20, 10, 900, 50)),
-        visual("card_ggr", "card", (20, 70, 290, 110), {"Values": [(fb, "GGR", "m")]}),
-        visual("card_bonus", "card", (330, 70, 290, 110), {"Values": [(fb, "Bonus Cost (realised)", "m")]}),
-        visual("card_ngr", "card", (640, 70, 290, 110), {"Values": [(fb, "NGR", "m")]}),
-        visual("card_liab", "card", (950, 70, 310, 110), {"Values": [(fbt, "Bonus Liability Outstanding", "m")]}),
-        visual("col_ngr_product", "clusteredColumnChart", (20, 200, 700, 500),
-               {"Category": [(fb, "product", "c")], "Y": [(fb, "GGR", "m"), (fb, "NGR", "m")]}),
-        visual("tbl_campaign", "tableEx", (740, 200, 520, 240),
-               {"Values": [("dim_campaign", "campaign_name", "c"), (fbt, "Campaign Bonus Cost", "m"),
-                           (fbt, "Campaign Bonus Cost % of NGR", "m")]}),
+    fre, brg, runs, txn = "fct_recon_exceptions", "mart_recon_bridge", "ingest_runs", "transactions"
+    pages = [
+        ("NGR overview", [
+            textbox("title1", "NGR overview (seed data, September 2026)", (20, 10, 900, 50)),
+            card("card_ggr", fb, "GGR", 20),
+            card("card_bonus", fb, "Bonus Cost (realised)", 330),
+            card("card_ngr", fb, "NGR", 640),
+            card("card_liab", fbt, "Bonus Liability Outstanding", 950, w=310),
+            visual("col_ngr_product", "clusteredColumnChart", (20, 200, 700, 500),
+                   {"Category": [(fb, "product", "c")], "Y": [(fb, "GGR", "m"), (fb, "NGR", "m")]},
+                   title="GGR and NGR by product (NAD)", labels=True),
+            visual("tbl_campaign", "tableEx", (740, 200, 520, 240),
+                   {"Values": [("dim_campaign", "campaign_name", "c"), (fbt, "Campaign Bonus Cost", "m"),
+                               (fbt, "Campaign Bonus Cost % of NGR", "m")]},
+                   title="Bonus cost as % of NGR, by campaign"),
+        ]),
+        ("Player balances", [
+            textbox("title2", "Player balances from the ledger", (20, 10, 900, 50)),
+            visual("slicer_date", "slicer", (20, 70, 400, 120), {"Values": [("dim_date", "date_day", "c")]},
+                   title="Balance as of (drag the end date)"),
+            card("card_deposits", fwt, "Deposits", 440, h=120),
+            visual("tbl_balance", "tableEx", (20, 210, 700, 300),
+                   {"Values": [("dim_player", "player_id", "c"), (fwt, "balance_type", "c"),
+                               (fwt, "Balance as of selected date", "m")]},
+                   title="Balance per player, reconstructed from wallet transactions"),
+        ]),
+        ("Reconciliation", [
+            textbox("title3", "Gateway reconciliation, 1–7 September 2026", (20, 10, 900, 50)),
+            card("card_matched", fre, "Settlements Matched Exactly", 20),
+            card("card_exceptions", fre, "Exceptions", 330),
+            card("card_actnow", fre, "Act Now Value", 640),
+            card("card_residual", brg, "Bridge Residual", 950, w=310),
+            visual("wf_bridge", "waterfallChart", (20, 200, 760, 500),
+                   {"Category": [(brg, "step", "c")], "Y": [(brg, "Bridge Amount", "m")]},
+                   title="Bridge: internal SUCCESS total to gateway SETTLED total (NAD)",
+                   labels=True, order=(brg, "step", "c", True)),
+            visual("bar_categories", "clusteredBarChart", (800, 200, 460, 260),
+                   {"Category": [(fre, "category", "c")], "Y": [(fre, "Exceptions", "m")]},
+                   title="Exceptions by category", labels=True, order=(fre, "Exceptions", "m", False)),
+            visual("tbl_exceptions", "tableEx", (800, 470, 460, 230),
+                   {"Values": [(fre, "category_type", "c"), (fre, "deposit_id", "c"),
+                               (fre, "gateway_txn_id", "c"), (fre, "Exception Impact", "m")]},
+                   title="Exception detail (matched rows hidden)"),
+        ]),
+        ("Ingestion monitoring", [
+            textbox("title4", "API ingestion monitoring", (20, 10, 900, 50)),
+            card("card_loaded", txn, "Transactions Loaded", 20),
+            card("card_runs", runs, "Ingestion Runs", 330),
+            card("card_rejected", runs, "Rows Rejected", 640),
+            card("card_429", runs, "Rate-Limit Retries", 950, w=310),
+            visual("tbl_runs", "tableEx", (20, 200, 760, 220),
+                   {"Values": [(runs, "run_id", "c"), (runs, "status", "c"), (runs, "started_at", "c"),
+                               (runs, "pages_fetched", "c"), (runs, "rows_upserted", "c"),
+                               (runs, "rows_rejected", "c"), (runs, "rate_limit_hits", "c"),
+                               (runs, "duration_seconds", "c")]},
+                   title="Run history (run 1 was killed mid-page: it stays RUNNING)"),
+            visual("col_status", "clusteredColumnChart", (800, 200, 460, 500),
+                   {"Category": [(txn, "status", "c")], "Y": [(txn, "Transactions Loaded", "m")]},
+                   title="Transactions loaded, by status", labels=True,
+                   order=(txn, "Transactions Loaded", "m", False)),
+        ]),
     ]
-    page2 = [
-        textbox("title2", "JSB — player balances from the ledger", (20, 10, 900, 50)),
-        visual("slicer_date", "slicer", (20, 70, 400, 120), {"Values": [("dim_date", "date_day", "c")]}),
-        visual("card_deposits", "card", (440, 70, 290, 120), {"Values": [(fwt, "Deposits", "m")]}),
-        visual("tbl_balance", "tableEx", (20, 210, 700, 300),
-               {"Values": [("dim_player", "player_id", "c"), (fwt, "balance_type", "c"),
-                           (fwt, "Balance as of selected date", "m")]}),
-    ]
-    sections = []
-    for i, (disp, visuals) in enumerate([("NGR overview", page1), ("Player balances", page2)]):
-        sections.append({"id": i, "name": f"ReportSection{i + 1}", "displayName": disp, "filters": "[]",
-                         "ordinal": i, "visualContainers": visuals, "config": "{}", "displayOption": 1,
-                         "width": 1280, "height": 720})
+    sections = [{"id": i, "name": f"ReportSection{i + 1}", "displayName": disp, "filters": "[]",
+                 "ordinal": i, "visualContainers": visuals, "config": "{}", "displayOption": 1,
+                 "width": 1280, "height": 720}
+                for i, (disp, visuals) in enumerate(pages)]
     config = {
         "version": "5.55",
         "themeCollection": {"baseTheme": {"name": "CY24SU06", "version": "5.55", "type": 2}},
@@ -274,7 +401,7 @@ def build_report():
         "settings": {"useNewFilterPaneExperience": True, "allowChangeFilterTypes": True,
                      "useStylableVisualContainerHeader": True, "queryLimitOption": 6,
                      "exportDataMode": 1, "useDefaultAggregateDisplayName": True},
-        "objects": {"section": [{"properties": {"verticalAlignment": {"expr": {"Literal": {"Value": "'Top'"}}}}}]},
+        "objects": {"section": [{"properties": {"verticalAlignment": lit("'Top'")}}]},
     }
     return {
         "config": json.dumps(config),
@@ -294,6 +421,14 @@ def validate(model, report):
     meas = {(t, m["name"]) for t, tb in tables.items() for m in tb.get("measures", [])}
     meas_names = {m for _, m in meas}
     errors = []
+
+    for t, c in SORT_BY.items():
+        if t not in cols or (t[0], c) not in cols:
+            errors.append(f"sortByColumn {t} -> {c} missing")
+    for tname in tables:
+        header = pd.read_csv(DATA / f"{tname}.csv", nrows=0).columns.tolist()
+        if header != list(TABLES[tname]):
+            errors.append(f"{tname}.csv columns {header} != model columns {list(TABLES[tname])}")
 
     for r in model["model"]["relationships"]:
         for side in ("from", "to"):
@@ -333,16 +468,19 @@ def validate(model, report):
             sv = cfg["singleVisual"]
             if "prototypeQuery" not in sv:
                 continue
-            alias = {f["Name"]: f["Entity"] for f in sv["prototypeQuery"]["From"]}
+            q = sv["prototypeQuery"]
+            alias = {f["Name"]: f["Entity"] for f in q["From"]}
             names = set()
-            for sel in sv["prototypeQuery"]["Select"]:
-                kind = "Measure" if "Measure" in sel else "Column"
-                ent = alias[sel[kind]["Expression"]["SourceRef"]["Source"]]
-                prop = sel[kind]["Property"]
+            items = [(sel, sel) for sel in q["Select"]] + [(o["Expression"], None) for o in q.get("OrderBy", [])]
+            for expr, sel in items:
+                kind = "Measure" if "Measure" in expr else "Column"
+                ent = alias[expr[kind]["Expression"]["SourceRef"]["Source"]]
+                prop = expr[kind]["Property"]
                 if (ent, prop) not in (meas if kind == "Measure" else cols):
                     errors.append(f"visual {cfg['name']}: {kind} {ent}.{prop} not in model")
-                names.add(sel["Name"])
-            for role, refs in sv["projections"].items():
+                if sel:
+                    names.add(sel["Name"])
+            for refs in sv["projections"].values():
                 for p in refs:
                     if p["queryRef"] not in names:
                         errors.append(f"visual {cfg['name']}: projection {p['queryRef']} not selected")
@@ -353,10 +491,11 @@ def validate(model, report):
 # Expected values, computed independently of DAX with pandas
 # ---------------------------------------------------------------------------
 def expected_values():
-    bet = pd.read_csv(DATA / "fact_bet.csv")
-    bon = pd.read_csv(DATA / "fact_bonus_transaction.csv")
-    wal = pd.read_csv(DATA / "fact_wallet_transaction.csv", parse_dates=["transaction_date"])
-    dates = pd.read_csv(DATA / "dim_date.csv", parse_dates=["date_day"])
+    rd = lambda n, **kw: pd.read_csv(DATA / f"{n}.csv", **kw)
+    bet, bon = rd("fact_bet"), rd("fact_bonus_transaction")
+    wal = rd("fact_wallet_transaction", parse_dates=["transaction_date"])
+    dates = rd("dim_date", parse_dates=["date_day"])
+    rec, brg, runs, txn = rd("fct_recon_exceptions"), rd("mart_recon_bridge"), rd("ingest_runs"), rd("transactions")
     settled = bet[bet.status.isin(["won", "lost"])]
 
     def ngr(df):
@@ -364,38 +503,58 @@ def expected_values():
         return ggr, ggr - df[df.status == "lost"].stake_bonus_amount.sum()
 
     ggr_all, ngr_all = ngr(settled)
-    bonus_realised = settled[settled.status == "lost"].stake_bonus_amount.sum()
     camp = bon[bon.status.isin(["completed", "expired", "forfeited"])].granted_amount.sum()
-    liab = bon[bon.status == "active"].granted_amount.sum()
-    lines = [
+    exc = rec[rec.category_type != "OK"]
+    act_now = rec[rec.category.isin([
+        "BREAK: payment confirmed, wallet not credited",
+        "BREAK: unrecognised settlement (no internal record)"])].financial_impact.sum()
+    L = [
         "# Expected values in the Power BI report",
         "",
-        "Computed with pandas straight from `data/*.csv`, independently of the DAX. Open the",
-        "report, refresh, and each visual should show exactly these numbers. They also match",
-        "`exercise3-schema-design/example_queries.sql` and the dbt marts.",
+        "Computed with pandas straight from `data/*.csv`, independently of the DAX. After a",
+        "refresh, each visual should show exactly these numbers. They also match",
+        "`exercise3-schema-design/example_queries.sql`, `exercise1-reconciliation/summary.md`",
+        "and the dbt marts.",
         "",
         "## Page 1: NGR overview",
         "",
-        "| Visual | Expected |",
-        "|---|---|",
+        "| Visual | Expected |", "|---|---|",
         f"| Card: GGR | {ggr_all:,.2f} |",
-        f"| Card: Bonus Cost (realised) | {bonus_realised:,.2f} |",
+        f"| Card: Bonus Cost (realised) | {settled[settled.status == 'lost'].stake_bonus_amount.sum():,.2f} |",
         f"| Card: NGR | {ngr_all:,.2f} |",
-        f"| Card: Bonus Liability Outstanding | {liab:,.2f} |",
+        f"| Card: Bonus Liability Outstanding | {bon[bon.status == 'active'].granted_amount.sum():,.2f} |",
     ]
     for prod, df in settled.groupby("product"):
         g, n = ngr(df)
-        lines.append(f"| Column chart, {prod}: GGR / NGR | {g:,.2f} / {n:,.2f} |")
-    lines.append(f"| Table, Registration Bonus: Campaign Bonus Cost / % of NGR | {camp:,.2f} / {camp / ngr_all:.2%} |")
-    lines += ["", "## Page 2: Player balances", "",
-              "| Date slicer upper bound | Player | Balance type | Expected balance |", "|---|---|---|---|"]
+        L.append(f"| Column chart, {prod}: GGR / NGR | {g:,.2f} / {n:,.2f} |")
+    L.append(f"| Table, Registration Bonus: Campaign Bonus Cost / % of NGR | {camp:,.2f} / {camp / ngr_all:.2%} |")
+    L += ["", "## Page 2: Player balances", "",
+          "| Date slicer end | Player | Balance type | Expected balance |", "|---|---|---|---|"]
     for as_of in [pd.Timestamp("2026-09-06"), dates.date_day.max()]:
         w = wal[(wal.transaction_date <= as_of) & (wal.status == "posted")]
         for (pid, bt), v in w.groupby(["player_id", "balance_type"]).signed_amount.sum().items():
-            lines.append(f"| {as_of.date()} | {pid} | {bt} | {v:,.2f} |")
-    dep = wal[wal.txn_type == "deposit"].amount.sum()
-    lines += ["", f"Card: Deposits (full date range) = {dep:,.2f}", ""]
-    return "\n".join(lines)
+            L.append(f"| {as_of.date()} | {pid} | {bt} | {v:,.2f} |")
+    L += [f"| Card: Deposits (full range) | | | {wal[wal.txn_type == 'deposit'].amount.sum():,.2f} |",
+          "", "## Page 3: Reconciliation", "", "| Visual | Expected |", "|---|---|",
+          f"| Card: Settlements Matched Exactly | {(rec.category_type == 'OK').sum()} |",
+          f"| Card: Exceptions | {len(exc)} |",
+          f"| Card: Act Now Value | {act_now:,.2f} |",
+          f"| Card: Bridge Residual | {brg.amount.sum() - brg.gateway_settled_total.max():,.2f} |"]
+    running = 0.0
+    for _, r in brg.sort_values("step_order").iterrows():
+        running += r.amount
+        L.append(f"| Waterfall step {r.step_order}: {r.step} | {r.amount:,.2f} (running {running:,.2f}) |")
+    L.append(f"| Waterfall total bar | {running:,.2f} (= gateway SETTLED total {brg.gateway_settled_total.max():,.2f}) |")
+    for cat, n in exc.category.value_counts().items():
+        L.append(f"| Bar, {cat} | {n} |")
+    L += ["", "## Page 4: Ingestion monitoring", "", "| Visual | Expected |", "|---|---|",
+          f"| Card: Transactions Loaded | {txn.id.nunique():,} |",
+          f"| Card: Ingestion Runs | {len(runs)} |",
+          f"| Card: Rows Rejected | {runs.rows_rejected.sum()} |",
+          f"| Card: Rate-Limit Retries | {runs.rate_limit_hits.sum()} |"]
+    for st, n in txn.status.value_counts().items():
+        L.append(f"| Column, {st} | {n} |")
+    return "\n".join(L) + "\n"
 
 
 def write_json(path, obj):
@@ -448,7 +607,8 @@ def main():
 
     n_meas = sum(len(v) for v in MEASURES.values())
     n_vis = sum(len(s["visualContainers"]) for s in report["sections"])
-    print(f"OK: {len(TABLES)} tables, {len(RELATIONSHIPS)} relationships (no ambiguous paths), "
+    mode = "DataFolder parameter" if FOLDER_MODE else "data embedded"
+    print(f"OK ({mode}): {len(TABLES)} tables, {len(RELATIONSHIPS)} relationships (no ambiguous paths), "
           f"{n_meas} measures, {len(report['sections'])} pages, {n_vis} visuals -- all references resolve")
 
 

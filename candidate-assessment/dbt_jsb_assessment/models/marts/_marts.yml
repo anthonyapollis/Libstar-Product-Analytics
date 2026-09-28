@@ -63,5 +63,12 @@ models:
                 - "NOT A PROBLEM: rounding difference <= 1 cent"
                 - "REVERSAL: gateway reversed/charged back after settlement"
                 - "TIMING: settlement expected in next period (created near cut-off)"
+                - "TIMING: prior-period deposit settled at start of period"
+                - "BREAK: net amount is not gross minus fee"
   - name: mart_recon_summary_by_category
     description: "The daily close-pack: exception count and impact total per category."
+  - name: mart_recon_bridge
+    description: "The reconciliation bridge as ordered steps, for a waterfall chart."
+    columns:
+      - name: step_order
+        tests: [unique, not_null]

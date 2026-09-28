@@ -91,6 +91,14 @@ SELECT
 
         -- Genuine break: gateway settlement references a merchant_ref we have no
         -- record of at all (not even a FAILED attempt).
+        -- Timing, not a problem: no internal record, but settled in the first 15
+        -- minutes of the period -- the mirror image of the cut-off rule below. The
+        -- deposit was almost certainly created just before midnight last week, so
+        -- it's in last week's internal file, not this one. Confirm against it.
+        WHEN m.deposit_id IS NULL AND m.gw_status = 'SETTLED'
+             AND m.settled_at < '2026-09-01 00:15:00'
+            THEN 'TIMING: prior-period deposit settled at start of period'
+
         WHEN m.deposit_id IS NULL AND m.gw_status = 'SETTLED'
             THEN 'BREAK: unrecognised settlement (no internal record)'
 
@@ -119,6 +127,10 @@ SELECT
         WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.02
             THEN 'BREAK: settled fee differs from contracted fee'
 
+        -- The gateway's own arithmetic: net must equal gross minus fee.
+        WHEN ABS(m.net_amount - (m.gross_amount - m.fee)) > 0.005
+            THEN 'BREAK: net amount is not gross minus fee'
+
         -- Gross amount differs from what we recorded, beyond rounding noise.
         WHEN ABS(m.dep_amount - m.gross_amount) > 0.02
             THEN 'BREAK: settled gross amount differs from internal amount'
@@ -134,6 +146,11 @@ SELECT
         WHEN m.deposit_id IS NULL AND m.gw_status = 'SETTLED' THEN m.gross_amount
         WHEN m.gw_row_id IS NULL THEN m.dep_amount
         WHEN m.gw_status = 'REVERSED' THEN m.gross_amount
+        -- fee overcharge vs contract, and cash short-paid vs the gateway's own arithmetic
+        WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.02
+            THEN ROUND(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2), 2)
+        WHEN ABS(m.net_amount - (m.gross_amount - m.fee)) > 0.005
+            THEN ROUND((m.gross_amount - m.fee) - m.net_amount, 2)
         ELSE ROUND(COALESCE(m.dep_amount,0) - COALESCE(m.gross_amount,0), 2)
     END AS financial_impact
 FROM matched m;
@@ -164,6 +181,8 @@ SELECT
      WHERE category = 'BREAK: payment confirmed, wallet not credited')                        AS plus_unrecorded_settlements_failed_flag,
   (SELECT ROUND(SUM(financial_impact),2) FROM recon_exceptions
      WHERE category = 'BREAK: unrecognised settlement (no internal record)')                  AS plus_unrecognised_settlements,
+  (SELECT ROUND(SUM(financial_impact),2) FROM recon_exceptions
+     WHERE category = 'TIMING: prior-period deposit settled at start of period')              AS plus_prior_period_settlements,
   (SELECT ROUND(SUM(financial_impact),2) FROM recon_exceptions
      WHERE category LIKE 'BREAK: duplicate%settlement%')                                      AS plus_duplicate_settlements,
   (SELECT ROUND(SUM(financial_impact),2) FROM recon_exceptions

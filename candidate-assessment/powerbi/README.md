@@ -1,27 +1,34 @@
 # Power BI — JSB reporting model and report
 
-A finished Power BI project: semantic model (7 tables, 7 relationships, 10 DAX measures)
-and a two-page report, loading from the CSVs in `data/`, with no database connection needed.
+A finished Power BI project covering all three exercises. The semantic model has 11 tables,
+7 relationships and 20 DAX measures, and the report has four pages. **The data is embedded in the
+project**, so it opens and refreshes on any machine with no folder path to set.
 
 ## Open it
-1. Copy this whole `powerbi/` folder to your machine (e.g. `C:\JSB\powerbi\`).
-2. In Power BI Desktop: **File → Open → `JSB_Assessment.pbip`**.
+1. Unzip anywhere.
+2. In Power BI Desktop: **File → Open → `JSB_Assessment.pbip`**, then **Refresh**.
    (Older Desktop versions: first enable *Options → Preview features → Power BI Project (.pbip) save option*.)
-3. If you put the folder anywhere other than `C:\JSB\powerbi\`: **Transform data → Edit parameters →
-   DataFolder**, set it to your `data\` folder path **with a trailing backslash**, then **Apply**.
-4. **Refresh**. Check the visuals against `expected_values.md`.
+3. Check the visuals against `expected_values.md`.
 
-## What's in it
+## Pages
+| Page | What it shows |
+|---|---|
+| NGR overview (Ex. 3) | GGR, realised bonus cost, NGR and bonus liability cards; GGR vs NGR by product; bonus cost as % of NGR by campaign |
+| Player balances (Ex. 3) | Date slicer, deposits, and each player's balance rebuilt from the ledger as of the slicer's end date |
+| Reconciliation (Ex. 1) | Settlements matched exactly (274), exceptions (43), act-now value (R3,150), bridge residual (R0.00); the bridge as a waterfall from R218,280.00 to R217,979.97; exceptions by category; detail table |
+| Ingestion monitoring (Ex. 2) | Transactions loaded (1,024), runs, rows rejected, rate-limit retries; run history, including the run killed mid-page; transactions by status |
+
+## What's in the folder
 | File | What it is |
 |---|---|
 | `JSB_Assessment.pbip` | The project file you open |
-| `JSB_Assessment.SemanticModel/model.bim` | Tables, Power Query (CSV import), relationships, DAX measures |
-| `JSB_Assessment.Report/report.json` | Page 1 *NGR overview*: GGR, bonus cost, NGR, bonus liability cards; GGR vs NGR by product; bonus cost % of NGR by campaign. Page 2 *Player balances*: date slicer, deposits, balance per player from the ledger |
-| `data/*.csv` | The dbt mart data (`dbt_jsb_assessment/models/marts/`) |
-| `model.png` | The star schema |
+| `JSB_Assessment.SemanticModel/model.bim` | Tables, Power Query, relationships, DAX measures |
+| `JSB_Assessment.Report/report.json` | The four report pages |
+| `data/*.csv` | The dbt marts and staging tables the model is built from |
+| `model.png` | The Exercise 3 star schema |
 | `measures.dax` | Every measure, readable |
 | `expected_values.md` | What each visual should show, computed independently with pandas |
-| `build_pbip.py` | Generates all of the above from one set of definitions and validates it |
+| `build_pbip.py` | Generates all of the above from one set of definitions and validates it. `--folder` reads the CSVs from a folder parameter instead of embedding them, for full-volume data |
 
 ## Model design
 - **Star schema.** `dim_player`, `dim_date` and `dim_campaign` filter the three facts. Filters
@@ -34,22 +41,29 @@ and a two-page report, loading from the CSVs in `data/`, with no database connec
 - **Money is fixed decimal** (`Currency.Type`, four decimal places, matching `DECIMAL(18,4)` in
   MySQL). CSVs are parsed with `en-US` culture, so a South African regional setting (comma
   decimal separator) doesn't misread `200.0000`.
+- **The Exercise 1 and 2 tables stand alone.** They share no keys with the player model, so they
+  have no relationships to it, and filters on one page can't leak into another.
 - **Measures follow the SQL definitions** in `exercise3-schema-design/example_queries.sql`:
   - NGR = GGR − bonus money staked on lost bets (query a).
   - Campaign bonus cost is recognised when a grant resolves, and divided by total NGR (query b).
   - Balance as of a date is the sum of the ledger up to that date (query c).
 
 ## How it was verified, and the limit of that
-No Power BI Desktop runs in this Linux build environment, so the project has **not** been opened in
-Power BI here. What was checked:
-- `build_pbip.py` validates that every visual field and measure reference resolves to the model,
-  that every relationship column exists, and that there are no ambiguous filter paths. A negative
+No Power BI Desktop runs in this Linux build environment, so the project could not be opened
+there. What was checked:
+- `build_pbip.py` validates that every visual field, sort and measure reference resolves to the
+  model, that every CSV's columns match the model, that every relationship column exists, and that
+  there are no ambiguous filter paths. A negative
   test confirmed it catches an ambiguous relationship and a misspelled measure or column.
 - `expected_values.md` is computed from the CSVs in pandas, independently of the DAX. It matches
   the MySQL and MariaDB query results and the dbt marts: NGR −90.00, sportsbook −160.00,
   bonus cost −27.78% of NGR, and player 1's balance of 1,160.00 on 2026-09-06.
 - The report format mirrors the layout in the supplied `Demo.pbix`: Power BI Desktop 2.130,
   CY24SU06 theme.
+
+Power BI Desktop has since opened an earlier version of this project, with the same format and
+report layout: both pages and all visuals loaded. The one failure was the data folder path, which
+the embedded data now removes.
 
 If Desktop reports a problem opening the project, the manual route below builds the same model in a
 few minutes.

@@ -28,7 +28,11 @@ missing as (
 ),
 timing as (
     select coalesce(sum(financial_impact), 0) as v from {{ ref('fct_recon_exceptions') }}
-    where category like 'TIMING%'
+    where category = 'TIMING: settlement expected in next period (created near cut-off)'
+),
+prior_period as (
+    select coalesce(sum(financial_impact), 0) as v from {{ ref('fct_recon_exceptions') }}
+    where category = 'TIMING: prior-period deposit settled at start of period'
 ),
 unrecognised as (
     select coalesce(sum(financial_impact), 0) as v from {{ ref('fct_recon_exceptions') }}
@@ -54,14 +58,14 @@ select
     t.internal_total
         - (select v from dup_internal_excess) - (select v from reversals)
         - (select v from missing) - (select v from timing)
-        + (select v from unrecognised) + (select v from failed_settled)
+        + (select v from unrecognised) + (select v from prior_period) + (select v from failed_settled)
         + (select v from dup_gateway_excess) + (select v from amount_net)
         as computed_gateway_total,
     round(
         (t.internal_total
             - (select v from dup_internal_excess) - (select v from reversals)
             - (select v from missing) - (select v from timing)
-            + (select v from unrecognised) + (select v from failed_settled)
+            + (select v from unrecognised) + (select v from prior_period) + (select v from failed_settled)
             + (select v from dup_gateway_excess) + (select v from amount_net))
         - t.gateway_total, 2) as residual
 from totals t

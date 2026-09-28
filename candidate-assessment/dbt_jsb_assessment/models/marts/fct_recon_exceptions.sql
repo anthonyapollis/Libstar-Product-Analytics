@@ -44,7 +44,8 @@ matched as (
         select 1 from {{ ref('stg_internal_deposits') }} d
         where d.gateway_ref_norm = g.merchant_ref_norm and d.status = 'SUCCESS'
     )
-)
+),
+categorised as (
 select
     deposit_id, player_id, created_at, dep_amount, gateway_ref,
     settlement_row_id, gateway_txn_id, merchant_ref, settled_at,
@@ -53,6 +54,8 @@ select
     case
         when dep_status = 'FAILED' and gw_status = 'SETTLED'
             then 'BREAK: payment confirmed, wallet not credited'
+        when deposit_id is null and gw_status = 'SETTLED' and settled_at < '2026-09-01 00:15:00'
+            then 'TIMING: prior-period deposit settled at start of period'
         when deposit_id is null and gw_status = 'SETTLED'
             then 'BREAK: unrecognised settlement (no internal record)'
         when dep_ref_count > 1
@@ -67,6 +70,8 @@ select
             then 'REVERSAL: gateway reversed/charged back after settlement'
         when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.02
             then 'BREAK: settled fee differs from contracted fee'
+        when abs(net_amount - (gross_amount - fee)) > 0.005
+            then 'BREAK: net amount is not gross minus fee'
         when abs(dep_amount - gross_amount) > 0.02
             then 'BREAK: settled gross amount differs from internal amount'
         when abs(dep_amount - gross_amount) between 0.005 and 0.02
@@ -78,6 +83,15 @@ select
         when deposit_id is null and gw_status = 'SETTLED' then gross_amount
         when settlement_row_id is null then dep_amount
         when gw_status = 'REVERSED' then gross_amount
+        when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.02
+            then round(fee - round(gross_amount * 0.02 + 1.00, 2), 2)
+        when abs(net_amount - (gross_amount - fee)) > 0.005
+            then round((gross_amount - fee) - net_amount, 2)
         else round(coalesce(dep_amount, 0) - coalesce(gross_amount, 0), 2)
     end as financial_impact
 from matched
+)
+select
+    categorised.*,
+    substring_index(category, ':', 1) as category_type  -- OK / BREAK / TIMING / REVERSAL / NOT A PROBLEM
+from categorised

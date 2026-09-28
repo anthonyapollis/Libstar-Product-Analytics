@@ -29,6 +29,7 @@ sources:
       - name: internal_deposits
       - name: gateway_settlement
       - name: transactions
+      - name: ingest_runs
 
 models:
   - name: stg_players
@@ -75,4 +76,9 @@ models:
     description: "Exercise 2's ingested transactions table, staged for consistency with the other two exercises."
     columns:
       - name: id
+        tests: [unique, not_null]
+  - name: stg_ingest_runs
+    description: "Exercise 2's run log: one row per ingestion run."
+    columns:
+      - name: run_id
         tests: [unique, not_null]

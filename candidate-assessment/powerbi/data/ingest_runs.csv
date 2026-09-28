@@ -1,0 +1,4 @@
+run_id,source_system,started_at,finished_at,status,pages_fetched,rows_upserted,rows_rejected,rate_limit_hits,server_error_hits,duration_seconds
+1,mock_provider,2026-09-28 12:28:55.975457,,RUNNING,1,50,0,0,0,
+2,mock_provider,2026-09-28 12:29:14.462403,2026-09-28 12:29:14.534246,COMPLETED,5,950,1,0,0,0
+3,mock_provider,2026-09-28 12:29:30.031689,2026-09-28 12:29:31.047425,COMPLETED,1,66,0,1,0,1

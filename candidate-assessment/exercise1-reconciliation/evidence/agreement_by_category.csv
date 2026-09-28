@@ -1,0 +1,14 @@
+category,short,n_sql,n_dbt,n_pandas,rand_sql,rand_dbt,rand_pandas,agree
+"OK: matched, amount and fee correct",ok,274,274,274,0.0,0.0,0.0,True
+BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk),dup_internal,6,6,6,0.0,0.0,0.0,True
+"BREAK: deposit SUCCESS, no gateway settlement found",missing_settlement,5,5,5,2700.0,2700.0,2700.0,True
+BREAK: settled fee differs from contracted fee,fee,4,4,4,3.75,3.75,3.75,True
+BREAK: settled gross amount differs from internal amount,amount,4,4,4,-900.0,-900.0,-900.0,True
+BREAK: duplicate gateway settlement for one reference (double-credit risk),dup_gateway,4,4,4,0.0,0.0,0.0,True
+BREAK: unrecognised settlement (no internal record),unrecognised,4,4,4,2900.0,2900.0,2900.0,True
+REVERSAL: gateway reversed/charged back after settlement,reversal,3,3,3,850.0,850.0,850.0,True
+NOT A PROBLEM: rounding difference <= 1 cent,rounding,3,3,3,0.03,0.03,0.03,True
+TIMING: prior-period deposit settled at start of period,timing_prior,3,3,3,2600.0,2600.0,2600.0,True
+TIMING: settlement expected in next period (created near cut-off),timing_next,3,3,3,3650.0,3650.0,3650.0,True
+BREAK: net amount is not gross minus fee,net,2,2,2,4.0,4.0,4.0,True
+"BREAK: payment confirmed, wallet not credited",failed_but_settled,2,2,2,250.0,250.0,250.0,True

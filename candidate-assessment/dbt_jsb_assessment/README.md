@@ -13,16 +13,18 @@ models/
   staging/   one view per operational table, across TWO source databases:
                jsb_platform    -> players, wallets, bets, bonuses (Exercise 3)
                jsb_assessment  -> internal_deposits, gateway_settlement (Exercise 1),
-                                  transactions (Exercise 2, staged for consistency --
-                                  ingest.py still owns the actual EL, dbt is T-only)
+                                  transactions + ingest_runs (Exercise 2, staged for
+                                  consistency -- ingest.py still owns the actual EL,
+                                  dbt is T-only)
   marts/     dim_player, dim_player_vip_tier_scd (Type 2), dim_campaign, dim_date,
              fact_bet, fact_wallet_transaction, fact_bonus_transaction,
-             fct_recon_exceptions + mart_recon_summary_by_category (Exercise 1's
-             categorisation logic, portable and schedulable),
+             fct_recon_exceptions + mart_recon_summary_by_category + mart_recon_bridge
+             (Exercise 1's categorisation logic and bridge, portable and schedulable),
              + two reusable marts answering Exercise 3's example queries (a) and (b)
 tests/
   assert_recon_bridge_reconciles.sql      -- the R0.00-residual bridge, enforced as code
   assert_recon_covers_all_sources.sql     -- no source row silently dropped
+  assert_wallet_cache_matches_ledger.sql  -- cached wallet balances = sum of the ledger
 ```
 Grain is kept deliberately narrow per fact (one bet, one ledger movement, one bonus grant) rather than
 one wide "transactions" table — see `dbt_jsb_assessment/models/marts/fact_bet.sql`'s header comment and
@@ -40,7 +42,7 @@ dbt debug
 dbt build                       # runs models + all tests
 ```
 
-`evidence/dbt_build_output.txt` has a captured run: **61/61 PASS, 0 errors** (21 models, 40 tests).
+`evidence/dbt_build_output.txt` has a captured run: **66/66 PASS, 0 errors** (23 models, 43 tests).
 
 ## Notes
 - `player_identity` (PII) is deliberately not a dbt source — see `models/staging/_staging.yml`. The

@@ -19,33 +19,39 @@ ex1.push(h1("Exercise 1 — Payment Gateway Reconciliation", { pageBreakBefore: 
 ex1.push(p("Tools used: MySQL 8.0 for the schema, load and categorisation SQL; Python/pandas for the load script, CSV export and an independent cross-check of the bridge arithmetic.", { italics: true, color: GREY, size: 20 }));
 
 ex1.push(h2("Approach"));
-ex1.push(p("Both source files were loaded as-is into MySQL. Matching between internal_deposits.gateway_ref and gateway_settlement.merchant_ref uses a normalised reference (upper-case, letters and digits only) because the gateway sends the same reference with different punctuation and case (\"GW-000102\", \"GW000102\", \"gw-000196\", and leading/trailing spaces) — a raw string-equality join would have misclassified four genuinely-clean matches as breaks."));
-ex1.push(p("Every internal SUCCESS deposit and every gateway settlement row is categorised into one of eleven types — a genuine break, a timing difference, a business event (reversal), or not a problem at all — using the SQL logic in exercise1-reconciliation/sql/03_reconciliation.sql, later ported into a dbt model (fct_recon_exceptions) so it can run on a schedule with tests attached."));
+ex1.push(p("Both source files were loaded as-is into MySQL. Matching between internal_deposits.gateway_ref and gateway_settlement.merchant_ref uses a normalised reference (upper-case, letters and digits only), because the gateway returns six of our references with different punctuation, case or spacing (\"GW_000020\", \"GW000102\", \"gw-000196 \", \" GW-000267 \" and others). An exact-match join would misclassify those six clean matches as breaks."));
+ex1.push(p("Every internal SUCCESS deposit and every gateway settlement row is either a clean match or one of twelve exception types: a genuine break, a timing difference, a business event (reversal), or not a problem at all. The rules live in exercise1-reconciliation/sql/03_reconciliation.sql and are ported into a dbt model (fct_recon_exceptions) so they run on a schedule with tests attached. The checks follow the brief's contract: fee = 2% of gross + R1.00, and net = gross − fee."));
 
 ex1.push(h2("Result"));
-ex1.push(p("294 of 306 gateway-recognised settlements (96%) match our records exactly — amount and fee both correct. The remaining differences are fully categorised below; nothing is left unexplained."));
+ex1.push(p("274 of the 306 settlement rows (90%) match exactly on reference, amount, fee and net. Three more differ by under a cent. The other 29 are categorised below, and the bridge from our total to the gateway's reconciles with R0.00 unexplained."));
+ex1.push(bullet("Act this week: R3,150. R250 is owed to two players whose deposits we marked FAILED although the gateway settled them. R2,900 is settlements for four references we have no record of."));
+ex1.push(bullet("The gateway owes us R7.75: R3.75 of fees above the contract rate, and R4.00 short-paid on two settlements where net ≠ gross − fee."));
+ex1.push(bullet("R950 of gross-amount differences suggest three players were under-credited (a fourth, R50, runs the other way). All four go to the gateway as disputes."));
+ex1.push(bullet("Timing, not problems: R3,650 of deposits from the week's last minutes settle next week, and R2,600 settled in the week's first six minutes, almost certainly last week's deposits."));
 
-ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png`, 500,
-  "Actual output of sql/03_reconciliation.sql against MySQL 8.0 — category breakdown and the bridge."));
+ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png`, 520,
+  "Actual output of sql/03_reconciliation.sql against MySQL 8.0, and of the independent row-by-row check."));
 
 ex1.push(h2("Exceptions by category"));
 ex1.push(table(
   ["Category", "Type", "Rows", "Impact (NAD)"],
   [
     ["Payment confirmed, wallet not credited", "Break — act now", "2", "250.00"],
-    ["Unrecognised settlement (no internal record)", "Break — act now", "7", "5,500.00"],
+    ["Unrecognised settlement (no internal record)", "Break — act now", "4", "2,900.00"],
+    ["Net amount is not gross minus fee", "Break — dispute", "2", "4.00 short-paid"],
+    ["Settled fee differs from contract", "Break — dispute", "4", "3.75 overcharged"],
+    ["Settled amount differs from internal amount", "Break — dispute", "4", "-900.00 (net)"],
     ["Duplicate gateway settlement", "Break — dispute", "4", "0.00*"],
     ["Duplicate internal deposit", "Break — dedupe", "6", "0.00*"],
-    ["Settled amount differs from internal amount", "Break — dispute", "4", "-900.00"],
-    ["Settled fee differs from contract", "Break — dispute", "4", "0.00*"],
     ["Reversal / chargeback", "Business event", "3", "850.00"],
     ["Deposit SUCCESS, no settlement found", "Timing / possible break", "5", "2,700.00"],
-    ["Created near period cut-off", "Timing — not a problem", "3", "3,650.00"],
+    ["Created in the last 15 min (settles next week)", "Timing — not a problem", "3", "3,650.00"],
+    ["Settled in the first 15 min (last week's deposits)", "Timing — not a problem", "3", "2,600.00"],
     ["Rounding ≤ 1 cent", "Not a problem", "3", "0.03"],
   ],
-  [3400, 1800, 900, 1260]
+  [3700, 1900, 700, 1760]
 ));
-ex1.push(p("* Impact shown at the deposit-vs-settlement level is 0 for these rows because the two amounts match; the real cost is the duplicate itself (double-credit risk, or a disputed double-settlement) — see the bridge, where each is accounted for separately.", { italics: true, color: GREY, size: 18 }));
+ex1.push(p("* The deposit and settlement amounts match on these rows, so the row-level impact is 0. The real cost is the duplicate itself: a double-credit risk, or a disputed double settlement. The bridge accounts for each separately.", { italics: true, color: GREY, size: 18 }));
 
 ex1.push(h2("The bridge: internal total → gateway total"));
 ex1.push(table(
@@ -56,10 +62,11 @@ ex1.push(table(
     ["− Reversals / chargebacks (excluded from gateway's SETTLED total)", "(850.00)"],
     ["− Deposits not yet settled by the gateway", "(2,700.00)"],
     ["− Deposits created in the last 15 minutes of the period", "(3,650.00)"],
-    ["+ Settlements with no matching internal record", "5,500.00"],
+    ["+ Settled in the first 15 minutes (last week's deposits)", "2,600.00"],
+    ["+ Settlements with no matching internal record", "2,900.00"],
     ["+ Payments the gateway settled that we marked FAILED", "250.00"],
     ["+ Duplicate gateway settlement rows", "1,550.00"],
-    ["+/− Gross amount disputes with the gateway", "900.00"],
+    ["+/− Gross amount differences with the gateway (net)", "900.00"],
     ["+/− Rounding (≤ 1 cent, immaterial)", "(0.03)"],
     ["= Gateway SETTLED total", "217,979.97"],
     ["Residual (unexplained)", "0.00"],
@@ -67,7 +74,13 @@ ex1.push(table(
   [7360, 2000]
 ));
 ex1.push(new Paragraph({ text: "", spacing: { after: 60 } }));
-ex1.push(p("This bridge is no longer just a spreadsheet exercise: it's enforced by a dbt singular test (assert_recon_bridge_reconciles) that fails the build if the residual ever moves off zero — see the dbt section below."));
+ex1.push(p("The bridge is on gross amounts, because that's what our deposits record. Fee and net-amount errors don't move gross, so they sit outside the bridge as their own exceptions. A dbt test (assert_recon_bridge_reconciles) fails the build if the residual ever moves off zero."));
+
+ex1.push(h2("How the figures were checked"));
+ex1.push(p("The categorisation was implemented three times: the MySQL script, the dbt model, and separately written pandas code (sql/04_independent_check.py) that works per deposit and per settlement instead of through a join. All three agree on all 317 rows individually, and on every category's count and rand total."));
+ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/02_three_way_agreement.png`, 520,
+  "Three implementations, identical results in every category (sql/05_agreement_chart.py)."));
+ex1.push(p("That check was added after an audit of an earlier draft found real problems, all now fixed. The draft had no test for net = gross − fee, which the brief requires, so it missed two short-paid settlements. It didn't quantify the fee overcharge. It counted four reference-formatting variants instead of six, because a case-insensitive database comparison hid three. It filed three start-of-week settlements as unrecognised money rather than timing. The bridge balanced throughout. The errors were in how the differences were labelled and summarised, which is why the categories are now cross-checked independently.", { italics: true }));
 
 ex1.push(h2("Automating this daily"));
 ex1.push(bullet("Land both feeds daily as-is, never overwriting, and log control totals (row count, sum) per source before matching. A source-declared-vs-received mismatch is itself an alert."));
@@ -156,7 +169,7 @@ ex3.push(table(
 
 ex3.push(h2("Operational design → reporting model"));
 ex3.push(p("A dbt project (dbt_jsb_assessment/) builds a star schema on top of this operational design: conformed dimensions (dim_player, dim_date, dim_campaign — dim_player_vip_tier_scd carries the same Type-2 history pattern through to the reporting layer) surrounding grain-specific facts (fact_bet, fact_wallet_transaction, fact_bonus_transaction). Two reusable marts answer queries (a) and (b) directly, and — extended during this review — the project now also covers Exercise 1's reconciliation as a scheduled, tested model."));
-ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 560, "dbt build across all three exercises: 61/61 pass, 21 models, 40 tests, 0 errors."));
+ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 66/66 pass (23 models, 43 tests), 0 errors."));
 // (page break handled by pageBreakBefore on the next heading)
 
 // ===========================================================================
@@ -164,12 +177,13 @@ ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 5
 // ===========================================================================
 const pbi = [];
 pbi.push(h1("Power BI — Reporting Data Model and Report", { pageBreakBefore: true }));
-pbi.push(p("Tools used: Power BI project format (.pbip), generated by a Python script from one set of definitions, loading the dbt marts from CSV.", { italics: true, color: GREY, size: 20 }));
-pbi.push(p("The dbt marts become a Power BI project, JSB_Assessment.pbip. It holds the semantic model (7 tables, 7 relationships, 10 DAX measures) and a two-page report, and loads from CSV, so no database connection is needed. The same script writes the model, the report pages, the readable DAX file and a list of expected values, then validates them, so the four cannot drift apart."));
-pbi.push(...imgPara(`${BASE}/powerbi/model.png`, 600, "Power BI model view: three dimensions filter three facts. Facts are not joined to each other."));
-pbi.push(h2("Two modelling decisions worth calling out"));
+pbi.push(p("Tools used: Power BI project format (.pbip), generated by a Python script from one set of definitions, with the dbt marts embedded as data.", { italics: true, color: GREY, size: 20 }));
+pbi.push(p("The dbt marts become a Power BI project, JSB_Assessment.pbip, covering all three exercises. The semantic model has 11 tables, 7 relationships and 20 DAX measures, and the report has four pages. The data is embedded in the project, so it opens and refreshes on any machine with no folder path or database connection to set up. The same script writes the model, the report pages, the readable DAX file and a list of expected values, then validates them, so the four cannot drift apart."));
+pbi.push(...imgPara(`${BASE}/powerbi/model.png`, 600, "Power BI model view for Exercise 3: three dimensions filter three facts. Facts are not joined to each other."));
+pbi.push(h2("Modelling decisions worth calling out"));
 pbi.push(bullet("Facts are not joined to facts. fact_wallet_transaction keeps related_bet_id and related_player_bonus_id as drill-through keys only. Relating them would give dim_player two filter paths to the wallet table. Power BI rejects that as an ambiguous model, and in any tool it is a source of silently wrong numbers. The build script checks every pair of tables and refuses to build if any pair has more than one path."));
 pbi.push(bullet("Money is fixed decimal (Currency.Type, 4 dp, matching DECIMAL(18,4)), and the CSVs are parsed with en-US culture. A South African regional setting, which uses a comma as the decimal separator, therefore can't misread 200.0000."));
+pbi.push(bullet("The Exercise 1 and 2 tables (fct_recon_exceptions, mart_recon_bridge, ingest_runs, transactions) stand alone. They share no keys with the player model, so they have no relationships to it, and a filter on one page can't leak into another."));
 pbi.push(h2("Measures"));
 pbi.push(table(
   ["Measure", "Definition"],
@@ -177,30 +191,41 @@ pbi.push(table(
     ["GGR", "Stakes − payouts on settled (won/lost) bets"],
     ["Bonus Cost (realised)", "Bonus money staked on bets that lost"],
     ["NGR", "GGR − Bonus Cost (realised) — query (a)"],
-    ["Campaign Bonus Cost", "Granted amount of bonuses that completed, expired or were forfeited"],
-    ["Campaign Bonus Cost % of NGR", "Campaign Bonus Cost ÷ total NGR — query (b)"],
+    ["Campaign Bonus Cost / % of NGR", "Granted amount of resolved bonuses, ÷ total NGR — query (b)"],
     ["Bonus Liability Outstanding", "Granted amount of bonuses still active: owed, not yet a cost"],
     ["Balance as of selected date", "Sum of the ledger up to the last date in the date filter — query (c)"],
-    ["Deposits", "Sum of deposit movements in the ledger"],
+    ["Settlements Matched Exactly / Exceptions", "Counts of OK rows and of every other category in fct_recon_exceptions"],
+    ["Act Now Value", "Impact of the two act-now categories: settled but marked FAILED, and unrecognised settlements"],
+    ["Bridge Amount / Bridge Residual", "Sum of the bridge steps; residual = gateway total − steps, which must be 0.00"],
+    ["Transactions Loaded / Runs / Rows Rejected / Retries", "Exercise 2's loaded rows and run log"],
   ],
-  [3000, 6360]
+  [3400, 5960]
 ));
 pbi.push(h2("Report pages and expected values"));
-pbi.push(p("Page 1, NGR overview: four cards, GGR vs NGR by product, and a campaign table. Page 2, Player balances: a date slicer, deposits, and each player's balance from the ledger. Each value below was computed from the CSVs with pandas, independently of the DAX, and matches the MySQL, MariaDB and dbt results."));
+pbi.push(bullet("NGR overview (Ex. 3): GGR, realised bonus cost, NGR and bonus liability cards; GGR vs NGR by product; bonus cost as a percentage of NGR by campaign."));
+pbi.push(bullet("Player balances (Ex. 3): a date slicer, deposits, and each player's balance rebuilt from the ledger as of the slicer's end date."));
+pbi.push(bullet("Reconciliation (Ex. 1): headline cards, the bridge as a waterfall from the internal total to the gateway total, exceptions by category, and a detail table."));
+pbi.push(bullet("Ingestion monitoring (Ex. 2): loaded rows, runs, rejected rows and rate-limit retries; the run history, including the run killed mid-page; transactions by status."));
+pbi.push(p("Each value below was computed from the CSVs with pandas, independently of the DAX, and matches the MySQL, MariaDB and dbt results. The full list is in powerbi/expected_values.md."));
 pbi.push(table(
   ["Visual", "Expected value"],
   [
     ["GGR / Bonus Cost (realised) / NGR", "-70.00 / 20.00 / -90.00"],
     ["NGR by product", "sportsbook -160.00 · casino -30.00 · retail 100.00"],
     ["Registration Bonus: cost / % of NGR", "25.00 / -27.78%"],
-    ["Bonus Liability Outstanding", "50.00"],
     ["Player 1 balance, slicer ending 2026-09-06", "1,160.00 (real)"],
     ["Balances, full date range", "Player 1: 1,190.00 · Player 2: 400.00 · Player 3: 100.00 real + 30.00 bonus"],
+    ["Settlements matched exactly / exceptions", "274 / 43"],
+    ["Act Now Value / Bridge Residual", "3,150.00 / 0.00"],
+    ["Waterfall", "218,280.00 → 217,979.97 in 10 adjustment steps"],
+    ["Transactions loaded / runs / rows rejected / retries", "1,024 / 3 / 1 / 1"],
+    ["Transactions by status", "completed 587 · failed 214 · pending 207 · reversed 16"],
   ],
   [4200, 5160]
 ));
 pbi.push(h2("How it was verified"));
-pbi.push(p("Power BI Desktop doesn't run in the Linux environment this was built in, so the project was not opened in Power BI there. Instead, the build script checks that every visual field and every DAX reference resolves to the model, that every relationship column exists, and that no filter path is ambiguous. A negative test confirmed it rejects an ambiguous relationship and a misspelled measure. The report layout follows the supplied Demo.pbix (Power BI Desktop 2.130, CY24SU06 theme). If Desktop objects to the project file, powerbi/README.md gives a five-minute manual route to build the same model in Demo.pbix."));
+pbi.push(p("Power BI Desktop doesn't run in the Linux environment this was built in. Instead, the build script checks that every visual field, sort and DAX reference resolves to the model, that every CSV's columns match the model, that every relationship column exists, and that no filter path is ambiguous. A negative test confirmed it rejects an ambiguous relationship and a misspelled measure. The report layout follows the supplied Demo.pbix (Power BI Desktop 2.130, CY24SU06 theme)."));
+pbi.push(p("Power BI Desktop has since opened an earlier version of this project on a Windows machine: the pages and visuals loaded. The one failure was that the data folder path didn't exist on that machine, and embedding the data removes that step. If Desktop objects to the project for any other reason, powerbi/README.md gives a five-minute manual route to build the same model in Demo.pbix."));
 pbi.push(p("Building this layer also caught a real defect upstream. The seed data's wallet balance cache didn't match its own ledger, breaking the rule that the ledger is the truth. The seed was fixed, and a dbt test (assert_wallet_cache_matches_ledger) now fails the build if the two ever diverge. The test failed on the old data and passes on the corrected data."));
 
 // ===========================================================================
