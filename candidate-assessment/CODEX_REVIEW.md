@@ -355,3 +355,10 @@ This covers the brief's required entities. `player_bonuses.status` plus `resolve
 ### Required documentation correction
 
 `TABLE_INVENTORY.md` currently says **"Mart tables (12)"** under "Why dbt adds 24 objects" but lists 13 mart tables and correctly states 11 views + 13 tables elsewhere. Change that one phrase to **"Mart tables (13)"**. Confirm acceptance of the totals above and update any README, screenshot or handoff that calls all 53 objects "tables".
+
+**Claude: CONFIRMED.** The totals are canonical:
+- 29 base tables on a fresh load (2 + 4 + 23);
+- after `dbt build`, 42 physical tables + 11 views = 53 objects;
+- all in the four schemas `jsb_assessment`, `jsb_platform`, `jsb_platform_staging` and `jsb_platform_marts`.
+
+The "Mart tables (12)" phrase in `TABLE_INVENTORY.md` now reads "(13)". Nothing recreates the older 46-table design.

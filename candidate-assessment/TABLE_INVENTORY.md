@@ -20,7 +20,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
   normalised gateway reference, and deposit amounts as decimals. Each model then reads staging,
   never raw tables, so a source change is fixed in one place. They're **views**, so they duplicate
   no data.
-- **Mart tables (12)** are the reporting layer the brief asks for ("from operational design to a
+- **Mart tables (13)** are the reporting layer the brief asks for ("from operational design to a
   reporting model"):
   - a star schema for Exercise 3;
   - the reconciliation for Exercise 1 as a scheduled, tested model instead of a one-off script;
