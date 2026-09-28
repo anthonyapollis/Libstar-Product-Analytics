@@ -31,6 +31,9 @@
 __MOCK_API_SOURCE__
 
 
+import socket
+
+
 def start_mock_api(port, faults=True):
     """Run the supplied mock API on a background thread of this notebook's Python process."""
     global _MOCK_SERVER
@@ -42,13 +45,20 @@ def start_mock_api(port, faults=True):
     RECORDS.clear()
     RECORDS.update(build())                 # fresh provider data: 1,000 records
     STATE.update(requests=0, data_responses=0, faults=faults)
-    _MOCK_SERVER = ThreadingHTTPServer(("127.0.0.1", port), H)
+    _MOCK_SERVER = ThreadingHTTPServer((MOCK_BIND, port), H)
     threading.Thread(target=_MOCK_SERVER.serve_forever, daemon=True).start()
-    print(f"mock API on http://127.0.0.1:{port} (faults {'on' if faults else 'off'})")
+    port = _MOCK_SERVER.server_address[1]
+    print(f"mock API on http://{MOCK_HOST}:{port} (faults {'on' if faults else 'off'})")
+    return port
 
 
-PORT = 8765
-start_mock_api(PORT, faults=True)
+# Serverless compute refuses TCP connections to 127.0.0.1 and to fixed ports such as 8765; a server on
+# 0.0.0.0 with an OS-assigned port, called through the compute's own host name, works.
+if ON_DATABRICKS:
+    MOCK_BIND, MOCK_HOST, PORT = "0.0.0.0", socket.gethostname(), 0
+else:
+    MOCK_BIND, MOCK_HOST, PORT = "127.0.0.1", "127.0.0.1", 8765
+PORT = start_mock_api(PORT, faults=True)
 
 # COMMAND ----------
 
@@ -66,7 +76,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urlencode
 
-API_BASE = f"http://127.0.0.1:{PORT}"
+API_BASE = f"http://{MOCK_HOST}:{PORT}"
 API_KEY = "test-key"          # the mock's documented key; in production from a Databricks secret scope
 SOURCE = "mock_provider"
 MAX_RETRIES = 6

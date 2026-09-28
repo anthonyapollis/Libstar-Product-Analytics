@@ -42,6 +42,8 @@ version's lock: two ingestion runs never overlap. In production, the Exercise 2 
 ## How it was tested, and the limit of that
 `run_local.py` runs the notebooks with open-source Spark 4 and Delta Lake 4. All 32 checks pass
 (`evidence/local_test_run.txt`).
+On Databricks serverless, all 32 checks also pass, in one job run of the three notebooks
+(`evidence/databricks_run.md`).
 
 A few features exist only on Databricks, so they couldn't be run here:
 - Unity Catalog primary and foreign keys;
