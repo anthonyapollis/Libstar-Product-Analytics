@@ -64,8 +64,9 @@ TABLES = {
     "fact_bet": {
         "bet_id": "int", "player_id": "int", "vip_tier_at_bet_time": "text", "product": "text",
         "channel": "text", "placed_date": "date", "stake_real_amount": "money",
-        "stake_bonus_amount": "money", "total_stake": "money", "status": "text",
-        "payout_amount": "money", "ggr_contribution": "money", "placed_at_utc": "dt",
+        "stake_bonus_amount": "money", "total_stake": "money", "player_bonus_id": "int",
+        "campaign_id": "int", "status": "text", "payout_amount": "money", "ggr_contribution": "money",
+        "bonus_cost": "money", "ngr_contribution": "money", "placed_at_utc": "dt",
         "settled_at_utc": "dt",
     },
     "fact_wallet_transaction": {
@@ -74,13 +75,14 @@ TABLES = {
         "balance_before": "money", "balance_after": "money", "related_bet_id": "int",
         "related_deposit_attempt_id": "int", "related_withdrawal_id": "int",
         "related_player_bonus_id": "int", "reversal_of_wallet_txn_id": "int",
-        "idempotency_key": "text", "source_system": "text", "status": "text",
+        "idempotency_key": "text", "source_system": "text",
         "transaction_date": "date", "created_at_utc": "dt",
     },
     "fact_bonus_transaction": {
         "player_bonus_id": "int", "player_id": "int", "campaign_id": "int", "campaign_name": "text",
         "campaign_type": "text", "granted_amount": "money", "rollover_required": "money",
-        "rollover_progress": "money", "status": "text", "realised_bonus_cost": "money",
+        "rollover_progress": "money", "status": "text", "bonus_wagered": "money",
+        "bonus_cost": "money", "bonus_outstanding": "money",
         "granted_at_utc": "dt", "expires_at_utc": "dt", "resolved_at_utc": "dt",
     },
     # ---- Exercise 1: reconciliation (dbt marts) ----
@@ -170,24 +172,24 @@ MEASURES = {
         ("Payouts", 'CALCULATE ( SUM ( fact_bet[payout_amount] ), fact_bet[status] IN { "won", "lost" } )', "#,0.00"),
         ("GGR", "[Turnover] - [Payouts]", "#,0.00"),
         # Realised bonus cost = bonus money staked on bets that lost (example query (a)).
-        ("Bonus Cost (realised)", 'CALCULATE ( SUM ( fact_bet[stake_bonus_amount] ), fact_bet[status] = "lost" )', "#,0.00"),
+        ("Bonus Cost (realised)", "SUM ( fact_bet[bonus_cost] )", "#,0.00"),
         ("NGR", "[GGR] - [Bonus Cost (realised)]", "#,0.00"),
     ],
     "fact_bonus_transaction": [
         # Campaign cost is recognised when a grant resolves (example query (b)).
         ("Campaign Bonus Cost",
-         'CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] IN { "completed", "expired", "forfeited" } )',
+         "SUM ( fact_bonus_transaction[bonus_cost] )",
          "#,0.00"),
         ("Campaign Bonus Cost % of NGR",
          "DIVIDE ( [Campaign Bonus Cost], CALCULATE ( [NGR], REMOVEFILTERS ( dim_campaign ) ) )", "0.00%"),
         ("Bonus Liability Outstanding",
-         'CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] = "active" )', "#,0.00"),
+         "SUM ( fact_bonus_transaction[bonus_outstanding] )", "#,0.00"),
     ],
     "fact_wallet_transaction": [
         ("Deposits", 'CALCULATE ( SUM ( fact_wallet_transaction[amount] ), fact_wallet_transaction[txn_type] = "deposit" )', "#,0.00"),
         # Point-in-time balance from the ledger (example query (c)).
         ("Balance as of selected date",
-         "VAR AsOf = MAX ( dim_date[date_day] )\nRETURN\n    CALCULATE (\n        SUM ( fact_wallet_transaction[signed_amount] ),\n        REMOVEFILTERS ( dim_date ),\n        fact_wallet_transaction[transaction_date] <= AsOf,\n        fact_wallet_transaction[status] = \"posted\"\n    )",
+         "VAR AsOf = MAX ( dim_date[date_day] )\nRETURN\n    CALCULATE (\n        SUM ( fact_wallet_transaction[signed_amount] ),\n        REMOVEFILTERS ( dim_date ),\n        fact_wallet_transaction[transaction_date] <= AsOf\n    )",
          "#,0.00"),
     ],
     "fct_recon_exceptions": [
@@ -650,10 +652,12 @@ def expected_values():
 
     def ngr(df):
         ggr = df.total_stake.sum() - df.payout_amount.sum()
-        return ggr, ggr - df[df.status == "lost"].stake_bonus_amount.sum()
+        return ggr, ggr - df.stake_bonus_amount.sum()
 
     ggr_all, ngr_all = ngr(settled)
-    camp = bon[bon.status.isin(["completed", "expired", "forfeited"])].granted_amount.sum()
+    camp = settled[settled.player_bonus_id.notna()].stake_bonus_amount.sum()   # one campaign in the data
+    active = bon[bon.status == "active"]   # liability: active grants' bonus not yet wagered (any bet status)
+    liability = active.granted_amount.sum() - bet[bet.player_bonus_id.isin(active.player_bonus_id)].stake_bonus_amount.sum()
     exc = rec[rec.category_type != "OK"]
     act_now = rec[rec.category.isin([
         "BREAK: payment confirmed, wallet not credited",
@@ -670,9 +674,9 @@ def expected_values():
         "",
         "| Visual | Expected |", "|---|---|",
         f"| Card: GGR | {ggr_all:,.2f} |",
-        f"| Card: Bonus Cost (realised) | {settled[settled.status == 'lost'].stake_bonus_amount.sum():,.2f} |",
+        f"| Card: Bonus Cost (realised) | {settled.stake_bonus_amount.sum():,.2f} |",
         f"| Card: NGR | {ngr_all:,.2f} |",
-        f"| Card: Bonus Liability Outstanding | {bon[bon.status == 'active'].granted_amount.sum():,.2f} |",
+        f"| Card: Bonus Liability Outstanding | {liability:,.2f} |",
     ]
     for prod, df in settled.groupby("product"):
         g, n = ngr(df)
@@ -681,7 +685,7 @@ def expected_values():
     L += ["", "## Page 2: Player balances", "",
           "| Date slicer end | Player | Balance type | Expected balance |", "|---|---|---|---|"]
     for as_of in [pd.Timestamp("2026-09-06"), dates.date_day.max()]:
-        w = wal[(wal.transaction_date <= as_of) & (wal.status == "posted")]
+        w = wal[wal.transaction_date <= as_of]
         for (pid, bt), v in w.groupby(["player_id", "balance_type"]).signed_amount.sum().items():
             L.append(f"| {as_of.date()} | {pid} | {bt} | {v:,.2f} |")
     L += [f"| Card: Deposits (full range) | | | {wal[wal.txn_type == 'deposit'].amount.sum():,.2f} |",

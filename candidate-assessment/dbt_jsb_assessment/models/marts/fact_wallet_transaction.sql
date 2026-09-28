@@ -26,7 +26,6 @@ select
     reversal_of_wallet_txn_id,
     idempotency_key,
     source_system,
-    status,
     date(created_at_utc) as transaction_date,
     created_at_utc
 from {{ ref('stg_wallet_transactions') }}

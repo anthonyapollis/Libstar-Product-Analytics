@@ -9,14 +9,14 @@ and the dbt marts.
 
 | Visual | Expected |
 |---|---|
-| Card: GGR | -70.00 |
-| Card: Bonus Cost (realised) | 20.00 |
-| Card: NGR | -90.00 |
-| Card: Bonus Liability Outstanding | 50.00 |
-| Column chart, casino: GGR / NGR | -30.00 / -30.00 |
+| Card: GGR | 260.00 |
+| Card: Bonus Cost (realised) | 40.00 |
+| Card: NGR | 220.00 |
+| Card: Bonus Liability Outstanding | 10.00 |
+| Column chart, casino: GGR / NGR | 270.00 / 270.00 |
 | Column chart, retail: GGR / NGR | 100.00 / 100.00 |
-| Column chart, sportsbook: GGR / NGR | -140.00 / -160.00 |
-| Table, Registration Bonus: Campaign Bonus Cost / % of NGR | 25.00 / -27.78% |
+| Column chart, sportsbook: GGR / NGR | -110.00 / -150.00 |
+| Table, Registration Bonus: Campaign Bonus Cost / % of NGR | 40.00 / 18.18% |
 
 ## Page 2: Player balances
 
@@ -25,10 +25,11 @@ and the dbt marts.
 | 2026-09-06 | 1 | real | 1,160.00 |
 | 2026-09-06 | 3 | bonus | 30.00 |
 | 2026-09-06 | 3 | real | 100.00 |
-| 2026-10-31 | 1 | real | 1,190.00 |
-| 2026-10-31 | 2 | real | 400.00 |
-| 2026-10-31 | 3 | bonus | 30.00 |
-| 2026-10-31 | 3 | real | 100.00 |
+| 2026-10-31 | 1 | real | 890.00 |
+| 2026-10-31 | 2 | bonus | 0.00 |
+| 2026-10-31 | 2 | real | 415.00 |
+| 2026-10-31 | 3 | bonus | 10.00 |
+| 2026-10-31 | 3 | real | 90.00 |
 | Card: Deposits (full range) | | | 1,600.00 |
 
 ## Page 3: Reconciliation
@@ -85,9 +86,9 @@ Status tiles are coloured by a rule on their own value; the others have a fixed 
 
 | Page | Tile | Expected colour |
 |---|---|---|
-| NGR overview | GGR | red (rule) |
+| NGR overview | GGR | green (rule) |
 | NGR overview | Bonus Cost (realised) | amber (fixed: a cost) |
-| NGR overview | NGR | red (rule) |
+| NGR overview | NGR | green (rule) |
 | NGR overview | Bonus Liability Outstanding | purple (fixed: owed, not yet a cost) |
 | Player balances | Deposits | green (fixed: money in) |
 | Reconciliation | Settlements Matched Exactly | green (fixed) |

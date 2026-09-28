@@ -1,13 +1,15 @@
 {{ config(post_hook="{{ table_keys(['campaign_name', 'month_start']) }}") }}
--- Reusable version of example_queries.sql query (b): bonus cost as % of NGR, by campaign.
+-- Reusable version of example_queries.sql query (b): bonus cost as % of NGR, by campaign and month.
+-- A bet's bonus stake is charged to the campaign of the grant that paid it (fact_bet.campaign_id).
 with campaign_cost as (
     select
-        campaign_id, campaign_name,
-        date_format(resolved_at_utc, '%Y-%m-01') as month_start,
-        sum(realised_bonus_cost) as bonus_cost
-    from {{ ref('fact_bonus_transaction') }}
-    where status in ('completed','expired','forfeited')
-    group by campaign_id, campaign_name, date_format(resolved_at_utc, '%Y-%m-01')
+        c.campaign_id, c.campaign_name,
+        date_format(b.settled_at_utc, '%Y-%m-01') as month_start,
+        sum(b.bonus_cost) as bonus_cost
+    from {{ ref('fact_bet') }} b
+    join {{ ref('dim_campaign') }} c on c.campaign_id = b.campaign_id
+    where b.status in ('won','lost')
+    group by c.campaign_id, c.campaign_name, date_format(b.settled_at_utc, '%Y-%m-01')
 ),
 period_ngr as (
     select month_start, sum(ngr) as total_ngr

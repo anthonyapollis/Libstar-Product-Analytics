@@ -362,3 +362,76 @@ This covers the brief's required entities. `player_bonuses.status` plus `resolve
 - all in the four schemas `jsb_assessment`, `jsb_platform`, `jsb_platform_staging` and `jsb_platform_marts`.
 
 The "Mart tables (12)" phrase in `TABLE_INVENTORY.md` now reads "(13)". Nothing recreates the older 46-table design.
+
+
+---
+
+## Claude → Codex: Exercise 3 audit against the brief (tasks 12–18)
+
+**Canonical totals change by one table: 30 base tables (2 + 4 + 24), 43 physical tables + 11 views = 54 objects.**
+- **The added table** is `jsb_platform.player_status_history` (SCD2 of account status + KYC).
+- **Why it's needed:**
+  - The brief lists status (active, blocked, self-excluded) and asks for regulator queries.
+  - "Was this player self-excluded or unverified when the bet was placed?" can't be answered from the current value on `players`.
+  - VIP tier and tags already had history; status didn't.
+- **Nothing else was added.** `TABLE_INVENTORY.md`, the READMEs, `setup_local.bat` and the load script now say 30 / 24 / 54.
+
+**Defects found and fixed**
+1. **Bonus cost was defined two ways.**
+   - Query (a) subtracted bonus stakes on lost bets (20.00).
+   - Query (b) used the granted amount of resolved grants (25.00) as its numerator, for the same single campaign.
+   - So the "% of NGR" divided one measure by an NGR built from the other.
+   - **Now one definition everywhere** (SQL, dbt, Power BI, Databricks): bonus cost = bonus money wagered on settled bets, and NGR = GGR − bonus cost.
+   - `bets.player_bonus_id` (new FK, with CHECK `ck_bets_bonus_funding`) traces a bonus stake to its grant and so to its campaign.
+   - Liability = the unwagered part of active grants. It was the full granted amount, which ignored what had already been wagered.
+2. **Reversals would have been double-counted.**
+   - The ledger had `status ENUM('posted','reversed')`, and query (c), the dbt cache test and the Power BI balance measure filtered `status = 'posted'`.
+   - Marking an original "reversed" (an UPDATE on an "append-only" ledger) would drop the original but keep its reversal, so the balance would be wrong by the amount.
+   - **The status column is removed.** Every row counts, and "reversed" is derived: a row points at it.
+   - `UNIQUE (reversal_of_wallet_txn_id)` allows one reversal per row.
+3. **The seed contradicted itself.**
+   - Player 2 had a "completed" 25.00 bonus with no ledger rows and no rollover events.
+   - Grant 1's `rollover_progress` (60) didn't match its events (20).
+   - **Fixed:** player 2's grant is now granted and then forfeited, with a ledger credit and debit; progress equals the sum of the events.
+
+**Added to answer the brief more fully**
+- `ledger_posting.sql`, for task 14 (guaranteeing a balance):
+  - `post_wallet_txn`: idempotent; locks the wallet row with `FOR UPDATE`; refuses an overdraft; writes the ledger row and the cache in one transaction.
+  - `reverse_wallet_txn`: an opposite row with a mandatory reason; reversing twice returns the first reversal.
+  - `test_ledger_posting.py` proves it on a throwaway database: 17/17 PASS, including 20 concurrent postings and the chain check (`evidence/ledger_posting_test.txt`).
+- **39 CHECK constraints**, including:
+  - amount > 0;
+  - `balance_after = balance_before ± amount`;
+  - reversal link;
+  - reason required for manual adjustments and reversals;
+  - at most one lineage column;
+  - settled ⇒ settlement time;
+  - resolved ⇒ resolution time;
+  - single = 1 leg, accumulator ≥ 2;
+  - odds > 1;
+  - SCD period order.
+- **Seed additions:**
+  - an accumulator (2 legs), paid 10.00 real + 20.00 bonus;
+  - a casino loss;
+  - a manual adjustment keyed wrong (50.00), reversed, and re-posted (15.00).
+  - Query (c) shows 450.00 before the reversal and 415.00 after.
+- `players.registration_channel`; index `bets (product, settled_at_utc)` for NGR by month.
+- `design_notes.md` rewritten in the brief's order (tasks 1–7). The ERD is regenerated with the new table and links.
+
+**New canonical Exercise 3 figures (September 2026)**
+
+| Figure | Value |
+|---|---|
+| NGR by product | casino 270.00, retail 100.00, sportsbook −150.00; total 220.00 |
+| GGR | 260.00 |
+| Bonus cost | 40.00 = 18.18% of NGR |
+| Liability | 10.00 |
+| Player 1 balance at 2026-09-06 | 1,160.00 |
+| Final balances | P1 890.00, P2 415.00, P3 90.00 real + 10.00 bonus |
+
+These figures match across `example_queries.sql`, the dbt marts (78/78 PASS), `powerbi/expected_values.md` and the Databricks notebook (32/32 local PASS).
+
+**Please verify on Windows/XAMPP:**
+- `local_load/setup_local.bat`. Step 5 now runs `--full-refresh`, because the ledger fact lost its `status` column.
+- `python exercise3-schema-design/test_ledger_posting.py` with `DB_USER=root`.
+- Power BI v6: the Page 1 cards should read 260.00 / 40.00 / 220.00 / 10.00.

@@ -3,6 +3,7 @@ erDiagram
     PLAYERS ||--|| PLAYER_IDENTITY : has_restricted
     PLAYERS ||--o{ PLAYER_VIP_TIER_HISTORY : tier_history
     PLAYERS ||--o{ PLAYER_TAG_HISTORY : tag_history
+    PLAYERS ||--o{ PLAYER_STATUS_HISTORY : status_kyc_history
     PLAYERS ||--o{ WALLETS : owns
     WALLETS ||--o{ WALLET_TRANSACTIONS : ledger
     PLAYERS ||--o{ WALLET_TRANSACTIONS : posts
@@ -30,9 +31,13 @@ erDiagram
     PLAYER_BONUSES ||--o{ BONUS_ROLLOVER_EVENTS : progress
     BETS ||--o{ BONUS_ROLLOVER_EVENTS : qualifies_via
     PLAYER_BONUSES ||--o{ WALLET_TRANSACTIONS : credits_debits
+    PLAYER_BONUSES |o--o{ BETS : funds_bonus_stake
+    WALLET_TRANSACTIONS |o--o| WALLET_TRANSACTIONS : reversal_of
 
     PLAYERS {
         bigint player_id PK
+        datetime registered_at_utc
+        enum registration_channel
         enum kyc_status
         varchar vip_tier
         enum status
@@ -63,7 +68,9 @@ erDiagram
         decimal balance_before
         decimal balance_after
         varchar idempotency_key UK
-        bigint reversal_of_wallet_txn_id FK
+        bigint reversal_of_wallet_txn_id FK "UK, reversal only"
+        varchar reason "required: manual, reversal"
+        datetime created_at_utc
     }
     DEPOSIT_ATTEMPTS {
         bigint deposit_attempt_id PK
@@ -88,8 +95,10 @@ erDiagram
         enum channel
         decimal stake_real_amount
         decimal stake_bonus_amount
+        bigint player_bonus_id FK "grant paying the bonus part"
         enum status
         decimal payout_amount
+        datetime settled_at_utc
     }
     SPORTS_BET_DETAILS {
         bigint bet_id PK
@@ -163,6 +172,13 @@ erDiagram
     PLAYER_VIP_TIER_HISTORY {
         bigint player_id PK
         varchar vip_tier
+        datetime valid_from_utc PK
+        datetime valid_to_utc
+    }
+    PLAYER_STATUS_HISTORY {
+        bigint player_id PK
+        enum status
+        enum kyc_status
         datetime valid_from_utc PK
         datetime valid_to_utc
     }

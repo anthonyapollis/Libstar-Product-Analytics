@@ -3,7 +3,7 @@ rem ===========================================================================
 rem  JSB assessment: set up the project on your local XAMPP MariaDB, then run dbt
 rem  step by step so you can see what each step builds.
 rem
-rem    Step 1  load the 29 base tables (the source data)     -> jsb_assessment, jsb_platform
+rem    Step 1  load the 30 base tables (the source data)     -> jsb_assessment, jsb_platform
 rem    Step 2  install dbt in a private Python environment   (first run only)
 rem    Step 3  dbt debug   : check dbt can reach the database
 rem    Step 4  dbt run     : staging layer, 11 views         -> jsb_platform_staging
@@ -11,7 +11,7 @@ rem    Step 5  dbt run     : marts layer, 13 tables          -> jsb_platform_mar
 rem    Step 6  dbt test    : 54 data tests
 rem
 rem  Needs: XAMPP MySQL/MariaDB running on port 3306 (root, no password), Python 3.9-3.11.
-rem  Re-running is safe for a demo but resets the 29 base tables to the submission data.
+rem  Re-running is safe for a demo but resets the 30 base tables to the submission data.
 rem ===========================================================================
 setlocal
 cd /d "%~dp0"
@@ -33,12 +33,12 @@ if not defined MYSQL (
 echo Using %MYSQL%
 echo.
 
-echo === Step 1 of 6: load the 29 base tables =====================================
+echo === Step 1 of 6: load the 30 base tables =====================================
 echo These are the source data: the two Exercise 1 files, the Exercise 2 API load and
 echo run log, and the Exercise 3 schema with its sample data.
 "%MYSQL%" -u root --protocol=TCP -P 3306 --default-character-set=utf8mb4 < "%HERE%\01_load_submission_tables.sql" || goto :failed
 echo.
-echo Look in Workbench: databases jsb_assessment (6 tables) and jsb_platform (23 tables).
+echo Look in Workbench: databases jsb_assessment (6 tables) and jsb_platform (24 tables).
 pause
 
 echo === Step 2 of 6: install dbt (first run only) =================================
@@ -76,10 +76,11 @@ echo Look in Workbench: jsb_platform_staging (11 views, e.g. stg_internal_deposi
 echo The SQL dbt ran is in dbt_jsb_assessment\target\run\jsb_assessment\models\staging\
 pause
 
-echo === Step 5 of 6: dbt run --select marts =======================================
+echo === Step 5 of 6: dbt run --select marts --full-refresh =========================
 echo Marts = the reporting tables built from staging: star schema (dim_/fact_),
 echo the reconciliation (fct_recon_exceptions, mart_recon_bridge) and query marts.
-"%DBT%" run --select marts --target xampp || goto :failed
+rem --full-refresh: the base tables were just reloaded, so rebuild the incremental marts too.
+"%DBT%" run --select marts --full-refresh --target xampp || goto :failed
 echo.
 echo Look in Workbench: jsb_platform_marts (13 tables, each with a primary key). Power BI reads these.
 pause

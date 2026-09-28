@@ -5,8 +5,8 @@ with ledger as (
     select wallet_id,
            sum(case when balance_type = 'real'  then signed_amount else 0 end) as ledger_real,
            sum(case when balance_type = 'bonus' then signed_amount else 0 end) as ledger_bonus
+    -- Every row counts: a reversal is its own opposite row, so nothing is filtered out.
     from {{ ref('stg_wallet_transactions') }}
-    where status = 'posted'
     group by wallet_id
 )
 select w.wallet_id, w.real_balance, l.ledger_real, w.bonus_balance, l.ledger_bonus

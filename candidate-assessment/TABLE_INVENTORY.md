@@ -1,8 +1,8 @@
 # Table inventory: what each table is, who creates it, and why
 
-A fresh local setup creates **53 objects in 4 databases**:
+A fresh local setup creates **54 objects in 4 databases**:
 
-- 29 base tables, loaded by one SQL script.
+- 30 base tables, loaded by one SQL script.
 - 24 objects built by dbt: 11 views and 13 tables (2 of them incremental).
 
 Nothing else is created. Every derived object comes from dbt, so there are no hand-built copies.
@@ -11,11 +11,11 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | Layer | Database | Objects | Created by | Holds data? |
 |---|---|---|---|---|
 | Source (Ex 1, 2) | `jsb_assessment` | 6 tables | `local_load/01_load_submission_tables.sql` | yes |
-| Source (Ex 3) | `jsb_platform` | 23 tables | the same script (`ddl.sql` + `seed.sql`) | yes |
+| Source (Ex 3) | `jsb_platform` | 24 tables | the same script (`ddl.sql` + `seed.sql`) | yes |
 | Staging | `jsb_platform_staging` | 11 views | `dbt run --select staging` | **no**: views read the base tables live |
 | Marts | `jsb_platform_marts` | 13 tables | `dbt run --select marts` | yes, derived: 11 rebuilt each run, 2 incremental |
 
-## Why dbt adds 24 objects on top of the 29
+## Why dbt adds 24 objects on top of the 30
 - **Staging views (11)** give every source one consistent, typed, renamed shape. Examples: the
   normalised gateway reference, and deposit amounts as decimals. Each model then reads staging,
   never raw tables, so a source change is fixed in one place. They're **views**, so they duplicate
@@ -43,32 +43,33 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | `ingest_runs` | 4 | Ex 2 run log: monitoring and audit (run 1 was killed mid-page: ABANDONED) |
 | `ingest_rejects` | 1 | Ex 2 quarantine: the bad record (TX000777) with its raw JSON, kept, not dropped |
 
-### `jsb_platform`: Exercise 3 operational design (23 tables)
+### `jsb_platform`: Exercise 3 operational design (24 tables)
 | Table | Rows | Purpose |
 |---|---:|---|
 | `players` | 3 | Player master (no PII) |
 | `player_identity` | 3 | PII, split out so reporting never sees it |
 | `player_vip_tier_history` | 4 | VIP tier over time (SCD2) |
 | `player_tag_history` | 2 | Tags/segments over time |
+| `player_status_history` | 4 | Account status and KYC over time (SCD2): "was this player self-excluded when the bet was placed?" |
 | `affiliates` | 2 | Acquisition source |
 | `wallets` | 3 | One per player and currency; balance cache |
-| `wallet_transactions` | 10 | Append-only ledger: the source of truth for balances |
+| `wallet_transactions` | 18 | Append-only ledger: the source of truth for balances (includes a reversal and its correction) |
 | `payment_methods` | 2 | Tokenised payment instruments |
 | `deposit_attempts` | 4 | Every attempt, including failures |
 | `withdrawal_requests` | 0 | Withdrawal workflow (empty in the sample data) |
-| `bets` | 4 | One header per bet, all products |
-| `sports_events` | 1 | Sportsbook reference data |
-| `sports_bet_details` | 2 | Sportsbook-specific bet detail |
-| `bet_legs` | 2 | Multi-leg (accumulator) selections |
+| `bets` | 6 | One header per bet, all products; `player_bonus_id` names the grant that paid any bonus part |
+| `sports_events` | 3 | Sportsbook reference data |
+| `sports_bet_details` | 3 | Sportsbook-specific bet detail |
+| `bet_legs` | 4 | One row per selection (the accumulator has 2) |
 | `game_providers` | 1 | Casino reference data |
 | `games` | 1 | Casino reference data |
-| `casino_round_details` | 1 | Casino-specific bet detail |
+| `casino_round_details` | 2 | Casino-specific bet detail |
 | `retail_locations` | 1 | Retail reference data |
 | `devices` | 1 | Retail terminals |
 | `retail_bet_details` | 1 | Retail-specific bet detail |
 | `bonus_campaigns` | 1 | Campaign rules (rollover, min odds) |
 | `player_bonuses` | 2 | Grants and their status |
-| `bonus_rollover_events` | 1 | Event-sourced wagering progress |
+| `bonus_rollover_events` | 2 | Event-sourced wagering progress |
 
 ### `jsb_platform_staging`: dbt staging views (11 views, no stored data)
 `stg_players`, `stg_player_vip_tier_history`, `stg_wallet_transactions`, `stg_bets`,
@@ -82,9 +83,9 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 | `dim_player_vip_tier_scd` | 4 | VIP tier history (Type 2) | Power BI |
 | `dim_campaign` | 1 | Campaign dimension | Power BI |
 | `dim_date` | 92 | Calendar | Power BI |
-| `fact_bet` | 4 | One row per bet: GGR and NGR | Power BI |
-| `fact_wallet_transaction` | 10 | One row per ledger movement: balances as of any date | Power BI |
-| `fact_bonus_transaction` | 2 | One row per bonus grant: bonus cost | Power BI |
+| `fact_bet` | 6 | One row per bet: GGR, bonus cost, NGR, paying campaign | Power BI |
+| `fact_wallet_transaction` | 18 | One row per ledger movement: balances as of any date | Power BI |
+| `fact_bonus_transaction` | 2 | One row per bonus grant: bonus cost and outstanding liability | Power BI |
 | `fct_recon_exceptions` | 317 | Ex 1: every deposit and settlement, categorised | Power BI, bridge test |
 | `mart_recon_bridge` | 11 | Ex 1: bridge steps, internal total → gateway total | Power BI waterfall |
 | `mart_recon_summary_by_category` | 13 | Ex 1: rows and rand per category for Finance | Finance summary |
@@ -103,7 +104,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
 
 ## Keys and duplicates
 - **Every table has a primary key.**
-  - The 29 base tables declare theirs in their DDL.
+  - The 30 base tables declare theirs in their DDL.
   - The 13 mart tables get theirs, plus indexes on join and filter columns, from the
     `table_keys` post-hook (`dbt_jsb_assessment/macros/table_keys.sql`). dbt's `CREATE TABLE AS`
     doesn't carry keys on MySQL/MariaDB.
@@ -120,6 +121,7 @@ Row counts are from a fresh load plus `dbt build` on MariaDB 10.11.
   - tag start per player
   - API transaction `id`
   - one reject per distinct bad payload
+  - one reversal per ledger row
   - gateway settlement `gateway_txn_id` + `settled_at`
 - **Duplicates we keep on purpose:** the Exercise 1 source files contain real duplicates (a
   deposit recorded twice; a settlement reported twice). They're loaded as supplied, because

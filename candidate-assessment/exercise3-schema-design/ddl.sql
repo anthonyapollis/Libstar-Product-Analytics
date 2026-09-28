@@ -1,5 +1,5 @@
 -- Exercise 3: Database design for players, wallets, bets and bonuses
--- Tool: MySQL 8.0 (InnoDB, utf8mb4)
+-- Tool: MySQL 8.0 / MariaDB 10.11 (InnoDB, utf8mb4). 24 tables.
 --
 -- Design principles (justified in design_notes.md):
 --   * Money: DECIMAL(18,4) everywhere. Never FLOAT/DOUBLE for anything that touches a balance.
@@ -9,8 +9,11 @@
 --   * PII lives only in player_identity, separated from behavioural/analytical data (players).
 --   * The wallet ledger (wallet_transactions) is append-only and is the only source of truth for
 --     balances; wallets.*_balance is a materialised, recomputable cache, never edited directly.
---   * History that must be provable at a point in time (VIP tier, tags) uses SCD Type 2, not
---     UPDATE-in-place.
+--   * History that must be provable at a point in time (VIP tier, tags, account status and KYC)
+--     uses SCD Type 2, not UPDATE-in-place.
+--   * CHECK constraints hold the rules a row must obey on its own (positive amounts, a ledger row's
+--     balance_after = balance_before +/- amount, a reversal points at what it reverses). Rules that
+--     span rows are enforced by the posting procedures in ledger_posting.sql.
 --   * One header table (bets) plus one detail table per product, so a sports leg, a casino round
 --     and a retail slip are not forced into one over-wide table (see design_notes.md, "grain").
 
@@ -36,9 +39,10 @@ CREATE TABLE players (
     player_id       BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     -- Behavioural / operational attributes only. No name, DOB, ID number, address here.
     registered_at_utc DATETIME(6)   NOT NULL,
+    registration_channel ENUM('web','app','retail') NOT NULL,
     kyc_status      ENUM('not_started','pending','verified','rejected') NOT NULL DEFAULT 'not_started',
     vip_tier        VARCHAR(20)     NOT NULL DEFAULT 'standard',  -- current value; history in player_vip_tier_history
-    status          ENUM('active','blocked','self_excluded','closed') NOT NULL DEFAULT 'active',
+    status          ENUM('active','blocked','self_excluded','closed') NOT NULL DEFAULT 'active',  -- current; history in player_status_history
     status_reason   VARCHAR(255)    NULL,
     traffic_source  VARCHAR(50)     NOT NULL,
     affiliate_id    INT UNSIGNED    NULL,
@@ -82,7 +86,25 @@ CREATE TABLE player_vip_tier_history (
     changed_by      VARCHAR(100)    NOT NULL,       -- system rule name or staff user
     PRIMARY KEY (player_id, valid_from_utc),
     CONSTRAINT fk_viphist_player FOREIGN KEY (player_id) REFERENCES players(player_id),
+    CONSTRAINT ck_viphist_period CHECK (valid_to_utc IS NULL OR valid_to_utc > valid_from_utc),
     KEY ix_viphist_current (player_id, valid_to_utc)
+) ENGINE=InnoDB;
+
+-- SCD2: account status and KYC status. Regulators ask "was this player self-excluded (or
+-- unverified) when the bet was placed?", so the current value on players is not enough.
+DROP TABLE IF EXISTS player_status_history;
+CREATE TABLE player_status_history (
+    player_id       BIGINT UNSIGNED NOT NULL,
+    status          ENUM('active','blocked','self_excluded','closed') NOT NULL,
+    kyc_status      ENUM('not_started','pending','verified','rejected') NOT NULL,
+    reason          VARCHAR(255)    NULL,           -- e.g. self-exclusion period, reason for a block
+    valid_from_utc  DATETIME(6)     NOT NULL,
+    valid_to_utc    DATETIME(6)     NULL,           -- NULL = current
+    changed_by      VARCHAR(100)    NOT NULL,
+    PRIMARY KEY (player_id, valid_from_utc),
+    CONSTRAINT fk_statushist_player FOREIGN KEY (player_id) REFERENCES players(player_id),
+    CONSTRAINT ck_statushist_period CHECK (valid_to_utc IS NULL OR valid_to_utc > valid_from_utc),
+    KEY ix_statushist_current (player_id, valid_to_utc)
 ) ENGINE=InnoDB;
 
 -- SCD2: tags (multi-valued, e.g. 'bonus_abuse_watch', 'high_value', 'self_excluded_nudge').
@@ -94,6 +116,7 @@ CREATE TABLE player_tag_history (
     valid_from_utc  DATETIME(6)     NOT NULL,
     valid_to_utc    DATETIME(6)     NULL,
     CONSTRAINT fk_taghist_player FOREIGN KEY (player_id) REFERENCES players(player_id),
+    CONSTRAINT ck_taghist_period CHECK (valid_to_utc IS NULL OR valid_to_utc > valid_from_utc),
     UNIQUE KEY uq_taghist_start (player_id, tag, valid_from_utc),
     KEY ix_taghist_current (player_id, tag, valid_to_utc)
 ) ENGINE=InnoDB;
@@ -129,26 +152,33 @@ CREATE TABLE wallet_transactions (
     direction       ENUM('credit','debit')          NOT NULL,
     balance_before  DECIMAL(18,4)   NOT NULL,
     balance_after   DECIMAL(18,4)   NOT NULL,
-    -- Lineage back to the event that caused this movement. Exactly one of these
-    -- is populated per row, enforced in the posting procedure, not by CHECK
-    -- (MySQL CHECK cannot easily express "exactly one of N columns").
+    -- Lineage back to the event that caused this movement: at most one is set
+    -- (ck_wtxn_one_source). A manual adjustment has none and carries a reason instead.
     related_deposit_attempt_id BIGINT UNSIGNED NULL,
     related_withdrawal_id      BIGINT UNSIGNED NULL,
     related_bet_id             BIGINT UNSIGNED NULL,
     related_player_bonus_id    BIGINT UNSIGNED NULL,
-    reversal_of_wallet_txn_id  BIGINT UNSIGNED NULL,  -- set when this row reverses an earlier one
+    reversal_of_wallet_txn_id  BIGINT UNSIGNED NULL,  -- set only on a 'reversal' row: the row it cancels
+    reason          VARCHAR(255)    NULL,            -- required for manual adjustments and reversals
+    created_by      VARCHAR(100)    NOT NULL DEFAULT 'system',  -- service or staff user that posted it
     -- Deterministic idempotency key: source_system + source_event_id (or a hash
     -- of immutable business fields for internally-generated events). Loads are
     -- upserts against this key -- replaying an event is always safe.
     idempotency_key VARCHAR(150)    NOT NULL,
     source_system   VARCHAR(30)     NOT NULL DEFAULT 'platform',
-    status          ENUM('posted','reversed') NOT NULL DEFAULT 'posted',
+    -- No status column: a row is never updated. "Reversed" is derived: another row points at it.
     created_at_utc  DATETIME(6)     NOT NULL,
     ingested_at_utc DATETIME(6)     NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     CONSTRAINT fk_wtxn_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(wallet_id),
     CONSTRAINT fk_wtxn_player FOREIGN KEY (player_id) REFERENCES players(player_id),
     CONSTRAINT fk_wtxn_reversal FOREIGN KEY (reversal_of_wallet_txn_id) REFERENCES wallet_transactions(wallet_txn_id),
+    CONSTRAINT ck_wtxn_amount_pos CHECK (amount > 0),
+    CONSTRAINT ck_wtxn_balance_math CHECK (balance_after = balance_before + CASE WHEN direction = 'credit' THEN amount ELSE -amount END),
+    CONSTRAINT ck_wtxn_reversal_link CHECK ((txn_type = 'reversal' AND reversal_of_wallet_txn_id IS NOT NULL) OR (txn_type <> 'reversal' AND reversal_of_wallet_txn_id IS NULL)),
+    CONSTRAINT ck_wtxn_one_source CHECK (CASE WHEN related_deposit_attempt_id IS NULL THEN 0 ELSE 1 END + CASE WHEN related_withdrawal_id IS NULL THEN 0 ELSE 1 END + CASE WHEN related_bet_id IS NULL THEN 0 ELSE 1 END + CASE WHEN related_player_bonus_id IS NULL THEN 0 ELSE 1 END + CASE WHEN reversal_of_wallet_txn_id IS NULL THEN 0 ELSE 1 END <= 1),
+    CONSTRAINT ck_wtxn_reason CHECK (txn_type NOT IN ('manual_adjustment','reversal') OR reason IS NOT NULL),
     UNIQUE KEY uq_wtxn_idempotency (idempotency_key),
+    UNIQUE KEY uq_wtxn_reversal_of (reversal_of_wallet_txn_id),   -- a row can be reversed once only
     KEY ix_wtxn_wallet_time (wallet_id, created_at_utc),
     KEY ix_wtxn_player_time (player_id, created_at_utc),
     KEY ix_wtxn_bet (related_bet_id),
@@ -178,6 +208,7 @@ CREATE TABLE deposit_attempts (
     settled_at_utc  DATETIME(6)     NULL,
     CONSTRAINT fk_deposit_player FOREIGN KEY (player_id) REFERENCES players(player_id),
     CONSTRAINT fk_deposit_method FOREIGN KEY (method_id) REFERENCES payment_methods(method_id),
+    CONSTRAINT ck_deposit_amount_pos CHECK (amount > 0),
     KEY ix_deposit_player_time (player_id, created_at_utc),
     UNIQUE KEY uq_deposit_gateway_ref (gateway_ref)   -- one attempt per gateway reference (Ex 1 found duplicates without this)
 ) ENGINE=InnoDB;
@@ -195,6 +226,7 @@ CREATE TABLE withdrawal_requests (
     paid_at_utc     DATETIME(6)     NULL,
     CONSTRAINT fk_withdrawal_player FOREIGN KEY (player_id) REFERENCES players(player_id),
     CONSTRAINT fk_withdrawal_method FOREIGN KEY (method_id) REFERENCES payment_methods(method_id),
+    CONSTRAINT ck_withdrawal_amount_pos CHECK (amount > 0),
     UNIQUE KEY uq_withdrawal_request (request_id),
     KEY ix_withdrawal_player_time (player_id, requested_at_utc)
 ) ENGINE=InnoDB;
@@ -212,15 +244,22 @@ CREATE TABLE bets (
     stake_real_amount  DECIMAL(18,4) NOT NULL DEFAULT 0,
     stake_bonus_amount DECIMAL(18,4) NOT NULL DEFAULT 0,
     total_stake     DECIMAL(18,4)   GENERATED ALWAYS AS (stake_real_amount + stake_bonus_amount) STORED,
+    player_bonus_id BIGINT UNSIGNED NULL,       -- the grant whose bonus balance paid stake_bonus_amount
     status          ENUM('open','won','lost','void','cashed_out') NOT NULL DEFAULT 'open',
     payout_amount   DECIMAL(18,4)   NOT NULL DEFAULT 0,
     placed_at_utc   DATETIME(6)     NOT NULL,
     settled_at_utc  DATETIME(6)     NULL,
     CONSTRAINT fk_bets_player FOREIGN KEY (player_id) REFERENCES players(player_id),
     CONSTRAINT ck_bets_stake_nonneg CHECK (stake_real_amount >= 0 AND stake_bonus_amount >= 0),
+    CONSTRAINT ck_bets_stake_positive CHECK (stake_real_amount + stake_bonus_amount > 0),
+    CONSTRAINT ck_bets_bonus_funding CHECK ((stake_bonus_amount = 0 AND player_bonus_id IS NULL) OR (stake_bonus_amount > 0 AND player_bonus_id IS NOT NULL)),
+    CONSTRAINT ck_bets_payout_nonneg CHECK (payout_amount >= 0),
+    CONSTRAINT ck_bets_settled_time CHECK (status = 'open' OR settled_at_utc IS NOT NULL),
     UNIQUE KEY uq_bets_request (request_id),
     KEY ix_bets_player_time (player_id, placed_at_utc),
-    KEY ix_bets_product_time (product, placed_at_utc, status)
+    KEY ix_bets_product_time (product, placed_at_utc, status),
+    KEY ix_bets_product_settled (product, settled_at_utc),   -- NGR by month is cut on settlement
+    KEY ix_bets_player_bonus (player_bonus_id)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS sports_events;
@@ -241,7 +280,8 @@ CREATE TABLE sports_bet_details (
     total_odds      DECIMAL(10,3)   NOT NULL,
     leg_count       SMALLINT UNSIGNED NOT NULL,
     min_odds_rule_applied DECIMAL(10,3) NULL,  -- captured for bonus-rollover audit (min odds rule)
-    CONSTRAINT fk_sportsdet_bet FOREIGN KEY (bet_id) REFERENCES bets(bet_id)
+    CONSTRAINT fk_sportsdet_bet FOREIGN KEY (bet_id) REFERENCES bets(bet_id),
+    CONSTRAINT ck_sportsdet_legs CHECK ((bet_class = 'single' AND leg_count = 1) OR (bet_class = 'accumulator' AND leg_count >= 2))
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS bet_legs;
@@ -255,6 +295,7 @@ CREATE TABLE bet_legs (
     leg_result      ENUM('pending','won','lost','void') NOT NULL DEFAULT 'pending',
     CONSTRAINT fk_leg_bet FOREIGN KEY (bet_id) REFERENCES bets(bet_id),
     CONSTRAINT fk_leg_event FOREIGN KEY (event_id) REFERENCES sports_events(event_id),
+    CONSTRAINT ck_leg_odds CHECK (odds > 1),
     UNIQUE KEY uq_leg_bet_event_market (bet_id, event_id, market)   -- also serves bet_id lookups
 ) ENGINE=InnoDB;
 
@@ -329,6 +370,7 @@ CREATE TABLE bonus_campaigns (
     valid_from_utc  DATETIME(6)     NOT NULL,
     valid_to_utc    DATETIME(6)     NULL,
     terms_json      JSON            NULL,
+    CONSTRAINT ck_campaign_rollover CHECK (rollover_multiple >= 0),
     UNIQUE KEY uq_campaign_name_from (name, valid_from_utc)
 ) ENGINE=InnoDB;
 
@@ -346,6 +388,9 @@ CREATE TABLE player_bonuses (
     resolved_at_utc DATETIME(6)     NULL,
     CONSTRAINT fk_pbonus_player FOREIGN KEY (player_id) REFERENCES players(player_id),
     CONSTRAINT fk_pbonus_campaign FOREIGN KEY (campaign_id) REFERENCES bonus_campaigns(campaign_id),
+    CONSTRAINT ck_pbonus_amount_pos CHECK (granted_amount > 0),
+    CONSTRAINT ck_pbonus_resolved CHECK ((status = 'active' AND resolved_at_utc IS NULL) OR (status <> 'active' AND resolved_at_utc IS NOT NULL)),
+    CONSTRAINT ck_pbonus_expiry CHECK (expires_at_utc > granted_at_utc),
     KEY ix_pbonus_player_status (player_id, status)
 ) ENGINE=InnoDB;
 
@@ -372,3 +417,6 @@ ALTER TABLE wallet_transactions
     ADD CONSTRAINT fk_wtxn_withdrawal FOREIGN KEY (related_withdrawal_id) REFERENCES withdrawal_requests(withdrawal_id),
     ADD CONSTRAINT fk_wtxn_bet FOREIGN KEY (related_bet_id) REFERENCES bets(bet_id),
     ADD CONSTRAINT fk_wtxn_bonus FOREIGN KEY (related_player_bonus_id) REFERENCES player_bonuses(player_bonus_id);
+
+ALTER TABLE bets
+    ADD CONSTRAINT fk_bets_player_bonus FOREIGN KEY (player_bonus_id) REFERENCES player_bonuses(player_bonus_id);

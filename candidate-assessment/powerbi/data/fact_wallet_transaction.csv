@@ -1,11 +1,19 @@
-wallet_txn_id,wallet_id,player_id,txn_type,balance_type,amount,direction,signed_amount,balance_before,balance_after,related_bet_id,related_deposit_attempt_id,related_withdrawal_id,related_player_bonus_id,reversal_of_wallet_txn_id,idempotency_key,source_system,status,transaction_date,created_at_utc
-1,2,2,deposit,real,500.0000,credit,500.0000,0.0000,500.0000,,2,,,,deposit:GW-D0002,platform,posted,2026-09-10,2026-09-10 09:05:00
-2,1,1,deposit,real,1000.0000,credit,1000.0000,0.0000,1000.0000,,3,,,,deposit:GW-D0003,platform,posted,2026-09-02,2026-09-02 10:01:00
-3,3,3,deposit,real,100.0000,credit,100.0000,0.0000,100.0000,,4,,,,deposit:GW-D0004,platform,posted,2026-09-03,2026-09-03 11:01:00
-4,3,3,bonus_credit,bonus,50.0000,credit,50.0000,0.0000,50.0000,,,,1,,bonus_grant:1,platform,posted,2026-09-03,2026-09-03 11:05:00
-5,1,1,bet_stake,real,200.0000,debit,-200.0000,1000.0000,800.0000,1,,,,,bet_stake:1,platform,posted,2026-09-05,2026-09-05 14:00:00
-6,1,1,bet_win,real,360.0000,credit,360.0000,800.0000,1160.0000,1,,,,,bet_win:1,platform,posted,2026-09-05,2026-09-05 17:00:00
-7,3,3,bet_stake,bonus,20.0000,debit,-20.0000,50.0000,30.0000,2,,,,,bet_stake:2,platform,posted,2026-09-06,2026-09-06 10:00:00
-8,1,1,bet_stake,real,50.0000,debit,-50.0000,1160.0000,1110.0000,3,,,,,bet_stake:3,platform,posted,2026-09-07,2026-09-07 20:00:00
-9,1,1,bet_win,real,80.0000,credit,80.0000,1110.0000,1190.0000,3,,,,,bet_win:3,platform,posted,2026-09-07,2026-09-07 20:00:05
-10,2,2,bet_stake,real,100.0000,debit,-100.0000,500.0000,400.0000,4,,,,,bet_stake:4,platform,posted,2026-09-11,2026-09-11 13:00:00
+wallet_txn_id,wallet_id,player_id,txn_type,balance_type,amount,direction,signed_amount,balance_before,balance_after,related_bet_id,related_deposit_attempt_id,related_withdrawal_id,related_player_bonus_id,reversal_of_wallet_txn_id,idempotency_key,source_system,transaction_date,created_at_utc
+1,2,2,deposit,real,500.0000,credit,500.0000,0.0000,500.0000,,2,,,,deposit:GW-D0002,platform,2026-09-10,2026-09-10 09:05:00
+2,1,1,deposit,real,1000.0000,credit,1000.0000,0.0000,1000.0000,,3,,,,deposit:GW-D0003,platform,2026-09-02,2026-09-02 10:01:00
+3,3,3,deposit,real,100.0000,credit,100.0000,0.0000,100.0000,,4,,,,deposit:GW-D0004,platform,2026-09-03,2026-09-03 11:01:00
+4,3,3,bonus_credit,bonus,50.0000,credit,50.0000,0.0000,50.0000,,,,1,,bonus_grant:1,platform,2026-09-03,2026-09-03 11:05:00
+5,1,1,bet_stake,real,200.0000,debit,-200.0000,1000.0000,800.0000,1,,,,,bet_stake:1,platform,2026-09-05,2026-09-05 14:00:00
+6,1,1,bet_win,real,360.0000,credit,360.0000,800.0000,1160.0000,1,,,,,bet_win:1,platform,2026-09-05,2026-09-05 17:00:00
+7,3,3,bet_stake,bonus,20.0000,debit,-20.0000,50.0000,30.0000,2,,,,,bet_stake:2,platform,2026-09-06,2026-09-06 10:00:00
+8,1,1,bet_stake,real,50.0000,debit,-50.0000,1160.0000,1110.0000,3,,,,,bet_stake:3,platform,2026-09-07,2026-09-07 20:00:00
+9,1,1,bet_win,real,80.0000,credit,80.0000,1110.0000,1190.0000,3,,,,,bet_win:3,platform,2026-09-07,2026-09-07 20:00:05
+10,2,2,bet_stake,real,100.0000,debit,-100.0000,500.0000,400.0000,4,,,,,bet_stake:4,platform,2026-09-11,2026-09-11 13:00:00
+11,2,2,manual_adjustment,real,50.0000,credit,50.0000,400.0000,450.0000,,,,,,manual:OPS-2291,platform,2026-09-12,2026-09-12 09:00:00
+12,2,2,reversal,real,50.0000,debit,-50.0000,450.0000,400.0000,,,,,11,reversal:11,platform,2026-09-12,2026-09-12 09:30:00
+13,2,2,manual_adjustment,real,15.0000,credit,15.0000,400.0000,415.0000,,,,,,manual:OPS-2291:v2,platform,2026-09-12,2026-09-12 09:31:00
+14,2,2,bonus_credit,bonus,25.0000,credit,25.0000,0.0000,25.0000,,,,2,,bonus_grant:2,platform,2026-09-15,2026-09-15 09:05:00
+15,2,2,bonus_debit,bonus,25.0000,debit,-25.0000,25.0000,0.0000,,,,2,,bonus_forfeit:2,platform,2026-09-20,2026-09-20 10:00:00
+16,1,1,bet_stake,real,300.0000,debit,-300.0000,1190.0000,890.0000,5,,,,,bet_stake:5,platform,2026-09-08,2026-09-08 21:00:00
+17,3,3,bet_stake,real,10.0000,debit,-10.0000,100.0000,90.0000,6,,,,,bet_stake:6:real,platform,2026-09-13,2026-09-13 12:00:00
+18,3,3,bet_stake,bonus,20.0000,debit,-20.0000,30.0000,10.0000,6,,,,,bet_stake:6:bonus,platform,2026-09-13,2026-09-13 12:00:00

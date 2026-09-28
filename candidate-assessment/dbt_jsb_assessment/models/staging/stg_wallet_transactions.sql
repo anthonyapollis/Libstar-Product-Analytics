@@ -19,7 +19,8 @@ select
     reversal_of_wallet_txn_id,
     idempotency_key,
     source_system,
-    status,
+    reason,
+    created_by,
     created_at_utc,
     ingested_at_utc
 from {{ source('jsb_platform', 'wallet_transactions') }}

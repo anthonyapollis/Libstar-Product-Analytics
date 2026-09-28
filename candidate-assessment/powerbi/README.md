@@ -68,8 +68,8 @@ there. What was checked:
   there are no ambiguous filter paths. A negative
   test confirmed it catches an ambiguous relationship and a misspelled measure or column.
 - `expected_values.md` is computed from the CSVs in pandas, independently of the DAX. It matches
-  the MySQL and MariaDB query results and the dbt marts: NGR −90.00, sportsbook −160.00,
-  bonus cost −27.78% of NGR, and player 1's balance of 1,160.00 on 2026-09-06.
+  the MariaDB query results and the dbt marts: NGR 220.00 (sportsbook −150.00), bonus cost
+  40.00 = 18.18% of NGR, liability 10.00, and player 1's balance of 1,160.00 on 2026-09-06.
 - The report format mirrors the layout in the supplied `Demo.pbix`: Power BI Desktop 2.130,
   CY24SU06 theme.
 

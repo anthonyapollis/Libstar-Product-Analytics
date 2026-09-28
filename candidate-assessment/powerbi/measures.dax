@@ -22,7 +22,7 @@ GGR =
     -- format: #,0.00
 
 Bonus Cost (realised) =
-    CALCULATE ( SUM ( fact_bet[stake_bonus_amount] ), fact_bet[status] = "lost" )
+    SUM ( fact_bet[bonus_cost] )
     -- format: #,0.00
 
 NGR =
@@ -31,7 +31,7 @@ NGR =
 
 -- ===== table: fact_bonus_transaction =====
 Campaign Bonus Cost =
-    CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] IN { "completed", "expired", "forfeited" } )
+    SUM ( fact_bonus_transaction[bonus_cost] )
     -- format: #,0.00
 
 Campaign Bonus Cost % of NGR =
@@ -39,7 +39,7 @@ Campaign Bonus Cost % of NGR =
     -- format: 0.00%
 
 Bonus Liability Outstanding =
-    CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] = "active" )
+    SUM ( fact_bonus_transaction[bonus_outstanding] )
     -- format: #,0.00
 
 -- ===== table: fact_wallet_transaction =====
@@ -53,8 +53,7 @@ Balance as of selected date =
         CALCULATE (
             SUM ( fact_wallet_transaction[signed_amount] ),
             REMOVEFILTERS ( dim_date ),
-            fact_wallet_transaction[transaction_date] <= AsOf,
-            fact_wallet_transaction[status] = "posted"
+            fact_wallet_transaction[transaction_date] <= AsOf
         )
     -- format: #,0.00
 

@@ -44,7 +44,10 @@ erDiagram
         decimal stake_real_amount
         decimal stake_bonus_amount
         decimal payout_amount
+        bigint campaign_id "campaign that paid the bonus part"
         decimal ggr_contribution
+        decimal bonus_cost
+        decimal ngr_contribution
         string status
     }
     FACT_WALLET_TRANSACTION {
@@ -62,6 +65,7 @@ erDiagram
         bigint player_id FK
         int campaign_id FK
         decimal granted_amount
-        decimal realised_bonus_cost
+        decimal bonus_cost
+        decimal bonus_outstanding "liability"
         string status
     }

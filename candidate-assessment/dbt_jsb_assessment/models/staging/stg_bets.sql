@@ -10,6 +10,7 @@ select
     stake_real_amount,
     stake_bonus_amount,
     total_stake,
+    player_bonus_id,
     status,
     payout_amount,
     (total_stake - payout_amount) as ggr_contribution,

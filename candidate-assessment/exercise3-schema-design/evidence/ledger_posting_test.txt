@@ -1,0 +1,38 @@
+database jsb_platform_ledger_test: ddl.sql + seed.sql + ledger_posting.sql loaded; 18 ledger rows
+
+1. A deposit moves the ledger and the cache together
+PASS: ledger row 19: 415.0000 -> 515.0000
+PASS: wallet 2 cache is 515.0000
+
+2. Replaying the same event posts nothing
+PASS: same key returns row 19; still 19 rows
+PASS: balance unchanged by the replay
+
+3. A debit larger than the balance is refused
+refused: insufficient balance
+PASS: no row posted, balance unchanged
+
+4. A reversal is a new, opposite row; the original is never edited
+PASS: row 20: reversal, debit 100.00, points at 19
+PASS: row 19 is byte-for-byte unchanged
+PASS: wallet 2 back to 415.0000
+
+5. Reversing twice returns the first reversal
+PASS: returns row 20; still 20 rows
+
+6. Twenty concurrent postings to one wallet
+PASS: all 20 committed (0 errors)
+PASS: wallet 1: 890.0000 + 20 x 10.00 = 1090.0000
+PASS: no break in any wallet's balance_before -> balance_after chain
+
+7. The CHECK constraints refuse rows that break a rule
+PASS: negative amount: refused by ck_wtxn_amount_pos
+PASS: balance_after that doesn't add up: refused by ck_wtxn_balance_math
+PASS: reversal without the row it reverses: refused by ck_wtxn_reversal_link
+PASS: manual adjustment without a reason: refused by ck_wtxn_reason
+PASS: bonus-funded bet without its grant: refused by ck_bets_bonus_funding
+
+8. Every wallet's cache equals its ledger
+PASS: no wallet differs from its ledger
+
+ALL PASS (database jsb_platform_ledger_test dropped)

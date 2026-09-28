@@ -1,7 +1,7 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC # Exercise 3: players, wallets, bets and bonuses (Delta Lake)
-# MAGIC The 23-table design from `exercise3-schema-design/ddl.sql`, translated to Delta, with the same seed data
+# MAGIC The 24-table design from `exercise3-schema-design/ddl.sql`, translated to Delta, with the same seed data
 # MAGIC and the four required queries.
 # MAGIC
 # MAGIC **How MySQL features map to Databricks**
@@ -26,7 +26,7 @@
 
 # COMMAND ----------
 
-# MAGIC %md ## 1. Create the 23 tables
+# MAGIC %md ## 1. Create the 24 tables
 
 # COMMAND ----------
 
@@ -115,7 +115,9 @@ FKS = __FK_CHECKS__              # (child table, [columns], parent table, [colum
 key_rows = []
 for table, cols, kind in KEYS:
     c = ", ".join(cols)
-    dupes = spark.sql(f"SELECT COUNT(*) FROM (SELECT {c} FROM {table} GROUP BY {c} HAVING COUNT(*) > 1)").first()[0]
+    notnull = " AND ".join(f"{col} IS NOT NULL" for col in cols)    # like MySQL, a UNIQUE key allows many NULLs
+    dupes = spark.sql(f"SELECT COUNT(*) FROM (SELECT {c} FROM {table} WHERE {notnull} "
+                      f"GROUP BY {c} HAVING COUNT(*) > 1)").first()[0]
     key_rows.append((table, kind, c, dupes))
 fk_rows = []
 for child, ccols, parent, pcols in FKS:
@@ -132,7 +134,8 @@ check(all(r[2] == 0 for r in fk_rows), f"no orphans on any of the {len(fk_rows)}
 # COMMAND ----------
 
 # MAGIC %md ## 6. The four required queries
-# MAGIC Assumption, as in the MySQL version: GGR = stakes − payouts on settled bets, and NGR = GGR − realised bonus cost.
+# MAGIC The same definitions as the MySQL version: GGR = stakes − payouts on bets settled in the month;
+# MAGIC bonus cost = the bonus money wagered on them; NGR = GGR − bonus cost.
 
 # COMMAND ----------
 
@@ -141,77 +144,72 @@ check(all(r[2] == 0 for r in fk_rows), f"no orphans on any of the {len(fk_rows)}
 # COMMAND ----------
 
 q_a = spark.sql("""
-WITH product_ggr AS (
-    SELECT product, SUM(stake_real_amount + stake_bonus_amount) AS turnover, SUM(payout_amount) AS payouts,
-           SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS ggr
-    FROM bets
-    WHERE settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01' AND status IN ('won', 'lost')
-    GROUP BY product
-),
-product_bonus_cost AS (
-    SELECT b.product, SUM(wt.amount) AS bonus_cost
-    FROM wallet_transactions wt JOIN bets b ON b.bet_id = wt.related_bet_id
-    WHERE wt.txn_type = 'bet_stake' AND wt.balance_type = 'bonus' AND b.status = 'lost'
-      AND b.settled_at_utc >= '2026-09-01' AND b.settled_at_utc < '2026-10-01'
-    GROUP BY b.product
-)
-SELECT g.product, g.turnover, g.payouts, g.ggr, COALESCE(c.bonus_cost, 0) AS bonus_cost,
-       g.ggr - COALESCE(c.bonus_cost, 0) AS ngr
-FROM product_ggr g LEFT JOIN product_bonus_cost c ON c.product = g.product
-ORDER BY g.product""")
+SELECT product,
+       SUM(stake_real_amount + stake_bonus_amount) AS turnover,
+       SUM(payout_amount) AS payouts,
+       SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS ggr,
+       SUM(stake_bonus_amount) AS bonus_cost,
+       SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) - SUM(stake_bonus_amount) AS ngr
+FROM bets
+WHERE status IN ('won', 'lost') AND settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01'
+GROUP BY product
+ORDER BY product""")
 display(q_a)
 ngr = {r["product"]: float(r["ngr"]) for r in q_a.collect()}
-check(ngr == {"casino": -30.0, "retail": 100.0, "sportsbook": -160.0}, "NGR: casino -30, retail 100, sportsbook -160")
+check(ngr == {"casino": 270.0, "retail": 100.0, "sportsbook": -150.0}, "NGR: casino 270, retail 100, sportsbook -150")
 
 # COMMAND ----------
 
 # MAGIC %md ### (b) Bonus cost as a % of NGR, by campaign
+# MAGIC A bet's bonus stake is charged to the campaign of the grant that paid it (`bets.player_bonus_id`).
 
 # COMMAND ----------
 
 q_b = spark.sql("""
-WITH campaign_cost AS (
-    SELECT pb.campaign_id, SUM(pb.granted_amount) AS bonus_cost
-    FROM player_bonuses pb
-    WHERE pb.status IN ('completed', 'expired', 'forfeited')
-      AND pb.resolved_at_utc >= '2026-09-01' AND pb.resolved_at_utc < '2026-10-01'
+WITH settled AS (
+    SELECT * FROM bets
+    WHERE status IN ('won', 'lost') AND settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01'
+),
+campaign_cost AS (
+    SELECT pb.campaign_id, SUM(s.stake_bonus_amount) AS bonus_cost
+    FROM settled s JOIN player_bonuses pb ON pb.player_bonus_id = s.player_bonus_id
     GROUP BY pb.campaign_id
 ),
-period_ggr AS (
-    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS total_ggr
-    FROM bets WHERE settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01' AND status IN ('won', 'lost')
-),
-period_bonus_cost AS (
-    SELECT SUM(wt.amount) AS total_bonus_cost
-    FROM wallet_transactions wt JOIN bets b ON b.bet_id = wt.related_bet_id
-    WHERE wt.txn_type = 'bet_stake' AND wt.balance_type = 'bonus' AND b.status = 'lost'
-      AND b.settled_at_utc >= '2026-09-01' AND b.settled_at_utc < '2026-10-01'
-),
 period_ngr AS (
-    SELECT (SELECT total_ggr FROM period_ggr) - COALESCE((SELECT total_bonus_cost FROM period_bonus_cost), 0) AS total_ngr
+    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) - SUM(stake_bonus_amount) AS total_ngr
+    FROM settled
 )
-SELECT bc.name AS campaign, cc.bonus_cost,
-       ROUND(100 * cc.bonus_cost / NULLIF((SELECT total_ngr FROM period_ngr), 0), 2) AS bonus_cost_pct_of_ngr
-FROM campaign_cost cc JOIN bonus_campaigns bc ON bc.campaign_id = cc.campaign_id""")
+SELECT c.name AS campaign, cc.bonus_cost, n.total_ngr,
+       ROUND(100 * cc.bonus_cost / NULLIF(n.total_ngr, 0), 2) AS bonus_cost_pct_of_ngr
+FROM campaign_cost cc JOIN bonus_campaigns c ON c.campaign_id = cc.campaign_id CROSS JOIN period_ngr n
+ORDER BY c.name""")
 display(q_b)
 r = q_b.first()
-check(r["campaign"] == "Registration Bonus" and float(r["bonus_cost_pct_of_ngr"]) == -27.78,
-      "Registration Bonus cost is -27.78% of NGR")
+check(r["campaign"] == "Registration Bonus" and float(r["bonus_cost"]) == 40.0
+      and float(r["bonus_cost_pct_of_ngr"]) == 18.18, "Registration Bonus: cost 40.00 = 18.18% of NGR")
 
 # COMMAND ----------
 
 # MAGIC %md ### (c) A player's balance at a given date and time (from the ledger)
+# MAGIC Every ledger row counts: a reversal is its own opposite row, so it cancels what it reverses.
 
 # COMMAND ----------
 
-PLAYER_ID, AS_OF = 1, "2026-09-06 00:00:00"
-q_c = spark.sql(f"""
-SELECT balance_type, SUM(CASE WHEN direction = 'credit' THEN amount ELSE -amount END) AS balance_as_of
-FROM wallet_transactions
-WHERE player_id = {PLAYER_ID} AND created_at_utc <= '{AS_OF}' AND status = 'posted'
-GROUP BY balance_type""")
+def balance(player_id, as_of):
+    return spark.sql(f"""
+        SELECT balance_type, SUM(CASE WHEN direction = 'credit' THEN amount ELSE -amount END) AS balance_as_of
+        FROM wallet_transactions
+        WHERE player_id = {player_id} AND created_at_utc <= '{as_of}'
+        GROUP BY balance_type ORDER BY balance_type""")
+
+q_c = balance(1, "2026-09-06 00:00:00")
 display(q_c)
 check([(r[0], float(r[1])) for r in q_c.collect()] == [("real", 1160.0)], "player 1 real balance on 2026-09-06 is 1,160.00")
+p2 = {t: dict((r[0], float(r[1])) for r in balance(2, t).collect()).get("real")
+      for t in ("2026-09-12 09:15:00", "2026-09-12 10:00:00")}
+print(p2)
+check(p2 == {"2026-09-12 09:15:00": 450.0, "2026-09-12 10:00:00": 415.0},
+      "player 2: 450.00 while the wrong credit stood, 415.00 after its reversal and the correct posting")
 
 # COMMAND ----------
 
@@ -249,6 +247,6 @@ FROM wallets w
 LEFT JOIN (SELECT wallet_id,
                   SUM(CASE WHEN balance_type = 'real' THEN CASE WHEN direction = 'credit' THEN amount ELSE -amount END ELSE 0 END) AS real_ledger,
                   SUM(CASE WHEN balance_type = 'bonus' THEN CASE WHEN direction = 'credit' THEN amount ELSE -amount END ELSE 0 END) AS bonus_ledger
-           FROM wallet_transactions WHERE status = 'posted' GROUP BY wallet_id) l ON l.wallet_id = w.wallet_id
+           FROM wallet_transactions GROUP BY wallet_id) l ON l.wallet_id = w.wallet_id
 WHERE w.real_balance <> COALESCE(l.real_ledger, 0) OR w.bonus_balance <> COALESCE(l.bonus_ledger, 0)""")
 check(drift.count() == 0, "every wallet's cached balance equals the sum of its ledger")

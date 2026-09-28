@@ -8,7 +8,7 @@ notebook ends with checks that fail loudly if a result differs from the MySQL/db
 | `00_config` | Catalog `workspace`, schema `jsb_assessment`, UTC. Every other notebook runs it first | |
 | `01_exercise1_reconciliation` | Loads both files with an idempotent `MERGE` (loaded twice to prove no duplicates), then categorises every row and builds the bridge | 17 checks: every category's rows and rand value equal MySQL/dbt; the bridge residual is exactly 0.00 |
 | `02_exercise2_incremental_ingestion` | Runs the supplied mock API inside the notebook and loads it into Delta with `MERGE`. Crashes on purpose between writing a page and moving its checkpoint, then restarts, reruns, calls `/admin/advance` and reruns | The table matches the API id by id after the restart and after the new activity; exactly 25 new and 40 changed; the crashed run is ABANDONED; one reject |
-| `03_exercise3_schema` | The 23 tables in Delta, CHECK constraints (enforced), primary and foreign keys (declared in Unity Catalog), the seed data and the four queries | A negative stake is refused; no duplicate on any of 42 keys; no orphan on any of 30 foreign keys; the four query answers; wallet cache = ledger |
+| `03_exercise3_schema` | The 24 tables in Delta, 39 CHECK constraints (enforced), primary and foreign keys (declared in Unity Catalog), the seed data and the four queries | A negative stake is refused; no duplicate on any of 44 keys; no orphan on any of 32 foreign keys; the four query answers (NGR 220.00, bonus cost 18.18% of NGR, balances before and after a correction); wallet cache = ledger |
 
 ## Import and run (Databricks Free Edition)
 1. Download `JSB_Databricks_Notebooks.zip`.
@@ -40,7 +40,7 @@ version's lock: two ingestion runs never overlap. In production, the Exercise 2 
 | Indexes | None in Delta. The two large tables use liquid clustering (`CLUSTER BY`) |
 
 ## How it was tested, and the limit of that
-`run_local.py` runs the notebooks with open-source Spark 4 and Delta Lake 4. All 31 checks pass
+`run_local.py` runs the notebooks with open-source Spark 4 and Delta Lake 4. All 32 checks pass
 (`evidence/local_test_run.txt`).
 
 A few features exist only on Databricks, so they couldn't be run here:
@@ -59,5 +59,8 @@ project's own files:
 - Exercise 1: the two CSVs;
 - Exercise 2: `mock_api.py` and the retry and validation code from `ingest.py`;
 - Exercise 3: `ddl.sql` translated to Delta, and `seed.sql`.
+
+The Spark `ERROR ... Aborting task` lines in `evidence/local_test_run.txt` are the negative-stake insert
+that the CHECK constraint refuses on purpose.
 
 So the Databricks version can't drift from the MySQL one.

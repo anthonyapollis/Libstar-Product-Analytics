@@ -200,38 +200,52 @@ ex2.push(bullet("Scale: bulk-load each page into a staging table and MERGE; part
 // ===========================================================================
 const ex3 = [];
 ex3.push(h1("Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses", { pageBreakBefore: true }));
-ex3.push(p("Tools used: MySQL 8.0 for the schema (cross-verified against MariaDB 10.11), Mermaid for the ERD, dbt for the reporting-model mapping.", { italics: true, color: GREY, size: 20 }));
+ex3.push(p("Tools used: MariaDB 10.11 (MySQL 8.0.16+ syntax) for the schema, the posting procedures and the queries; Mermaid for the ERD; Python for the posting test; dbt for the reporting model.", { italics: true, color: GREY, size: 20 }));
 
-ex3.push(h2("Entity-relationship diagram"));
-ex3.push(...imgPara(`${BASE}/exercise3-schema-design/erd.png`, 620, "23-table operational schema — full DDL in exercise3-schema-design/ddl.sql, verified to run clean on both MySQL 8.0 and MariaDB 10.11."));
-
-ex3.push(h2("Design principles"));
-ex3.push(h3("Money and time"));
-ex3.push(p("DECIMAL(18,4) everywhere a balance or amount is stored — never FLOAT/DOUBLE. DATETIME(6), always UTC, columns suffixed _at_utc; MySQL's TIMESTAMP is deliberately avoided because it silently converts using the session/server time zone."));
-ex3.push(h3("Balance correctness"));
-ex3.push(p("wallets.real_balance / bonus_balance are a materialised cache, not the source of truth — wallet_transactions (an append-only ledger) is. A balance at any point in time is SUM(credit) − SUM(debit) up to that moment, proven directly by example query (c) below. Corrections and reversals are new rows referencing the original (reversal_of_wallet_txn_id), never edits; every row carries a deterministic idempotency_key so replaying an event can never double-post it. A dbt test (assert_wallet_cache_matches_ledger) fails the build if the cache ever disagrees with the ledger."));
-ex3.push(h3("History over time"));
-ex3.push(p("player_vip_tier_history and player_tag_history are SCD Type 2 (a new row per change, valid_from/valid_to), so \"what tier was this player on 3 September\" is answerable, not just \"what tier are they now\"."));
-ex3.push(h3("Protecting personal information"));
-ex3.push(p("player_identity is a separate table, joined only by player_id — every other table (bets, wallet transactions, bonuses) never sees a name or ID number. In production: application-layer encryption on sensitive fields, a dedicated low-privilege DB role, and every read of the identity table logged."));
-
-ex3.push(h2("The four required queries — verified output"));
-ex3.push(p("Run against the seed data in exercise3-schema-design/seed.sql; identical results on MySQL 8.0 and MariaDB 10.11."));
-ex3.push(...imgPara(`${BASE}/exercise3-schema-design/screenshots/01_example_queries_output.png`, 560, "mysql -- jsb_platform -- example_queries.sql"));
+ex3.push(h2("1–2. Tables, keys, types, constraints, indexes, and the ERD"));
+ex3.push(...imgPara(`${BASE}/exercise3-schema-design/erd.png`, 620, "24 tables. Full CREATE TABLE statements in exercise3-schema-design/ddl.sql; the diagram is generated from erd.mmd."));
 ex3.push(table(
-  ["Query", "Result"],
+  ["Area", "Tables and key decisions"],
   [
-    ["(a) NGR by product for a month", "sportsbook -160.00 · casino -30.00 · retail 100.00 (NAD)"],
-    ["(b) Bonus cost as % of NGR, by campaign", "Registration Bonus: -27.78% (matches the dbt mart's independently-computed figure exactly)"],
-    ["(c) A player's balance at a given date/time", "Reconstructed purely from the ledger (SUM), not a stored column — proves the design"],
-    ["(d) Deposits that failed, then later succeeded", "Self-join on deposit_attempts finds the failed→success pair, 4 minutes apart"],
+    ["Players", "players (no personal data) · player_identity (personal data only) · affiliates · SCD2 history for VIP tier, tags, and account status + KYC"],
+    ["Wallets", "wallets (balance cache) · wallet_transactions (append-only ledger, the source of truth) · payment_methods · deposit_attempts · withdrawal_requests"],
+    ["Bets", "One bets header per bet (stake split into real and bonus, plus the grant that paid the bonus part), with a detail table per product: sports_bet_details + bet_legs + sports_events; casino_round_details + games + game_providers; retail_bet_details + retail_locations + devices"],
+    ["Bonuses", "bonus_campaigns (trigger, audience, rollover multiple, min odds, max stake, expiry) · player_bonuses (grant, progress, outcome) · bonus_rollover_events (each bet's contribution)"],
+  ],
+  [1600, 7760]
+));
+ex3.push(bullet("Money: DECIMAL(18,4), never FLOAT or DOUBLE, which can't hold 0.10 exactly. Odds are DECIMAL(10,3); currency is CHAR(3)."));
+ex3.push(bullet("Time: DATETIME(6), always UTC, in columns named *_at_utc. TIMESTAMP is avoided because it converts through the session time zone. Microseconds keep the order of events within a second."));
+ex3.push(bullet("Keys: every table has a primary key and every relationship has a foreign key. Natural keys are unique, so a retry can't duplicate: ledger idempotency_key, bet and withdrawal request_id, deposit gateway_ref, one reversal per ledger row."));
+ex3.push(bullet("39 CHECK constraints, including: amounts > 0; balance_after = balance_before ± amount; a reversal must point at what it reverses; manual adjustments need a reason; a bonus stake needs its grant; an accumulator has at least 2 legs."));
+ex3.push(bullet("Indexes on the access paths: ledger (wallet, time) and (player, time) for balances; bets (product, settled time) for NGR; deposits (player, time); bonus links for campaign cost; (player, valid_to) on each history table."));
+
+ex3.push(h2("3. How a balance is calculated and guaranteed"));
+ex3.push(p("A balance is the sum of the ledger up to a moment; wallets.real_balance and bonus_balance are only a cache. Money moves only through two procedures (ledger_posting.sql). post_wallet_txn locks the wallet row, returns the original row if the idempotency key was already posted, refuses an overdraft, writes the ledger row with balance_before and balance_after, and updates the cache, all in one transaction. A reversal (reverse_wallet_txn) is a new, opposite row pointing at the original, which is never edited, and a row can only be reversed once. A correction is a reversal plus the right posting. A dbt test fails the build if any cache differs from its ledger."));
+ex3.push(...imgPara(`${BASE}/exercise3-schema-design/screenshots/02_ledger_posting_test.png`, 520, "test_ledger_posting.py on a throwaway database: replay, overdraft, reversal, 20 concurrent postings and the CHECK constraints. All pass."));
+
+ex3.push(h2("4–5. History, and protecting personal information"));
+ex3.push(bullet("History: VIP tier, tags, and account status + KYC are SCD Type 2 tables. A change closes the current row and opens a new one, so \"what tier was this player on 3 September?\" and \"was this player self-excluded when the bet was placed?\" have answers. Money history is the ledger itself; bonus progress is event-sourced."));
+ex3.push(bullet("Personal data: only player_identity holds names, date of birth, ID number and contact details. Everything else uses the surrogate player_id, and the reporting layer never reads the identity table. Access is one restricted, logged role; the ID number is encrypted in the application with a KMS key; erasure anonymises the identity row and leaves the financial history intact."));
+
+ex3.push(h2("6. The four questions — verified output"));
+ex3.push(p("Definitions: GGR = stakes − payouts on bets settled in the month. Bonus cost = the bonus money wagered on those bets, so NGR = GGR − bonus cost. An unwagered bonus that expires or is forfeited costs nothing; the unwagered part of an active bonus is a liability. No levy is modelled, because the brief doesn't give one."));
+ex3.push(...imgPara(`${BASE}/exercise3-schema-design/screenshots/01_example_queries_output.png`, 560, "example_queries.sql against the seed data (MariaDB 10.11)."));
+ex3.push(table(
+  ["Query", "Result (September 2026, NAD)"],
+  [
+    ["(a) NGR by product for a month", "casino 270.00 · retail 100.00 · sportsbook −150.00 (GGR −110.00 less 40.00 bonus cost) · total 220.00"],
+    ["(b) Bonus cost as % of NGR, by campaign", "Registration Bonus: 40.00 = 18.18% of NGR. Bonus stakes are traced to the grant that paid them, and the grant to its campaign"],
+    ["(c) A player's balance at a date and time", "Player 1 at 2026-09-06 00:00: 1,160.00. Player 2: 450.00 while a wrong credit stood, 415.00 after its reversal and the correct posting"],
+    ["(d) Deposits that failed, then succeeded", "Player 2: failed 09:00, succeeded 09:04, 4 minutes later"],
   ],
   [3400, 5960]
 ));
+ex3.push(p("The same answers come from the dbt marts, the Power BI expected values and the Databricks notebook."));
 
-ex3.push(h2("Operational design → reporting model"));
-ex3.push(p("A dbt project (dbt_jsb_assessment/) builds a star schema on top of this operational design: conformed dimensions (dim_player, dim_date, dim_campaign — dim_player_vip_tier_scd carries the same Type-2 history pattern through to the reporting layer) surrounding grain-specific facts (fact_bet, fact_wallet_transaction, fact_bonus_transaction). Two reusable marts answer queries (a) and (b) directly, and — extended during this review — the project now also covers Exercise 1's reconciliation as a scheduled, tested model."));
-ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 78/78 pass (24 models, 54 tests), 0 errors. Every mart has a primary key; two models load incrementally."));
+ex3.push(h2("7. From operational design to a reporting model"));
+ex3.push(p("The dbt project (dbt_jsb_assessment/) builds a star schema: dim_player, dim_player_vip_tier_scd, dim_campaign and dim_date around three facts, each at one grain. fact_bet has one row per bet, with GGR, bonus cost, NGR and the paying campaign. fact_wallet_transaction has one row per ledger movement, loaded incrementally. fact_bonus_transaction has one row per grant, with its cost and outstanding liability. Two marts answer queries (a) and (b), and personal data never enters the model. The same project also runs Exercise 1's reconciliation as a tested model."));
+ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 78 of 78 pass (24 models, 54 tests), 0 errors. Every mart has a primary key; two models load incrementally."));
 // (page break handled by pageBreakBefore on the next heading)
 
 // ===========================================================================
@@ -251,10 +265,10 @@ pbi.push(table(
   ["Measure", "Definition"],
   [
     ["GGR", "Stakes − payouts on settled (won/lost) bets"],
-    ["Bonus Cost (realised)", "Bonus money staked on bets that lost"],
+    ["Bonus Cost (realised)", "Bonus money wagered on settled bets"],
     ["NGR", "GGR − Bonus Cost (realised) — query (a)"],
-    ["Campaign Bonus Cost / % of NGR", "Granted amount of resolved bonuses, ÷ total NGR — query (b)"],
-    ["Bonus Liability Outstanding", "Granted amount of bonuses still active: owed, not yet a cost"],
+    ["Campaign Bonus Cost / % of NGR", "Bonus money wagered from each campaign's grants, ÷ total NGR — query (b)"],
+    ["Bonus Liability Outstanding", "Unwagered part of bonuses still active: owed, not yet a cost"],
     ["Balance as of selected date", "Sum of the ledger up to the last date in the date filter — query (c)"],
     ["Settlements Matched Exactly / Exceptions", "Counts of OK rows and of every other category in fct_recon_exceptions"],
     ["Act Now Value", "Impact of the two act-now categories: settled but marked FAILED, and unrecognised settlements"],
@@ -272,11 +286,11 @@ pbi.push(p("Each value below was computed from the CSVs with pandas, independent
 pbi.push(table(
   ["Visual", "Expected value"],
   [
-    ["GGR / Bonus Cost (realised) / NGR", "-70.00 / 20.00 / -90.00"],
-    ["NGR by product", "sportsbook -160.00 · casino -30.00 · retail 100.00"],
-    ["Registration Bonus: cost / % of NGR", "25.00 / -27.78%"],
+    ["GGR / Bonus Cost (realised) / NGR / Liability", "260.00 / 40.00 / 220.00 / 10.00"],
+    ["NGR by product", "casino 270.00 · retail 100.00 · sportsbook −150.00"],
+    ["Registration Bonus: cost / % of NGR", "40.00 / 18.18%"],
     ["Player 1 balance, slicer ending 2026-09-06", "1,160.00 (real)"],
-    ["Balances, full date range", "Player 1: 1,190.00 · Player 2: 400.00 · Player 3: 100.00 real + 30.00 bonus"],
+    ["Balances, full date range", "Player 1: 890.00 · Player 2: 415.00 · Player 3: 90.00 real + 10.00 bonus"],
     ["Settlements matched exactly / exceptions", "274 / 43"],
     ["Act Now Value / Bridge Residual", "3,150.00 / 0.00"],
     ["Waterfall", "218,280.00 → 217,979.97 in 10 adjustment steps"],

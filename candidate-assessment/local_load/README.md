@@ -6,14 +6,14 @@ can look at the result in Workbench.
 
 | Step | What runs | What you'll see in Workbench |
 |---|---|---|
-| 1 | `01_load_submission_tables.sql`, the source data | `jsb_assessment` (6 tables), `jsb_platform` (23 tables) |
+| 1 | `01_load_submission_tables.sql`, the source data | `jsb_assessment` (6 tables), `jsb_platform` (24 tables) |
 | 2 | Installs dbt 1.7 in a private Python environment (`local_load\.dbt-venv`, first run only) | nothing yet |
 | 3 | `dbt debug --target xampp`: checks dbt can connect | nothing yet |
 | 4 | `dbt run --select staging`: builds 11 views | `jsb_platform_staging` |
 | 5 | `dbt run --select marts`: builds 13 tables (2 incremental) | `jsb_platform_marts` |
 | 6 | `dbt test`: runs 54 tests | nothing new; all should say PASS |
 
-What each table is for, and why dbt adds 24 objects on top of the 29 base tables, is in
+What each table is for, and why dbt adds 24 objects on top of the 30 base tables, is in
 `../TABLE_INVENTORY.md`.
 
 **Requirements:**
@@ -61,7 +61,7 @@ Workbench → File → Open SQL Script → `01_load_submission_tables.sql` → E
 counts at the end: 326 deposits, 306 settlements, 1,024 transactions, 4 runs, 1 reject, and 23
 `jsb_platform` tables.
 
-**Re-running resets the 29 base tables** to the submission data, so any later changes to them are
+**Re-running resets the 30 base tables** to the submission data, so any later changes to them are
 lost. It never touches other tables.
 
 ## History

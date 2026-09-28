@@ -1,106 +1,102 @@
--- Exercise 3: the four required example queries, run against the seed data.
--- Assumption (stated per the brief's "write it down and continue" instruction):
---   GGR = stakes - payouts (before bonus cost and tax), consistent with the
---   standard industry definition. NGR = GGR - bonus cost. No regulatory levy is
---   modelled here (not specified in the brief); a real deployment would add a
---   tax/levy line once the jurisdiction is confirmed, exactly as the finance
---   ebook's KPI catalogue flags NGR as "once definition is agreed".
+-- Exercise 3: the four required queries, run against the seed data.
+--
+-- Definitions (assumptions, written down per the brief):
+--   * GGR = stakes - payouts on bets settled in the period (won or lost; void and open bets excluded).
+--     Stakes include the bonus-funded part, as the product sees them.
+--   * Bonus cost = the bonus money wagered on those settled bets (bets.stake_bonus_amount). Bonus money
+--     is not revenue, so it is taken back out: NGR = GGR - bonus cost (which equals real-money stakes -
+--     payouts). A win on a bonus-funded bet is already in payouts, so converting bonus winnings to real
+--     money later is not counted twice. An unwagered bonus that expires or is forfeited costs nothing;
+--     one still active is a liability, not yet a cost.
+--   * The same definition is used for (a) and (b), in the dbt marts, in Power BI and on Databricks.
+--   * No betting levy or tax line: the brief doesn't give one. It would be one more deduction in (a).
+--   * Periods are calendar months in UTC, cut on settled_at_utc.
 USE jsb_platform;
 
 -- ---------------------------------------------------------------------------
 -- (a) NGR by product for a month
 -- ---------------------------------------------------------------------------
-WITH product_ggr AS (
-    SELECT product,
-           SUM(stake_real_amount + stake_bonus_amount) AS turnover,
-           SUM(payout_amount) AS payouts,
-           SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS ggr
-    FROM bets
-    WHERE settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01'
-      AND status IN ('won','lost')          -- exclude still-open bets from a revenue view
-    GROUP BY product
-),
-product_bonus_cost AS (
-    -- Bonus cost realised this month, allocated to product via the bet it was staked on
-    -- (only the portion of a bonus that was actually wagered and lost is a realised cost;
-    -- bonus still in play is a liability, not yet a cost -- see design_notes.md).
-    SELECT b.product, SUM(wt.amount) AS bonus_cost
-    FROM wallet_transactions wt
-    JOIN bets b ON b.bet_id = wt.related_bet_id
-    WHERE wt.txn_type = 'bet_stake' AND wt.balance_type = 'bonus'
-      AND b.status = 'lost'
-      AND b.settled_at_utc >= '2026-09-01' AND b.settled_at_utc < '2026-10-01'
-    GROUP BY b.product
-)
-SELECT g.product, g.turnover, g.payouts, g.ggr,
-       COALESCE(c.bonus_cost, 0) AS bonus_cost,
-       g.ggr - COALESCE(c.bonus_cost, 0) AS ngr
-FROM product_ggr g
-LEFT JOIN product_bonus_cost c ON c.product = g.product
-ORDER BY g.product;
+SET @month_start = '2026-09-01', @month_end = '2026-10-01';
+
+SELECT product,
+       SUM(stake_real_amount + stake_bonus_amount)                        AS turnover,
+       SUM(payout_amount)                                                 AS payouts,
+       SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount)   AS ggr,
+       SUM(stake_bonus_amount)                                            AS bonus_cost,
+       SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount)
+         - SUM(stake_bonus_amount)                                        AS ngr
+FROM bets
+WHERE status IN ('won', 'lost')
+  AND settled_at_utc >= @month_start AND settled_at_utc < @month_end   -- ix_bets_product_settled
+GROUP BY product
+ORDER BY product;
 
 -- ---------------------------------------------------------------------------
--- (b) bonus cost as a % of NGR, by campaign
+-- (b) Bonus cost as a % of NGR, by campaign
+--     A bet's bonus-funded stake is traced to the grant that paid it (bets.player_bonus_id), and the
+--     grant to its campaign. The denominator is the whole month's NGR from (a), all products.
 -- ---------------------------------------------------------------------------
-WITH campaign_cost AS (
-    -- Recognise cost when a grant resolves (spent via loss, expired or forfeited);
-    -- an 'active' grant is a liability (see bonus_liability in the KPI catalogue),
-    -- not a cost yet.
-    SELECT pb.campaign_id, SUM(pb.granted_amount) AS bonus_cost
-    FROM player_bonuses pb
-    WHERE pb.status IN ('completed','expired','forfeited')
-      AND pb.resolved_at_utc >= '2026-09-01' AND pb.resolved_at_utc < '2026-10-01'
+WITH settled AS (
+    SELECT * FROM bets
+    WHERE status IN ('won', 'lost')
+      AND settled_at_utc >= @month_start AND settled_at_utc < @month_end
+),
+campaign_cost AS (
+    SELECT pb.campaign_id, SUM(s.stake_bonus_amount) AS bonus_cost
+    FROM settled s
+    JOIN player_bonuses pb ON pb.player_bonus_id = s.player_bonus_id
     GROUP BY pb.campaign_id
 ),
--- Company-wide NGR for the period: GGR minus ALL realised bonus cost (every
--- product, every campaign) -- not just the campaign being measured in this
--- query. Must use the same GGR-minus-bonus-cost definition as query (a),
--- not just raw turnover-minus-payouts, or the % is measured against the
--- wrong base.
-period_ggr AS (
-    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS total_ggr
-    FROM bets
-    WHERE settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01'
-      AND status IN ('won','lost')
-),
-period_bonus_cost AS (
-    SELECT SUM(wt.amount) AS total_bonus_cost
-    FROM wallet_transactions wt
-    JOIN bets b ON b.bet_id = wt.related_bet_id
-    WHERE wt.txn_type = 'bet_stake' AND wt.balance_type = 'bonus'
-      AND b.status = 'lost'
-      AND b.settled_at_utc >= '2026-09-01' AND b.settled_at_utc < '2026-10-01'
-),
 period_ngr AS (
-    SELECT (SELECT total_ggr FROM period_ggr)
-           - COALESCE((SELECT total_bonus_cost FROM period_bonus_cost), 0) AS total_ngr
+    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) - SUM(stake_bonus_amount) AS total_ngr
+    FROM settled
 )
-SELECT bc.name AS campaign, cc.bonus_cost,
-       ROUND(100 * cc.bonus_cost / NULLIF((SELECT total_ngr FROM period_ngr), 0), 2) AS bonus_cost_pct_of_ngr
+SELECT c.name AS campaign, cc.bonus_cost, n.total_ngr,
+       ROUND(100 * cc.bonus_cost / NULLIF(n.total_ngr, 0), 2) AS bonus_cost_pct_of_ngr
 FROM campaign_cost cc
-JOIN bonus_campaigns bc ON bc.campaign_id = cc.campaign_id;
+JOIN bonus_campaigns c ON c.campaign_id = cc.campaign_id
+CROSS JOIN period_ngr n
+ORDER BY c.name;
 
 -- ---------------------------------------------------------------------------
--- (c) a player's balance at a given date and time
---     (proves the ledger is authoritative: balance is a SUM, not a lookup)
+-- (c) A player's balance at a given date and time
+--     The sum of the ledger up to that moment. Every row counts, reversals included: a reversal is
+--     its own opposite row, so the original and its reversal cancel out. Nothing is filtered away.
 -- ---------------------------------------------------------------------------
-SET @player_id = 1;
-SET @as_of = '2026-09-06 00:00:00';
+SET @player_id = 1, @as_of = '2026-09-06 00:00:00';
 
-SELECT
-    balance_type,
-    SUM(CASE WHEN direction = 'credit' THEN amount ELSE -amount END) AS balance_as_of
+SELECT balance_type,
+       SUM(CASE WHEN direction = 'credit' THEN amount ELSE -amount END) AS balance_as_of
 FROM wallet_transactions
 WHERE player_id = @player_id
-  AND created_at_utc <= @as_of
-  AND status = 'posted'
-GROUP BY balance_type;
+  AND created_at_utc <= @as_of                                         -- ix_wtxn_player_time
+GROUP BY balance_type
+ORDER BY balance_type;
 
--- Cross-check against the live cache (only valid when @as_of = now):
--- SELECT real_balance, bonus_balance FROM wallets WHERE player_id = @player_id;
+-- The same query for player 2 either side of the correction in seed.sql: 450.00 while the wrong
+-- 50.00 credit stood, 415.00 once it was reversed and the right 15.00 posted.
+SELECT t.as_of, w.balance_type,
+       SUM(CASE WHEN w.direction = 'credit' THEN w.amount ELSE -w.amount END) AS balance_as_of
+FROM (SELECT CAST('2026-09-12 09:15:00' AS DATETIME(6)) AS as_of
+      UNION ALL SELECT CAST('2026-09-12 10:00:00' AS DATETIME(6))) t
+JOIN wallet_transactions w ON w.player_id = 2 AND w.created_at_utc <= t.as_of
+WHERE w.balance_type = 'real'
+GROUP BY t.as_of, w.balance_type
+ORDER BY t.as_of;
+
+-- The ledger's own check: each row's balance_after must follow from the row before it in the same
+-- wallet and balance type. Any row returned is a break in the chain (none for the seed data).
+SELECT wallet_id, balance_type, wallet_txn_id, balance_before, prev_balance_after
+FROM (SELECT wallet_id, balance_type, wallet_txn_id, balance_before,
+             LAG(balance_after) OVER (PARTITION BY wallet_id, balance_type
+                                      ORDER BY created_at_utc, wallet_txn_id) AS prev_balance_after
+      FROM wallet_transactions) x
+WHERE balance_before <> COALESCE(prev_balance_after, 0);
 
 -- ---------------------------------------------------------------------------
--- (d) deposits that failed and the player later succeeded
+-- (d) Deposits that failed, and the player later succeeded
+--     "Later" is taken as within 24 hours (the same session or day). Only the first success after
+--     each failure is returned. Uses ix_deposit_player_time.
 -- ---------------------------------------------------------------------------
 SELECT f.player_id, f.deposit_attempt_id AS failed_attempt_id, f.created_at_utc AS failed_at,
        s.deposit_attempt_id AS succeeded_attempt_id, s.created_at_utc AS succeeded_at,
@@ -111,12 +107,11 @@ JOIN deposit_attempts s
   ON s.player_id = f.player_id
  AND s.status = 'success'
  AND s.created_at_utc > f.created_at_utc
- AND s.created_at_utc <= f.created_at_utc + INTERVAL 24 HOUR   -- "later" bounded to same session/day
+ AND s.created_at_utc <= f.created_at_utc + INTERVAL 24 HOUR
 WHERE f.status = 'failed'
--- keep only the first success after each failure
-AND NOT EXISTS (
-    SELECT 1 FROM deposit_attempts s2
-    WHERE s2.player_id = f.player_id AND s2.status = 'success'
-      AND s2.created_at_utc > f.created_at_utc AND s2.created_at_utc < s.created_at_utc
-)
+  AND NOT EXISTS (
+      SELECT 1 FROM deposit_attempts s2
+      WHERE s2.player_id = f.player_id AND s2.status = 'success'
+        AND s2.created_at_utc > f.created_at_utc AND s2.created_at_utc < s.created_at_utc
+  )
 ORDER BY f.created_at_utc;
