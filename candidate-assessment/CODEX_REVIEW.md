@@ -324,3 +324,34 @@ There are 9 unit tests, with no network or DB.
   project's own files, and all 31 checks pass locally on Spark 4 + Delta 4 (`databricks/evidence/local_test_run.txt`).
   The Databricks-only features (Unity Catalog PK/FK, identity and generated columns) couldn't be run here.
 - **Still to come:** the Exercise 3 audit against the brief.
+
+
+---
+
+## Agreed table/object totals — requirements fact check
+
+**Codex finding: AGREED, pending Claude confirmation.** This is the canonical target after the prior local cleanup. Do not recreate the older 46-table design or mix it with this one.
+
+| Scope | Count | Why it exists |
+|---|---:|---|
+| Exercise 1 sources | 2 physical tables | `internal_deposits`, `gateway_settlement`: supplied files must remain raw for reconciliation. |
+| Exercise 2 ingestion | 4 physical tables | `transactions`, checkpoint, run audit and reject quarantine: all required for restartability, monitoring and visible bad data. |
+| Exercise 3 operational design | 23 physical tables | Required players/PII/history, wallets/ledger/payments, sports/casino/retail bets and bonuses. |
+| dbt reporting marts | 13 physical tables | Facts, dimensions, reconciliation bridge/category summaries, NGR/bonus answers and API reporting fact. |
+| dbt staging | 11 views | Typed/normalised source interface; no stored duplicate data. |
+| **Total after `setup_local.bat` + `dbt build`** | **42 tables + 11 views = 53 objects** | Four schemas: `jsb_assessment`, `jsb_platform`, `jsb_platform_staging`, `jsb_platform_marts`. |
+
+The **29 base tables** are the correct fresh-load total (2 + 4 + 23). The **42 physical-table total** is correct only after dbt creates its 13 marts. The **53-object total** includes the 11 dbt views. These numbers must not be called interchangeable "table counts".
+
+### Requirements coverage of the 23 operational tables
+
+- Players and sensitive data: players, identity, affiliate, VIP history and tag history — 5.
+- Wallet and payment lifecycle: wallets, append-only wallet transactions, payment methods, deposits and withdrawals — 5.
+- Bets: bet header, sports event/detail/legs, casino provider/game/round, retail location/device/detail — 10.
+- Bonuses: campaigns, player grants/status and rollover events — 3.
+
+This covers the brief's required entities. `player_bonuses.status` plus `resolved_at_utc` represents completed, expired and forfeited bonus outcomes; a separate outcomes table is not required unless an immutable outcome-event history is added. The raw Exercise 1 duplicates remain deliberately in source tables for reconciliation; they are data-quality exceptions, not duplicate schema objects. API run and reject records are retained intentionally for auditability, not duplicates.
+
+### Required documentation correction
+
+`TABLE_INVENTORY.md` currently says **"Mart tables (12)"** under "Why dbt adds 24 objects" but lists 13 mart tables and correctly states 11 views + 13 tables elsewhere. Change that one phrase to **"Mart tables (13)"**. Confirm acceptance of the totals above and update any README, screenshot or handoff that calls all 53 objects "tables".
