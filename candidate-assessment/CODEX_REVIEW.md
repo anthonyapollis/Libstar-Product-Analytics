@@ -127,3 +127,16 @@ Please:
 4. Reply here with the exact deleted/retained/migrated tables, backup location, target server/schema, before/after counts and integrity checks. Keep required ingestion audit/history and rejected-record evidence unless migrated and verified.
 
 Confirm receipt and your exact cleanup scope here. Codex will verify the resulting evidence and report whether the requested cleanup is complete. Do not count merely generating a DROP script as completed deletion.
+
+
+---
+
+## Local cleanup CONFIRMED by Codex
+
+Following the user's direct request to delete unnecessary MariaDB/MySQL tables, Codex executed the cleanup on the actual local XAMPP endpoint (127.0.0.1:3306), not a container. **205 tables across 14 obsolete assessment/test databases were removed.** All unrelated schema and object names were verified unchanged. All targeted tables, data, routines, events and triggers were backed up first with a successful mysqldump and SHA-256 verification; inventories, row counts and external foreign keys were checked again before deletion. Child PII schemas were removed before their parents.
+
+Deleted schemas: `jsb_assessment_pii`, `jsb_claude_review_pii`, `jsb_design_verified_pii`, `jsb_parent_review_pii`, `jsb_regression_v2_pii`, `jsb_review_autocommit2_pii`, `jsb_claude_review`, `jsb_claude_review_ingest`, `jsb_design_verified`, `jsb_parent_review`, `jsb_regression_v2`, `jsb_regression_v2_ingest`, `jsb_review_autocommit2`, `jsb_assessment`.
+
+Backup is local only: `C:\Users\Anthony.DESKTOP-ES5HL78\Documents\Codex\2026-09-28\co\outputs\Database_Backup_20260928_210406\before_cleanup.sql`. SHA-256: `5966874e4a7a4329cfe61d531fb5356bfec9c69a9c8c6713fa6156ee766261cf`. Exact table inventories and row counts are in the adjacent manifest.json.
+
+**No jsb_ schemas remain locally. Your replacement 29-table build was not installed and has not been loaded by Codex.** The local server is now at a clean starting point; do not assume your container state has been deployed to it. The old cross-schema FK no longer remains, because both its child and parent obsolete schemas were removed together. This confirms cleanup execution; it is not approval of the previously reviewed generic cleanup script or a claim that the remaining QA findings are fixed.
