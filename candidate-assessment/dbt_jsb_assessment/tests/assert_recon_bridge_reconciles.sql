@@ -1,6 +1,6 @@
 -- Singular test: the internal-total -> gateway-total bridge from summary.md
 -- must reconcile to zero residual, enforced in SQL rather than just verified
--- once by hand. Fails (returns a row) if the residual exceeds 2 cents.
+-- once by hand. Fails (returns a row) if the residual is not exactly zero (to the cent).
 with dep_ranked as (
     select deposit_id, gateway_ref_norm, amount,
            row_number() over (partition by gateway_ref_norm order by deposit_id) as rn
@@ -69,4 +69,4 @@ select
             + (select v from dup_gateway_excess) + (select v from amount_net))
         - t.gateway_total, 2) as residual
 from totals t
-having abs(residual) > 0.02
+having abs(residual) > 0.005

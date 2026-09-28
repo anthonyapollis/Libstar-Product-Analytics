@@ -2,7 +2,7 @@ const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
   Table, TableRow, TableCell, WidthType, LevelFormat, PageOrientation,
-  Header, Footer, PageNumber, BorderStyle,
+  Header, Footer, PageNumber, BorderStyle, ShadingType, VerticalAlign,
 } = require("docx");
 const {
   sections1_content, h1, h2, h3, p, pMixed, bullet, caption, imgPara, pageBreak,
@@ -14,25 +14,97 @@ const W = 9360; // usable width at 0.75in margins on US Letter, in DXA
 // ===========================================================================
 // EXERCISE 1
 // ===========================================================================
+// One-page Finance Manager summary (brief: one page, including the bridge). Used as the
+// first page of Exercise 1 here and written on its own as Finance_Summary.docx/.pdf.
+function small(text, opts = {}) {
+  return new Paragraph({ children: [new TextRun({ text, size: 18, ...opts })], spacing: { after: 60 } });
+}
+function smallBullet(text) {
+  return new Paragraph({ children: [new TextRun({ text, size: 18 })], numbering: { reference: "bullets", level: 0 }, spacing: { after: 40 } });
+}
+function subhead(text) {
+  return new Paragraph({ children: [new TextRun({ text, bold: true, size: 22, color: TEAL })], spacing: { before: 140, after: 60 } });
+}
+// Same look as table(), with tighter padding so the summary fits one page.
+function compactTable(headers, rows, widths) {
+  const c = (text, width, opts = {}) => new TableCell({
+    width: { size: width, type: WidthType.DXA },
+    shading: opts.shade ? { type: ShadingType.CLEAR, fill: opts.shade } : undefined,
+    verticalAlign: VerticalAlign.CENTER,
+    margins: { top: 25, bottom: 25, left: 90, right: 90 },
+    children: [new Paragraph({ children: [new TextRun({ text: String(text), size: 18, bold: !!opts.bold, color: opts.color })] })],
+  });
+  return new Table({
+    width: { size: widths.reduce((a, b) => a + b, 0), type: WidthType.DXA },
+    columnWidths: widths,
+    rows: [
+      new TableRow({ tableHeader: true, children: headers.map((h, i) => c(h, widths[i], { bold: true, shade: NAVY, color: "FFFFFF" })) }),
+      ...rows.map((r, ri) => new TableRow({ cantSplit: true,
+        children: r.map((v, i) => c(v, widths[i], { shade: ri % 2 === 1 ? LIGHT : null, bold: r[0].startsWith("=") || r[0].startsWith("Residual") })) })),
+    ],
+  });
+}
+function financeSummary() {
+  return [
+    small("Week 1–7 September 2026 (UTC) · NAD · internal_deposits (326 rows) vs gateway_settlement (306 rows)", { italics: true, color: GREY }),
+    new Paragraph({ spacing: { after: 80 }, children: [
+      new TextRun({ text: "274 of 306 gateway settlements (90%) match exactly ", bold: true, size: 20 }),
+      new TextRun({ text: "on reference, gross, fee and net. The bridge from our R218,280.00 to the gateway's R217,979.97 leaves R0.00 unexplained. Two of its timing lines are provisional until the adjacent weeks' files confirm them (see assumptions).", size: 20 }),
+    ] }),
+    subhead("Bridge on gross amounts: internal total → gateway total"),
+    compactTable(
+      ["Line", "NAD"],
+      [
+        ["Internal SUCCESS deposits, total", "218,280.00"],
+        ["− Duplicate internal deposit rows (same settlement counted twice)", "(1,300.00)"],
+        ["− Reversals / chargebacks (not in the gateway's SETTLED total)", "(850.00)"],
+        ["− Deposits with no settlement yet (mid-week)", "(2,700.00)"],
+        ["− Created in the last 15 min, not yet settled (provisional)", "(3,650.00)"],
+        ["+ Settled in the first 15 min, no deposit this week (provisional)", "2,600.00"],
+        ["+ Settlements with no internal record", "2,900.00"],
+        ["+ Settled by the gateway but marked FAILED by us", "250.00"],
+        ["+ Duplicate gateway settlement rows", "1,550.00"],
+        ["+/− Gross amount differences with the gateway (net)", "900.00"],
+        ["+/− Rounding (exactly 1 cent on 3 rows)", "(0.03)"],
+        ["= Gateway SETTLED total", "217,979.97"],
+        ["Residual (unexplained)", "0.00"],
+      ],
+      [7360, 2000]
+    ),
+    subhead("Priority actions"),
+    compactTable(
+      ["When", "Action", "Owner", "NAD"],
+      [
+        ["Today", "Re-credit 2 players: marked FAILED by us, settled by the gateway", "Payments", "250.00"],
+        ["Today", "Get gateway detail for 4 unrecognised settlements (GW-000301 to 304)", "Payments", "2,900.00"],
+        ["Week", "Dispute 4 gross differences (3 players under-credited R950, 1 over R50)", "Finance", "900.00 net"],
+        ["Week", "Claim fee overcharges (4) and short-paid nets (2)", "Finance", "7.75"],
+        ["Week", "Did 2 duplicate settlements pay twice? Audit 3 duplicate deposits", "Payments", "1,550 / 1,300"],
+        ["Week", "Confirm the wallet debit for each of 3 reversals", "Finance", "850.00"],
+        ["3 days", "5 deposits with no settlement: re-check next file, then escalate", "Finance", "2,700.00"],
+      ],
+      [800, 5960, 1100, 1500]
+    ),
+    subhead("Material assumptions"),
+    smallBullet("Timing lines are provisional: this week's files can't prove them. R3,650 (3 deposits created 23:54–23:55 on 7 Sep) should appear in the 8–14 Sep gateway file; R2,600 (3 settlements at 00:04–00:06 on 1 Sep, GW-000331 to 333) should match the 25–31 Aug internal file. Finance keeps all six open until matched; any unmatched item becomes a break."),
+    smallBullet("Fee = 2% of gross + R1.00, to the cent; any fee or net difference of 1 cent or more is flagged. Gross differences of exactly 1 cent (3 rows, R0.03) are treated as rounding, a materiality choice for Finance to confirm. Fee and net errors don't move gross, so they are actions, not bridge lines."),
+      ];
+}
+
 const ex1 = [];
 ex1.push(h1("Exercise 1 — Payment Gateway Reconciliation", { pageBreakBefore: true }));
+ex1.push(new Paragraph({ children: [new TextRun({ text: "Finance Manager summary", bold: true, size: 26, color: TEAL })], spacing: { after: 60 } }));
+ex1.push(...financeSummary());
+
+ex1.push(new Paragraph({ text: "Supporting detail", heading: HeadingLevel.HEADING_2, pageBreakBefore: true, keepNext: true }));
 ex1.push(p("Tools used: MySQL 8.0 for the schema, load and categorisation SQL; Python/pandas for the load script, CSV export and an independent cross-check of the bridge arithmetic.", { italics: true, color: GREY, size: 20 }));
-
-ex1.push(h2("Approach"));
+ex1.push(h3("Approach"));
 ex1.push(p("Both source files were loaded as-is into MySQL. Matching between internal_deposits.gateway_ref and gateway_settlement.merchant_ref uses a normalised reference (upper-case, letters and digits only), because the gateway returns six of our references with different punctuation, case or spacing (\"GW_000020\", \"GW000102\", \"gw-000196 \", \" GW-000267 \" and others). An exact-match join would misclassify those six clean matches as breaks."));
-ex1.push(p("Every internal SUCCESS deposit and every gateway settlement row is either a clean match or one of twelve exception types: a genuine break, a timing difference, a business event (reversal), or not a problem at all. The rules live in exercise1-reconciliation/sql/03_reconciliation.sql and are ported into a dbt model (fct_recon_exceptions) so they run on a schedule with tests attached. The checks follow the brief's contract: fee = 2% of gross + R1.00, and net = gross − fee."));
-
-ex1.push(h2("Result"));
-ex1.push(p("274 of the 306 settlement rows (90%) match exactly on reference, amount, fee and net. Three more differ by under a cent. The other 29 are categorised below, and the bridge from our total to the gateway's reconciles with R0.00 unexplained."));
-ex1.push(bullet("Act this week: R3,150. R250 is owed to two players whose deposits we marked FAILED although the gateway settled them. R2,900 is settlements for four references we have no record of."));
-ex1.push(bullet("The gateway owes us R7.75: R3.75 of fees above the contract rate, and R4.00 short-paid on two settlements where net ≠ gross − fee."));
-ex1.push(bullet("R950 of gross-amount differences suggest three players were under-credited (a fourth, R50, runs the other way). All four go to the gateway as disputes."));
-ex1.push(bullet("Timing, not problems: R3,650 of deposits from the week's last minutes settle next week, and R2,600 settled in the week's first six minutes, almost certainly last week's deposits."));
-
-ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png`, 520,
+ex1.push(p("Every internal SUCCESS deposit and every gateway settlement row is either a clean match or one of twelve exception types: a genuine break, a timing difference, a business event (reversal), or not a problem at all. The rules live in exercise1-reconciliation/sql/03_reconciliation.sql and are ported into a dbt model (fct_recon_exceptions) so they run on a schedule with tests attached. The checks follow the brief's contract exactly: fee = 2% of gross + R1.00 to the cent, and net = gross − fee. Boundary tests at 1, 2 and 3 cents (sql/06_threshold_fixtures.py) confirm that every fee or net difference of a cent or more is flagged."));
+ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png`, 480,
   "Actual output of sql/03_reconciliation.sql against MySQL 8.0, and of the independent row-by-row check."));
 
-ex1.push(h2("Exceptions by category"));
+ex1.push(h3("Exceptions by category"));
 ex1.push(table(
   ["Category", "Type", "Rows", "Impact (NAD)"],
   [
@@ -45,44 +117,21 @@ ex1.push(table(
     ["Duplicate internal deposit", "Break — dedupe", "6", "0.00*"],
     ["Reversal / chargeback", "Business event", "3", "850.00"],
     ["Deposit SUCCESS, no settlement found", "Timing / possible break", "5", "2,700.00"],
-    ["Created in the last 15 min (settles next week)", "Timing — not a problem", "3", "3,650.00"],
-    ["Settled in the first 15 min (last week's deposits)", "Timing — not a problem", "3", "2,600.00"],
-    ["Rounding ≤ 1 cent", "Not a problem", "3", "0.03"],
+    ["Created in the last 15 min (expected next week)", "Timing — provisional", "3", "3,650.00"],
+    ["Settled in the first 15 min (likely last week's)", "Timing — provisional", "3", "2,600.00"],
+    ["Rounding, exactly 1 cent", "Not a problem", "3", "0.03"],
   ],
   [3700, 1900, 700, 1760]
 ));
-ex1.push(p("* The deposit and settlement amounts match on these rows, so the row-level impact is 0. The real cost is the duplicate itself: a double-credit risk, or a disputed double settlement. The bridge accounts for each separately.", { italics: true, color: GREY, size: 18 }));
+ex1.push(p("* The deposit and settlement amounts match on these rows, so the row-level impact is 0. The real cost is the duplicate itself: a double-credit risk, or a disputed double settlement. The bridge accounts for each separately. A dbt test (assert_recon_bridge_reconciles) fails the build if the bridge residual is ever not exactly zero.", { italics: true, color: GREY, size: 18 }));
 
-ex1.push(h2("The bridge: internal total → gateway total"));
-ex1.push(table(
-  ["Line", "Amount (NAD)"],
-  [
-    ["Internal SUCCESS deposits, total", "218,280.00"],
-    ["− Duplicate internal deposit rows (same settlement counted twice)", "(1,300.00)"],
-    ["− Reversals / chargebacks (excluded from gateway's SETTLED total)", "(850.00)"],
-    ["− Deposits not yet settled by the gateway", "(2,700.00)"],
-    ["− Deposits created in the last 15 minutes of the period", "(3,650.00)"],
-    ["+ Settled in the first 15 minutes (last week's deposits)", "2,600.00"],
-    ["+ Settlements with no matching internal record", "2,900.00"],
-    ["+ Payments the gateway settled that we marked FAILED", "250.00"],
-    ["+ Duplicate gateway settlement rows", "1,550.00"],
-    ["+/− Gross amount differences with the gateway (net)", "900.00"],
-    ["+/− Rounding (≤ 1 cent, immaterial)", "(0.03)"],
-    ["= Gateway SETTLED total", "217,979.97"],
-    ["Residual (unexplained)", "0.00"],
-  ],
-  [7360, 2000]
-));
-ex1.push(new Paragraph({ text: "", spacing: { after: 60 } }));
-ex1.push(p("The bridge is on gross amounts, because that's what our deposits record. Fee and net-amount errors don't move gross, so they sit outside the bridge as their own exceptions. A dbt test (assert_recon_bridge_reconciles) fails the build if the residual ever moves off zero."));
-
-ex1.push(h2("How the figures were checked"));
+ex1.push(h3("How the figures were checked"));
 ex1.push(p("The categorisation was implemented three times: the MySQL script, the dbt model, and separately written pandas code (sql/04_independent_check.py) that works per deposit and per settlement instead of through a join. All three agree on all 317 rows individually, and on every category's count and rand total."));
 ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/02_three_way_agreement.png`, 520,
   "Three implementations, identical results in every category (sql/05_agreement_chart.py)."));
-ex1.push(p("That check was added after an audit of an earlier draft found real problems, all now fixed. The draft had no test for net = gross − fee, which the brief requires, so it missed two short-paid settlements. It didn't quantify the fee overcharge. It counted four reference-formatting variants instead of six, because a case-insensitive database comparison hid three. It filed three start-of-week settlements as unrecognised money rather than timing. The bridge balanced throughout. The errors were in how the differences were labelled and summarised, which is why the categories are now cross-checked independently.", { italics: true }));
+ex1.push(p("That check was added after an audit of an earlier draft found real problems, all now fixed. The draft had no test for net = gross − fee, which the brief requires, so it missed two short-paid settlements. It didn't quantify the fee overcharge. It counted four reference-formatting variants instead of six, because a case-insensitive database comparison hid three. It filed three start-of-week settlements as unrecognised money rather than timing. A later review by Codex found the fee check tolerated differences of up to 2 cents and a 2-cent gross difference could be labelled rounding; the rules are now exact, with boundary tests, and no figure changed. The bridge balanced throughout. The errors were in how the differences were labelled and summarised, which is why the categories are now cross-checked independently.", { italics: true }));
 
-ex1.push(h2("Automating this daily"));
+ex1.push(h3("Automating this daily"));
 ex1.push(bullet("Land both feeds daily as-is, never overwriting, and log control totals (row count, sum) per source before matching. A source-declared-vs-received mismatch is itself an alert."));
 ex1.push(bullet("Run the categorisation as a scheduled dbt model; persist history, never overwrite yesterday's result."));
 ex1.push(bullet("Alert tiers: page immediately on \"wallet not credited\" or \"unrecognised settlement\"; same-day on new duplicates or disputes above a materiality threshold; daily digest for reversals and timing items still within the cut-off window."));
@@ -169,7 +218,7 @@ ex3.push(table(
 
 ex3.push(h2("Operational design → reporting model"));
 ex3.push(p("A dbt project (dbt_jsb_assessment/) builds a star schema on top of this operational design: conformed dimensions (dim_player, dim_date, dim_campaign — dim_player_vip_tier_scd carries the same Type-2 history pattern through to the reporting layer) surrounding grain-specific facts (fact_bet, fact_wallet_transaction, fact_bonus_transaction). Two reusable marts answer queries (a) and (b) directly, and — extended during this review — the project now also covers Exercise 1's reconciliation as a scheduled, tested model."));
-ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 66/66 pass (23 models, 43 tests), 0 errors."));
+ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 67/67 pass (23 models, 44 tests), 0 errors."));
 // (page break handled by pageBreakBefore on the next heading)
 
 // ===========================================================================
@@ -292,6 +341,25 @@ const doc = new Document({
       ],
     },
   ],
+});
+
+const summaryDoc = new Document({
+  creator: "Candidate submission",
+  title: "Payment gateway reconciliation — Finance Manager summary",
+  numbering,
+  styles: { default: { document: { run: { font: "Calibri", size: 21 } } } },
+  sections: [{
+    properties: { page: { size: { width: 12240, height: 15840 },
+                           margin: { top: 900, bottom: 900, left: 1440, right: 1440 } } },
+    children: [
+      new Paragraph({ children: [new TextRun({ text: "Payment gateway reconciliation — Finance Manager summary", bold: true, size: 30, color: NAVY })], spacing: { after: 60 } }),
+      ...financeSummary(),
+    ],
+  }],
+});
+Packer.toBuffer(summaryDoc).then((buf) => {
+  fs.writeFileSync("/home/user/Libstar-Product-Analytics/candidate-assessment/exercise1-reconciliation/Finance_Summary.docx", buf);
+  console.log("summary written, bytes:", buf.length);
 });
 
 Packer.toBuffer(doc).then((buf) => {

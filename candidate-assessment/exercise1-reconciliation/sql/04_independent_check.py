@@ -36,11 +36,11 @@ for _, dep in succ.iterrows():
         diff = abs(dep.amount - r.gross_amount)
         if r.status == "REVERSED":
             cat = "reversal"
-        elif abs(r.fee - exp_fee) > 0.02:
+        elif abs(r.fee - exp_fee) > 0.005:
             cat = "fee"
         elif abs(r.net_amount - (r.gross_amount - r.fee)) > 0.005:
             cat = "net"
-        elif diff > 0.02:
+        elif diff > 0.015:
             cat = "amount"
         elif diff >= 0.005:
             cat = "rounding"

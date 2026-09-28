@@ -42,7 +42,7 @@ dbt debug
 dbt build                       # runs models + all tests
 ```
 
-`evidence/dbt_build_output.txt` has a captured run: **66/66 PASS, 0 errors** (23 models, 43 tests).
+`evidence/dbt_build_output.txt` has a captured run against MariaDB 10.11: **67/67 PASS, 0 errors** (23 models, 44 tests).
 
 ## Notes
 - `player_identity` (PII) is deliberately not a dbt source — see `models/staging/_staging.yml`. The

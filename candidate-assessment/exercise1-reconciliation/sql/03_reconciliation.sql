@@ -124,7 +124,7 @@ SELECT
             THEN 'REVERSAL: gateway reversed/charged back after settlement'
 
         -- Fee doesn't match the 2% + R1 contract -> dispute-worthy.
-        WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.02
+        WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.005
             THEN 'BREAK: settled fee differs from contracted fee'
 
         -- The gateway's own arithmetic: net must equal gross minus fee.
@@ -132,11 +132,11 @@ SELECT
             THEN 'BREAK: net amount is not gross minus fee'
 
         -- Gross amount differs from what we recorded, beyond rounding noise.
-        WHEN ABS(m.dep_amount - m.gross_amount) > 0.02
+        WHEN ABS(m.dep_amount - m.gross_amount) > 0.015
             THEN 'BREAK: settled gross amount differs from internal amount'
 
         -- Within 1 cent: FX/rounding noise, not worth investigating.
-        WHEN ABS(m.dep_amount - m.gross_amount) BETWEEN 0.005 AND 0.02
+        WHEN ABS(m.dep_amount - m.gross_amount) BETWEEN 0.005 AND 0.015
             THEN 'NOT A PROBLEM: rounding difference <= 1 cent'
 
         ELSE 'OK: matched, amount and fee correct'
@@ -147,7 +147,7 @@ SELECT
         WHEN m.gw_row_id IS NULL THEN m.dep_amount
         WHEN m.gw_status = 'REVERSED' THEN m.gross_amount
         -- fee overcharge vs contract, and cash short-paid vs the gateway's own arithmetic
-        WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.02
+        WHEN ABS(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2)) > 0.005
             THEN ROUND(m.fee - ROUND(m.gross_amount * 0.02 + 1.00, 2), 2)
         WHEN ABS(m.net_amount - (m.gross_amount - m.fee)) > 0.005
             THEN ROUND((m.gross_amount - m.fee) - m.net_amount, 2)

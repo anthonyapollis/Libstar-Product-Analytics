@@ -26,6 +26,7 @@ Design summary (full detail in design_note.md):
 """
 import json
 import os
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -235,5 +236,13 @@ def run_once():
     return status
 
 
+# Process exit code per run status, so a scheduler or CI step sees a failed load as a failure.
+EXIT_CODES = {"COMPLETED": 0, "FAILED": 1, "INTERRUPTED": 130}
+
+
+def main():
+    return EXIT_CODES.get(run_once(), 1)
+
+
 if __name__ == "__main__":
-    run_once()
+    sys.exit(main())

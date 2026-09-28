@@ -68,13 +68,13 @@ select
             then 'BREAK: deposit SUCCESS, no gateway settlement found'
         when gw_status = 'REVERSED'
             then 'REVERSAL: gateway reversed/charged back after settlement'
-        when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.02
+        when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.005
             then 'BREAK: settled fee differs from contracted fee'
         when abs(net_amount - (gross_amount - fee)) > 0.005
             then 'BREAK: net amount is not gross minus fee'
-        when abs(dep_amount - gross_amount) > 0.02
+        when abs(dep_amount - gross_amount) > 0.015
             then 'BREAK: settled gross amount differs from internal amount'
-        when abs(dep_amount - gross_amount) between 0.005 and 0.02
+        when abs(dep_amount - gross_amount) between 0.005 and 0.015
             then 'NOT A PROBLEM: rounding difference <= 1 cent'
         else 'OK: matched, amount and fee correct'
     end as category,
@@ -83,7 +83,7 @@ select
         when deposit_id is null and gw_status = 'SETTLED' then gross_amount
         when settlement_row_id is null then dep_amount
         when gw_status = 'REVERSED' then gross_amount
-        when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.02
+        when abs(fee - round(gross_amount * 0.02 + 1.00, 2)) > 0.005
             then round(fee - round(gross_amount * 0.02 + 1.00, 2), 2)
         when abs(net_amount - (gross_amount - fee)) > 0.005
             then round((gross_amount - fee) - net_amount, 2)
