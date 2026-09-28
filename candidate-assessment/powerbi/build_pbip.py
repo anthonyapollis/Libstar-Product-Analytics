@@ -107,6 +107,32 @@ TABLES = {
 }
 SORT_BY = {("mart_recon_bridge", "step"): "step_order"}   # waterfall steps in bridge order
 
+# Short labels for chart axes: the dbt category text is a full sentence and gets truncated.
+CATEGORY_LABELS = [
+    ("OK: matched, amount and fee correct", "Matched"),
+    ("BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)", "Duplicate internal deposit"),
+    ("BREAK: deposit SUCCESS, no gateway settlement found", "No settlement found"),
+    ("BREAK: settled fee differs from contracted fee", "Fee above contract"),
+    ("BREAK: settled gross amount differs from internal amount", "Gross amount differs"),
+    ("BREAK: duplicate gateway settlement for one reference (double-credit risk)", "Duplicate gateway row"),
+    ("BREAK: unrecognised settlement (no internal record)", "Unrecognised settlement"),
+    ("BREAK: net amount is not gross minus fee", "Net not gross minus fee"),
+    ("BREAK: payment confirmed, wallet not credited", "Settled, marked FAILED"),
+    ("NOT A PROBLEM: rounding difference <= 1 cent", "Rounding (1 cent or less)"),
+    ("REVERSAL: gateway reversed/charged back after settlement", "Reversal / chargeback"),
+    ("TIMING: settlement expected in next period (created near cut-off)", "Settles next period"),
+    ("TIMING: prior-period deposit settled at start of period", "Prior-period deposit"),
+]
+# table -> [(column, DAX)] calculated in the model, not read from the CSV
+CALCULATED = {
+    "fct_recon_exceptions": [(
+        "category_label",
+        "SWITCH ( fct_recon_exceptions[category],\n"
+        + "".join(f'    "{full}", "{short}",\n' for full, short in CATEGORY_LABELS)
+        + "    fct_recon_exceptions[category] )",
+    )],
+}
+
 # (many side table, column) -> (one side table, column). Filters flow one -> many only.
 # fact_wallet_transaction.related_bet_id / related_player_bonus_id are kept as keys
 # for drill-through but NOT modelled as relationships: joining facts to facts would
@@ -216,6 +242,10 @@ def build_model():
             if (tname, c) in SORT_BY:
                 col["sortByColumn"] = SORT_BY[(tname, c)]
             columns.append(col)
+        for c, expr in CALCULATED.get(tname, []):
+            columns.append({"type": "calculated", "name": c, "dataType": "string",
+                            "isDataTypeInferred": True, "expression": expr.split("\n"),
+                            "lineageTag": guid(), "summarizeBy": "none"})
         table = {
             "name": tname,
             "lineageTag": guid(),
@@ -271,7 +301,48 @@ def field(table, name, kind, alias):
             "Name": f"{table}.{name}"}
 
 
-def visual(name, vtype, pos, roles=None, title=None, labels=False, order=None, objects=None):
+# ---- styling -------------------------------------------------------------
+NAVY, PAGE_BG, BORDER, WHITE = "#16325C", "#EEF2F7", "#D6DEE9", "#FFFFFF"
+GREEN, RED, AMBER, PURPLE, GREY = "#1E8C5A", "#C8413A", "#D9901A", "#6E4FC2", "#8A94A6"
+LIGHT_BLUE = "#8DB3E2"
+
+
+def color(hex_):
+    return {"solid": {"color": lit(f"'{hex_}'")}}
+
+
+def value_selector(table, column, value):
+    """dataPoint selector for one category/series value."""
+    return {"data": [{"scopeId": {"Comparison": {
+        "ComparisonKind": 0,
+        "Left": {"Column": {"Expression": {"SourceRef": {"Entity": table}}, "Property": column}},
+        "Right": {"Literal": {"Value": f"'{value}'"}}}}}]}
+
+
+def fills(table, column, mapping):
+    return [{"properties": {"fill": color(c)}, "selector": value_selector(table, column, v)}
+            for v, c in mapping.items()]
+
+
+def container(bg=WHITE, border=BORDER, title=None, radius="8D"):
+    vc = {"background": [{"properties": {"show": lit("true"), "color": color(bg), "transparency": lit("0D")}}],
+          "border": [{"properties": {"show": lit("true"), "color": color(border), "radius": lit(radius)}}]}
+    if title:
+        vc["title"] = [{"properties": {"show": lit("true"), "text": lit(f"'{title}'"),
+                                       "fontColor": color(NAVY), "fontSize": lit("12D"), "bold": lit("true")}}]
+    return vc
+
+
+TABLE_STYLE = {
+    "columnHeaders": [{"properties": {"fontColor": color(WHITE), "backColor": color(NAVY)}}],
+    "values": [{"properties": {"backColorPrimary": color(WHITE), "backColorSecondary": color("#F4F7FB")}}],
+    "total": [{"properties": {"backColor": color("#E3EAF4"), "fontColor": color(NAVY)}}],
+    "grid": [{"properties": {"gridHorizontal": lit("true"), "gridHorizontalColor": color(BORDER),
+                             "rowPadding": lit("4D")}}],
+}
+
+
+def visual(name, vtype, pos, roles=None, title=None, labels=False, order=None, objects=None, vc=None):
     """roles: {projection role: [(table, field, 'm'|'c'), ...]};
     order: (table, field, 'm'|'c', ascending)."""
     x, y, w, h = pos
@@ -305,79 +376,112 @@ def visual(name, vtype, pos, roles=None, title=None, labels=False, order=None, o
                 "Expression": {key: {"Expression": {"SourceRef": {"Source": alias_for(table)}},
                                      "Property": fname}}}]
     objs = dict(objects or {})
+    if vtype == "tableEx":
+        objs = {**TABLE_STYLE, **objs}
     if labels:
-        objs["labels"] = [{"properties": {"show": lit("true")}}]
+        objs.setdefault("labels", [{"properties": {"show": lit("true"), "color": color("#344054")}}])
     if objs:
         sv["objects"] = objs
-    if title:
-        sv["vcObjects"] = {"title": [{"properties": {"show": lit("true"), "text": lit(f"'{title}'")}}]}
+    sv["vcObjects"] = vc if vc is not None else container(title=title)
     cfg = {"name": name,
            "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": 0, "width": w, "height": h}}],
            "singleVisual": sv}
     return {"x": x, "y": y, "z": 0, "width": w, "height": h, "config": json.dumps(cfg), "filters": "[]"}
 
 
-def textbox(name, text, pos, size="20pt"):
-    return visual(name, "textbox", pos, objects={"general": [{"properties": {"paragraphs": [
-        {"textRuns": [{"value": text, "textStyle": {"fontWeight": "bold", "fontSize": size}}]}]}}]})
+def banner(name, text, subtitle):
+    """Full-width navy title bar."""
+    runs = [{"value": text, "textStyle": {"fontWeight": "bold", "fontSize": "20pt", "color": WHITE}},
+            {"value": "    " + subtitle, "textStyle": {"fontSize": "11pt", "color": "#C9D6EA"}}]
+    return visual(name, "textbox", (0, 0, 1280, 58), objects={"general": [{"properties": {"paragraphs": [
+        {"textRuns": runs}]}}]}, vc=container(bg=NAVY, border=NAVY, radius="0D"))
 
 
-def card(name, table, measure, x, y=70, w=290, h=110):
-    return visual(name, "card", (x, y, w, h), {"Values": [(table, measure, "m")]})
+def card(name, table, measure, x, y=74, w=295, h=110, bg=NAVY):
+    """KPI tile: coloured background, white value, no unit abbreviation (3,150.00 not 3.15K)."""
+    return visual(name, "card", (x, y, w, h), {"Values": [(table, measure, "m")]},
+                  objects={"labels": [{"properties": {"color": color(WHITE), "fontSize": lit("26D"),
+                                                      "labelDisplayUnits": lit("1D")}}],
+                           "categoryLabels": [{"properties": {"color": color("#E4EBF5"), "fontSize": lit("11D")}}]},
+                  vc=container(bg=bg, border=bg, radius="10D"))
+
+
+PAGE_CONFIG = {"objects": {
+    "background": [{"properties": {"color": {"solid": {"color": {"expr": {"Literal": {"Value": f"'{PAGE_BG}'"}}}}},
+                                   "transparency": {"expr": {"Literal": {"Value": "0D"}}}}}],
+    "outspace": [{"properties": {"color": {"solid": {"color": {"expr": {"Literal": {"Value": f"'{PAGE_BG}'"}}}}},
+                                 "transparency": {"expr": {"Literal": {"Value": "0D"}}}}}],
+}}
 
 
 def build_report():
     fb, fbt, fwt = "fact_bet", "fact_bonus_transaction", "fact_wallet_transaction"
     fre, brg, runs, txn = "fct_recon_exceptions", "mart_recon_bridge", "ingest_runs", "transactions"
+    X = (20, 335, 650, 965)          # four KPI tiles across a 1280-wide page
+    type_colors = {"BREAK": RED, "TIMING": AMBER, "REVERSAL": PURPLE, "NOT A PROBLEM": GREY}
+    status_colors = {"completed": GREEN, "failed": RED, "pending": AMBER, "reversed": PURPLE}
     pages = [
         ("NGR overview", [
-            textbox("title1", "NGR overview (seed data, September 2026)", (20, 10, 900, 50)),
-            card("card_ggr", fb, "GGR", 20),
-            card("card_bonus", fb, "Bonus Cost (realised)", 330),
-            card("card_ngr", fb, "NGR", 640),
-            card("card_liab", fbt, "Bonus Liability Outstanding", 950, w=310),
+            banner("title1", "NGR overview", "Exercise 3 seed data, September 2026 · NAD"),
+            card("card_ggr", fb, "GGR", X[0]),
+            card("card_bonus", fb, "Bonus Cost (realised)", X[1]),
+            card("card_ngr", fb, "NGR", X[2]),
+            card("card_liab", fbt, "Bonus Liability Outstanding", X[3]),
             visual("col_ngr_product", "clusteredColumnChart", (20, 200, 700, 500),
                    {"Category": [(fb, "product", "c")], "Y": [(fb, "GGR", "m"), (fb, "NGR", "m")]},
-                   title="GGR and NGR by product (NAD)", labels=True),
+                   title="GGR and NGR by product (NAD)", labels=True,
+                   objects={"dataPoint": [
+                       {"properties": {"fill": color(LIGHT_BLUE)}, "selector": {"metadata": f"{fb}.GGR"}},
+                       {"properties": {"fill": color(NAVY)}, "selector": {"metadata": f"{fb}.NGR"}}],
+                       "legend": [{"properties": {"show": lit("true"), "position": lit("'Top'")}}]}),
             visual("tbl_campaign", "tableEx", (740, 200, 520, 240),
                    {"Values": [("dim_campaign", "campaign_name", "c"), (fbt, "Campaign Bonus Cost", "m"),
                                (fbt, "Campaign Bonus Cost % of NGR", "m")]},
                    title="Bonus cost as % of NGR, by campaign"),
         ]),
         ("Player balances", [
-            textbox("title2", "Player balances from the ledger", (20, 10, 900, 50)),
-            visual("slicer_date", "slicer", (20, 70, 400, 120), {"Values": [("dim_date", "date_day", "c")]},
+            banner("title2", "Player balances", "Rebuilt from the append-only wallet ledger · NAD"),
+            visual("slicer_date", "slicer", (20, 74, 610, 120), {"Values": [("dim_date", "date_day", "c")]},
                    title="Balance as of (drag the end date)"),
-            card("card_deposits", fwt, "Deposits", 440, h=120),
+            card("card_deposits", fwt, "Deposits", X[2], h=120),
             visual("tbl_balance", "tableEx", (20, 210, 700, 300),
                    {"Values": [("dim_player", "player_id", "c"), (fwt, "balance_type", "c"),
                                (fwt, "Balance as of selected date", "m")]},
                    title="Balance per player, reconstructed from wallet transactions"),
         ]),
         ("Reconciliation", [
-            textbox("title3", "Gateway reconciliation, 1–7 September 2026", (20, 10, 900, 50)),
-            card("card_matched", fre, "Settlements Matched Exactly", 20),
-            card("card_exceptions", fre, "Exceptions", 330),
-            card("card_actnow", fre, "Act Now Value", 640),
-            card("card_residual", brg, "Bridge Residual", 950, w=310),
+            banner("title3", "Gateway reconciliation", "1–7 September 2026 · 306 settlements · NAD"),
+            card("card_matched", fre, "Settlements Matched Exactly", X[0], bg=GREEN),
+            card("card_exceptions", fre, "Exceptions", X[1], bg=AMBER),
+            card("card_actnow", fre, "Act Now Value", X[2], bg=RED),
+            card("card_residual", brg, "Bridge Residual", X[3], bg=NAVY),
             visual("wf_bridge", "waterfallChart", (20, 200, 760, 500),
                    {"Category": [(brg, "step", "c")], "Y": [(brg, "Bridge Amount", "m")]},
-                   title="Bridge: internal SUCCESS total to gateway SETTLED total (NAD)",
-                   labels=True, order=(brg, "step", "c", True)),
-            visual("bar_categories", "clusteredBarChart", (800, 200, 460, 260),
-                   {"Category": [(fre, "category", "c")], "Y": [(fre, "Exceptions", "m")]},
-                   title="Exceptions by category", labels=True, order=(fre, "Exceptions", "m", False)),
-            visual("tbl_exceptions", "tableEx", (800, 470, 460, 230),
-                   {"Values": [(fre, "category_type", "c"), (fre, "deposit_id", "c"),
+                   title="Bridge: internal total to gateway total (axis starts at 205,000)",
+                   order=(brg, "step", "c", True),
+                   objects={"labels": [{"properties": {"show": lit("true"), "labelDisplayUnits": lit("1D"),
+                                                       "labelPrecision": lit("0L"), "color": color("#344054")}}],
+                            "valueAxis": [{"properties": {"start": lit("205000D")}}],
+                            "sentimentColors": [{"properties": {"increaseFill": color(GREEN),
+                                                                "decreaseFill": color(RED),
+                                                                "totalFill": color(NAVY)}}]}),
+            visual("bar_categories", "barChart", (800, 200, 460, 300),
+                   {"Category": [(fre, "category_label", "c")], "Series": [(fre, "category_type", "c")],
+                    "Y": [(fre, "Exceptions", "m")]},
+                   title="Exceptions by category", labels=True, order=(fre, "Exceptions", "m", False),
+                   objects={"dataPoint": fills(fre, "category_type", type_colors),
+                            "legend": [{"properties": {"show": lit("true"), "position": lit("'Top'")}}]}),
+            visual("tbl_exceptions", "tableEx", (800, 510, 460, 190),
+                   {"Values": [(fre, "category_label", "c"), (fre, "deposit_id", "c"),
                                (fre, "gateway_txn_id", "c"), (fre, "Exception Impact", "m")]},
                    title="Exception detail (matched rows hidden)"),
         ]),
         ("Ingestion monitoring", [
-            textbox("title4", "API ingestion monitoring", (20, 10, 900, 50)),
-            card("card_loaded", txn, "Transactions Loaded", 20),
-            card("card_runs", runs, "Ingestion Runs", 330),
-            card("card_rejected", runs, "Rows Rejected", 640),
-            card("card_429", runs, "Rate-Limit Retries", 950, w=310),
+            banner("title4", "API ingestion monitoring", "Exercise 2 · incremental, restartable load · 3 runs"),
+            card("card_loaded", txn, "Transactions Loaded", X[0], bg=GREEN),
+            card("card_runs", runs, "Ingestion Runs", X[1]),
+            card("card_rejected", runs, "Rows Rejected", X[2], bg=AMBER),
+            card("card_429", runs, "Rate-Limit Retries", X[3]),
             visual("tbl_runs", "tableEx", (20, 200, 760, 220),
                    {"Values": [(runs, "run_id", "c"), (runs, "status", "c"), (runs, "started_at", "c"),
                                (runs, "pages_fetched", "c"), (runs, "rows_upserted", "c"),
@@ -387,11 +491,12 @@ def build_report():
             visual("col_status", "clusteredColumnChart", (800, 200, 460, 500),
                    {"Category": [(txn, "status", "c")], "Y": [(txn, "Transactions Loaded", "m")]},
                    title="Transactions loaded, by status", labels=True,
-                   order=(txn, "Transactions Loaded", "m", False)),
+                   order=(txn, "Transactions Loaded", "m", False),
+                   objects={"dataPoint": fills(txn, "status", status_colors)}),
         ]),
     ]
     sections = [{"id": i, "name": f"ReportSection{i + 1}", "displayName": disp, "filters": "[]",
-                 "ordinal": i, "visualContainers": visuals, "config": "{}", "displayOption": 1,
+                 "ordinal": i, "visualContainers": visuals, "config": json.dumps(PAGE_CONFIG), "displayOption": 1,
                  "width": 1280, "height": 720}
                 for i, (disp, visuals) in enumerate(pages)]
     config = {

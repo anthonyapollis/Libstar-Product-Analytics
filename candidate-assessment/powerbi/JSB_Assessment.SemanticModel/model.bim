@@ -858,7 +858,7 @@
       },
       {
         "name": "fct_recon_exceptions",
-        "lineageTag": "cf64ecaf-1905-50b6-b043-17f59f7c98c0",
+        "lineageTag": "7bd3f8a0-fb7a-54b4-b598-2f89311ec5cd",
         "columns": [
           {
             "name": "deposit_id",
@@ -987,6 +987,31 @@
             "sourceColumn": "category_type",
             "lineageTag": "34e41ae0-40da-5b30-bdad-ed7ce7f96f94",
             "summarizeBy": "none"
+          },
+          {
+            "type": "calculated",
+            "name": "category_label",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": [
+              "SWITCH ( fct_recon_exceptions[category],",
+              "    \"OK: matched, amount and fee correct\", \"Matched\",",
+              "    \"BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)\", \"Duplicate internal deposit\",",
+              "    \"BREAK: deposit SUCCESS, no gateway settlement found\", \"No settlement found\",",
+              "    \"BREAK: settled fee differs from contracted fee\", \"Fee above contract\",",
+              "    \"BREAK: settled gross amount differs from internal amount\", \"Gross amount differs\",",
+              "    \"BREAK: duplicate gateway settlement for one reference (double-credit risk)\", \"Duplicate gateway row\",",
+              "    \"BREAK: unrecognised settlement (no internal record)\", \"Unrecognised settlement\",",
+              "    \"BREAK: net amount is not gross minus fee\", \"Net not gross minus fee\",",
+              "    \"BREAK: payment confirmed, wallet not credited\", \"Settled, marked FAILED\",",
+              "    \"NOT A PROBLEM: rounding difference <= 1 cent\", \"Rounding (1 cent or less)\",",
+              "    \"REVERSAL: gateway reversed/charged back after settlement\", \"Reversal / chargeback\",",
+              "    \"TIMING: settlement expected in next period (created near cut-off)\", \"Settles next period\",",
+              "    \"TIMING: prior-period deposit settled at start of period\", \"Prior-period deposit\",",
+              "    fct_recon_exceptions[category] )"
+            ],
+            "lineageTag": "cf64ecaf-1905-50b6-b043-17f59f7c98c0",
+            "summarizeBy": "none"
           }
         ],
         "partitions": [
@@ -1018,37 +1043,37 @@
             "name": "Settlements Matched Exactly",
             "expression": "CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] = \"OK\" )",
             "formatString": "#,0",
-            "lineageTag": "7bd3f8a0-fb7a-54b4-b598-2f89311ec5cd"
+            "lineageTag": "c6379f43-df54-5329-84ab-b1222cf5e474"
           },
           {
             "name": "Exceptions",
             "expression": "CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] <> \"OK\" )",
             "formatString": "#,0",
-            "lineageTag": "c6379f43-df54-5329-84ab-b1222cf5e474"
+            "lineageTag": "bf1fd680-8a35-5ed6-98f8-ab860c86c304"
           },
           {
             "name": "Exception Impact",
             "expression": "CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category_type] <> \"OK\" )",
             "formatString": "#,0.00",
-            "lineageTag": "bf1fd680-8a35-5ed6-98f8-ab860c86c304"
+            "lineageTag": "38029c89-1f8a-50f0-9055-9911a17b186a"
           },
           {
             "name": "Act Now Value",
             "expression": "CALCULATE ( SUM ( fct_recon_exceptions[financial_impact] ), fct_recon_exceptions[category] IN { \"BREAK: payment confirmed, wallet not credited\", \"BREAK: unrecognised settlement (no internal record)\" } )",
             "formatString": "#,0.00",
-            "lineageTag": "38029c89-1f8a-50f0-9055-9911a17b186a"
+            "lineageTag": "dc1c5669-1319-54df-be72-83f997783b0a"
           }
         ]
       },
       {
         "name": "mart_recon_bridge",
-        "lineageTag": "fc505c4f-01ce-5a64-adf3-7a0364e82eaf",
+        "lineageTag": "38d58a78-64dc-5bb8-b30b-746f9fef1c64",
         "columns": [
           {
             "name": "step_order",
             "dataType": "int64",
             "sourceColumn": "step_order",
-            "lineageTag": "dc1c5669-1319-54df-be72-83f997783b0a",
+            "lineageTag": "4636cbab-71ce-5ce2-ad46-9fe069a9ad18",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1056,7 +1081,7 @@
             "name": "step",
             "dataType": "string",
             "sourceColumn": "step",
-            "lineageTag": "4636cbab-71ce-5ce2-ad46-9fe069a9ad18",
+            "lineageTag": "1d0ed51d-1aac-5c4d-9ba5-b60ef9cd1072",
             "summarizeBy": "none",
             "sortByColumn": "step_order"
           },
@@ -1064,7 +1089,7 @@
             "name": "amount",
             "dataType": "decimal",
             "sourceColumn": "amount",
-            "lineageTag": "1d0ed51d-1aac-5c4d-9ba5-b60ef9cd1072",
+            "lineageTag": "fdb7e732-0f2e-51b6-9324-9ec21d61ea8b",
             "summarizeBy": "sum",
             "formatString": "#,0.00"
           },
@@ -1072,7 +1097,7 @@
             "name": "gateway_settled_total",
             "dataType": "decimal",
             "sourceColumn": "gateway_settled_total",
-            "lineageTag": "fdb7e732-0f2e-51b6-9324-9ec21d61ea8b",
+            "lineageTag": "fc505c4f-01ce-5a64-adf3-7a0364e82eaf",
             "summarizeBy": "sum",
             "formatString": "#,0.00"
           }
@@ -1106,25 +1131,25 @@
             "name": "Bridge Amount",
             "expression": "SUM ( mart_recon_bridge[amount] )",
             "formatString": "#,0.00",
-            "lineageTag": "38d58a78-64dc-5bb8-b30b-746f9fef1c64"
+            "lineageTag": "4fc21d0e-be49-50bb-8ac6-87c8c5ca3b7c"
           },
           {
             "name": "Bridge Residual",
             "expression": "SUM ( mart_recon_bridge[amount] ) - MAX ( mart_recon_bridge[gateway_settled_total] )",
             "formatString": "#,0.00",
-            "lineageTag": "4fc21d0e-be49-50bb-8ac6-87c8c5ca3b7c"
+            "lineageTag": "5107567e-c824-5d86-95f9-3e9d2bd656c2"
           }
         ]
       },
       {
         "name": "ingest_runs",
-        "lineageTag": "d71c8aee-7699-50b1-89aa-2ca8508751d0",
+        "lineageTag": "9caddc06-2276-5cb2-9f04-ee68fb48ffa2",
         "columns": [
           {
             "name": "run_id",
             "dataType": "int64",
             "sourceColumn": "run_id",
-            "lineageTag": "5107567e-c824-5d86-95f9-3e9d2bd656c2",
+            "lineageTag": "7afc3953-54bc-5a81-8467-ef2c4cfa93f4",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1132,14 +1157,14 @@
             "name": "source_system",
             "dataType": "string",
             "sourceColumn": "source_system",
-            "lineageTag": "7afc3953-54bc-5a81-8467-ef2c4cfa93f4",
+            "lineageTag": "dbfa3bf2-5b8f-5f9a-81b6-a36d60a808f4",
             "summarizeBy": "none"
           },
           {
             "name": "started_at",
             "dataType": "dateTime",
             "sourceColumn": "started_at",
-            "lineageTag": "dbfa3bf2-5b8f-5f9a-81b6-a36d60a808f4",
+            "lineageTag": "87cbb470-aed4-5643-9758-e0419ca59793",
             "summarizeBy": "none",
             "formatString": "yyyy-mm-dd hh:nn:ss"
           },
@@ -1147,7 +1172,7 @@
             "name": "finished_at",
             "dataType": "dateTime",
             "sourceColumn": "finished_at",
-            "lineageTag": "87cbb470-aed4-5643-9758-e0419ca59793",
+            "lineageTag": "10f9b72b-6588-5b16-8468-7aab94245608",
             "summarizeBy": "none",
             "formatString": "yyyy-mm-dd hh:nn:ss"
           },
@@ -1155,14 +1180,14 @@
             "name": "status",
             "dataType": "string",
             "sourceColumn": "status",
-            "lineageTag": "10f9b72b-6588-5b16-8468-7aab94245608",
+            "lineageTag": "c36fc2d2-8457-51f4-b5bc-081872b62d6c",
             "summarizeBy": "none"
           },
           {
             "name": "pages_fetched",
             "dataType": "int64",
             "sourceColumn": "pages_fetched",
-            "lineageTag": "c36fc2d2-8457-51f4-b5bc-081872b62d6c",
+            "lineageTag": "643f8dfc-81ed-566e-b203-3ea8cd943909",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1170,7 +1195,7 @@
             "name": "rows_upserted",
             "dataType": "int64",
             "sourceColumn": "rows_upserted",
-            "lineageTag": "643f8dfc-81ed-566e-b203-3ea8cd943909",
+            "lineageTag": "48e7dc08-ed53-5774-af49-7b7dac969a1a",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1178,7 +1203,7 @@
             "name": "rows_rejected",
             "dataType": "int64",
             "sourceColumn": "rows_rejected",
-            "lineageTag": "48e7dc08-ed53-5774-af49-7b7dac969a1a",
+            "lineageTag": "9988742d-47c2-5d60-81f8-10f9f72456bc",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1186,7 +1211,7 @@
             "name": "rate_limit_hits",
             "dataType": "int64",
             "sourceColumn": "rate_limit_hits",
-            "lineageTag": "9988742d-47c2-5d60-81f8-10f9f72456bc",
+            "lineageTag": "75e6b215-b335-5740-bcd5-696e31052200",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1194,7 +1219,7 @@
             "name": "server_error_hits",
             "dataType": "int64",
             "sourceColumn": "server_error_hits",
-            "lineageTag": "75e6b215-b335-5740-bcd5-696e31052200",
+            "lineageTag": "b2e38e36-4c65-56ff-9f1a-deeb391907b7",
             "summarizeBy": "none",
             "formatString": "0"
           },
@@ -1202,7 +1227,7 @@
             "name": "duration_seconds",
             "dataType": "int64",
             "sourceColumn": "duration_seconds",
-            "lineageTag": "b2e38e36-4c65-56ff-9f1a-deeb391907b7",
+            "lineageTag": "d71c8aee-7699-50b1-89aa-2ca8508751d0",
             "summarizeBy": "none",
             "formatString": "0"
           }
@@ -1236,52 +1261,52 @@
             "name": "Ingestion Runs",
             "expression": "COUNTROWS ( ingest_runs )",
             "formatString": "#,0",
-            "lineageTag": "9caddc06-2276-5cb2-9f04-ee68fb48ffa2"
+            "lineageTag": "ff7c0413-49df-5f6b-adbd-91b1c2e9f644"
           },
           {
             "name": "Rows Rejected",
             "expression": "SUM ( ingest_runs[rows_rejected] )",
             "formatString": "#,0",
-            "lineageTag": "ff7c0413-49df-5f6b-adbd-91b1c2e9f644"
+            "lineageTag": "59cfceb2-4bcc-5805-9112-7e4e5f8031e7"
           },
           {
             "name": "Rate-Limit Retries",
             "expression": "SUM ( ingest_runs[rate_limit_hits] )",
             "formatString": "#,0",
-            "lineageTag": "59cfceb2-4bcc-5805-9112-7e4e5f8031e7"
+            "lineageTag": "0307a90d-8e1a-533a-9a0a-a6049a110a25"
           }
         ]
       },
       {
         "name": "transactions",
-        "lineageTag": "dd1178e2-1c76-5790-8c3c-06bc7dd513b0",
+        "lineageTag": "57a5fd06-b378-5592-9e55-080f7fe491c2",
         "columns": [
           {
             "name": "id",
             "dataType": "string",
             "sourceColumn": "id",
-            "lineageTag": "0307a90d-8e1a-533a-9a0a-a6049a110a25",
+            "lineageTag": "103b2a11-1931-504f-9692-f70127e1e8d8",
             "summarizeBy": "none"
           },
           {
             "name": "player_id",
             "dataType": "string",
             "sourceColumn": "player_id",
-            "lineageTag": "103b2a11-1931-504f-9692-f70127e1e8d8",
+            "lineageTag": "09c72ea0-f479-569c-8a6b-e9fd582022e6",
             "summarizeBy": "none"
           },
           {
             "name": "type",
             "dataType": "string",
             "sourceColumn": "type",
-            "lineageTag": "09c72ea0-f479-569c-8a6b-e9fd582022e6",
+            "lineageTag": "f79a7e49-1329-5cb2-b305-577a380f4ce6",
             "summarizeBy": "none"
           },
           {
             "name": "amount",
             "dataType": "decimal",
             "sourceColumn": "amount",
-            "lineageTag": "f79a7e49-1329-5cb2-b305-577a380f4ce6",
+            "lineageTag": "7e4e5538-1b95-5446-926e-37de9198b67f",
             "summarizeBy": "sum",
             "formatString": "#,0.00"
           },
@@ -1289,21 +1314,21 @@
             "name": "currency",
             "dataType": "string",
             "sourceColumn": "currency",
-            "lineageTag": "7e4e5538-1b95-5446-926e-37de9198b67f",
+            "lineageTag": "4ac49d81-eec7-5ff5-b6ba-7105d951e950",
             "summarizeBy": "none"
           },
           {
             "name": "status",
             "dataType": "string",
             "sourceColumn": "status",
-            "lineageTag": "4ac49d81-eec7-5ff5-b6ba-7105d951e950",
+            "lineageTag": "b1a37582-e040-5c0b-941a-0da5db3cc5c4",
             "summarizeBy": "none"
           },
           {
             "name": "updated_at",
             "dataType": "dateTime",
             "sourceColumn": "updated_at",
-            "lineageTag": "b1a37582-e040-5c0b-941a-0da5db3cc5c4",
+            "lineageTag": "9920cbd6-ce04-58ae-93b9-5e8bab8fa162",
             "summarizeBy": "none",
             "formatString": "yyyy-mm-dd hh:nn:ss"
           },
@@ -1311,14 +1336,14 @@
             "name": "source_system",
             "dataType": "string",
             "sourceColumn": "source_system",
-            "lineageTag": "9920cbd6-ce04-58ae-93b9-5e8bab8fa162",
+            "lineageTag": "4421250e-f98b-5136-9082-ede266cc307c",
             "summarizeBy": "none"
           },
           {
             "name": "ingested_at",
             "dataType": "dateTime",
             "sourceColumn": "ingested_at",
-            "lineageTag": "4421250e-f98b-5136-9082-ede266cc307c",
+            "lineageTag": "dd1178e2-1c76-5790-8c3c-06bc7dd513b0",
             "summarizeBy": "none",
             "formatString": "yyyy-mm-dd hh:nn:ss"
           }
@@ -1352,56 +1377,56 @@
             "name": "Transactions Loaded",
             "expression": "DISTINCTCOUNT ( transactions[id] )",
             "formatString": "#,0",
-            "lineageTag": "57a5fd06-b378-5592-9e55-080f7fe491c2"
+            "lineageTag": "ea52ecd1-5687-5b39-a412-f000e10ce095"
           }
         ]
       }
     ],
     "relationships": [
       {
-        "name": "ea52ecd1-5687-5b39-a412-f000e10ce095",
-        "fromTable": "fact_bet",
-        "fromColumn": "player_id",
-        "toTable": "dim_player",
-        "toColumn": "player_id"
-      },
-      {
         "name": "6c6f9d37-4cc2-5a6d-a6a4-3406733a4cb1",
-        "fromTable": "fact_wallet_transaction",
+        "fromTable": "fact_bet",
         "fromColumn": "player_id",
         "toTable": "dim_player",
         "toColumn": "player_id"
       },
       {
         "name": "c0100559-d282-53f8-8ea8-40eb968151b3",
-        "fromTable": "fact_bonus_transaction",
+        "fromTable": "fact_wallet_transaction",
         "fromColumn": "player_id",
         "toTable": "dim_player",
         "toColumn": "player_id"
       },
       {
         "name": "3b243d4a-868f-5dcf-94ca-2492740fcc25",
-        "fromTable": "dim_player_vip_tier_scd",
+        "fromTable": "fact_bonus_transaction",
         "fromColumn": "player_id",
         "toTable": "dim_player",
         "toColumn": "player_id"
       },
       {
         "name": "5a125fb2-358e-55f7-92ac-30cb75d3a273",
+        "fromTable": "dim_player_vip_tier_scd",
+        "fromColumn": "player_id",
+        "toTable": "dim_player",
+        "toColumn": "player_id"
+      },
+      {
+        "name": "c79fa7aa-fb18-5fcd-ba0f-3c782e79a0d9",
         "fromTable": "fact_bet",
         "fromColumn": "placed_date",
         "toTable": "dim_date",
         "toColumn": "date_day"
       },
       {
-        "name": "c79fa7aa-fb18-5fcd-ba0f-3c782e79a0d9",
+        "name": "f72c40d8-325d-599b-be20-315ae1f2ae89",
         "fromTable": "fact_wallet_transaction",
         "fromColumn": "transaction_date",
         "toTable": "dim_date",
         "toColumn": "date_day"
       },
       {
-        "name": "f72c40d8-325d-599b-be20-315ae1f2ae89",
+        "name": "11eb0397-8362-5aa5-9d86-79ece306e91a",
         "fromTable": "fact_bonus_transaction",
         "fromColumn": "campaign_id",
         "toTable": "dim_campaign",

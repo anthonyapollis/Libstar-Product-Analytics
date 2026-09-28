@@ -16,6 +16,8 @@ exercise1-reconciliation/   Payment gateway reconciliation (MySQL + Python)
 exercise2-ingestion/        Incremental, restartable API ingestion (Python + MySQL + Postman)
 exercise3-schema-design/    Database design: players, wallets, bets, bonuses (MySQL + ERD)
 dbt_jsb_assessment/         dbt reporting layer (staging + marts) built on Exercise 3's schema
+powerbi/                    Power BI project (.pbip) on the dbt marts, data embedded
+local_load/                 Two SQL scripts: clean up and load all 29 tables into a local MySQL/MariaDB
 ```
 
 ## Quickstart (reproduce everything)
@@ -48,6 +50,7 @@ cd dbt_jsb_assessment && export DBT_PROFILES_DIR=. && dbt build
 | 3. Schema design | 23-table MySQL schema (players/PII separated, append-only wallet ledger, one bet header + per-product detail tables, SCD2 history, event-sourced bonus rollover). DDL runs clean; all 4 required queries return correct results against seed data. | `exercise3-schema-design/erd.png`, `design_notes.md` |
 | dbt | One project spanning all three exercises: Exercise 3's star schema (`dim_player`, `fact_bet`, `fact_wallet_transaction`, `fact_bonus_transaction`, ...) **and** Exercise 1's reconciliation as a scheduled model (`fct_recon_exceptions`) plus the bridge as its own mart (`mart_recon_bridge`) and Exercise 2's run log (`stg_ingest_runs`), with singular tests enforcing the R0.00 bridge, full source coverage and wallet-cache = ledger — `dbt build`: **66/66 pass (23 models, 43 tests), 0 errors**. | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
 | Power BI | A Power BI project (`JSB_Assessment.pbip`) built on the dbt marts and covering all three exercises: 11 tables, 7 relationships, 20 DAX measures, 4 report pages (NGR overview, player balances, reconciliation waterfall, ingestion monitoring). Data is embedded, so it opens and refreshes with no path to set. Generated and validated by script, with expected values for every visual. | `powerbi/README.md`, `powerbi/expected_values.md` |
+| Local database | `local_load/01_load_submission_tables.sql` loads all 29 tables into a local MySQL/MariaDB (XAMPP) in one run. `00_drop_other_build_tables.sql` removes tables another build left behind. | `local_load/README.md` |
 | Write-up | The full submission as one document, with screenshots of every key step: `JSB_Candidate_Submission.docx` (and `.pdf`). | this folder |
 
 ## Tools used
