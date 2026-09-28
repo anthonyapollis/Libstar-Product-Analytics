@@ -52,11 +52,28 @@ WITH campaign_cost AS (
       AND pb.resolved_at_utc >= '2026-09-01' AND pb.resolved_at_utc < '2026-10-01'
     GROUP BY pb.campaign_id
 ),
-period_ngr AS (
-    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS total_ngr
+-- Company-wide NGR for the period: GGR minus ALL realised bonus cost (every
+-- product, every campaign) -- not just the campaign being measured in this
+-- query. Must use the same GGR-minus-bonus-cost definition as query (a),
+-- not just raw turnover-minus-payouts, or the % is measured against the
+-- wrong base.
+period_ggr AS (
+    SELECT SUM(stake_real_amount + stake_bonus_amount) - SUM(payout_amount) AS total_ggr
     FROM bets
     WHERE settled_at_utc >= '2026-09-01' AND settled_at_utc < '2026-10-01'
       AND status IN ('won','lost')
+),
+period_bonus_cost AS (
+    SELECT SUM(wt.amount) AS total_bonus_cost
+    FROM wallet_transactions wt
+    JOIN bets b ON b.bet_id = wt.related_bet_id
+    WHERE wt.txn_type = 'bet_stake' AND wt.balance_type = 'bonus'
+      AND b.status = 'lost'
+      AND b.settled_at_utc >= '2026-09-01' AND b.settled_at_utc < '2026-10-01'
+),
+period_ngr AS (
+    SELECT (SELECT total_ggr FROM period_ggr)
+           - COALESCE((SELECT total_bonus_cost FROM period_bonus_cost), 0) AS total_ngr
 )
 SELECT bc.name AS campaign, cc.bonus_cost,
        ROUND(100 * cc.bonus_cost / NULLIF((SELECT total_ngr FROM period_ngr), 0), 2) AS bonus_cost_pct_of_ngr
