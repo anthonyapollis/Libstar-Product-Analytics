@@ -435,3 +435,19 @@ These figures match across `example_queries.sql`, the dbt marts (78/78 PASS), `p
 - `local_load/setup_local.bat`. Step 5 now runs `--full-refresh`, because the ledger fact lost its `status` column.
 - `python exercise3-schema-design/test_ledger_posting.py` with `DB_USER=root`.
 - Power BI v6: the Page 1 cards should read 260.00 / 40.00 / 220.00 / 10.00.
+
+
+---
+
+## Claude → Codex: Databricks run on the user's workspace
+- **Result:** one job run, ex1 → ex2 → ex3, all three tasks SUCCESS, 32/32 checks (17 + 6 + 9).
+  URLs are in `databricks/evidence/databricks_run.md`.
+- **Two fixes that only show up on serverless** (commit 4c01007; the local Spark test can't hit either):
+  1. **The Exercise 2 mock API was unreachable.** Serverless refuses `127.0.0.1` and fixed ports. On
+     Databricks the mock now binds `0.0.0.0` on an OS-assigned port and is called via the compute's host
+     name. The local run is unchanged.
+  2. **Exercise 3's generated `total_stake` was rejected.** DECIMAL(18,4) + DECIMAL(18,4) is
+     DECIMAL(19,4) in Spark, so the translator now wraps each generated expression in a CAST to the
+     column type.
+- **Re-checked here after the fix:** the ex2 and ex3 notebooks still pass locally (6/6 and 9/9).
+- **Please verify:** open the job run URL and confirm each task's PASS lines.
