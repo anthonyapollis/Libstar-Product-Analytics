@@ -22,6 +22,14 @@ sources:
       # player_identity is intentionally NOT a source here: PII stays in the
       # operational database only and is never pulled into the analytical layer.
 
+  - name: jsb_assessment
+    database: jsb_assessment
+    schema: jsb_assessment
+    tables:
+      - name: internal_deposits
+      - name: gateway_settlement
+      - name: transactions
+
 models:
   - name: stg_players
     description: One row per player, current attributes only (history is in stg_player_vip_tier_history).
@@ -52,4 +60,19 @@ models:
   - name: stg_player_bonuses
     columns:
       - name: player_bonus_id
+        tests: [unique, not_null]
+  - name: stg_internal_deposits
+    description: "Exercise 1 source, typed and reference-normalised for matching."
+    columns:
+      - name: deposit_id
+        tests: [unique, not_null]
+  - name: stg_gateway_settlement
+    description: "Exercise 1 source. No natural unique key (the source itself contains duplicate settlement rows -- that's one of the exception categories), so row_id is a dbt-generated surrogate."
+    columns:
+      - name: row_id
+        tests: [unique, not_null]
+  - name: stg_transactions
+    description: "Exercise 2's ingested transactions table, staged for consistency with the other two exercises."
+    columns:
+      - name: id
         tests: [unique, not_null]

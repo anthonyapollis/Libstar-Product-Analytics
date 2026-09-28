@@ -41,3 +41,27 @@ models:
     description: Answers example_queries.sql query (a) as a reusable dbt model.
   - name: mart_bonus_cost_pct_of_ngr
     description: Answers example_queries.sql query (b) as a reusable dbt model.
+  - name: fct_recon_exceptions
+    description: "Exercise 1's reconciliation categorisation, as a dbt model (see exercise1-reconciliation/sql/03_reconciliation.sql for the equivalent standalone SQL)."
+    columns:
+      - name: deposit_id
+        description: Null for gateway-only rows (no matching internal record).
+      - name: settlement_row_id
+        description: Null for internal-only rows (no gateway settlement found/yet).
+      - name: category
+        tests:
+          - accepted_values:
+              values:
+                - "OK: matched, amount and fee correct"
+                - "BREAK: payment confirmed, wallet not credited"
+                - "BREAK: unrecognised settlement (no internal record)"
+                - "BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)"
+                - "BREAK: duplicate gateway settlement for one reference (double-credit risk)"
+                - "BREAK: deposit SUCCESS, no gateway settlement found"
+                - "BREAK: settled fee differs from contracted fee"
+                - "BREAK: settled gross amount differs from internal amount"
+                - "NOT A PROBLEM: rounding difference <= 1 cent"
+                - "REVERSAL: gateway reversed/charged back after settlement"
+                - "TIMING: settlement expected in next period (created near cut-off)"
+  - name: mart_recon_summary_by_category
+    description: "The daily close-pack: exception count and impact total per category."

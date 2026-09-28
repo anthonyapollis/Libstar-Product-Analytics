@@ -41,8 +41,13 @@ week** (see "Break — act now"); the rest is timing or non-financial.
 Full row-level detail, one line per exception with its category and explanation, is in `exceptions.csv`.
 
 ## Automating this daily
+This is no longer just a proposal: the same categorisation logic lives as a dbt model
+(`../dbt_jsb_assessment/models/marts/fct_recon_exceptions.sql`), schedulable via `dbt build` today, with
+two tests that fail the run if anything's wrong — `assert_recon_bridge_reconciles` (the R0.00 residual
+below, enforced in SQL, not just checked once by hand) and `assert_recon_covers_all_sources` (no source
+row silently dropped). The steps below are what a daily schedule around it looks like:
 1. **Ingest** both feeds daily (API/SFTP pull) into raw landing tables, keyed by their natural identifiers — never overwrite, land as-is.
-2. **Match** using the normalised-reference join in `sql/03_reconciliation.sql`, re-run as a scheduled job (e.g. dbt model + Airflow/cron) after both feeds have landed for the day.
+2. **Match** using the normalised-reference join (`stg_internal_deposits` / `stg_gateway_settlement` → `fct_recon_exceptions`), re-run as a scheduled job (dbt + Airflow/cron) after both feeds have landed for the day.
 3. **Control totals first**: log source row count and sum before matching (see query 0). A count/sum mismatch against what the source declares is itself an alert, independent of row-level matching.
 4. **Persist `recon_exceptions` daily** (don't overwrite history) so ageing and trend reporting is possible, and so a corrected file never silently rewrites what was reported yesterday.
 5. **Alerts** (Slack/email/PagerDuty depending on severity):
