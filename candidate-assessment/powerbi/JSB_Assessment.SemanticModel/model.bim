@@ -1,0 +1,936 @@
+{
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "dim_player",
+        "lineageTag": "cb54f163-b4e8-58c5-bdd5-5f17bd9d67c8",
+        "columns": [
+          {
+            "name": "player_id",
+            "dataType": "int64",
+            "sourceColumn": "player_id",
+            "lineageTag": "3c1d0232-1835-574e-b0de-312a52276f0a",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "kyc_status",
+            "dataType": "string",
+            "sourceColumn": "kyc_status",
+            "lineageTag": "05eeae50-608f-58c3-b6eb-bf7d29346e98",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "current_vip_tier",
+            "dataType": "string",
+            "sourceColumn": "current_vip_tier",
+            "lineageTag": "5cca5af1-6f60-598a-8b25-2a5c67ee944b",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "status",
+            "dataType": "string",
+            "sourceColumn": "status",
+            "lineageTag": "b393c481-9f2c-5131-99ca-4c29b4002cfb",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "traffic_source",
+            "dataType": "string",
+            "sourceColumn": "traffic_source",
+            "lineageTag": "a018d6a2-8f3e-5e15-94f3-b692f61721bb",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "affiliate_id",
+            "dataType": "int64",
+            "sourceColumn": "affiliate_id",
+            "lineageTag": "22779c60-6605-54db-8408-2e99d43324fb",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "preferred_currency",
+            "dataType": "string",
+            "sourceColumn": "preferred_currency",
+            "lineageTag": "12990178-f175-5910-b3ad-8ea4578bc376",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "registered_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "registered_at_utc",
+            "lineageTag": "4bbc0b99-dc90-5c71-ac6e-7cda1559be58",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_player",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"dim_player.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"player_id\", Int64.Type}, {\"kyc_status\", type text}, {\"current_vip_tier\", type text}, {\"status\", type text}, {\"traffic_source\", type text}, {\"affiliate_id\", Int64.Type}, {\"preferred_currency\", type text}, {\"registered_at_utc\", type datetime}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "dim_player_vip_tier_scd",
+        "lineageTag": "b8155e8e-a527-5971-b7ab-b2cbf57669d4",
+        "columns": [
+          {
+            "name": "player_id",
+            "dataType": "int64",
+            "sourceColumn": "player_id",
+            "lineageTag": "0e34922a-cfa3-53b9-adc6-0b1fa233fb7c",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "vip_tier",
+            "dataType": "string",
+            "sourceColumn": "vip_tier",
+            "lineageTag": "943d775c-30b8-54a3-bbf6-9b2430a9c24d",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "valid_from_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "valid_from_utc",
+            "lineageTag": "b7c3c193-b000-5033-ac8f-1fa7a7cb970e",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "valid_to_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "valid_to_utc",
+            "lineageTag": "f4d61f98-57bf-5f40-899c-a4f547e280a3",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "is_current",
+            "dataType": "int64",
+            "sourceColumn": "is_current",
+            "lineageTag": "6034ba76-c978-50b2-ba5a-8af8556ae93c",
+            "summarizeBy": "none",
+            "formatString": "0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_player_vip_tier_scd",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"dim_player_vip_tier_scd.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"player_id\", Int64.Type}, {\"vip_tier\", type text}, {\"valid_from_utc\", type datetime}, {\"valid_to_utc\", type datetime}, {\"is_current\", Int64.Type}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "dim_campaign",
+        "lineageTag": "6c82e92e-eee1-5cde-a620-d78156237961",
+        "columns": [
+          {
+            "name": "campaign_id",
+            "dataType": "int64",
+            "sourceColumn": "campaign_id",
+            "lineageTag": "58e2c598-c0b0-53dd-a5b7-87aa9468215a",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "campaign_name",
+            "dataType": "string",
+            "sourceColumn": "campaign_name",
+            "lineageTag": "ce94c0a6-1933-5feb-8043-ba0ce0700942",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "campaign_type",
+            "dataType": "string",
+            "sourceColumn": "campaign_type",
+            "lineageTag": "c39358a2-0acf-5a7f-ae12-a9f439a73d63",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "rollover_multiple",
+            "dataType": "double",
+            "sourceColumn": "rollover_multiple",
+            "lineageTag": "dd0143dc-c292-5951-9c44-b1ca58c85066",
+            "summarizeBy": "none",
+            "formatString": "#,0.000"
+          },
+          {
+            "name": "min_odds",
+            "dataType": "double",
+            "sourceColumn": "min_odds",
+            "lineageTag": "a3caa2d2-f81a-586a-a287-4d19a11b59a5",
+            "summarizeBy": "none",
+            "formatString": "#,0.000"
+          },
+          {
+            "name": "valid_from_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "valid_from_utc",
+            "lineageTag": "192edb4f-0462-5cac-84bf-75648decd3d2",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "valid_to_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "valid_to_utc",
+            "lineageTag": "8ca62a61-b914-5103-854f-687c3864b653",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_campaign",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"dim_campaign.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"campaign_id\", Int64.Type}, {\"campaign_name\", type text}, {\"campaign_type\", type text}, {\"rollover_multiple\", type number}, {\"min_odds\", type number}, {\"valid_from_utc\", type datetime}, {\"valid_to_utc\", type datetime}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "dim_date",
+        "lineageTag": "073ebe50-44c8-5aa5-bf72-2d90dfc23091",
+        "columns": [
+          {
+            "name": "date_day",
+            "dataType": "dateTime",
+            "sourceColumn": "date_day",
+            "lineageTag": "2c7ad0dc-0661-5038-bd54-0d87a2290fcf",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year",
+            "lineageTag": "231287c4-bcab-5934-9ab9-b7f2a6e8a6c3",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "month",
+            "dataType": "int64",
+            "sourceColumn": "month",
+            "lineageTag": "bb091886-686a-5c41-acf7-3e03925ecb22",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "day",
+            "dataType": "int64",
+            "sourceColumn": "day",
+            "lineageTag": "f224791f-1030-54a0-9ce1-4fd18ccc9276",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "day_name",
+            "dataType": "string",
+            "sourceColumn": "day_name",
+            "lineageTag": "e7b4105e-b53e-592b-82b1-b84a73a1e260",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_weekend",
+            "dataType": "int64",
+            "sourceColumn": "is_weekend",
+            "lineageTag": "3d3be286-feec-5337-b044-8cbfeb5a49ba",
+            "summarizeBy": "none",
+            "formatString": "0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_date",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"dim_date.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"date_day\", type date}, {\"year\", Int64.Type}, {\"month\", Int64.Type}, {\"day\", Int64.Type}, {\"day_name\", type text}, {\"is_weekend\", Int64.Type}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "fact_bet",
+        "lineageTag": "cb7e2a11-c105-541b-9f91-4bb47ff59c1d",
+        "columns": [
+          {
+            "name": "bet_id",
+            "dataType": "int64",
+            "sourceColumn": "bet_id",
+            "lineageTag": "1b9cb0ec-bd6a-5091-819b-f0c0effa7f7f",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "player_id",
+            "dataType": "int64",
+            "sourceColumn": "player_id",
+            "lineageTag": "dd5e143e-fa4b-57a6-9336-287ce0a67ecc",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "vip_tier_at_bet_time",
+            "dataType": "string",
+            "sourceColumn": "vip_tier_at_bet_time",
+            "lineageTag": "974e91f9-d5dc-5b7b-a308-c5e7cb81386c",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "product",
+            "dataType": "string",
+            "sourceColumn": "product",
+            "lineageTag": "5fc96f82-1be4-567d-87e8-986ce0246be2",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "channel",
+            "dataType": "string",
+            "sourceColumn": "channel",
+            "lineageTag": "31678edd-961e-5a05-a2ad-12dd791ca52d",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "placed_date",
+            "dataType": "dateTime",
+            "sourceColumn": "placed_date",
+            "lineageTag": "d545aea0-33bf-5421-b3c6-aeb0d2661437",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "stake_real_amount",
+            "dataType": "decimal",
+            "sourceColumn": "stake_real_amount",
+            "lineageTag": "df4d7a74-2caf-5745-84e7-fb19d5d5cb88",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "stake_bonus_amount",
+            "dataType": "decimal",
+            "sourceColumn": "stake_bonus_amount",
+            "lineageTag": "ba005bba-7cbf-535d-bd06-021134276396",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "total_stake",
+            "dataType": "decimal",
+            "sourceColumn": "total_stake",
+            "lineageTag": "a371cc1a-d618-5ce5-8ce4-663a9596fe78",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "status",
+            "dataType": "string",
+            "sourceColumn": "status",
+            "lineageTag": "b5213c2b-aaaf-57f1-98f2-fa0667aed241",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "payout_amount",
+            "dataType": "decimal",
+            "sourceColumn": "payout_amount",
+            "lineageTag": "6e63873f-352c-583a-842f-14c27d618eef",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "ggr_contribution",
+            "dataType": "decimal",
+            "sourceColumn": "ggr_contribution",
+            "lineageTag": "9cea54b8-88ad-57a5-8d77-009f4ff62494",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "placed_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "placed_at_utc",
+            "lineageTag": "34684469-0045-52ce-8dcc-0dda05f37407",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "settled_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "settled_at_utc",
+            "lineageTag": "f1a7902a-0d83-5ae1-8b2f-a7cc5f193731",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_bet",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"fact_bet.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"bet_id\", Int64.Type}, {\"player_id\", Int64.Type}, {\"vip_tier_at_bet_time\", type text}, {\"product\", type text}, {\"channel\", type text}, {\"placed_date\", type date}, {\"stake_real_amount\", Currency.Type}, {\"stake_bonus_amount\", Currency.Type}, {\"total_stake\", Currency.Type}, {\"status\", type text}, {\"payout_amount\", Currency.Type}, {\"ggr_contribution\", Currency.Type}, {\"placed_at_utc\", type datetime}, {\"settled_at_utc\", type datetime}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "measures": [
+          {
+            "name": "Turnover",
+            "expression": "CALCULATE ( SUM ( fact_bet[total_stake] ), fact_bet[status] IN { \"won\", \"lost\" } )",
+            "formatString": "#,0.00",
+            "lineageTag": "2c410583-60a1-553d-ba13-a06e7a9ff6cc"
+          },
+          {
+            "name": "Payouts",
+            "expression": "CALCULATE ( SUM ( fact_bet[payout_amount] ), fact_bet[status] IN { \"won\", \"lost\" } )",
+            "formatString": "#,0.00",
+            "lineageTag": "fff82053-e84d-5dde-8234-13749e05c9b1"
+          },
+          {
+            "name": "GGR",
+            "expression": "[Turnover] - [Payouts]",
+            "formatString": "#,0.00",
+            "lineageTag": "7b651941-e331-5e81-b904-46dbc2becd3c"
+          },
+          {
+            "name": "Bonus Cost (realised)",
+            "expression": "CALCULATE ( SUM ( fact_bet[stake_bonus_amount] ), fact_bet[status] = \"lost\" )",
+            "formatString": "#,0.00",
+            "lineageTag": "d0af9b9d-b0d0-50b4-bbed-8ee6e98943ac"
+          },
+          {
+            "name": "NGR",
+            "expression": "[GGR] - [Bonus Cost (realised)]",
+            "formatString": "#,0.00",
+            "lineageTag": "95b2e69b-b310-55af-855e-9e9beac47552"
+          }
+        ]
+      },
+      {
+        "name": "fact_wallet_transaction",
+        "lineageTag": "381e64f0-6b67-5d2e-ab0d-3d527e6ee0f2",
+        "columns": [
+          {
+            "name": "wallet_txn_id",
+            "dataType": "int64",
+            "sourceColumn": "wallet_txn_id",
+            "lineageTag": "c74bec67-550f-59e6-aace-7aa755da2066",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "wallet_id",
+            "dataType": "int64",
+            "sourceColumn": "wallet_id",
+            "lineageTag": "258b88d1-e9d4-542e-a332-4849bf24144b",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "player_id",
+            "dataType": "int64",
+            "sourceColumn": "player_id",
+            "lineageTag": "a704b990-233b-5262-91d1-f6f3ce93ce38",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "txn_type",
+            "dataType": "string",
+            "sourceColumn": "txn_type",
+            "lineageTag": "0c14ad7b-5da3-5958-adc1-c0b7e42b782f",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "balance_type",
+            "dataType": "string",
+            "sourceColumn": "balance_type",
+            "lineageTag": "9251dd67-66e5-5bb6-962d-61f5dc16a037",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "amount",
+            "dataType": "decimal",
+            "sourceColumn": "amount",
+            "lineageTag": "e5ad1f8d-a2c1-5f8e-8478-10f43afeb64e",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "direction",
+            "dataType": "string",
+            "sourceColumn": "direction",
+            "lineageTag": "d6e1d747-8a11-575b-8642-6c47a0c515bf",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "signed_amount",
+            "dataType": "decimal",
+            "sourceColumn": "signed_amount",
+            "lineageTag": "f1777e82-5eab-50e3-95e2-2acde385ea99",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "balance_before",
+            "dataType": "decimal",
+            "sourceColumn": "balance_before",
+            "lineageTag": "ffa427ce-01b2-58e7-829f-c85241429544",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "balance_after",
+            "dataType": "decimal",
+            "sourceColumn": "balance_after",
+            "lineageTag": "a2de5a83-e3db-58b5-876d-11f6df41406c",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "related_bet_id",
+            "dataType": "int64",
+            "sourceColumn": "related_bet_id",
+            "lineageTag": "74a700df-d6ad-5dd3-943a-b2d9eaf40b42",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "related_deposit_attempt_id",
+            "dataType": "int64",
+            "sourceColumn": "related_deposit_attempt_id",
+            "lineageTag": "620570db-fed8-58ff-a824-e61ce1a0ab61",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "related_withdrawal_id",
+            "dataType": "int64",
+            "sourceColumn": "related_withdrawal_id",
+            "lineageTag": "27428991-98e6-581e-a874-fcfa3d984858",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "related_player_bonus_id",
+            "dataType": "int64",
+            "sourceColumn": "related_player_bonus_id",
+            "lineageTag": "845ebf5d-fa83-5e47-a163-94bb09b571f7",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "reversal_of_wallet_txn_id",
+            "dataType": "int64",
+            "sourceColumn": "reversal_of_wallet_txn_id",
+            "lineageTag": "4563f4e9-a855-5b47-b2c7-f648a4707945",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "idempotency_key",
+            "dataType": "string",
+            "sourceColumn": "idempotency_key",
+            "lineageTag": "1e9c3b48-80bb-5830-bda0-84cead4ce4c3",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "source_system",
+            "dataType": "string",
+            "sourceColumn": "source_system",
+            "lineageTag": "4158d6fa-aa21-54bd-a0d1-df7d416eeca6",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "status",
+            "dataType": "string",
+            "sourceColumn": "status",
+            "lineageTag": "5ac7507d-b37a-5b85-868b-1b8e21270746",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "transaction_date",
+            "dataType": "dateTime",
+            "sourceColumn": "transaction_date",
+            "lineageTag": "e412c188-0459-58a3-be0a-a92bdad87121",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "created_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at_utc",
+            "lineageTag": "7cc3b81c-65ec-5854-83ad-58f3bb4a12fb",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_wallet_transaction",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"fact_wallet_transaction.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"wallet_txn_id\", Int64.Type}, {\"wallet_id\", Int64.Type}, {\"player_id\", Int64.Type}, {\"txn_type\", type text}, {\"balance_type\", type text}, {\"amount\", Currency.Type}, {\"direction\", type text}, {\"signed_amount\", Currency.Type}, {\"balance_before\", Currency.Type}, {\"balance_after\", Currency.Type}, {\"related_bet_id\", Int64.Type}, {\"related_deposit_attempt_id\", Int64.Type}, {\"related_withdrawal_id\", Int64.Type}, {\"related_player_bonus_id\", Int64.Type}, {\"reversal_of_wallet_txn_id\", Int64.Type}, {\"idempotency_key\", type text}, {\"source_system\", type text}, {\"status\", type text}, {\"transaction_date\", type date}, {\"created_at_utc\", type datetime}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "measures": [
+          {
+            "name": "Deposits",
+            "expression": "CALCULATE ( SUM ( fact_wallet_transaction[amount] ), fact_wallet_transaction[txn_type] = \"deposit\" )",
+            "formatString": "#,0.00",
+            "lineageTag": "28d05e10-a870-5b9a-a9a7-33db2a061bfc"
+          },
+          {
+            "name": "Balance as of selected date",
+            "expression": [
+              "VAR AsOf = MAX ( dim_date[date_day] )",
+              "RETURN",
+              "    CALCULATE (",
+              "        SUM ( fact_wallet_transaction[signed_amount] ),",
+              "        REMOVEFILTERS ( dim_date ),",
+              "        fact_wallet_transaction[transaction_date] <= AsOf,",
+              "        fact_wallet_transaction[status] = \"posted\"",
+              "    )"
+            ],
+            "formatString": "#,0.00",
+            "lineageTag": "701123b8-8cce-5000-a30d-8fa7230d4e49"
+          }
+        ]
+      },
+      {
+        "name": "fact_bonus_transaction",
+        "lineageTag": "b21f0303-f27c-5cf0-8794-f4d09748294b",
+        "columns": [
+          {
+            "name": "player_bonus_id",
+            "dataType": "int64",
+            "sourceColumn": "player_bonus_id",
+            "lineageTag": "5b885b27-f856-5856-a125-c9ee1695cf1f",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "player_id",
+            "dataType": "int64",
+            "sourceColumn": "player_id",
+            "lineageTag": "6203472a-0f73-527d-83c6-8b493c5d7b98",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "campaign_id",
+            "dataType": "int64",
+            "sourceColumn": "campaign_id",
+            "lineageTag": "4e1967ca-e787-5477-be8a-07b8487814ab",
+            "summarizeBy": "none",
+            "formatString": "0"
+          },
+          {
+            "name": "campaign_name",
+            "dataType": "string",
+            "sourceColumn": "campaign_name",
+            "lineageTag": "a387a6ea-3946-5da4-80f8-9dcf0dab5f16",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "campaign_type",
+            "dataType": "string",
+            "sourceColumn": "campaign_type",
+            "lineageTag": "c544fd39-02b9-57c6-a979-a9373f42b672",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "granted_amount",
+            "dataType": "decimal",
+            "sourceColumn": "granted_amount",
+            "lineageTag": "cb5729a6-24cd-5c19-b70c-459989a7d028",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "rollover_required",
+            "dataType": "decimal",
+            "sourceColumn": "rollover_required",
+            "lineageTag": "8eee2c31-410f-5da4-9f8b-b964568f71e5",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "rollover_progress",
+            "dataType": "decimal",
+            "sourceColumn": "rollover_progress",
+            "lineageTag": "442e8503-e973-5c16-83a1-33e3cca17927",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "status",
+            "dataType": "string",
+            "sourceColumn": "status",
+            "lineageTag": "fdafdd78-7f14-503f-a452-a1926c3d7d69",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "realised_bonus_cost",
+            "dataType": "decimal",
+            "sourceColumn": "realised_bonus_cost",
+            "lineageTag": "abfc69ba-879e-5f07-a490-b3e74c401b15",
+            "summarizeBy": "sum",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "granted_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "granted_at_utc",
+            "lineageTag": "209b36be-7c8b-5eee-b84d-103685a3f3c7",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "expires_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "expires_at_utc",
+            "lineageTag": "7b3136f1-c3fb-58d6-9b10-1e341fab21a7",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          },
+          {
+            "name": "resolved_at_utc",
+            "dataType": "dateTime",
+            "sourceColumn": "resolved_at_utc",
+            "lineageTag": "1b543015-5d5c-5614-8b71-84a2abb50d84",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd hh:nn:ss"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_bonus_transaction",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"fact_bonus_transaction.csv\"), [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Blanks = Table.TransformColumns(Promoted, List.Transform(Table.ColumnNames(Promoted), each {_, (v) => if v = \"\" then null else v})),",
+                "    Typed = Table.TransformColumnTypes(Blanks, {{\"player_bonus_id\", Int64.Type}, {\"player_id\", Int64.Type}, {\"campaign_id\", Int64.Type}, {\"campaign_name\", type text}, {\"campaign_type\", type text}, {\"granted_amount\", Currency.Type}, {\"rollover_required\", Currency.Type}, {\"rollover_progress\", Currency.Type}, {\"status\", type text}, {\"realised_bonus_cost\", Currency.Type}, {\"granted_at_utc\", type datetime}, {\"expires_at_utc\", type datetime}, {\"resolved_at_utc\", type datetime}}, \"en-US\")",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "measures": [
+          {
+            "name": "Campaign Bonus Cost",
+            "expression": "CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] IN { \"completed\", \"expired\", \"forfeited\" } )",
+            "formatString": "#,0.00",
+            "lineageTag": "f738b857-d652-5a51-ab83-56063b1fae53"
+          },
+          {
+            "name": "Campaign Bonus Cost % of NGR",
+            "expression": "DIVIDE ( [Campaign Bonus Cost], CALCULATE ( [NGR], REMOVEFILTERS ( dim_campaign ) ) )",
+            "formatString": "0.00%",
+            "lineageTag": "0ce7423e-d973-5a15-a326-74b1b0940c38"
+          },
+          {
+            "name": "Bonus Liability Outstanding",
+            "expression": "CALCULATE ( SUM ( fact_bonus_transaction[granted_amount] ), fact_bonus_transaction[status] = \"active\" )",
+            "formatString": "#,0.00",
+            "lineageTag": "ecf451af-1332-5fd3-a289-f9010ea58217"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "97a0e3ff-6d04-5fa4-904b-5a8a89580bbf",
+        "fromTable": "fact_bet",
+        "fromColumn": "player_id",
+        "toTable": "dim_player",
+        "toColumn": "player_id"
+      },
+      {
+        "name": "d6348d22-a927-5000-8b3d-08b557ac561b",
+        "fromTable": "fact_wallet_transaction",
+        "fromColumn": "player_id",
+        "toTable": "dim_player",
+        "toColumn": "player_id"
+      },
+      {
+        "name": "79461350-762d-51a3-92a5-cc9f1cc720fe",
+        "fromTable": "fact_bonus_transaction",
+        "fromColumn": "player_id",
+        "toTable": "dim_player",
+        "toColumn": "player_id"
+      },
+      {
+        "name": "875a639a-8ed3-5fb1-b344-038d215e30fb",
+        "fromTable": "dim_player_vip_tier_scd",
+        "fromColumn": "player_id",
+        "toTable": "dim_player",
+        "toColumn": "player_id"
+      },
+      {
+        "name": "ce7302e6-a906-5a8b-8bbd-8db61a8d5d5c",
+        "fromTable": "fact_bet",
+        "fromColumn": "placed_date",
+        "toTable": "dim_date",
+        "toColumn": "date_day"
+      },
+      {
+        "name": "ab2ed0e8-df8c-5c0c-92dd-c6e8fc4c3fb0",
+        "fromTable": "fact_wallet_transaction",
+        "fromColumn": "transaction_date",
+        "toTable": "dim_date",
+        "toColumn": "date_day"
+      },
+      {
+        "name": "d41e7986-04a3-58d4-bb2b-6a0dc8b642a7",
+        "fromTable": "fact_bonus_transaction",
+        "fromColumn": "campaign_id",
+        "toTable": "dim_campaign",
+        "toColumn": "campaign_id"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "DataFolder",
+        "kind": "m",
+        "expression": "\"C:\\JSB\\powerbi\\data\\\" meta [IsParameterQuery = true, Type = \"Text\", IsParameterQueryRequired = true]",
+        "lineageTag": "6a69381b-e67f-5e04-9fd6-7c208448ad92",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Text"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"DataFolder\", \"dim_player\", \"dim_player_vip_tier_scd\", \"dim_campaign\", \"dim_date\", \"fact_bet\", \"fact_wallet_transaction\", \"fact_bonus_transaction\"]"
+      }
+    ]
+  }
+}

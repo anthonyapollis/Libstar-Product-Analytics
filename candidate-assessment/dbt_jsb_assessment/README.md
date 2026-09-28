@@ -40,7 +40,7 @@ dbt debug
 dbt build                       # runs models + all tests
 ```
 
-`evidence/dbt_build_output.txt` has a captured run: **60/60 PASS, 0 errors** (21 models, 39 tests).
+`evidence/dbt_build_output.txt` has a captured run: **61/61 PASS, 0 errors** (21 models, 40 tests).
 
 ## Notes
 - `player_identity` (PII) is deliberately not a dbt source — see `models/staging/_staging.yml`. The

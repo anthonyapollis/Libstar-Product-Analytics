@@ -26,10 +26,12 @@ INSERT INTO player_tag_history (player_id, tag, valid_from_utc, valid_to_utc) VA
   (1,'high_value','2026-09-01 00:00:00',NULL),
   (3,'bonus_abuse_watch','2026-09-05 00:00:00',NULL);
 
+-- Cache values equal the ledger totals of the wallet_transactions below; the
+-- dbt test assert_wallet_cache_matches_ledger fails the build if they drift.
 INSERT INTO wallets (wallet_id, player_id, currency, real_balance, bonus_balance) VALUES
-  (1,1,'NAD', 250.00, 0.00),
-  (2,2,'NAD', 0.00, 0.00),
-  (3,3,'NAD', 40.00, 0.00);
+  (1,1,'NAD', 1190.00, 0.00),
+  (2,2,'NAD', 400.00, 0.00),
+  (3,3,'NAD', 100.00, 30.00);
 
 INSERT INTO payment_methods (method_id, method_code, rail_family) VALUES
   (1,'EFT_INSTANT','EFT'), (2,'VOUCHER','voucher');

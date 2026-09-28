@@ -1,0 +1,147 @@
+{
+  "config": "{\"version\": \"5.55\", \"themeCollection\": {\"baseTheme\": {\"name\": \"CY24SU06\", \"version\": \"5.55\", \"type\": 2}}, \"activeSectionIndex\": 0, \"defaultDrillFilterOtherVisuals\": true, \"settings\": {\"useNewFilterPaneExperience\": true, \"allowChangeFilterTypes\": true, \"useStylableVisualContainerHeader\": true, \"queryLimitOption\": 6, \"exportDataMode\": 1, \"useDefaultAggregateDisplayName\": true}, \"objects\": {\"section\": [{\"properties\": {\"verticalAlignment\": {\"expr\": {\"Literal\": {\"Value\": \"'Top'\"}}}}}]}}",
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "name": "SharedResources",
+        "type": 2,
+        "items": [
+          {
+            "type": 202,
+            "path": "BaseThemes/CY24SU06.json",
+            "name": "CY24SU06"
+          }
+        ],
+        "disabled": false
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": 0,
+      "name": "ReportSection1",
+      "displayName": "NGR overview",
+      "filters": "[]",
+      "ordinal": 0,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 10,
+          "z": 0,
+          "width": 900,
+          "height": 50,
+          "config": "{\"name\": \"title1\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"JSB \\u2014 NGR overview (seed data, September 2026)\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_ggr\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fact_bet.GGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"GGR\"}, \"Name\": \"fact_bet.GGR\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 330,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_bonus\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 330, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fact_bet.Bonus Cost (realised)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Bonus Cost (realised)\"}, \"Name\": \"fact_bet.Bonus Cost (realised)\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 640,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 110,
+          "config": "{\"name\": \"card_ngr\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 640, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fact_bet.NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"NGR\"}, \"Name\": \"fact_bet.NGR\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 950,
+          "y": 70,
+          "z": 0,
+          "width": 310,
+          "height": 110,
+          "config": "{\"name\": \"card_liab\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 950, \"y\": 70, \"z\": 0, \"width\": 310, \"height\": 110}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fact_bonus_transaction.Bonus Liability Outstanding\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bonus_transaction\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Bonus Liability Outstanding\"}, \"Name\": \"fact_bonus_transaction.Bonus Liability Outstanding\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 200,
+          "z": 0,
+          "width": 700,
+          "height": 500,
+          "config": "{\"name\": \"col_ngr_product\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 200, \"z\": 0, \"width\": 700, \"height\": 500}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Category\": [{\"queryRef\": \"fact_bet.product\", \"active\": true}], \"Y\": [{\"queryRef\": \"fact_bet.GGR\"}, {\"queryRef\": \"fact_bet.NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_bet\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"product\"}, \"Name\": \"fact_bet.product\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"GGR\"}, \"Name\": \"fact_bet.GGR\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"NGR\"}, \"Name\": \"fact_bet.NGR\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 740,
+          "y": 200,
+          "z": 0,
+          "width": 520,
+          "height": 240,
+          "config": "{\"name\": \"tbl_campaign\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 740, \"y\": 200, \"z\": 0, \"width\": 520, \"height\": 240}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_campaign.campaign_name\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"queryRef\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_campaign\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_bonus_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"campaign_name\"}, \"Name\": \"dim_campaign.campaign_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Campaign Bonus Cost % of NGR\"}, \"Name\": \"fact_bonus_transaction.Campaign Bonus Cost % of NGR\"}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "id": 1,
+      "name": "ReportSection2",
+      "displayName": "Player balances",
+      "filters": "[]",
+      "ordinal": 1,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 10,
+          "z": 0,
+          "width": 900,
+          "height": 50,
+          "config": "{\"name\": \"title2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 0, \"width\": 900, \"height\": 50}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"JSB \\u2014 player balances from the ledger\", \"textStyle\": {\"fontWeight\": \"bold\", \"fontSize\": \"20pt\"}}]}]}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 70,
+          "z": 0,
+          "width": 400,
+          "height": 120,
+          "config": "{\"name\": \"slicer_date\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 70, \"z\": 0, \"width\": 400, \"height\": 120}}], \"singleVisual\": {\"visualType\": \"slicer\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_date.date_day\", \"active\": true}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"date_day\"}, \"Name\": \"dim_date.date_day\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 440,
+          "y": 70,
+          "z": 0,
+          "width": 290,
+          "height": 120,
+          "config": "{\"name\": \"card_deposits\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 440, \"y\": 70, \"z\": 0, \"width\": 290, \"height\": 120}}], \"singleVisual\": {\"visualType\": \"card\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"fact_wallet_transaction.Deposits\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"fact_wallet_transaction\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Deposits\"}, \"Name\": \"fact_wallet_transaction.Deposits\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 210,
+          "z": 0,
+          "width": 700,
+          "height": 300,
+          "config": "{\"name\": \"tbl_balance\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 210, \"z\": 0, \"width\": 700, \"height\": 300}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"drillFilterOtherVisuals\": true, \"projections\": {\"Values\": [{\"queryRef\": \"dim_player.player_id\"}, {\"queryRef\": \"fact_wallet_transaction.balance_type\"}, {\"queryRef\": \"fact_wallet_transaction.Balance as of selected date\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"dim_player\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"fact_wallet_transaction\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"player_id\"}, \"Name\": \"dim_player.player_id\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"balance_type\"}, \"Name\": \"fact_wallet_transaction.balance_type\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Balance as of selected date\"}, \"Name\": \"fact_wallet_transaction.Balance as of selected date\"}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    }
+  ]
+}

@@ -46,8 +46,11 @@ cd dbt_jsb_assessment && export DBT_PROFILES_DIR=. && dbt build
 | 1. Reconciliation | 294/306 (96%) of gateway settlements match exactly. The bridge from the internal total (R218,280.00) to the gateway total (R217,979.97) reconciles to **R0.00 unexplained** across 11 categorised exception types. | `exercise1-reconciliation/summary.md`, `exceptions.csv` |
 | 2. API ingestion | Killed mid-page with SIGKILL, restarted, completed with 0 duplicates/0 missing rows; handled a live 429 automatically; correctly quarantined 1 bad record instead of dropping it; picked up 40 changed + 25 new records after a simulated provider update. | `exercise2-ingestion/evidence/run_transcript.txt` |
 | 3. Schema design | 23-table MySQL schema (players/PII separated, append-only wallet ledger, one bet header + per-product detail tables, SCD2 history, event-sourced bonus rollover). DDL runs clean; all 4 required queries return correct results against seed data. | `exercise3-schema-design/erd.png`, `design_notes.md` |
-| dbt | One project spanning all three exercises: Exercise 3's star schema (`dim_player`, `fact_bet`, `fact_wallet_transaction`, `fact_bonus_transaction`, ...) **and** Exercise 1's reconciliation as a scheduled model (`fct_recon_exceptions`) with two singular tests enforcing the R0.00 bridge and full source coverage — `dbt build`: **60/60 pass, 0 errors**. | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
+| dbt | One project spanning all three exercises: Exercise 3's star schema (`dim_player`, `fact_bet`, `fact_wallet_transaction`, `fact_bonus_transaction`, ...) **and** Exercise 1's reconciliation as a scheduled model (`fct_recon_exceptions`) with singular tests enforcing the R0.00 bridge, full source coverage and wallet-cache = ledger — `dbt build`: **61/61 pass, 0 errors**. | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
+| Power BI | A Power BI project (`JSB_Assessment.pbip`) built on the dbt marts: 7-table star schema, 10 DAX measures, 2 report pages, loading from CSV. Generated and validated by script, with expected values for every visual. | `powerbi/README.md`, `powerbi/expected_values.md` |
+| Write-up | The full submission as one document, with screenshots of every key step: `JSB_Candidate_Submission.docx` (and `.pdf`). | this folder |
 
 ## Tools used
-MySQL 8.0 · Python 3.11 (stdlib `urllib`, `pymysql`, `pandas` for analysis only) · dbt-core 1.7 +
-dbt-mysql · Postman collections run via Newman · Mermaid for the ERD.
+MySQL 8.0 and MariaDB 10.11 (all SQL verified on both) · Python 3.11 (stdlib `urllib`, `pymysql`,
+`pandas` for analysis only) · dbt-core 1.7 + dbt-mysql · Postman / Newman · Mermaid for the ERD ·
+Power BI (`.pbip` project).

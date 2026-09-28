@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "JSB_Assessment"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d57c08fb-ff83-55ee-9a93-dee98ca8bef7"
+  }
+}
