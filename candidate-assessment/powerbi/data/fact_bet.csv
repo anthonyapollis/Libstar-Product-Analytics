@@ -1,0 +1,5 @@
+bet_id,player_id,vip_tier_at_bet_time,product,channel,placed_date,stake_real_amount,stake_bonus_amount,total_stake,status,payout_amount,ggr_contribution,placed_at_utc,settled_at_utc
+1,1,gold,sportsbook,web,2026-09-05,200.0000,0.0000,200.0000,won,360.0000,-160.0000,2026-09-05 14:00:00,2026-09-05 17:00:00
+2,3,standard,sportsbook,app,2026-09-06,0.0000,20.0000,20.0000,lost,0.0000,20.0000,2026-09-06 10:00:00,2026-09-06 12:00:00
+3,1,gold,casino,app,2026-09-07,50.0000,0.0000,50.0000,won,80.0000,-30.0000,2026-09-07 20:00:00,2026-09-07 20:00:05
+4,2,standard,retail,retail,2026-09-11,100.0000,0.0000,100.0000,lost,0.0000,100.0000,2026-09-11 13:00:00,2026-09-11 16:00:00

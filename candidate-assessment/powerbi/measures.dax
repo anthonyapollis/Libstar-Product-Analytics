@@ -1,0 +1,44 @@
+-- DAX measures for a new Measures table (or added to fact_bet).
+-- Paste each one in: Modeling ribbon -> New Measure, with fact_bet active.
+
+Turnover = SUM(fact_bet[stake_real_amount]) + SUM(fact_bet[stake_bonus_amount])
+
+Payouts = SUM(fact_bet[payout_amount])
+
+GGR = [Turnover] - [Payouts]
+
+Bonus Cost (realised) =
+CALCULATE(
+    SUM(fact_wallet_transaction[signed_amount]) * -1,
+    fact_wallet_transaction[txn_type] = "bet_stake",
+    fact_wallet_transaction[balance_type] = "bonus",
+    RELATEDTABLE(fact_bet),
+    fact_bet[status] = "lost"
+)
+
+NGR = [GGR] - [Bonus Cost (realised)]
+
+Bonus Cost % of NGR =
+DIVIDE([Bonus Cost (realised)], [NGR], BLANK())
+
+Deposits (real) =
+CALCULATE(
+    SUM(fact_wallet_transaction[signed_amount]),
+    fact_wallet_transaction[txn_type] = "deposit"
+)
+
+-- Point-in-time balance (matches example_queries.sql query (c)):
+-- filter fact_wallet_transaction by a date slicer <= selected date, then:
+Balance as of selected date =
+CALCULATE(
+    SUM(fact_wallet_transaction[signed_amount]),
+    fact_wallet_transaction[transaction_date] <= MAX(dim_date[date_day])
+)
+
+Active Bonuses = CALCULATE(DISTINCTCOUNT(fact_bonus_transaction[player_bonus_id]), fact_bonus_transaction[status] = "active")
+
+Bonus Liability Outstanding =
+CALCULATE(
+    SUM(fact_bonus_transaction[granted_amount]),
+    fact_bonus_transaction[status] = "active"
+)

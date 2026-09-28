@@ -1,0 +1,69 @@
+erDiagram
+    DIM_PLAYER ||--o{ FACT_BET : "1 to many"
+    DIM_PLAYER ||--o{ FACT_WALLET_TRANSACTION : "1 to many"
+    DIM_PLAYER ||--o{ FACT_BONUS_TRANSACTION : "1 to many"
+    DIM_PLAYER ||--o{ DIM_PLAYER_VIP_TIER_SCD : "1 to many (history)"
+    DIM_DATE ||--o{ FACT_BET : "1 to many, via placed_date"
+    DIM_DATE ||--o{ FACT_WALLET_TRANSACTION : "1 to many, via transaction_date"
+    DIM_CAMPAIGN ||--o{ FACT_BONUS_TRANSACTION : "1 to many"
+    FACT_BET ||--o{ FACT_WALLET_TRANSACTION : "1 to many, via related_bet_id"
+    FACT_BONUS_TRANSACTION ||--o{ FACT_WALLET_TRANSACTION : "1 to many, via related_player_bonus_id"
+
+    DIM_PLAYER {
+        bigint player_id PK
+        string kyc_status
+        string current_vip_tier
+        string status
+        string traffic_source
+        string preferred_currency
+    }
+    DIM_PLAYER_VIP_TIER_SCD {
+        bigint player_id FK
+        string vip_tier
+        datetime valid_from_utc
+        datetime valid_to_utc
+        bool is_current
+    }
+    DIM_CAMPAIGN {
+        int campaign_id PK
+        string campaign_name
+        string campaign_type
+        decimal rollover_multiple
+    }
+    DIM_DATE {
+        date date_day PK
+        int year
+        int month
+        string day_name
+        bool is_weekend
+    }
+    FACT_BET {
+        bigint bet_id PK
+        bigint player_id FK
+        string product
+        string channel
+        date placed_date FK
+        decimal stake_real_amount
+        decimal stake_bonus_amount
+        decimal payout_amount
+        decimal ggr_contribution
+        string status
+    }
+    FACT_WALLET_TRANSACTION {
+        bigint wallet_txn_id PK
+        bigint player_id FK
+        bigint related_bet_id FK
+        bigint related_player_bonus_id FK
+        date transaction_date FK
+        string txn_type
+        string balance_type
+        decimal signed_amount
+    }
+    FACT_BONUS_TRANSACTION {
+        bigint player_bonus_id PK
+        bigint player_id FK
+        int campaign_id FK
+        decimal granted_amount
+        decimal realised_bonus_cost
+        string status
+    }
