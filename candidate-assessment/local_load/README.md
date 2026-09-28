@@ -1,33 +1,69 @@
-# Load this submission into your local MySQL / MariaDB (XAMPP)
+# Set the project up on your local XAMPP MariaDB, and watch dbt build it
 
-One script, `01_load_submission_tables.sql`, tested on MariaDB 10.11. It creates `jsb_assessment`
-(Exercises 1 and 2, 6 tables) and `jsb_platform` (Exercise 3, 23 tables), and loads the exact rows
-every figure in the submission was computed from. **Re-running drops and reloads these 29 tables,
-so any later changes to them are lost.** It never touches tables it didn't create.
+## Quick start
+Double-click **`setup_local.bat`** with XAMPP's MySQL running. It pauses after each step so you
+can look at the result in Workbench.
 
-The old builds were removed from the local server by Codex on 2026-09-28, after a full backup
-(see `../CODEX_REVIEW.md`). `00_drop_other_build_tables.sql` is withdrawn and does nothing.
+| Step | What runs | What you'll see in Workbench |
+|---|---|---|
+| 1 | `01_load_submission_tables.sql`, the source data | `jsb_assessment` (6 tables), `jsb_platform` (23 tables) |
+| 2 | Installs dbt 1.7 in a private Python environment (`local_load\.dbt-venv`, first run only) | nothing yet |
+| 3 | `dbt debug --target xampp`: checks dbt can connect | nothing yet |
+| 4 | `dbt run --select staging`: builds 11 views | `jsb_platform_staging` |
+| 5 | `dbt run --select marts`: builds 12 tables | `jsb_platform_marts` |
+| 6 | `dbt test`: runs 44 tests | nothing new; all should say PASS |
 
-**MySQL Workbench:** File → Open SQL Script → `01_load_submission_tables.sql` → Execute (lightning bolt).
+What each table is for, and why dbt adds 23 objects on top of the 29 base tables, is in
+`../TABLE_INVENTORY.md`.
 
-**Command line (XAMPP):**
+**Requirements:**
+- XAMPP MySQL/MariaDB on port 3306, user `root` with no password (the XAMPP default).
+- Python 3.9 to 3.11. dbt 1.7 doesn't support newer Pythons; if the install fails, install 3.11
+  from python.org.
+- If your `mysql.exe` isn't under `C:\xampp`, set it first:
+  `set XAMPP_MYSQL=C:\path\to\mysql\bin\mysql.exe`.
+
+## How dbt works here, in five points
+1. **`profiles.yml` says where the database is.** The `xampp` target points at your local server.
+   The `dev` target is the one used in the build container.
+2. **Each model is one `SELECT` in a `.sql` file** under `dbt_jsb_assessment/models/`. dbt wraps it
+   in `CREATE VIEW` or `CREATE TABLE`, as `dbt_project.yml` says. Staging models are views; marts
+   are tables.
+3. **Models refer to each other with `{{ ref('stg_bets') }}`, and to raw tables with
+   `{{ source('jsb_platform', 'bets') }}`.** From those references dbt works out the build order:
+   staging first, then the marts that read them.
+4. **To see the actual SQL dbt sent to the database**, look in
+   `dbt_jsb_assessment/target/run/jsb_assessment/models/...` after a run.
+5. **Tests are queries that must return no rows.** They're declared in `models/*/_*.yml` (unique,
+   not null, accepted values) or written in `tests/*.sql`. Examples: the bridge must reconcile to 0,
+   and the wallet balance cache must equal the ledger.
+
+## Useful commands
+Run these from `dbt_jsb_assessment`, after `set DBT_PROFILES_DIR=.`:
+
 ```bat
-C:\xampp\mysql\bin\mysql.exe -u root < 01_load_submission_tables.sql
+..\local_load\.dbt-venv\Scripts\dbt build --target xampp
+..\local_load\.dbt-venv\Scripts\dbt run --select fct_recon_exceptions --target xampp
+..\local_load\.dbt-venv\Scripts\dbt run --select +mart_recon_bridge --target xampp
+..\local_load\.dbt-venv\Scripts\dbt test --select fct_recon_exceptions --target xampp
+..\local_load\.dbt-venv\Scripts\dbt ls --target xampp
 ```
 
-It ends by printing row counts. You should see:
+They do the following, in order:
+1. Build and test everything.
+2. Rebuild one model.
+3. Rebuild a model and everything it depends on.
+4. Run the tests on one model.
+5. List every model and test.
 
-| Table | Rows |
-|---|---|
-| internal_deposits | 326 |
-| gateway_settlement | 306 |
-| transactions | 1,024 |
-| ingest_runs | 3 |
-| ingest_rejects | 1 |
-| jsb_platform tables | 23 |
+## Only the source data, without dbt
+Workbench → File → Open SQL Script → `01_load_submission_tables.sql` → Execute. It prints row
+counts at the end: 326 deposits, 306 settlements, 1,024 transactions, 3 runs, 1 reject, and 23
+`jsb_platform` tables.
 
-## Then, optionally
-- **Reconciliation:** run `exercise1-reconciliation/sql/03_reconciliation.sql`. It shows 274 exact matches and the bridge.
-- **dbt:** `cd dbt_jsb_assessment`, set your connection in `profiles.yml`, then run `dbt build`. It builds `jsb_platform_staging` (views) and `jsb_platform_marts` (tables).
+**Re-running resets the 29 base tables** to the submission data, so any later changes to them are
+lost. It never touches other tables.
 
-`build_load_sql.py` regenerates `01_load_submission_tables.sql` from the source files.
+## History
+The old builds were removed from the local server by Codex on 2026-09-28, after a full backup (see
+`../CODEX_REVIEW.md`). `00_drop_other_build_tables.sql` is withdrawn and does nothing.

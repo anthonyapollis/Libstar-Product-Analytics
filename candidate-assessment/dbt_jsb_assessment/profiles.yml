@@ -13,3 +13,13 @@ jsb_assessment:
       username: assess
       password: AssessPass123!
       threads: 4
+    # Local XAMPP MariaDB (root, no password: the XAMPP default).
+    # Used by local_load/setup_local.bat:  dbt build --target xampp
+    xampp:
+      type: mariadb
+      server: 127.0.0.1
+      port: 3306
+      schema: jsb_platform
+      username: root
+      password: ""
+      threads: 4

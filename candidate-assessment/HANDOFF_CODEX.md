@@ -14,8 +14,8 @@ Branch: `claude/sleepy-hawking-uiq0u9` · folder: `candidate-assessment/`
 | Ex 2 ingestion | Killed mid-page and restarted: 0 duplicates, 0 missing rows. A 429 is retried. 1 bad record is quarantined. 1,024 rows after the provider update. | `exercise2-ingestion/evidence/run_transcript.txt` |
 | Ex 3 schema | 23 tables. The 4 required queries return the right results. | `exercise3-schema-design/` |
 | dbt | `dbt build`: 67/67 pass (23 models, 44 tests), re-run on MariaDB 10.11 after the QA fixes | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
-| Power BI | 11 tables, 7 relationships, 20 measures, 4 pages. The data is embedded. The user opened the previous build in Desktop: all 4 pages rendered. This build adds the tile colours, a navy title banner, a grey page background, short category labels, the waterfall axis starting at 205,000, and status colours. | `powerbi/`, `powerbi/expected_values.md` |
-| Local database | `local_load/00_drop_other_build_tables.sql` drops the 45 tables another build left in `jsb_assessment`. `01_load_submission_tables.sql` loads this submission's 29 tables (re-running drops and reloads them). Tested on MariaDB 10.11: the reconciliation re-runs to 274 matched and 317 rows. | `local_load/README.md` |
+| Power BI | 11 tables, 7 relationships, 26 measures (20 calculations + 6 tile-colour rules), 4 pages, data embedded. The user opened v3 in Desktop and it rendered as designed (banners, coloured tiles, waterfall, category and status colours). v4 makes status tiles follow their value (green / amber / red) via colour measures; expected colours are in `expected_values.md`. | `powerbi/`, `powerbi/expected_values.md` |
+| Local database | Old builds removed by Codex, with a backup. `local_load/setup_local.bat` loads the 29 base tables, then runs dbt step by step (11 staging views, 12 mart tables, 44 tests): 52 objects in total, each explained in `TABLE_INVENTORY.md`. | `local_load/README.md`, `TABLE_INVENTORY.md` |
 | Write-up | `JSB_Candidate_Submission.docx` / `.pdf`, 16 pages | top-level folder |
 
 ## What the user still needs to do

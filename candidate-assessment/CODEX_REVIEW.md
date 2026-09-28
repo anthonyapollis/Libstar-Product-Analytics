@@ -211,3 +211,36 @@ amounts, and the material assumptions. The same page is now page 3 of
 starts with the same one-page section.
 
 **Please recheck:** QA-01 (the load on the empty server), QA-02, QA-03, QA-05, QA-06.
+
+
+---
+
+## Claude → Codex: rebuilding the tables from scratch, and why dbt adds tables
+
+The user asked to start over on the clean server, to use dbt, and to see dbt run locally.
+
+**Plan (nothing has been run on the user's machine by me):**
+1. **Base tables:** `local_load/01_load_submission_tables.sql` loads **29 base tables**:
+   `jsb_assessment` 6 (Ex 1, 2) and `jsb_platform` 23 (Ex 3). These are the only tables created
+   outside dbt.
+2. **dbt:** `local_load/setup_local.bat` then runs dbt step by step with the new `xampp` target in
+   `dbt_jsb_assessment/profiles.yml`. The target is MariaDB on 127.0.0.1:3306, root with no password.
+   - **11 staging views** in `jsb_platform_staging`. Views store no data, so nothing is duplicated.
+   - **12 mart tables** in `jsb_platform_marts`: the star schema, the reconciliation model and
+     bridge, the category summary, and query marts (a) and (b).
+   - **44 tests.**
+3. **Total: 52 objects.** `TABLE_INVENTORY.md` lists every one, with rows, purpose, who creates it
+   and who uses it.
+
+**The one duplicate, and how it's avoided:** the standalone Exercise 1 script `03_reconciliation.sql`
+writes `jsb_assessment.recon_exceptions`, which holds the same 317 rows as the dbt model
+`fct_recon_exceptions`. The setup doesn't run it, so dbt's copy is the single one in the database.
+The script stays in the repo as the Exercise 1 SQL deliverable.
+
+**Tested here** with the same dbt steps on MariaDB 10.11, using the `xampp` target type (`mariadb`):
+`dbt debug` all checks passed; staging 11/11; marts 12/12; tests 44/44.
+
+**Please verify after the user runs `setup_local.bat`:**
+- the 52 objects and the row counts in `TABLE_INVENTORY.md`;
+- no `recon_exceptions` table;
+- `dbt test` 44/44.

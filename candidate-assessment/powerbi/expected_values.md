@@ -76,3 +76,23 @@ and the dbt marts.
 | Column, failed | 214 |
 | Column, pending | 207 |
 | Column, reversed | 16 |
+
+## KPI tile colours
+
+Status tiles are coloured by a rule on their own value; the others have a fixed colour.
+
+| Page | Tile | Expected colour |
+|---|---|---|
+| NGR overview | GGR | red (rule) |
+| NGR overview | Bonus Cost (realised) | amber (fixed: a cost) |
+| NGR overview | NGR | red (rule) |
+| NGR overview | Bonus Liability Outstanding | purple (fixed: owed, not yet a cost) |
+| Player balances | Deposits | green (fixed: money in) |
+| Reconciliation | Settlements Matched Exactly | green (fixed) |
+| Reconciliation | Exceptions | amber (rule) |
+| Reconciliation | Act Now Value | red (rule) |
+| Reconciliation | Bridge Residual | green (rule) |
+| Ingestion monitoring | Transactions Loaded | green (fixed) |
+| Ingestion monitoring | Ingestion Runs | navy (fixed: informational) |
+| Ingestion monitoring | Rows Rejected | amber (rule) |
+| Ingestion monitoring | Rate-Limit Retries | teal (fixed: informational, retries are handled) |

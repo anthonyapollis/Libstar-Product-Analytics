@@ -148,12 +148,23 @@ RELATIONSHIPS = [
     ("fact_bonus_transaction", "campaign_id", "dim_campaign", "campaign_id"),
 ]
 
+# Tile colours for status KPIs: a text measure returning a hex colour, bound to the tile
+# background, so the colour follows the number (green = fine, amber = look, red = act).
+TILE_GREEN, TILE_AMBER, TILE_RED = '"#1E8C5A"', '"#D9901A"', '"#C8413A"'
+
+
+def tile_rule(condition, when_true, when_false):
+    return f"IF ( {condition}, {when_true}, {when_false} )"
+
+
 ACT_NOW = ('"BREAK: payment confirmed, wallet not credited", '
            '"BREAK: unrecognised settlement (no internal record)"')
 
 # table -> [(measure, DAX, format)]
 MEASURES = {
     "fact_bet": [
+        ("GGR Tile Colour", tile_rule("[GGR] < 0", TILE_RED, TILE_GREEN), None),
+        ("NGR Tile Colour", tile_rule("[NGR] < 0", TILE_RED, TILE_GREEN), None),
         ("Turnover", 'CALCULATE ( SUM ( fact_bet[total_stake] ), fact_bet[status] IN { "won", "lost" } )', "#,0.00"),
         ("Payouts", 'CALCULATE ( SUM ( fact_bet[payout_amount] ), fact_bet[status] IN { "won", "lost" } )', "#,0.00"),
         ("GGR", "[Turnover] - [Payouts]", "#,0.00"),
@@ -179,6 +190,8 @@ MEASURES = {
          "#,0.00"),
     ],
     "fct_recon_exceptions": [
+        ("Exceptions Tile Colour", tile_rule("[Exceptions] > 0", TILE_AMBER, TILE_GREEN), None),
+        ("Act Now Tile Colour", tile_rule("[Act Now Value] > 0", TILE_RED, TILE_GREEN), None),
         ("Settlements Matched Exactly",
          'CALCULATE ( COUNTROWS ( fct_recon_exceptions ), fct_recon_exceptions[category_type] = "OK" )', "#,0"),
         ("Exceptions",
@@ -190,11 +203,13 @@ MEASURES = {
          "#,0.00"),
     ],
     "mart_recon_bridge": [
+        ("Residual Tile Colour", tile_rule("ABS ( [Bridge Residual] ) < 0.005", TILE_GREEN, TILE_RED), None),
         ("Bridge Amount", "SUM ( mart_recon_bridge[amount] )", "#,0.00"),
         # Must be 0.00: every rand between the two totals is explained by a bridge step.
         ("Bridge Residual", "SUM ( mart_recon_bridge[amount] ) - MAX ( mart_recon_bridge[gateway_settled_total] )", "#,0.00"),
     ],
     "ingest_runs": [
+        ("Rejected Tile Colour", tile_rule("[Rows Rejected] > 0", TILE_AMBER, TILE_GREEN), None),
         ("Ingestion Runs", "COUNTROWS ( ingest_runs )", "#,0"),
         ("Rows Rejected", "SUM ( ingest_runs[rows_rejected] )", "#,0"),
         ("Rate-Limit Retries", "SUM ( ingest_runs[rate_limit_hits] )", "#,0"),
@@ -257,7 +272,7 @@ def build_model():
         if tname in MEASURES:
             table["measures"] = [
                 {"name": n, "expression": e.split("\n") if "\n" in e else e,
-                 "formatString": f, "lineageTag": guid()}
+                 **({"formatString": f} if f else {}), "lineageTag": guid()}
                 for n, e, f in MEASURES[tname]
             ]
         tables.append(table)
@@ -304,6 +319,7 @@ def field(table, name, kind, alias):
 # ---- styling -------------------------------------------------------------
 NAVY, PAGE_BG, BORDER, WHITE = "#16325C", "#EEF2F7", "#D6DEE9", "#FFFFFF"
 GREEN, RED, AMBER, PURPLE, GREY = "#1E8C5A", "#C8413A", "#D9901A", "#6E4FC2", "#8A94A6"
+TEAL = "#1F7A8C"
 LIGHT_BLUE = "#8DB3E2"
 
 
@@ -397,13 +413,24 @@ def banner(name, text, subtitle):
         {"textRuns": runs}]}}]}, vc=container(bg=NAVY, border=NAVY, radius="0D"))
 
 
-def card(name, table, measure, x, y=74, w=295, h=110, bg=NAVY):
-    """KPI tile: coloured background, white value, no unit abbreviation (3,150.00 not 3.15K)."""
+def measure_color(table, measure):
+    """Colour taken from a measure's value (conditional formatting by field value)."""
+    return {"solid": {"color": {"expr": {"Measure": {"Expression": {"SourceRef": {"Entity": table}},
+                                                     "Property": measure}}}}}
+
+
+def card(name, table, measure, x, y=74, w=295, h=110, bg=NAVY, rule=None):
+    """KPI tile: coloured background, white value, no unit abbreviation (3,150.00 not 3.15K).
+    bg: fixed colour for informational tiles; rule: (table, colour measure) for status tiles."""
+    vc = container(bg=bg, border=bg, radius="10D")
+    if rule:
+        for prop in ("background", "border"):
+            vc[prop][0]["properties"]["color"] = measure_color(*rule)
     return visual(name, "card", (x, y, w, h), {"Values": [(table, measure, "m")]},
                   objects={"labels": [{"properties": {"color": color(WHITE), "fontSize": lit("26D"),
                                                       "labelDisplayUnits": lit("1D")}}],
-                           "categoryLabels": [{"properties": {"color": color("#E4EBF5"), "fontSize": lit("11D")}}]},
-                  vc=container(bg=bg, border=bg, radius="10D"))
+                           "categoryLabels": [{"properties": {"color": color("#EEF3F9"), "fontSize": lit("11D")}}]},
+                  vc=vc)
 
 
 PAGE_CONFIG = {"objects": {
@@ -423,10 +450,10 @@ def build_report():
     pages = [
         ("NGR overview", [
             banner("title1", "NGR overview", "Exercise 3 seed data, September 2026 · NAD"),
-            card("card_ggr", fb, "GGR", X[0]),
-            card("card_bonus", fb, "Bonus Cost (realised)", X[1]),
-            card("card_ngr", fb, "NGR", X[2]),
-            card("card_liab", fbt, "Bonus Liability Outstanding", X[3]),
+            card("card_ggr", fb, "GGR", X[0], rule=(fb, "GGR Tile Colour")),
+            card("card_bonus", fb, "Bonus Cost (realised)", X[1], bg=AMBER),
+            card("card_ngr", fb, "NGR", X[2], rule=(fb, "NGR Tile Colour")),
+            card("card_liab", fbt, "Bonus Liability Outstanding", X[3], bg=PURPLE),
             visual("col_ngr_product", "clusteredColumnChart", (20, 200, 700, 500),
                    {"Category": [(fb, "product", "c")], "Y": [(fb, "GGR", "m"), (fb, "NGR", "m")]},
                    title="GGR and NGR by product (NAD)", labels=True,
@@ -443,7 +470,7 @@ def build_report():
             banner("title2", "Player balances", "Rebuilt from the append-only wallet ledger · NAD"),
             visual("slicer_date", "slicer", (20, 74, 610, 120), {"Values": [("dim_date", "date_day", "c")]},
                    title="Balance as of (drag the end date)"),
-            card("card_deposits", fwt, "Deposits", X[2], h=120),
+            card("card_deposits", fwt, "Deposits", X[2], h=120, bg=GREEN),
             visual("tbl_balance", "tableEx", (20, 210, 700, 300),
                    {"Values": [("dim_player", "player_id", "c"), (fwt, "balance_type", "c"),
                                (fwt, "Balance as of selected date", "m")]},
@@ -452,9 +479,9 @@ def build_report():
         ("Reconciliation", [
             banner("title3", "Gateway reconciliation", "1–7 September 2026 · 306 settlements · NAD"),
             card("card_matched", fre, "Settlements Matched Exactly", X[0], bg=GREEN),
-            card("card_exceptions", fre, "Exceptions", X[1], bg=AMBER),
-            card("card_actnow", fre, "Act Now Value", X[2], bg=RED),
-            card("card_residual", brg, "Bridge Residual", X[3], bg=NAVY),
+            card("card_exceptions", fre, "Exceptions", X[1], rule=(fre, "Exceptions Tile Colour")),
+            card("card_actnow", fre, "Act Now Value", X[2], rule=(fre, "Act Now Tile Colour")),
+            card("card_residual", brg, "Bridge Residual", X[3], rule=(brg, "Residual Tile Colour")),
             visual("wf_bridge", "waterfallChart", (20, 200, 760, 500),
                    {"Category": [(brg, "step", "c")], "Y": [(brg, "Bridge Amount", "m")]},
                    title="Bridge: internal total to gateway total (axis starts at 205,000)",
@@ -480,8 +507,8 @@ def build_report():
             banner("title4", "API ingestion monitoring", "Exercise 2 · incremental, restartable load · 3 runs"),
             card("card_loaded", txn, "Transactions Loaded", X[0], bg=GREEN),
             card("card_runs", runs, "Ingestion Runs", X[1]),
-            card("card_rejected", runs, "Rows Rejected", X[2], bg=AMBER),
-            card("card_429", runs, "Rate-Limit Retries", X[3]),
+            card("card_rejected", runs, "Rows Rejected", X[2], rule=(runs, "Rejected Tile Colour")),
+            card("card_429", runs, "Rate-Limit Retries", X[3], bg=TEAL),
             visual("tbl_runs", "tableEx", (20, 200, 760, 220),
                    {"Values": [(runs, "run_id", "c"), (runs, "status", "c"), (runs, "started_at", "c"),
                                (runs, "pages_fetched", "c"), (runs, "rows_upserted", "c"),
@@ -567,9 +594,23 @@ def validate(model, report):
             if expr.count("(") != expr.count(")"):
                 errors.append(f"{t}[{m['name']}] unbalanced parentheses")
 
+    def entity_measures(node):
+        if isinstance(node, dict):
+            m = node.get("Measure")
+            if isinstance(m, dict) and "Entity" in m.get("Expression", {}).get("SourceRef", {}):
+                yield m["Expression"]["SourceRef"]["Entity"], m["Property"]
+            for v in node.values():
+                yield from entity_measures(v)
+        elif isinstance(node, list):
+            for v in node:
+                yield from entity_measures(v)
+
     for s in report["sections"]:
         for vc in s["visualContainers"]:
             cfg = json.loads(vc["config"])
+            for ref in entity_measures(cfg):
+                if ref not in meas:
+                    errors.append(f"visual {cfg['name']}: formatting measure {ref} not in model")
             sv = cfg["singleVisual"]
             if "prototypeQuery" not in sv:
                 continue
@@ -659,6 +700,23 @@ def expected_values():
           f"| Card: Rate-Limit Retries | {runs.rate_limit_hits.sum()} |"]
     for st, n in txn.status.value_counts().items():
         L.append(f"| Column, {st} | {n} |")
+    rule = lambda bad, bad_colour: f"{bad_colour} (rule)" if bad else "green (rule)"
+    L += ["", "## KPI tile colours", "",
+          "Status tiles are coloured by a rule on their own value; the others have a fixed colour.", "",
+          "| Page | Tile | Expected colour |", "|---|---|---|",
+          f"| NGR overview | GGR | {rule(ggr_all < 0, 'red')} |",
+          "| NGR overview | Bonus Cost (realised) | amber (fixed: a cost) |",
+          f"| NGR overview | NGR | {rule(ngr_all < 0, 'red')} |",
+          "| NGR overview | Bonus Liability Outstanding | purple (fixed: owed, not yet a cost) |",
+          "| Player balances | Deposits | green (fixed: money in) |",
+          "| Reconciliation | Settlements Matched Exactly | green (fixed) |",
+          f"| Reconciliation | Exceptions | {rule(len(exc) > 0, 'amber')} |",
+          f"| Reconciliation | Act Now Value | {rule(act_now > 0, 'red')} |",
+          f"| Reconciliation | Bridge Residual | {rule(abs(brg.amount.sum() - brg.gateway_settled_total.max()) >= 0.005, 'red')} |",
+          "| Ingestion monitoring | Transactions Loaded | green (fixed) |",
+          "| Ingestion monitoring | Ingestion Runs | navy (fixed: informational) |",
+          f"| Ingestion monitoring | Rows Rejected | {rule(runs.rows_rejected.sum() > 0, 'amber')} |",
+          "| Ingestion monitoring | Rate-Limit Retries | teal (fixed: informational, retries are handled) |"]
     return "\n".join(L) + "\n"
 
 
@@ -706,7 +764,8 @@ def main():
     for t, ms in MEASURES.items():
         dax.append(f"-- ===== table: {t} =====")
         for n, e, f in ms:
-            dax += [f"{n} =", *("    " + line for line in e.split("\n")), f"    -- format: {f}", ""]
+            dax += [f"{n} =", *("    " + line for line in e.split("\n")),
+                    f"    -- format: {f}" if f else "    -- hex colour for a KPI tile background", ""]
     (HERE / "measures.dax").write_text("\n".join(dax), encoding="utf-8")
     (HERE / "expected_values.md").write_text(expected_values(), encoding="utf-8")
 
