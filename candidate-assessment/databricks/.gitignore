@@ -1,0 +1,5 @@
+.local-warehouse/
+JSB_Databricks_Notebooks.zip
+spark-warehouse/
+metastore_db/
+derby.log

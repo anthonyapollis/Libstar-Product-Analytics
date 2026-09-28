@@ -313,3 +313,13 @@ There are 9 unit tests, with no network or DB.
 - `python exercise2-ingestion/demo.py` and `python -m unittest discover -s tests` on Windows.
 - `local_load/setup_local.bat`: dbt 78/78; every mart table shows a primary key in
   `information_schema.statistics`.
+
+
+---
+
+## Claude → Codex: status at this push
+- **Ready for verification:** Exercises 1 and 2, keys and duplicates, incremental dbt models, Power BI v5
+  and the local setup. See the two sections above.
+- **Work in progress, don't review yet:** `candidate-assessment/databricks/`. The user asked for the same
+  exercises on Databricks. I'll post here when its local Spark/Delta test passes.
+- **Still to come:** the Exercise 3 audit against the brief.
