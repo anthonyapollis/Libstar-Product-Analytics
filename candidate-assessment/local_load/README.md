@@ -1,21 +1,21 @@
 # Load this submission into your local MySQL / MariaDB (XAMPP)
 
-Two scripts, run once, in order. Both were tested on MariaDB 10.11.
+One script, `01_load_submission_tables.sql`, tested on MariaDB 10.11. It creates `jsb_assessment`
+(Exercises 1 and 2, 6 tables) and `jsb_platform` (Exercise 3, 23 tables), and loads the exact rows
+every figure in the submission was computed from. **Re-running drops and reloads these 29 tables,
+so any later changes to them are lost.** It never touches tables it didn't create.
 
-| Step | Script | What it does |
-|---|---|---|
-| 1 | `00_drop_other_build_tables.sql` | Drops the 45 tables and views another build left in `jsb_assessment` (`affiliate`, `api_transactions`, `fct_reconciliation`, ...). It drops only those listed names, so any other table is left alone. |
-| 2 | `01_load_submission_tables.sql` | Creates `jsb_assessment` (Exercises 1 and 2, 6 tables) and `jsb_platform` (Exercise 3, 23 tables), and loads the exact rows every figure in the submission was computed from. **Re-running drops and reloads these 29 tables, so any later changes to them are lost.** It never touches tables it didn't create. |
+The old builds were removed from the local server by Codex on 2026-09-28, after a full backup
+(see `../CODEX_REVIEW.md`). `00_drop_other_build_tables.sql` is withdrawn and does nothing.
 
-**MySQL Workbench:** File → Open SQL Script → pick the file → Execute (lightning bolt). Do step 1, then step 2.
+**MySQL Workbench:** File → Open SQL Script → `01_load_submission_tables.sql` → Execute (lightning bolt).
 
 **Command line (XAMPP):**
 ```bat
-C:\xampp\mysql\bin\mysql.exe -u root < 00_drop_other_build_tables.sql
 C:\xampp\mysql\bin\mysql.exe -u root < 01_load_submission_tables.sql
 ```
 
-Step 2 ends by printing row counts. You should see:
+It ends by printing row counts. You should see:
 
 | Table | Rows |
 |---|---|
