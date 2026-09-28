@@ -5,6 +5,7 @@ following `# MAGIC %run ./x` and skipping Markdown cells. Needs: pip install "py
 Usage: python run_local.py [notebook ...]      (default: all, in order)
 """
 import re
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -17,12 +18,16 @@ WAREHOUSE = Path(__file__).resolve().parent / ".local-warehouse"
 
 
 def spark_session():
+    # A local test starts from an empty warehouse of its own (the metastore is in-memory).
+    shutil.rmtree(WAREHOUSE, ignore_errors=True)
     b = (SparkSession.builder.master("local[2]").appName("jsb-local")
          .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
          .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
          .config("spark.sql.warehouse.dir", str(WAREHOUSE))
          .config("spark.sql.shuffle.partitions", "4")
-         .config("spark.ui.enabled", "false"))
+         .config("spark.sql.sources.default", "delta")
+         .config("spark.ui.enabled", "false")
+         .config("spark.ui.showConsoleProgress", "false"))
     spark = configure_spark_with_delta_pip(b).getOrCreate()
     spark.sparkContext.setLogLevel("ERROR")
     return spark

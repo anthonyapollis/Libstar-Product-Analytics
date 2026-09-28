@@ -131,9 +131,44 @@ def key_constraints(tables, fks):
     return stmts
 
 
-def seed_statements(sql):
+def value_tuples(values):
+    """Split 'VALUES (..),(..)' into tuples, respecting quotes and parentheses."""
+    out, depth, cur, quote = [], 0, "", False
+    for ch in values:
+        if ch == "'" :
+            quote = not quote
+        if not quote and ch == "(":
+            depth += 1
+            if depth == 1:
+                cur = ""
+                continue
+        if not quote and ch == ")":
+            depth -= 1
+            if depth == 0:
+                out.append(cur)
+                continue
+        if depth >= 1:
+            cur += ch
+    return out
+
+
+def seed_statements(sql, identity_cols):
+    """INSERTs from seed.sql. Where MySQL's AUTO_INCREMENT numbered rows the seed leaves out, the id is
+    written explicitly (1, 2, ... per table: exactly what AUTO_INCREMENT assigns), so the data is identical."""
     sql = re.sub(r"--[^\n]*", "", sql)
-    return [" ".join(s.split()) for s in sql.split(";") if s.strip().upper().startswith("INSERT")]
+    counters, out = {}, []
+    for stmt in [" ".join(s.split()) for s in sql.split(";") if s.strip().upper().startswith("INSERT")]:
+        m = re.match(r"INSERT INTO (\w+) \((.*?)\) VALUES (.*)$", stmt)
+        table, cols, values = m.group(1), [c.strip() for c in m.group(2).split(",")], m.group(3)
+        idc = identity_cols.get(table)
+        if idc and idc not in cols:
+            rows = []
+            for t in value_tuples(values):
+                counters[table] = counters.get(table, 0) + 1
+                rows.append(f"({counters[table]},{t})")
+            stmt = f"INSERT INTO {table} ({idc}, {', '.join(cols)}) VALUES {', '.join(rows)}"
+        out.append(stmt)
+    return out
 
 
 # --------------------------------------------------------------------------- build
@@ -162,7 +197,9 @@ def main():
         "__DDL_STATEMENTS__": pylist(ddl_statements(tables)),
         "__CHECK_CONSTRAINTS__": pylist(checks),
         "__KEY_CONSTRAINTS__": pylist(key_constraints(tables, fks)),
-        "__SEED_STATEMENTS__": pylist(seed_statements((EX3 / "seed.sql").read_text(encoding="utf-8"))),
+        "__SEED_STATEMENTS__": pylist(seed_statements((EX3 / "seed.sql").read_text(encoding="utf-8"),
+                                                      {n: c.split()[0] for n, cols, _ in tables for c in cols
+                                                       if "AS IDENTITY" in c})),
         "__KEY_CHECKS__": pylist(k for k in keys if k[1]),
         "__FK_CHECKS__": pylist((c, cc, p, pc) for c, _, cc, p, pc in fks),
     }

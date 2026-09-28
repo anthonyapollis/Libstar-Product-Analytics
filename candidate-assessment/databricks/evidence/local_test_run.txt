@@ -1,0 +1,293 @@
+######## 01_exercise1_reconciliation ########
+Using jsb_assessment (Databricks: False)
+after first load: (326, 306)  after loading the same files again: (326, 306)
+PASS: 326 deposits and 306 settlements; reloading adds no duplicates
++------------------+---------+-------------+
+|source            |row_count|success_total|
++------------------+---------+-------------+
+|internal_deposits |326      |218280.00    |
+|gateway_settlement|306      |217979.97    |
++------------------+---------+-------------+
++-----------------+---------------------------------------------------------------------------------+----+----------+
+|classification   |category                                                                         |rows|impact_nad|
++-----------------+---------------------------------------------------------------------------------+----+----------+
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|6   |0.00      |
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |5   |2700.00   |
+|Genuine break    |BREAK: settled fee differs from contracted fee                                   |4   |3.75      |
+|Genuine break    |BREAK: settled gross amount differs from internal amount                         |4   |-900.00   |
+|Genuine break    |BREAK: duplicate gateway settlement for one reference (double-credit risk)       |4   |0.00      |
+|Genuine break    |BREAK: unrecognised settlement (no internal record)                              |4   |2900.00   |
+|Genuine break    |REVERSAL: gateway reversed/charged back after settlement                         |3   |850.00    |
+|Genuine break    |BREAK: net amount is not gross minus fee                                         |2   |4.00      |
+|Genuine break    |BREAK: payment confirmed, wallet not credited                                    |2   |250.00    |
+|Matched          |OK: matched, amount and fee correct                                              |274 |0.00      |
+|Not a problem    |NOT A PROBLEM: rounding difference <= 1 cent                                     |3   |0.03      |
+|Timing difference|TIMING: settlement expected in next period (created near cut-off)                |3   |3650.00   |
+|Timing difference|TIMING: prior-period deposit settled at start of period                          |3   |2600.00   |
++-----------------+---------------------------------------------------------------------------------+----+----------+
++----------+-----------------------------------+---------+-------------+
+|step_order|step                               |amount   |running_total|
++----------+-----------------------------------+---------+-------------+
+|1         |Internal SUCCESS deposits          |218280.00|218280.00    |
+|2         |Duplicate internal deposits        |-1300.00 |216980.00    |
+|3         |Reversals                          |-850.00  |216130.00    |
+|4         |Not yet settled                    |-2700.00 |213430.00    |
+|5         |Settles next period (provisional)  |-3650.00 |209780.00    |
+|6         |Prior-period deposits (provisional)|2600.00  |212380.00    |
+|7         |Unrecognised settlements           |2900.00  |215280.00    |
+|8         |Settled but marked FAILED          |250.00   |215530.00    |
+|9         |Duplicate gateway rows             |1550.00  |217080.00    |
+|10        |Gross amount differences           |900.00   |217980.00    |
+|11        |Rounding (1 cent)                  |-0.03    |217979.97    |
++----------+-----------------------------------+---------+-------------+
+PASS: BREAK: deposit SUCCESS, no gateway settlement found: 5 rows, 2,700.00
+PASS: BREAK: duplicate gateway settlement for one reference (double-credit risk): 4 rows, 0.00
+PASS: BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk): 6 rows, 0.00
+PASS: BREAK: net amount is not gross minus fee: 2 rows, 4.00
+PASS: BREAK: payment confirmed, wallet not credited: 2 rows, 250.00
+PASS: BREAK: settled fee differs from contracted fee: 4 rows, 3.75
+PASS: BREAK: settled gross amount differs from internal amount: 4 rows, -900.00
+PASS: BREAK: unrecognised settlement (no internal record): 4 rows, 2,900.00
+PASS: NOT A PROBLEM: rounding difference <= 1 cent: 3 rows, 0.03
+PASS: OK: matched, amount and fee correct: 274 rows, 0.00
+PASS: REVERSAL: gateway reversed/charged back after settlement: 3 rows, 850.00
+PASS: TIMING: prior-period deposit settled at start of period: 3 rows, 2,600.00
+PASS: TIMING: settlement expected in next period (created near cut-off): 3 rows, 3,650.00
+PASS: no unexpected categories
+bridge ends at 217,979.97; gateway SETTLED total 217,979.97
+PASS: bridge residual is exactly 0.00
+PASS: recon_key is unique (one row per deposit/settlement pair)
++-----------------+---------------------------------------------------------------------------------+----------+--------------+-----------+------------+----------+------------+------+------------+----------+----------------+
+|classification   |category                                                                         |deposit_id|gateway_txn_id|gateway_ref|merchant_ref|dep_amount|gross_amount|fee   |expected_fee|net_amount|financial_impact|
++-----------------+---------------------------------------------------------------------------------+----------+--------------+-----------+------------+----------+------------+------+------------+----------+----------------+
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |D000055   |NULL          |GW-000055  |NULL        |150.00    |NULL        |NULL  |NULL        |NULL      |150.00          |
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |D000125   |NULL          |GW-000125  |NULL        |1000.00   |NULL        |NULL  |NULL        |NULL      |1000.00         |
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |D000182   |NULL          |GW-000182  |NULL        |500.00    |NULL        |NULL  |NULL        |NULL      |500.00          |
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |D000218   |NULL          |GW-000218  |NULL        |50.00     |NULL        |NULL  |NULL        |NULL      |50.00           |
+|Genuine break    |BREAK: deposit SUCCESS, no gateway settlement found                              |D000269   |NULL          |GW-000269  |NULL        |1000.00   |NULL        |NULL  |NULL        |NULL      |1000.00         |
+|Genuine break    |BREAK: duplicate gateway settlement for one reference (double-credit risk)       |D000164   |GT900164      |GW-000164  |GW-000164   |1500.00   |1500.00     |31.00 |31.00       |1469.00   |0.00            |
+|Genuine break    |BREAK: duplicate gateway settlement for one reference (double-credit risk)       |D000164   |GT900164      |GW-000164  |GW-000164   |1500.00   |1500.00     |31.00 |31.00       |1469.00   |0.00            |
+|Genuine break    |BREAK: duplicate gateway settlement for one reference (double-credit risk)       |D000223   |GT900223      |GW-000223  |GW-000223   |50.00     |50.00       |2.00  |2.00        |48.00     |0.00            |
+|Genuine break    |BREAK: duplicate gateway settlement for one reference (double-credit risk)       |D000223   |GT900223      |GW-000223  |GW-000223   |50.00     |50.00       |2.00  |2.00        |48.00     |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000047   |GT900047      |GW-000047  |GW-000047   |1000.00   |1000.00     |21.00 |21.00       |979.00    |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000325   |GT900047      |GW-000047  |GW-000047   |1000.00   |1000.00     |21.00 |21.00       |979.00    |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000140   |GT900140      |GW-000140  |GW-000140   |150.00    |150.00      |4.00  |4.00        |146.00    |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000326   |GT900140      |GW-000140  |GW-000140   |150.00    |150.00      |4.00  |4.00        |146.00    |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000168   |GT900168      |GW-000168  |GW-000168   |150.00    |150.00      |4.00  |4.00        |146.00    |0.00            |
+|Genuine break    |BREAK: duplicate internal SUCCESS deposit for one settlement (double-credit risk)|D000327   |GT900168      |GW-000168  |GW-000168   |150.00    |150.00      |4.00  |4.00        |146.00    |0.00            |
+|Genuine break    |BREAK: net amount is not gross minus fee                                         |D000133   |GT900133      |GW-000133  |GW-000133   |1000.00   |1000.00     |21.00 |21.00       |977.00    |2.00            |
+|Genuine break    |BREAK: net amount is not gross minus fee                                         |D000289   |GT900289      |GW-000289  |GW-000289   |500.00    |500.00      |11.00 |11.00       |487.00    |2.00            |
+|Genuine break    |BREAK: payment confirmed, wallet not credited                                    |D000306   |GT900306      |GW-000306  |GW-000306   |150.00    |150.00      |4.00  |4.00        |146.00    |150.00          |
+|Genuine break    |BREAK: payment confirmed, wallet not credited                                    |D000305   |GT900305      |GW-000305  |GW-000305   |100.00    |100.00      |3.00  |3.00        |97.00     |100.00          |
+|Genuine break    |BREAK: settled fee differs from contracted fee                                   |D000022   |GT900022      |GW-000022  |GW-000022   |200.00    |200.00      |6.00  |5.00        |194.00    |1.00            |
+|Genuine break    |BREAK: settled fee differs from contracted fee                                   |D000134   |GT900134      |GW-000134  |GW-000134   |150.00    |150.00      |4.75  |4.00        |145.25    |0.75            |
+|Genuine break    |BREAK: settled fee differs from contracted fee                                   |D000219   |GT900219      |GW-000219  |GW-000219   |100.00    |100.00      |3.50  |3.00        |96.50     |0.50            |
+|Genuine break    |BREAK: settled fee differs from contracted fee                                   |D000275   |GT900275      |GW-000275  |GW-000275   |300.00    |300.00      |8.50  |7.00        |291.50    |1.50            |
+|Genuine break    |BREAK: settled gross amount differs from internal amount                         |D000048   |GT900048      |GW-000048  |GW-000048   |100.00    |50.00       |2.00  |2.00        |48.00     |50.00           |
+|Genuine break    |BREAK: settled gross amount differs from internal amount                         |D000056   |GT900056      |GW-000056  |GW-000056   |5000.00   |5100.00     |103.00|103.00      |4997.00   |-100.00         |
+|Genuine break    |BREAK: settled gross amount differs from internal amount                         |D000064   |GT900064      |GW-000064  |GW-000064   |200.00    |1000.00     |21.00 |21.00       |979.00    |-800.00         |
+|Genuine break    |BREAK: settled gross amount differs from internal amount                         |D000116   |GT900116      |GW-000116  |GW-000116   |200.00    |250.00      |6.00  |6.00        |244.00    |-50.00          |
+|Genuine break    |BREAK: unrecognised settlement (no internal record)                              |NULL      |GT900302      |GW-000302  |GW-000302   |NULL      |100.00      |3.00  |3.00        |97.00     |100.00          |
+|Genuine break    |BREAK: unrecognised settlement (no internal record)                              |NULL      |GT900303      |GW-000303  |GW-000303   |NULL      |500.00      |11.00 |11.00       |489.00    |500.00          |
+|Genuine break    |BREAK: unrecognised settlement (no internal record)                              |NULL      |GT900304      |GW-000304  |GW-000304   |NULL      |2000.00     |41.00 |41.00       |1959.00   |2000.00         |
+|Genuine break    |BREAK: unrecognised settlement (no internal record)                              |NULL      |GT900301      |GW-000301  |GW-000301   |NULL      |300.00      |7.00  |7.00        |293.00    |300.00          |
+|Genuine break    |REVERSAL: gateway reversed/charged back after settlement                         |D000097   |GT900097      |GW-000097  |GW-000097   |500.00    |500.00      |11.00 |11.00       |489.00    |500.00          |
+|Genuine break    |REVERSAL: gateway reversed/charged back after settlement                         |D000124   |GT900124      |GW-000124  |GW-000124   |250.00    |250.00      |6.00  |6.00        |244.00    |250.00          |
+|Genuine break    |REVERSAL: gateway reversed/charged back after settlement                         |D000273   |GT900273      |GW-000273  |GW-000273   |100.00    |100.00      |3.00  |3.00        |97.00     |100.00          |
+|Not a problem    |NOT A PROBLEM: rounding difference <= 1 cent                                     |D000068   |GT900068      |GW-000068  |GW-000068   |500.00    |499.99      |11.00 |11.00       |488.99    |0.01            |
+|Not a problem    |NOT A PROBLEM: rounding difference <= 1 cent                                     |D000208   |GT900208      |GW-000208  |GW-000208   |2000.00   |1999.99     |41.00 |41.00       |1958.99   |0.01            |
+|Not a problem    |NOT A PROBLEM: rounding difference <= 1 cent                                     |D000239   |GT900239      |GW-000239  |GW-000239   |100.00    |99.99       |3.00  |3.00        |96.99     |0.01            |
+|Timing difference|TIMING: prior-period deposit settled at start of period                          |NULL      |GT900331      |GW-000331  |GW-000331   |NULL      |2000.00     |41.00 |41.00       |1959.00   |2000.00         |
+|Timing difference|TIMING: prior-period deposit settled at start of period                          |NULL      |GT900332      |GW-000332  |GW-000332   |NULL      |100.00      |3.00  |3.00        |97.00     |100.00          |
+|Timing difference|TIMING: prior-period deposit settled at start of period                          |NULL      |GT900333      |GW-000333  |GW-000333   |NULL      |500.00      |11.00 |11.00       |489.00    |500.00          |
+|Timing difference|TIMING: settlement expected in next period (created near cut-off)                |D000328   |NULL          |GW-000328  |NULL        |2000.00   |NULL        |NULL  |NULL        |NULL      |2000.00         |
+|Timing difference|TIMING: settlement expected in next period (created near cut-off)                |D000329   |NULL          |GW-000329  |NULL        |1500.00   |NULL        |NULL  |NULL        |NULL      |1500.00         |
+|Timing difference|TIMING: settlement expected in next period (created near cut-off)                |D000330   |NULL          |GW-000330  |NULL        |150.00    |NULL        |NULL  |NULL        |NULL      |150.00          |
++-----------------+---------------------------------------------------------------------------------+----------+--------------+-----------+------------+----------+------------+------+------------+----------+----------------+
+######## 01_exercise1_reconciliation: OK in 44s
+######## 02_exercise2_incremental_ingestion ########
+Using jsb_assessment (Databricks: False)
+mock API on http://127.0.0.1:8765 (faults on)
+Run 1: 50-record pages; the process dies after writing page 2's data, before its checkpoint
+=== run 1 full initial load
+  page 1: 50 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  >>> killed after writing page 2, before its checkpoint
++-----------+------------+------------------+------------+
+|rows_loaded|distinct_ids|checkpoint_last_id|run_1_status|
++-----------+------------+------------------+------------+
+|100        |100         |TX000050          |RUNNING     |
++-----------+------------+------------------+------------+
+Run 2: restart. Page 2 is re-read (its rows are already there, so they count as unchanged).
+marked 1 earlier run(s) ABANDONED
+=== run 2 resuming from updated_since=2026-09-01T00:35:00Z (last id TX000050)
+  page 1: 149 new, 0 changed, 51 unchanged, 0 rejected, has_more=True
+  page 2: 200 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  page 3: 200 new, 0 changed, 0 unchanged, 0 rejected, has_more=True
+  page 4: 199 new, 0 changed, 0 unchanged, 1 rejected, has_more=True
+  page 5: 151 new, 0 changed, 0 unchanged, 0 rejected, has_more=False
+=== run 2 COMPLETED: 899 new, 0 changed, 51 unchanged, 1 rejected (429s: 0, 500s: 0)
+  [429 rate limited] sleeping 1.0s (attempt 1)
+API ids 1,000 = loaded 999 + quarantined 1 ['TX000777']; missing 0, stale 0, unexpected 0, duplicates 0
+PASS: the table matches the API exactly
+Run 3: run again straight away, with nothing new at the provider
+=== run 3 resuming from updated_since=2026-09-01T11:40:00Z (last id TX001000)
+  [500 server error] backing off 2s (attempt 1)
+  page 1: 0 new, 0 changed, 1 unchanged, 0 rejected, has_more=False
+=== run 3 COMPLETED: 0 new, 0 changed, 1 unchanged, 0 rejected (429s: 0, 500s: 1)
+Interviewer step: POST /admin/advance
+{'ok': True, 'total_records': 1025}
+Run 4: loads only the new and changed records
+=== run 4 resuming from updated_since=2026-09-01T11:40:00Z (last id TX001000)
+  page 1: 25 new, 40 changed, 1 unchanged, 0 rejected, has_more=False
+=== run 4 COMPLETED: 25 new, 40 changed, 1 unchanged, 0 rejected (429s: 0, 500s: 0)
+  [429 rate limited] sleeping 1.0s (attempt 1)
+API ids 1,025 = loaded 1,024 + quarantined 1 ['TX000777']; missing 0, stale 0, unexpected 0, duplicates 0
+PASS: the table matches the API exactly
++------+---------+-------------+--------+------------+--------------+-------------+---------------+-----------------+-------+-------------------------------------------------------------------------+
+|run_id|status   |pages_fetched|rows_new|rows_changed|rows_unchanged|rows_rejected|rate_limit_hits|server_error_hits|seconds|error_message                                                            |
++------+---------+-------------+--------+------------+--------------+-------------+---------------+-----------------+-------+-------------------------------------------------------------------------+
+|1     |ABANDONED|1            |50      |0           |0             |0            |0              |0                |NULL   |process stopped without finishing; later runs resumed from the checkpoint|
+|2     |COMPLETED|5            |899     |0           |51            |1            |0              |0                |32     |NULL                                                                     |
+|3     |COMPLETED|1            |0       |0           |1             |0            |0              |1                |8      |NULL                                                                     |
+|4     |COMPLETED|1            |25      |40          |1             |0            |0              |0                |7      |NULL                                                                     |
++------+---------+-------------+--------+------------+--------------+-------------+---------------+-----------------+-------+-------------------------------------------------------------------------+
++---------+-----------------+------------+----------------+
+|record_id|reason           |first_run_id|last_seen_run_id|
++---------+-----------------+------------+----------------+
+|TX000777 |missing player_id|2           |2               |
++---------+-----------------+------------+----------------+
++-------------+-----------+--------------------+--------+--------------------------+
+|source_system|next_cursor|last_updated_at     |last_id |updated_at                |
++-------------+-----------+--------------------+--------+--------------------------+
+|mock_provider|NULL       |2026-09-04T00:16:00Z|TX001024|2026-09-28 20:25:17.938498|
++-------------+-----------+--------------------+--------+--------------------------+
+PASS: the crashed run is marked ABANDONED
+PASS: a rerun with nothing new loads nothing
+PASS: after new activity: exactly 25 new and 40 changed
+PASS: the bad record (TX000777) is quarantined once
+######## 02_exercise2_incremental_ingestion: OK in 91s
+######## 03_exercise3_schema ########
+Using jsb_assessment (Databricks: False)
+23 tables created
+17 CHECK constraints added (enforced on every write)
+local run: 53 PK/FK declarations skipped (Unity Catalog only)
++-------------------+---+
+|t                  |n  |
++-------------------+---+
+|players            |3  |
+|bets               |4  |
+|wallet_transactions|10 |
+|player_bonuses     |2  |
++-------------------+---+
+refused: An error occurred while calling o46.sql.
+PASS: a negative stake violates ck_bets_stake_nonneg and is rejected
++-----------------------+-----------+--------------------------------------------------+--------------+
+|table                  |key        |columns                                           |duplicate_keys|
++-----------------------+-----------+--------------------------------------------------+--------------+
+|affiliates             |unique     |affiliate_code                                    |0             |
+|affiliates             |primary key|affiliate_id                                      |0             |
+|players                |primary key|player_id                                         |0             |
+|player_identity        |unique     |email                                             |0             |
+|player_identity        |primary key|player_id                                         |0             |
+|player_vip_tier_history|primary key|player_id, valid_from_utc                         |0             |
+|player_tag_history     |unique     |player_id, tag, valid_from_utc                    |0             |
+|player_tag_history     |primary key|tag_history_id                                    |0             |
+|wallets                |unique     |player_id, currency                               |0             |
+|wallets                |primary key|wallet_id                                         |0             |
+|wallet_transactions    |unique     |idempotency_key                                   |0             |
+|wallet_transactions    |primary key|wallet_txn_id                                     |0             |
+|payment_methods        |unique     |method_code                                       |0             |
+|payment_methods        |primary key|method_id                                         |0             |
+|deposit_attempts       |unique     |gateway_ref                                       |0             |
+|deposit_attempts       |primary key|deposit_attempt_id                                |0             |
+|withdrawal_requests    |unique     |request_id                                        |0             |
+|withdrawal_requests    |primary key|withdrawal_id                                     |0             |
+|bets                   |unique     |request_id                                        |0             |
+|bets                   |primary key|bet_id                                            |0             |
+|sports_events          |unique     |sport, league, home_team, away_team, starts_at_utc|0             |
+|sports_events          |primary key|event_id                                          |0             |
+|sports_bet_details     |primary key|bet_id                                            |0             |
+|bet_legs               |unique     |bet_id, event_id, market                          |0             |
+|bet_legs               |primary key|leg_id                                            |0             |
+|game_providers         |unique     |name                                              |0             |
+|game_providers         |primary key|provider_id                                       |0             |
+|games                  |unique     |provider_id, name                                 |0             |
+|games                  |primary key|game_id                                           |0             |
+|casino_round_details   |unique     |game_id, provider_round_ref                       |0             |
+|casino_round_details   |primary key|bet_id                                            |0             |
+|retail_locations       |unique     |name, address_city                                |0             |
+|retail_locations       |primary key|location_id                                       |0             |
+|devices                |unique     |fingerprint                                       |0             |
+|devices                |primary key|device_id                                         |0             |
+|retail_bet_details     |unique     |location_id, ticket_number                        |0             |
+|retail_bet_details     |primary key|bet_id                                            |0             |
+|bonus_campaigns        |unique     |name, valid_from_utc                              |0             |
+|bonus_campaigns        |primary key|campaign_id                                       |0             |
+|player_bonuses         |primary key|player_bonus_id                                   |0             |
+|bonus_rollover_events  |unique     |player_bonus_id, bet_id                           |0             |
+|bonus_rollover_events  |primary key|rollover_event_id                                 |0             |
++-----------------------+-----------+--------------------------------------------------+--------------+
++-----------------------------------------------+------------------------------------+-----------+
+|foreign_key                                    |references                          |orphan_rows|
++-----------------------------------------------+------------------------------------+-----------+
+|players(affiliate_id)                          |affiliates(affiliate_id)            |0          |
+|player_identity(player_id)                     |players(player_id)                  |0          |
+|player_vip_tier_history(player_id)             |players(player_id)                  |0          |
+|player_tag_history(player_id)                  |players(player_id)                  |0          |
+|wallets(player_id)                             |players(player_id)                  |0          |
+|wallet_transactions(wallet_id)                 |wallets(wallet_id)                  |0          |
+|wallet_transactions(player_id)                 |players(player_id)                  |0          |
+|wallet_transactions(reversal_of_wallet_txn_id) |wallet_transactions(wallet_txn_id)  |0          |
+|deposit_attempts(player_id)                    |players(player_id)                  |0          |
+|deposit_attempts(method_id)                    |payment_methods(method_id)          |0          |
+|withdrawal_requests(player_id)                 |players(player_id)                  |0          |
+|withdrawal_requests(method_id)                 |payment_methods(method_id)          |0          |
+|bets(player_id)                                |players(player_id)                  |0          |
+|sports_bet_details(bet_id)                     |bets(bet_id)                        |0          |
+|bet_legs(bet_id)                               |bets(bet_id)                        |0          |
+|bet_legs(event_id)                             |sports_events(event_id)             |0          |
+|games(provider_id)                             |game_providers(provider_id)         |0          |
+|casino_round_details(bet_id)                   |bets(bet_id)                        |0          |
+|casino_round_details(game_id)                  |games(game_id)                      |0          |
+|retail_bet_details(bet_id)                     |bets(bet_id)                        |0          |
+|retail_bet_details(location_id)                |retail_locations(location_id)       |0          |
+|retail_bet_details(device_id)                  |devices(device_id)                  |0          |
+|player_bonuses(player_id)                      |players(player_id)                  |0          |
+|player_bonuses(campaign_id)                    |bonus_campaigns(campaign_id)        |0          |
+|bonus_rollover_events(player_bonus_id)         |player_bonuses(player_bonus_id)     |0          |
+|bonus_rollover_events(bet_id)                  |bets(bet_id)                        |0          |
+|wallet_transactions(related_deposit_attempt_id)|deposit_attempts(deposit_attempt_id)|0          |
+|wallet_transactions(related_withdrawal_id)     |withdrawal_requests(withdrawal_id)  |0          |
+|wallet_transactions(related_bet_id)            |bets(bet_id)                        |0          |
+|wallet_transactions(related_player_bonus_id)   |player_bonuses(player_bonus_id)     |0          |
++-----------------------------------------------+------------------------------------+-----------+
+PASS: no duplicates on any of the 42 primary and natural keys
+PASS: no orphans on any of the 30 foreign keys
++----------+--------+--------+---------+----------+---------+
+|product   |turnover|payouts |ggr      |bonus_cost|ngr      |
++----------+--------+--------+---------+----------+---------+
+|casino    |50.0000 |80.0000 |-30.0000 |0.0000    |-30.0000 |
+|retail    |100.0000|0.0000  |100.0000 |0.0000    |100.0000 |
+|sportsbook|220.0000|360.0000|-140.0000|20.0000   |-160.0000|
++----------+--------+--------+---------+----------+---------+
+PASS: NGR: casino -30, retail 100, sportsbook -160
++------------------+----------+---------------------+
+|campaign          |bonus_cost|bonus_cost_pct_of_ngr|
++------------------+----------+---------------------+
+|Registration Bonus|25.0000   |-27.78               |
++------------------+----------+---------------------+
+PASS: Registration Bonus cost is -27.78% of NGR
++------------+-------------+
+|balance_type|balance_as_of|
++------------+-------------+
+|real        |1160.0000    |
++------------+-------------+
+PASS: player 1 real balance on 2026-09-06 is 1,160.00
++---------+-----------------+-------------------+--------------------+-------------------+------------------+----------------+
+|player_id|failed_attempt_id|failed_at          |succeeded_attempt_id|succeeded_at       |minutes_to_success|succeeded_amount|
++---------+-----------------+-------------------+--------------------+-------------------+------------------+----------------+
+|2        |1                |2026-09-10 09:00:00|2                   |2026-09-10 09:04:00|4                 |500.0000        |
++---------+-----------------+-------------------+--------------------+-------------------+------------------+----------------+
+PASS: player 2 failed, then succeeded 4 minutes later
+PASS: every wallet's cached balance equals the sum of its ledger
+######## 03_exercise3_schema: OK in 99s

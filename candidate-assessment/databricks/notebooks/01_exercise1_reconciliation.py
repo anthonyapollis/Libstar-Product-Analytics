@@ -730,7 +730,7 @@ display(spark.sql("""SELECT 'internal_deposits' AS source, COUNT(*) AS row_count
 # COMMAND ----------
 
 spark.sql("""
-CREATE OR REPLACE TABLE recon_exceptions AS
+CREATE OR REPLACE TABLE recon_exceptions USING DELTA AS
 WITH dep_dupe_flag AS (
     SELECT deposit_id, gateway_ref_norm, COUNT(*) OVER (PARTITION BY gateway_ref_norm) AS dep_ref_count
     FROM stg_internal_deposits WHERE status = 'SUCCESS'
@@ -809,7 +809,7 @@ display(spark.sql("""SELECT classification, category, COUNT(*) AS rows, SUM(fina
 # COMMAND ----------
 
 spark.sql("""
-CREATE OR REPLACE TABLE recon_bridge AS
+CREATE OR REPLACE TABLE recon_bridge USING DELTA AS
 WITH f AS (SELECT * FROM recon_exceptions),
 dep_ranked AS (SELECT amount, row_number() OVER (PARTITION BY gateway_ref_norm ORDER BY deposit_id) AS rn
                FROM stg_internal_deposits WHERE status = 'SUCCESS'),
