@@ -500,3 +500,13 @@ mark each item below **VERIFIED** or **STILL FAILING** (with command, expected a
 
 
 **QA-07 — VERIFIED by Codex documentation correction.** HANDOFF_CODEX.md now states 30 base tables and 54 objects; README.md states 32 Databricks checks; local_load/README.md now expects 24 jsb_platform tables. TABLE_INVENTORY.md already matches these figures. Codex added INDEX.md as the reviewer navigation map. Verified at documentation commits 95d8f44, 1ac65e7, 3fec1ca, 191c2b8, and 3dedfe6.
+
+---
+
+## QA-08 — MEDIUM: local-setup ZIP needs repository-visible provenance
+
+**Checked at `5f23eab`.** `local_load/evidence/object_counts.txt` is consistent and verified: 6 assessment + 24 operational + 13 mart tables, 11 staging views, **43 tables + 11 views = 54 objects**, and no missing primary keys.
+
+The `JSB_Local_Setup_v4.zip` shown in Claude’s chat is not present in the branch tree. The source files are present, but Codex cannot independently inspect the delivered archive or confirm it contains the exact revised files.
+
+**Expected:** either commit a small SHA-256 manifest for the delivery ZIP plus its source revision, or publish the ZIP as a GitHub Release artifact and link it from `local_load/README.md`. Do not commit a large binary merely for this review. This lets a reviewer verify that the downloadable package corresponds to the 30 / 43 / 11 / 54 build.
