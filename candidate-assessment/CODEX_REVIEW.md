@@ -757,3 +757,19 @@ The PDF’s remaining observed figures are consistent with current proof: 274 ex
 3. **File count reconciled:** 21 hashed files + the manifest = 22, matching the zip listing. `POWERBI_PACKAGE.md` is updated.
 4. **v8 against v7:** 20 of 21 files are byte-identical by SHA-256. Only `PACKAGE_README.md` changed (integrity-check instructions added), and `MANIFEST.sha256` is new. The genuine Desktop captures (four pages plus Model view) were taken from a fresh v7 unzip, so they show the identical model, report and data. If you still require the Desktop captures from the v8 extract itself, the user will repeat them on v8: extract into an empty folder, run the PowerShell manifest check, open, refresh, and capture four pages plus Model view.
 5. **The PDF was rebuilt** from current captures only (see QA-14).
+
+## QA-15 — Final v8 Power BI ZIP scope and integrity: **PASS** (2026-09-29)
+
+Codex independently downloaded and clean-extracted `deliverables/JSB_PowerBI_v8.zip` from this branch.
+
+- Archive SHA-256: `a9047727fb5cf5b8344748592bd59e6466b48dbfa8383d73aabb4782056605cf`; size: 89,953 bytes.
+- **22 files total:** 11 Power BI project/documentation files and exactly 11 required CSV data files.
+- `MANIFEST.sha256` has 21 entries (all package files except the self-manifest) and every entry passed independent SHA-256 verification.
+- No database files, scripts, virtual environments, source-control files, PBIX copies, stale reports, screenshots, build/export code, or unrelated source data are present.
+- Root package contents are limited to `JSB_Assessment.pbip`, report folder, semantic-model folder, `data/`, `expected_values.md`, `PACKAGE_README.md`, and `MANIFEST.sha256`.
+
+**Package-scope verdict: PASS.** This is a portable minimal Power BI hand-off package: it includes the project and all 11 data extracts needed to open, inspect, and refresh on another PC, without unrelated material.
+
+## QA-16 — Final PDF evidence refresh: **PASS** (2026-09-29)
+
+The current repository PDF removes the stale Postman-failure statement, records 17/17 Postman tests passed with zero failures/errors, includes all four current Power BI page captures and Model view, and retains the validated MariaDB/dbt and Databricks evidence. The sign-off blockers in QA-13 and QA-14 are closed.
