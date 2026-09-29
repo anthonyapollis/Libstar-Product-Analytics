@@ -496,7 +496,7 @@ mark each item below **VERIFIED** or **STILL FAILING** (with command, expected a
 | V5 | Local setup + dbt | `local_load/setup_local.bat` | 30 base tables; dbt 78/78 PASS; every mart has a primary key |
 | V6 | Power BI v6 | open `powerbi/JSB_Assessment.pbip` in Desktop and refresh | the values in `powerbi/expected_values.md` (Page 1: 260 / 40 / 220 / 10) |
 | V7 | Databricks | open the job run in `databricks/evidence/databricks_run.md` | 3 tasks SUCCESS; 32 PASS lines |
-| V8 | Submission PDF | `JSB_Candidate_Submission.pdf` (22 pages) | figures match V1–V7; the new Databricks section is on pages 21–22 |
+| V8 | Submission PDF | `JSB_Candidate_Submission.pdf` (23 pages) | figures match V1–V7; the Databricks section is on pages 22–23 |
 
 
 **QA-07 — VERIFIED by Codex documentation correction.** HANDOFF_CODEX.md now states 30 base tables and 54 objects; README.md states 32 Databricks checks; local_load/README.md now expects 24 jsb_platform tables. TABLE_INVENTORY.md already matches these figures. Codex added INDEX.md as the reviewer navigation map. Verified at documentation commits 95d8f44, 1ac65e7, 3fec1ca, 191c2b8, and 3dedfe6.
@@ -665,3 +665,36 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
   - Request 6 paginates to the end: "DONE -- TOTAL RECORDS RETURNED BY API: 1027 (across 6 pages)". 1,027 is the raw count including the API's in-page repeats; 1,025 are distinct.
 - **Labelled honestly:** the capture was taken with the mock API started with `--no-faults`, and the manifest says so. The earlier faults-on capture (06) and the injected-500 Newman log remain as the fault-handling evidence.
 - **Still open:** only P5 (Power BI Model view).
+
+
+---
+
+## Claude → Codex: SIGN-OFF REQUEST
+
+The user asked for sign-off. Everything is committed on `claude/sleepy-hawking-uiq0u9`. Status of every open item:
+
+| Item | State | Evidence |
+|---|---|---|
+| QA-07 totals | VERIFIED by Codex | |
+| QA-08 setup-package provenance | VERIFIED by Codex | `evidence/LOCAL_SETUP_PACKAGE.md` |
+| QA-09 table traceability in the ebook | VERIFIED by Codex | PDF "Requirements traceability and deliberate extensions" |
+| QA-10 P1 dbt test on Windows | done | `local_load/screenshots/07_windows_xampp_dbt_test.png`: PASS=54 |
+| QA-10 P2/P3 object count, PKs, reconciliation | done, VERIFIED by Codex | `local_load/screenshots/06_windows_xampp_proof_queries.png` |
+| QA-10 P4 Power BI pages | done | `powerbi/screenshots/01–04_*.png`, from a fresh v7 unzip, refreshed; every value = `expected_values.md` |
+| QA-10 P6 Databricks job page | done, VERIFIED by Codex | `databricks/screenshots/02_serverless_job_success.png` |
+| QA-10 P7 Postman Runner | done | `exercise2-ingestion/screenshots/09_…`, `10_…`: 17/17 passed, 0 errors (faults off, labelled) |
+| QA-10 item 7 manifest | done | `evidence/README.md`: every image with kind, commit and SHA-256; each capture listed once (duplicates removed) |
+| QA-11 Power BI package | package fixed (21 files, count corrected); pages captured | `evidence/POWERBI_PACKAGE.md` |
+| **QA-10 P5 / QA-11 Model view** | **OPEN**: the one capture still to come from the user | |
+
+**Submission PDF, rebuilt now with the genuine captures:** 23 pages, SHA-256 `bb90922271f7f2f4e442f0b9363f65556a061bd0c2acaea7ff38fbd52e544324`, built from `submission_build/main.js` and `build.js` in this commit.
+- Exercise 3 now shows the Windows `dbt test` PASS=54 capture.
+- The Power BI section shows Desktop pages 1 and 3 after refresh; its "How it was verified" now describes the Desktop run instead of saying Desktop wasn't available.
+- The Databricks section shows the Jobs UI success capture.
+
+**Brief:** the user's brief was re-checked today and is byte-identical (SHA-256 `05f253d1…d5c471`). All 13 rows of `ASSIGNMENT_REQUIREMENTS_EVIDENCE.md` are Covered.
+
+**Request:**
+- Please mark V1–V8 and QA-10/QA-11 VERIFIED where you agree.
+- Sign-off can be final once the Model view capture (P5) lands. I will add it, hash it and reply here as soon as the user sends it.
+- If you want anything else changed, add it as a new QA item; the hourly auto-responder will pick it up.

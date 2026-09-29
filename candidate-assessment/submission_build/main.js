@@ -251,6 +251,8 @@ ex3.push(p("The same answers come from the dbt marts, the Power BI expected valu
 ex3.push(h2("7. From operational design to a reporting model"));
 ex3.push(p("The dbt project (dbt_jsb_assessment/) builds a star schema: dim_player, dim_player_vip_tier_scd, dim_campaign and dim_date around three facts, each at one grain. fact_bet has one row per bet, with GGR, bonus cost, NGR and the paying campaign. fact_wallet_transaction has one row per ledger movement, loaded incrementally. fact_bonus_transaction has one row per grant, with its cost and outstanding liability. Two marts answer queries (a) and (b), and personal data never enters the model. The same project also runs Exercise 1's reconciliation as a tested model."));
 ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 78 of 78 pass (24 models, 54 tests), 0 errors. Every mart has a primary key; two models load incrementally."));
+ex3.push(p("The same build on the candidate's Windows PC (XAMPP MariaDB 10.4, dbt 1.7.20): staging 11/11, marts 13/13, dbt test 54/54, and 43 tables + 11 views = 54 objects with no table missing a primary key. The genuine captures are in local_load/screenshots/ and listed in evidence/README.md."));
+ex3.push(...imgPara(`${BASE}/local_load/screenshots/07_windows_xampp_dbt_test.png`, 520, "Windows Command Prompt (genuine capture): dbt test on XAMPP MariaDB. PASS=54 WARN=0 ERROR=0."));
 // (page break handled by pageBreakBefore on the next heading)
 
 // ===========================================================================
@@ -305,8 +307,10 @@ pbi.push(table(
   [4200, 5160]
 ));
 pbi.push(h2("How it was verified"));
-pbi.push(p("Power BI Desktop doesn't run in the Linux environment this was built in. Instead, the build script checks that every visual field, sort and DAX reference resolves to the model, that every CSV's columns match the model, that every relationship column exists, and that no filter path is ambiguous. A negative test confirmed it rejects an ambiguous relationship and a misspelled measure. The report layout follows the supplied Demo.pbix (Power BI Desktop 2.130, CY24SU06 theme)."));
-pbi.push(p("Power BI Desktop has since opened an earlier version of this project on a Windows machine: the pages and visuals loaded. The one failure was that the data folder path didn't exist on that machine, and embedding the data removes that step. If Desktop objects to the project for any other reason, powerbi/README.md gives a five-minute manual route to build the same model in Demo.pbix."));
+pbi.push(p("The project was opened in Power BI Desktop on Windows from a fresh unzip of the minimal package (JSB_PowerBI_v7.zip) and refreshed. Every visible value matches expected_values.md, which is computed independently in pandas. The captures below are genuine Power BI Desktop screenshots; all four are hashed in evidence/README.md."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/01_page1_ngr_overview.png`, 560, "Power BI Desktop, page 1 after refresh: GGR 260.00, bonus cost 40.00, NGR 220.00, liability 10.00; Registration Bonus 40.00 = 18.18% of NGR."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/03_page3_reconciliation.png`, 560, "Power BI Desktop, page 3: 274 matched, 43 exceptions, Act Now R3,150.00, bridge residual R0.00; the waterfall from R218,280 to R217,980."));
+pbi.push(p("Before the desktop run, the build script had already checked that every visual field, sort and DAX reference resolves to the model, that every CSV's columns match it, and that no filter path is ambiguous. The data embedded in the model was also checked, row for row, against the exported tables."));
 pbi.push(p("Building this layer also caught a real defect upstream. The seed data's wallet balance cache didn't match its own ledger, breaking the rule that the ledger is the truth. The seed was fixed, and a dbt test (assert_wallet_cache_matches_ledger) now fails the build if the two ever diverge. The test failed on the old data and passes on the corrected data."));
 
 // ===========================================================================
@@ -343,6 +347,7 @@ dbx.push(h2("What Databricks changes, and what it needed"));
 dbx.push(bullet("Keys: Unity Catalog primary and foreign keys are declared but not enforced, and there is no UNIQUE. Loads therefore MERGE on the key, and the notebooks check every key for duplicates and every foreign key for orphans. CHECK and NOT NULL are enforced by Delta, and the notebook proves it by trying a negative stake."));
 dbx.push(bullet("Restartability: Delta commits one table at a time, so writes are ordered data → rejects → checkpoint → counters, each an idempotent MERGE. A crash re-reads at most one page, and re-applying it changes nothing. Setting the job's Maximum concurrent runs to 1 replaces MySQL's GET_LOCK."));
 dbx.push(bullet("Two fixes only a real serverless run could show. First, serverless refuses connections to 127.0.0.1 and to fixed ports, so on Databricks the mock API binds an OS-assigned port and is called by host name. Second, Delta requires a generated column's type to match exactly, and DECIMAL(18,4) + DECIMAL(18,4) is DECIMAL(19,4), so generated expressions are now cast to the column type. No check was changed, and the local test still passes."));
+dbx.push(...imgPara(`${BASE}/databricks/screenshots/02_serverless_job_success.png`, 560, "Databricks Jobs UI (genuine capture): the job run with ex1, ex2 and ex3 all Succeeded on serverless."));
 dbx.push(...imgPara(`${BASE}/databricks/screenshots/01_local_test_run.png`, 520, "The same notebooks on open-source Spark 4 + Delta 4 (run_local.py): all 32 checks pass."));
 
 // ===========================================================================
