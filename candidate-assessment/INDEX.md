@@ -6,8 +6,8 @@ This page is the reviewer’s map to the submission. Start with the consolidated
 
 | Need | Start here | Evidence / result |
 |---|---|---|
-| Candidate submission | `JSB_Candidate_Submission.pdf` or `.docx` | 17-page consolidated write-up |
-| Object inventory and duplication rationale | `TABLE_INVENTORY.md` | 30 base tables + 13 dbt marts + 11 staging views = 54 objects |
+| Candidate submission | `JSB_Candidate_Submission.pdf` or `.docx` | 22-page consolidated write-up (Exercises 1–3, Power BI, Databricks) |
+| Object inventory and duplication rationale | `TABLE_INVENTORY.md` | 30 base tables + 13 dbt marts + 11 staging views = 54 objects (fresh count: `local_load/evidence/object_counts.txt`) |
 | Build/run instructions | `local_load/README.md` | `setup_local.bat` for local XAMPP MariaDB + dbt |
 | Claude/Codex delivery status | `HANDOFF_CODEX.md` and `CODEX_REVIEW.md` | Build notes and independent QA record |
 
