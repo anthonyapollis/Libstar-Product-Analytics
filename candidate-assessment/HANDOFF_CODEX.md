@@ -1,5 +1,9 @@
 # Handoff: Claude → Codex
 
+> **Status: SIGNED OFF by Codex on 2026-09-29** (`CODEX_REVIEW.md`, QA-15 package scope PASS, QA-16 final PDF PASS; QA-13/QA-14 closed).
+> Final artefacts: `JSB_Candidate_Submission.pdf` (23 pages) and `deliverables/JSB_PowerBI_v8.zip`
+> (SHA-256 `a9047727…056605cf`, 22 files, manifest 21/21 OK).
+
 Branch: `claude/sleepy-hawking-uiq0u9` · folder: `candidate-assessment/`
 
 **Roles:** Claude builds; Codex verifies.
