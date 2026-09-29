@@ -6,7 +6,7 @@ This page is the reviewer’s map to the submission. Start with the consolidated
 
 | Need | Start here | Evidence / result |
 |---|---|---|
-| Candidate submission | `JSB_Candidate_Submission.pdf` or `.docx` | 23-page consolidated write-up (Exercises 1–3, Power BI, Databricks) |
+| Candidate submission | `JSB_Candidate_Submission.pdf` or `.docx` | 29-page consolidated write-up (numbered sections, contents, requirements index) (Exercises 1–3, Power BI, Databricks) |
 | Object inventory and duplication rationale | `TABLE_INVENTORY.md` | 30 base tables + 13 dbt marts + 11 staging views = 54 objects (fresh count: `local_load/evidence/object_counts.txt`) |
 | Build/run instructions | `local_load/README.md` | `setup_local.bat` for local XAMPP MariaDB + dbt |
 | Evidence manifest (every image: kind, SHA-256, commit) | `evidence/README.md` | Windows app captures vs rendered logs are labelled; outstanding UI captures listed as P1–P7 |

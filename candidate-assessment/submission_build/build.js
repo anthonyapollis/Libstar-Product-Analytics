@@ -27,18 +27,66 @@ function img(path, widthPx) {
   });
 }
 
+// Numbered headings. Every numbered h1/h2 is recorded in HEADINGS so the contents page and the
+// requirements index can quote its number (and, after the first render, its page).
+const HEADINGS = [];
+let n1 = 0, n2 = 0;
 function h1(text, opts = {}) {
+  let label = text;
+  if (opts.num) {
+    n1 += 1; n2 = 0;
+    label = `${n1}. ${text}`;
+    HEADINGS.push({ level: 1, num: String(n1), title: text, label, key: opts.key || String(n1) });
+  } else if (opts.appendix) {
+    label = `Appendix ${opts.appendix}. ${text}`;
+    HEADINGS.push({ level: 1, num: opts.appendix, title: text, label, key: opts.key || `app${opts.appendix}` });
+  }
   return new Paragraph({
-    text, heading: HeadingLevel.HEADING_1,
+    text: label, heading: HeadingLevel.HEADING_1,
     spacing: { before: 400, after: 200 },
     pageBreakBefore: opts.pageBreakBefore || false,
   });
 }
-function h2(text) {
-  return new Paragraph({ text, heading: HeadingLevel.HEADING_2, keepNext: true, keepLines: true, spacing: { before: 300, after: 150 } });
+function h2(text, opts = {}) {
+  let label = text;
+  if (n1 > 0 && !opts.plain) {
+    n2 += 1;
+    label = `${n1}.${n2} ${text}`;
+    HEADINGS.push({ level: 2, num: `${n1}.${n2}`, title: text, label, key: opts.key || `${n1}.${n2}` });
+  }
+  return new Paragraph({ text: label, heading: HeadingLevel.HEADING_2, keepNext: true, keepLines: true,
+                         pageBreakBefore: opts.pageBreakBefore || false, spacing: { before: 300, after: 150 } });
 }
 function h3(text) {
   return new Paragraph({ text, heading: HeadingLevel.HEADING_3, keepNext: true, keepLines: true, spacing: { before: 200, after: 100 } });
+}
+// "Answers: …" tag under a section heading: which part of the brief this section answers.
+function answers(text) {
+  return new Paragraph({
+    keepNext: true,
+    shading: { type: ShadingType.CLEAR, fill: LIGHT },
+    border: { left: { style: BorderStyle.SINGLE, size: 18, color: TEAL, space: 6 } },
+    spacing: { before: 0, after: 160 },
+    indent: { left: 120 },
+    children: [new TextRun({ text: "Answers  ", bold: true, size: 18, color: TEAL }),
+               new TextRun({ text, size: 18, color: GREY })],
+  });
+}
+// Shaded "In brief" box at the start of an exercise: the short written summary the brief asks for.
+function summaryBox(title, lines) {
+  const cellChildren = [new Paragraph({ children: [new TextRun({ text: title, bold: true, size: 21, color: NAVY })], spacing: { after: 80 } }),
+    ...lines.map((l) => new Paragraph({ children: [new TextRun({ text: l, size: 19 })], numbering: { reference: "bullets", level: 0 }, spacing: { after: 40 } }))];
+  return new Table({
+    width: { size: 9360, type: WidthType.DXA }, columnWidths: [9360],
+    rows: [new TableRow({ children: [new TableCell({
+      width: { size: 9360, type: WidthType.DXA },
+      shading: { type: ShadingType.CLEAR, fill: LIGHT },
+      margins: { top: 120, bottom: 120, left: 180, right: 180 },
+      borders: { top: { style: BorderStyle.SINGLE, size: 8, color: TEAL }, bottom: { style: BorderStyle.SINGLE, size: 8, color: TEAL },
+                 left: { style: BorderStyle.SINGLE, size: 8, color: TEAL }, right: { style: BorderStyle.SINGLE, size: 8, color: TEAL } },
+      children: cellChildren,
+    })] })],
+  });
 }
 function p(text, opts = {}) {
   return new Paragraph({
@@ -131,7 +179,7 @@ sections1_content.push(
   new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: { after: 400 },
-    children: [new TextRun({ text: "MySQL 8.0 · MariaDB 10.11 (cross-verified) · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model) · Databricks (Delta Lake, serverless)", size: 20, color: GREY })],
+    children: [new TextRun({ text: "MySQL 8.0 · MariaDB 10.11 and 10.4 (XAMPP) · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model) · Databricks (Delta Lake, serverless)", size: 20, color: GREY })],
   }),
   new Paragraph({
     alignment: AlignmentType.CENTER,
@@ -140,18 +188,4 @@ sections1_content.push(
   })
 );
 
-// HOW TO READ THIS
-sections1_content.push(
-  h1("How to read this document", { pageBreakBefore: true }),
-  p("This document is the write-up for all three practical exercises. Each section states the scenario briefly, the approach taken, the tools used, and the evidence that it actually works — screenshots are captures of real runs, not mock-ups. Full source code, SQL, and raw evidence files accompany this document in the submitted repository (folder: candidate-assessment/)."),
-  p("A short note on assumptions: per the brief's instruction not to stop on ambiguity, every assumption made is written down at the point it's used, not buried — for example the definition of NGR used in Exercise 3, and the fee-rounding tolerance used in Exercise 1."),
-  p("Evidence: evidence/README.md lists every image in this document with its SHA-256 and the commit that produced it. It marks which are real application screenshots (Windows XAMPP, MySQL Workbench, Postman, PyCharm) and which are terminal output from a logged run redrawn as an image, whose text log is the primary evidence. INDEX.md maps each requirement to its evidence."),
-  h2("Contents"),
-  bullet("Exercise 1 — Payment Gateway Reconciliation"),
-  bullet("Exercise 2 — Incremental, Restartable API Ingestion"),
-  bullet("Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses"),
-  bullet("Power BI — Reporting Data Model and Report"),
-  bullet("Databricks — The Same Three Exercises on Delta Lake")
-);
-
-module.exports = { sections1_content, h1, h2, h3, p, pMixed, bullet, caption, imgPara, pageBreak, cell, table, BASE, NAVY, TEAL, GREY, LIGHT };
+module.exports = { sections1_content, HEADINGS, h1, h2, h3, answers, summaryBox, p, pMixed, bullet, caption, imgPara, pageBreak, cell, table, BASE, NAVY, TEAL, GREY, LIGHT };

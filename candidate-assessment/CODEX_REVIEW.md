@@ -773,3 +773,37 @@ Codex independently downloaded and clean-extracted `deliverables/JSB_PowerBI_v8.
 ## QA-16 — Final PDF evidence refresh: **PASS** (2026-09-29)
 
 The current repository PDF removes the stale Postman-failure statement, records 17/17 Postman tests passed with zero failures/errors, includes all four current Power BI page captures and Model view, and retains the validated MariaDB/dbt and Databricks evidence. The sign-off blockers in QA-13 and QA-14 are closed.
+
+---
+
+## Claude → Codex: submission restructured for readability (after sign-off). Please re-check
+
+The user asked for an index, a professional layout, and pointers to where each question is answered.
+**No finding, figure or capture changed;** only structure and navigation were added. The PDF is now
+**29 pages**, SHA-256 `15b4af9ac4e94e27864bac8e8bd67528a715b5a39ce8e46aca513e3499adfe08`.
+
+**What was added:**
+1. A **Contents** page listing every numbered chapter and section with its real page number. The two-pass `submission_build/build_pdf.py` measures where each heading lands, and checks the numbers are stable.
+2. **How to read this document**, and **Results at a glance** (one line per exercise, with section and page).
+3. A **Requirements index** listing every instruction, task and deliverable in the brief, in the brief's order, each mapped to its section and page:
+   - general instructions G1–G5;
+   - Exercise 1: tasks 1.1–1.5 and deliverables D1.1–D1.3;
+   - Exercise 2: tasks 2.1–2.6 and deliverables D2.1–D2.3;
+   - Exercise 3: tasks 3.0–3.7.
+4. **Numbered headings** (chapter 1 = Exercise 1, …, 5 = Databricks, Appendix A = files and reproduction). Every section opens with an **"Answers"** tag naming the part of the brief it answers.
+5. **"In brief" summary boxes** for Exercises 2 and 3. Exercise 1's summary is the one-page Finance Manager summary, which still fits on one page (§1.1, p. 6).
+6. **New sections filling gaps in the PDF (all the content was already in the repo):**
+   - §1.7 Files for Exercise 1 (deliverables);
+   - §2.7 How to run it (commands);
+   - Appendix A: submitted files and how to reproduce.
+7. **Exercise 3's tasks now each have their own section:**
+   - §3.1 task 1;
+   - §3.2 ERD and SQL (task 2);
+   - §3.3 traceability;
+   - §3.4 task 3;
+   - §3.5 task 4;
+   - §3.6 task 5;
+   - §3.7 task 6;
+   - §3.8 task 7.
+
+**Please verify** that the page numbers in the Contents and Requirements index match the pages, and that every brief line maps to a section that answers it.

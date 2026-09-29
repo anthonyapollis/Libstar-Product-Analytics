@@ -1,0 +1,240 @@
+[
+ {
+  "level": 1,
+  "num": "1",
+  "title": "Exercise 1 — Payment Gateway Reconciliation",
+  "label": "1. Exercise 1 — Payment Gateway Reconciliation",
+  "key": "ex1"
+ },
+ {
+  "level": 2,
+  "num": "1.1",
+  "title": "Finance Manager summary (one page, with the bridge)",
+  "label": "1.1 Finance Manager summary (one page, with the bridge)",
+  "key": "ex1.summary"
+ },
+ {
+  "level": 2,
+  "num": "1.2",
+  "title": "Approach and matching rules",
+  "label": "1.2 Approach and matching rules",
+  "key": "ex1.approach"
+ },
+ {
+  "level": 2,
+  "num": "1.3",
+  "title": "Exceptions by category",
+  "label": "1.3 Exceptions by category",
+  "key": "ex1.exceptions"
+ },
+ {
+  "level": 2,
+  "num": "1.4",
+  "title": "Assumptions",
+  "label": "1.4 Assumptions",
+  "key": "ex1.assumptions"
+ },
+ {
+  "level": 2,
+  "num": "1.5",
+  "title": "How the figures were checked",
+  "label": "1.5 How the figures were checked",
+  "key": "ex1.checked"
+ },
+ {
+  "level": 2,
+  "num": "1.6",
+  "title": "Automating this daily, and the alerts",
+  "label": "1.6 Automating this daily, and the alerts",
+  "key": "ex1.automation"
+ },
+ {
+  "level": 2,
+  "num": "1.7",
+  "title": "Files for Exercise 1",
+  "label": "1.7 Files for Exercise 1",
+  "key": "ex1.files"
+ },
+ {
+  "level": 1,
+  "num": "2",
+  "title": "Exercise 2 — Incremental, Restartable API Ingestion",
+  "label": "2. Exercise 2 — Incremental, Restartable API Ingestion",
+  "key": "ex2"
+ },
+ {
+  "level": 2,
+  "num": "2.1",
+  "title": "Design note: progress, duplicates, failures",
+  "label": "2.1 Design note: progress, duplicates, failures",
+  "key": "ex2.design"
+ },
+ {
+  "level": 2,
+  "num": "2.2",
+  "title": "Evidence: kill, restart, and the new-activity step",
+  "label": "2.2 Evidence: kill, restart, and the new-activity step",
+  "key": "ex2.evidence"
+ },
+ {
+  "level": 2,
+  "num": "2.3",
+  "title": "Correctness checks and tests",
+  "label": "2.3 Correctness checks and tests",
+  "key": "ex2.checks"
+ },
+ {
+  "level": 2,
+  "num": "2.4",
+  "title": "API contract, tested with Postman and Newman",
+  "label": "2.4 API contract, tested with Postman and Newman",
+  "key": "ex2.newman"
+ },
+ {
+  "level": 2,
+  "num": "2.5",
+  "title": "Live run in Postman Desktop against the local mock API",
+  "label": "2.5 Live run in Postman Desktop against the local mock API",
+  "key": "ex2.postman"
+ },
+ {
+  "level": 2,
+  "num": "2.6",
+  "title": "What I would change for production",
+  "label": "2.6 What I would change for production",
+  "key": "ex2.production"
+ },
+ {
+  "level": 2,
+  "num": "2.7",
+  "title": "How to run it",
+  "label": "2.7 How to run it",
+  "key": "ex2.run"
+ },
+ {
+  "level": 1,
+  "num": "3",
+  "title": "Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses",
+  "label": "3. Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses",
+  "key": "ex3"
+ },
+ {
+  "level": 2,
+  "num": "3.1",
+  "title": "Tables, keys, data types, constraints and indexes",
+  "label": "3.1 Tables, keys, data types, constraints and indexes",
+  "key": "ex3.tables"
+ },
+ {
+  "level": 2,
+  "num": "3.2",
+  "title": "Entity relationship diagram and SQL",
+  "label": "3.2 Entity relationship diagram and SQL",
+  "key": "ex3.erd"
+ },
+ {
+  "level": 2,
+  "num": "3.3",
+  "title": "Requirements traceability and deliberate extensions",
+  "label": "3.3 Requirements traceability and deliberate extensions",
+  "key": "ex3.trace"
+ },
+ {
+  "level": 2,
+  "num": "3.4",
+  "title": "How a balance is calculated and guaranteed",
+  "label": "3.4 How a balance is calculated and guaranteed",
+  "key": "ex3.balance"
+ },
+ {
+  "level": 2,
+  "num": "3.5",
+  "title": "Keeping history where things change over time",
+  "label": "3.5 Keeping history where things change over time",
+  "key": "ex3.history"
+ },
+ {
+  "level": 2,
+  "num": "3.6",
+  "title": "Protecting personal information while supporting analysis",
+  "label": "3.6 Protecting personal information while supporting analysis",
+  "key": "ex3.pii"
+ },
+ {
+  "level": 2,
+  "num": "3.7",
+  "title": "The four questions (a)–(d), with verified output",
+  "label": "3.7 The four questions (a)–(d), with verified output",
+  "key": "ex3.queries"
+ },
+ {
+  "level": 2,
+  "num": "3.8",
+  "title": "From operational design to a reporting model",
+  "label": "3.8 From operational design to a reporting model",
+  "key": "ex3.reporting"
+ },
+ {
+  "level": 1,
+  "num": "4",
+  "title": "Power BI — Reporting Data Model and Report",
+  "label": "4. Power BI — Reporting Data Model and Report",
+  "key": "pbi"
+ },
+ {
+  "level": 2,
+  "num": "4.1",
+  "title": "Modelling decisions",
+  "label": "4.1 Modelling decisions",
+  "key": "pbi.model"
+ },
+ {
+  "level": 2,
+  "num": "4.2",
+  "title": "Measures",
+  "label": "4.2 Measures",
+  "key": "pbi.measures"
+ },
+ {
+  "level": 2,
+  "num": "4.3",
+  "title": "Report pages and expected values",
+  "label": "4.3 Report pages and expected values",
+  "key": "pbi.pages"
+ },
+ {
+  "level": 2,
+  "num": "4.4",
+  "title": "Verified in Power BI Desktop",
+  "label": "4.4 Verified in Power BI Desktop",
+  "key": "pbi.verified"
+ },
+ {
+  "level": 1,
+  "num": "5",
+  "title": "Databricks — The Same Three Exercises on Delta Lake",
+  "label": "5. Databricks — The Same Three Exercises on Delta Lake",
+  "key": "dbx"
+ },
+ {
+  "level": 2,
+  "num": "5.1",
+  "title": "Run on the Databricks workspace",
+  "label": "5.1 Run on the Databricks workspace",
+  "key": "dbx.run"
+ },
+ {
+  "level": 2,
+  "num": "5.2",
+  "title": "What Databricks changes, and what it needed",
+  "label": "5.2 What Databricks changes, and what it needed",
+  "key": "dbx.diff"
+ },
+ {
+  "level": 1,
+  "num": "A",
+  "title": "Submitted files and how to reproduce the results",
+  "label": "Appendix A. Submitted files and how to reproduce the results",
+  "key": "appA"
+ }
+]
