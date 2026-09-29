@@ -105,3 +105,11 @@ count including the API's in-page repeated rows, which `ingest.py` collapses. A 
 
 The SQL for P2 and P3 is in `evidence/proof_queries.sql`, ready to paste into Workbench.
 | `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | App capture (Windows cmd.exe + XAMPP MariaDB) | 2026-09-29 09:11 SAST | `dbt test --target xampp` | All 54 dbt tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` | `b85ddf4` | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` |
+## Latest genuine Postman Runner captures
+
+| Evidence | Tool and check | Observed result | SHA-256 | Git commit |
+|---|---|---|---|---|
+| `exercise2-ingestion/screenshots/09_postman_runner_all_tests_pass.png` | Postman Collection Runner, Exercise 2 mock transactions API | **17 passed; 0 failed; 0 errors; 0 skipped**. Requests shown include reset, first-page and next-page checks, all returning HTTP 200. | `d56ef54c34774c94121bbf2fe9e73d35d03ea822f267e980370d93568013f9b7` | `484e0c748fae4f6e9fa7b75d4978acee5b03032e` |
+| `exercise2-ingestion/screenshots/10_postman_runner_pagination_complete.png` | Postman Collection Runner, automatic pagination assertion | The collection follows six pages and confirms **1,027 raw API records returned**. | `def3a1c6fe148047b0f9aab8983e48359286ebe5849afe6180e5c975b93d48c9` | `699d4b7cb86c497c732150d06e232537751eeedf` |
+
+These are unedited Windows/Postman captures supplied during the run. They demonstrate the API contract and pagination behaviour; the separate MariaDB/dbt and Databricks evidence demonstrates the downstream platform results.
