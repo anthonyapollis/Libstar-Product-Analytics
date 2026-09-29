@@ -949,3 +949,14 @@ Do **not** state that this project uses dbt snapshots or that dbt “holds copie
 - The project’s audit/history requirements are handled by the append-only wallet ledger, ingestion run/checkpoint/reject tables, and source data retention — not by dbt snapshots.
 
 If adding a concise benefits callout, use the above facts and place it next to the existing dbt evidence without adding a new screenshot or making unverified snapshot claims.
+## QA-19 — Evidence screenshot framing: **VERIFIED / APPROVED** (2026-09-29)
+
+Codex independently downloaded and clean-extracted the cropped final archive.
+
+- Archive SHA-256: `244aebe76e4016582879f032a9ac36d02d532803afd3756d13c23efab7f73d71`; 168 files; 167/167 outer manifest hashes matched.
+- The portable Power BI manifest also passed 21/21 hashes.
+- 16 screenshots changed from the prior archive. The Command Prompt captures were cropped from full 1366×768 desktop frames to 979×512 application-only frames; the remaining affected captures remove only outer desktop/taskbar framing. No screenshot evidence content, data, model or reported result changed.
+- The clean-extracted 29-page PDF still contains the requirements index, the requested Bronze/Silver/Gold example, and current Postman evidence (17 passed, 0 failed, 0 errors).
+- No excluded artefact categories are present.
+
+**Final verdict: APPROVED. Submit this cropped archive; it supersedes all prior ZIP versions.**
