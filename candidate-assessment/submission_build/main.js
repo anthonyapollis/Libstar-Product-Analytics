@@ -179,16 +179,12 @@ ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/02_postman_newman_r
   "Newman run of the Exercise 2 collection."));
 
 ex2.push(h2("Live run — Postman Desktop against the local mock API"));
-ex2.push(p("The same collection was run in Postman Desktop on a Windows workstation against mock_api.py started from PyCharm, an independent environment from the one the code was built in."));
-ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png`, 600,
-  "mock_api.py running in PyCharm: \"Mock API on http://127.0.0.1:8000 (faults on)\"."));
-ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/03_postman_runner_config.png`, 460,
-  "Collection Runner configuration: all seven requests, one iteration."));
-ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png`, 480,
-  "Runner results, pages 1–4 of the self-paginating count. Page 1 returns 201 rows for limit=200 (an in-page repeated row); page 4 hits a live 500 and retries the same page."));
-ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/06_postman_runner_total_1027.png`, 480,
-  "Runner results, pages 4–6: DONE — total rows returned by the API: 1,027 across 6 pages."));
-ex2.push(p("Two assertions fail on request 2 (\"Next page\"), a one-shot documentation request with no retry logic that happened to land on an injected 429; only the counting request retries. 1,027 rather than 1,025 because the raw count includes the API's in-page repeated rows, which ingest.py collapses."));
+ex2.push(p("The collection was run in Postman Desktop's Collection Runner on the candidate's Windows PC, against mock_api.py started locally. The mock's random 429/500 faults were switched off for this run, so it shows the API contract itself: all seven requests, 17 tests, 17 passed, 0 failed, 0 errors. Fault handling is proven separately by the Newman run with an injected 500 and by the ingestion transcript, where ingest.py rides through 429s, 500s and repeated rows."));
+ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png`, 520,
+  "Postman Collection Runner (genuine capture): 17 tests, 17 passed, 0 failed, 0 errors; every request returns 200."));
+ex2.push(...imgPara(`${BASE}/exercise2-ingestion/screenshots/10_postman_runner_clean_count_1027.png`, 520,
+  "Same run, end of the self-paginating count: DONE, 1,027 records returned across 6 pages."));
+ex2.push(p("1,027 is the raw count including the API's in-page repeated rows. There are 1,025 distinct records, which is exactly what ingest.py loads: 1,024 plus 1 quarantined."));
 
 ex2.push(h2("What I'd change for production"));
 ex2.push(bullet("Scheduling: Airflow or cron every few minutes; the lock already makes overlapping runs harmless."));
@@ -307,9 +303,12 @@ pbi.push(table(
   [4200, 5160]
 ));
 pbi.push(h2("How it was verified"));
-pbi.push(p("The project was opened in Power BI Desktop on Windows from a fresh unzip of the minimal package (JSB_PowerBI_v7.zip) and refreshed. Every visible value matches expected_values.md, which is computed independently in pandas. The captures below are genuine Power BI Desktop screenshots; all four are hashed in evidence/README.md."));
-pbi.push(...imgPara(`${BASE}/powerbi/screenshots/01_page1_ngr_overview.png`, 560, "Power BI Desktop, page 1 after refresh: GGR 260.00, bonus cost 40.00, NGR 220.00, liability 10.00; Registration Bonus 40.00 = 18.18% of NGR."));
-pbi.push(...imgPara(`${BASE}/powerbi/screenshots/03_page3_reconciliation.png`, 560, "Power BI Desktop, page 3: 274 matched, 43 exceptions, Act Now R3,150.00, bridge residual R0.00; the waterfall from R218,280 to R217,980."));
+pbi.push(p("The project was opened in Power BI Desktop on the candidate's Windows PC, from a fresh unzip into an empty folder of the minimal Power BI package (v7), and refreshed. The final package, deliverables/JSB_PowerBI_v8.zip, contains byte-identical model, report and data files plus a SHA-256 manifest. Every visible value matches expected_values.md, which is computed independently in pandas. Below are genuine Desktop captures of all four report pages and the Model view; each is hashed in evidence/README.md."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/01_page1_ngr_overview.png`, 560, "Page 1 after refresh: GGR 260.00, bonus cost 40.00, NGR 220.00, liability 10.00; Registration Bonus 40.00 = 18.18% of NGR."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/02_page2_player_balances.png`, 560, "Page 2, player balances over the full date range: P1 890.00; P2 415.00 real, 0.00 bonus; P3 90.00 real, 10.00 bonus; deposits 1,600.00."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/03_page3_reconciliation.png`, 560, "Page 3: 274 matched, 43 exceptions, Act Now R3,150.00, bridge residual R0.00; the waterfall from R218,280 to R217,980."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/04_page4_ingestion_monitoring.png`, 560, "Page 4, ingestion monitoring: 1,024 loaded, 4 runs (run 1 ABANDONED; run 4 loaded 25 new and 40 changed), 1 rejected, 1 API retry."));
+pbi.push(...imgPara(`${BASE}/powerbi/screenshots/05_model_view.png`, 560, "Power BI Desktop, Model view: 11 tables and 7 relationships. The three dimensions filter the three facts; the four Exercise 1 and 2 tables stand alone."));
 pbi.push(p("Before the desktop run, the build script had already checked that every visual field, sort and DAX reference resolves to the model, that every CSV's columns match it, and that no filter path is ambiguous. The data embedded in the model was also checked, row for row, against the exported tables."));
 pbi.push(p("Building this layer also caught a real defect upstream. The seed data's wallet balance cache didn't match its own ledger, breaking the rule that the ledger is the truth. The seed was fixed, and a dbt test (assert_wallet_cache_matches_ledger) now fails the build if the two ever diverge. The test failed on the old data and passes on the corrected data."));
 

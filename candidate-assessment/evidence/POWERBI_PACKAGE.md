@@ -1,4 +1,23 @@
-# Power BI package: provenance (QA-11)
+# Power BI package: provenance (QA-11, QA-13)
+
+## Final package: v8 (committed)
+| Item | Value |
+|---|---|
+| File | `deliverables/JSB_PowerBI_v8.zip`, committed on this branch |
+| Size | 89,953 bytes |
+| SHA-256 | `a9047727fb5cf5b8344748592bd59e6466b48dbfa8383d73aabb4782056605cf` |
+| Source commit | `98441a41435b76a4e90823c7a98d7814b6728b68` |
+| Files | **22**: the 21 below plus `MANIFEST.sha256`, which hashes the other 21 |
+| Clean-extract check | `evidence/powerbi_v8_manifest_check.txt`: `sha256sum -c MANIFEST.sha256` from a fresh extract into an empty directory, **21 / 21 OK** |
+
+**v8 against v7 (what the Power BI Desktop captures were taken from):**
+- The 20 functional files are byte-identical: `.pbip`, SemanticModel (3), Report (4), `data/` (11), `expected_values.md`.
+- `PACKAGE_README.md` changed only to add the integrity-check instructions.
+- `MANIFEST.sha256` is new.
+- So the model, report and data are the same bytes in both.
+
+---
+
 
 | Item | Value |
 |---|---|

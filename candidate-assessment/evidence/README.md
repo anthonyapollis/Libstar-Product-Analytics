@@ -36,6 +36,7 @@ zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xamp
 | `powerbi/screenshots/02_page2_player_balances.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 2, full date range | 890 / 415 + 0 / 90 + 10; deposits 1,600 | as expected | `9bb99667b6a6ac3329b6c5f90eb9f3ac79756e66c289ad6c8d96e98468f55907` |
 | `powerbi/screenshots/03_page3_reconciliation.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 3 | 274 / 43 / 3,150.00 / 0.00 | as expected | `e52d1b70eaaab42710459e0d75f8700dbd5c67f01fd1741856f6cfa0d121a096` |
 | `powerbi/screenshots/04_page4_ingestion_monitoring.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 4 | 1,024 / 4 / 1 / 1; 587 / 214 / 207 / 16 | as expected | `de5957e01ee0f4464a6d7f7db89746a27e9698d4f25072cf09cd37e63f66f624` |
+| `powerbi/screenshots/05_model_view.png` | App capture (Power BI Desktop) | 2026-09-29 07:25 | Model view | 11 tables, 7 relationships | 11 tables; dim_player, dim_date and dim_campaign to the facts by 7 relationships; the 4 Ex1/Ex2 tables stand alone | `9758dfa64528111e19b67f1a0339b5b307cb20f10851624d28cb82070ef91257` |
 
 ## Postman / PyCharm (user's PC)
 
@@ -89,7 +90,7 @@ sends them:
 | ~~P2~~ | **Done**: `local_load/screenshots/06_windows_xampp_proof_queries.png` (cmd.exe; Workbench crashes on MariaDB 10.4) | |
 | ~~P3~~ | **Done**: `local_load/screenshots/06_windows_xampp_proof_queries.png` (cmd.exe; Workbench crashes on MariaDB 10.4) | |
 | ~~P4~~ | **Done**: see the Power BI section above. The earlier captures of an old copy are kept in `rejected/` only | |
-| P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
+| ~~P5~~ | **Done**: `powerbi/screenshots/05_model_view.png` | |
 | ~~P6~~ | **Done**: `databricks/screenshots/02_serverless_job_success.png` (see the Databricks section above) | |
 | ~~P7~~ | **Done**: `exercise2-ingestion/screenshots/09_…` and `10_…` (clean Runner, faults off) | |
 
