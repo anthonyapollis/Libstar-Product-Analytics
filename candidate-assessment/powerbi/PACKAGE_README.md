@@ -14,6 +14,13 @@ package.
 **40.00**, NGR **220.00**, Liability **10.00** and **18.18%** in the campaign table, and Page 4 shows
 **4** ingestion runs. GGR −70.00, NGR −90.00 or 3 runs means an old copy is open.
 
+## Check the package is intact (optional, 10 seconds)
+In the unzipped folder, open PowerShell (Shift+right-click → **Open PowerShell window here**) and run:
+```powershell
+Get-Content MANIFEST.sha256 | % { $h,$f = $_ -split '\s+',2; if ((Get-FileHash -Algorithm SHA256 $f).Hash.ToLower() -eq $h) {"OK    $f"} else {"FAIL  $f"} }
+```
+Every line should say `OK` (21 files). On Linux or macOS: `sha256sum -c MANIFEST.sha256`.
+
 ## Contents
 | Path | What it is |
 |---|---|
@@ -22,6 +29,7 @@ package.
 | `JSB_Assessment.Report/` | The four report pages and the theme |
 | `data/*.csv` | The same 11 tables as plain CSV exports of the dbt marts. The report doesn't read these; they are the exported tables, for inspection |
 | `expected_values.md` | What every visual should show after a refresh |
+| `MANIFEST.sha256` | SHA-256 of every other file in this package |
 
 The data is embedded in the model, so no folder path or database connection is needed. The
 embedded tables are byte-for-byte the same as `data/*.csv`, and this was checked before packaging.
