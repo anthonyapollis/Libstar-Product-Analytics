@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Package | `JSB_PowerBI_v7.zip` (22 files, 88 KB) |
+| Package | `JSB_PowerBI_v7.zip` (**21 files**, 88 KB; one hash per file in the list below) |
 | SHA-256 | `c84026cfd6f7c37d633807e4cbfbc6a72412d046406722883090c2334cebdf8c` |
 | Source commit | `1991bdee5d1d6be2d6e75a176519b2fa67845e24` (branch `claude/sleepy-hawking-uiq0u9`) |
 | Built with | `git archive`, git 2.43.0 |
@@ -41,6 +41,19 @@ git archive --format=zip --prefix=JSB_PowerBI_v7/ -o JSB_PowerBI_v7.zip \
 ```
 (Run it from the repository root.) With a different git version, check the unpacked files with
 `sha256sum -c powerbi_v7_files.sha256` instead.
+
+## Refresh-verified on the user's PC (P4)
+Power BI Desktop, opened from a fresh unzip of v7 ("Last saved: Today at 08:39") and refreshed on
+2026-09-29 between 06:52 and 06:53 UTC. Every value matches `expected_values.md`:
+
+| Capture | Shows | SHA-256 |
+|---|---|---|
+| `../powerbi/screenshots/01_page1_ngr_overview.png` | GGR 260.00, Bonus Cost 40.00, NGR 220.00, Liability 10.00; casino 270 / 270, retail 100 / 100, sportsbook −110 / −150; Registration Bonus 40.00 = 18.18% | `af4916d8cb71a702497a73fdd47a4e193a14323ae8d4af37a84bbf2863d797e4` |
+| `../powerbi/screenshots/02_page2_player_balances.png` | full range: P1 real 890.00; P2 real 415.00, bonus 0.00; P3 real 90.00, bonus 10.00; deposits 1,600.00 | `9bb99667b6a6ac3329b6c5f90eb9f3ac79756e66c289ad6c8d96e98468f55907` |
+| `../powerbi/screenshots/03_page3_reconciliation.png` | 274 matched, 43 exceptions, Act Now 3,150.00, bridge residual 0.00; waterfall 218,280 → 217,980 | `e52d1b70eaaab42710459e0d75f8700dbd5c67f01fd1741856f6cfa0d121a096` |
+| `../powerbi/screenshots/04_page4_ingestion_monitoring.png` | 1,024 loaded, 4 runs (run 1 ABANDONED, run 4: 25 new / 40 changed), 1 rejected, 1 API retry; statuses 587 / 214 / 207 / 16 | `de5957e01ee0f4464a6d7f7db89746a27e9698d4f25072cf09cd37e63f66f624` |
+
+The Model view (P5) is still to come.
 
 ## Rejected evidence (kept for the record, never used in the submission)
 `rejected/stale_powerbi_page1_ngr_overview.png` and `rejected/stale_powerbi_page4_ingestion.png` are the

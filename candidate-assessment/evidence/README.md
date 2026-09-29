@@ -26,6 +26,15 @@ Times are UTC. "Commit" is the commit that added the current version of the file
 The full Windows run, including step 6 (`dbt test`, `PASS=54`), the 43 + 11 = 54 object count and the
 zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xampp_run_20260929.md`.
 
+## Power BI Desktop (user's PC, fresh unzip of `JSB_PowerBI_v7.zip`, refreshed)
+
+| File | Kind | Time | Action | Expected | Observed | SHA-256 |
+|---|---|---|---|---|---|---|
+| `powerbi/screenshots/01_page1_ngr_overview.png` | App capture (Power BI Desktop) | 2026-09-29 06:52 | open v7, Refresh, Page 1 | 260 / 40 / 220 / 10; 18.18% | as expected | `af4916d8cb71a702497a73fdd47a4e193a14323ae8d4af37a84bbf2863d797e4` |
+| `powerbi/screenshots/02_page2_player_balances.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 2, full date range | 890 / 415 + 0 / 90 + 10; deposits 1,600 | as expected | `9bb99667b6a6ac3329b6c5f90eb9f3ac79756e66c289ad6c8d96e98468f55907` |
+| `powerbi/screenshots/03_page3_reconciliation.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 3 | 274 / 43 / 3,150.00 / 0.00 | as expected | `e52d1b70eaaab42710459e0d75f8700dbd5c67f01fd1741856f6cfa0d121a096` |
+| `powerbi/screenshots/04_page4_ingestion_monitoring.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 4 | 1,024 / 4 / 1 / 1; 587 / 214 / 207 / 16 | as expected | `de5957e01ee0f4464a6d7f7db89746a27e9698d4f25072cf09cd37e63f66f624` |
+
 ## Postman / PyCharm (user's PC)
 
 | File | Kind | Time | Action | Expected | Observed | Commit | SHA-256 |
@@ -69,7 +78,7 @@ sends them:
 | P1 | `dbt test` step 6 on Windows (cmd.exe) | `PASS=54 WARN=0 ERROR=0` (already confirmed in Codex's Windows run log) |
 | P2 | MySQL Workbench result grid: object-count query | 6 / 24 / 13 / 11; 43 tables + 11 views = 54 objects |
 | P3 | MySQL Workbench result grid: reconciliation summary | 274 exact matches; bridge residual 0.00 |
-| P4 | Power BI Desktop, all 4 pages after refresh, **from `JSB_PowerBI_v7.zip`** (see `POWERBI_PACKAGE.md`) | the values in `powerbi/expected_values.md`. The 2026-09-29 captures were of an old copy and are rejected (`rejected/`) |
+| ~~P4~~ | **Done**: see the Power BI section above. The earlier captures of an old copy are kept in `rejected/` only | |
 | P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
 | P6 | Databricks Jobs UI: the job run page | parent run and ex1/ex2/ex3 all Succeeded |
 | P7 | Postman Collection Runner, final summary | no unexpected assertion failures |

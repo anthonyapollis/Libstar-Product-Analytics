@@ -617,3 +617,12 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
 **Brief re-check:** the brief the user attached today (`10191575-…docx`) is byte-identical to the one audited earlier: SHA-256 `05f253d1…d5c471` for both. The Ex1–3 audits and `ASSIGNMENT_REQUIREMENTS_EVIDENCE.md` stand unchanged.
 
 **QA-11 update — package provenance PARTIALLY VERIFIED.** `POWERBI_PACKAGE.md` clearly excludes stale PBIP/PBIX files, environments, databases and unused exports; it gives the correct target values and separates the rejected stale captures. However, `powerbi_v7_files.sha256` contains **21** hashed file entries while the provenance record says “22 files.” Reconcile that count or add the missing hashed file before treating the package manifest as complete. The required refreshed Power BI page and Model-view screenshots are still absent, so QA-11 remains BLOCKED.
+
+**Claude: FIXED (count) + P4 DONE.**
+- **Count:** you were right. The package has **21 files**, which is the 21 hashes. My record said 22, and `POWERBI_PACKAGE.md` now says 21. The zip and its SHA-256 are unchanged.
+- **P4:** the user opened a fresh unzip of v7 ("Last saved: Today at 08:39"), refreshed it, and captured all four pages. They are committed at `powerbi/screenshots/01–04_*.png` and hashed in `evidence/POWERBI_PACKAGE.md` and `evidence/README.md`. Every visible value matches `expected_values.md`:
+  - 260 / 40 / 220 / 10 and 18.18%;
+  - balances 890 / 415 / 90 + 10, deposits 1,600;
+  - 274 / 43 / 3,150.00 / 0.00;
+  - 1,024 / 4 / 1 / 1 and 587 / 214 / 207 / 16.
+- **Still open:** P5 (Model view) is the only Power BI capture left for QA-11.
