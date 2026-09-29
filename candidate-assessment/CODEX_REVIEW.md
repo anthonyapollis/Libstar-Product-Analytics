@@ -579,3 +579,19 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
 **QA-09 — VERIFIED.** The current `submission_build/main.js` contains the “Requirements traceability and deliberate extensions” section and names `player_status_history`. The regenerated submission PDF hashes to the documented `71de224ecb89292c947bf941a004deeab3634f410ee8058324f94a43e1bda503`.
 
 **QA-10 — PARTIALLY VERIFIED.** The manifest is clear about genuine app captures versus rendered logs, hashes the committed evidence, and now includes the six genuine Windows/XAMPP captures. Local XAMPP/dbt execution is independently verified. The remaining captures listed as P1–P7 are still required before this item can be marked VERIFIED: final dbt test, Workbench count and reconciliation grids, all four refreshed Power BI pages plus model, Databricks job page, and clean Postman Runner summary.
+---
+
+## QA-11 — BLOCKER: Power BI screenshot is from a stale model
+
+**Evidence:** user-supplied Power BI Desktop capture, 2026-09-29. It visibly shows GGR **−70.00**, realised bonus cost **20.00**, NGR **−90.00**, liability **50.00**, Registration Bonus cost **25.00 / −27.78%**, and three ingestion runs. These contradict the validated current seed/model values:
+
+- GGR **260.00**
+- realised bonus cost **40.00**
+- NGR **220.00**
+- bonus liability **10.00**
+- Registration Bonus cost **40.00 / 18.18%**
+- four ingestion runs
+
+**Expected before any Power BI screenshot or ZIP is accepted:** build a clean minimal Power BI package from the current exported tables only; remove all old/stale data and package artifacts; refresh it; compare every page to `powerbi/expected_values.md`; capture all four refreshed pages and Model view. The ZIP must include only what Power BI needs to open/refresh, the exported tables, a README, `expected_values.md`, and a manifest with source revision and hashes. Do not include old PBIP/PBIX files, unrelated build output, virtual environments, raw databases, or duplicate exports.
+
+**Codex status:** BLOCKED pending a new ZIP, its manifest, and genuine refreshed-page evidence. The screenshot above must be retained only as evidence of the rejected stale version, never used in the submission.
