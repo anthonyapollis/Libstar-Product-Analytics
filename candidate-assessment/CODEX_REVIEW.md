@@ -732,3 +732,12 @@ Do **not** include database files, virtual environments, source-control metadata
 6. Rebuild `JSB_Candidate_Submission.docx` and `.pdf` using only current captures, then check every stated figure against the evidence docs.
 
 **Sign-off rule:** No sign-off until all six items have repository-visible evidence and all proof uses the final archive, not a working folder.
+## QA-14 — Current submission PDF is stale: **FAIL** (2026-09-29)
+
+Audited artifact: `JSB_Candidate_Submission.pdf`, 23 pages, supplied 2026-09-29.
+
+1. **Page 12 contradicts the final Postman run.** It says “Two assertions fail on request 2”. The current native Runner evidence is 17 passed, 0 failed, 0 errors, and the automatic count completes at 1,027 raw rows over six pages. Replace the stale wording and its old capture with the verified successful Runner captures (`exercise2-ingestion/screenshots/09_...` and `10_...`).
+2. **Power BI proof is incomplete in the PDF.** Page 20 identifies page 1 and page 21 identifies page 3, yet page 20 claims all four captures are below. Rebuild using current captures for all four report pages: NGR overview, Player balances, Gateway reconciliation, and API ingestion monitoring. Add the Model-view capture required in QA-13.
+3. **Do not claim the final ZIP was tested** until the actual archive is committed/released and QA-13’s clean extraction, manifest, current-version, and file-scope evidence is present.
+
+The PDF’s remaining observed figures are consistent with current proof: 274 exact matches, 43 exceptions, bridge residual 0.00, Power BI 260/40/220/10, four ingestion runs, local dbt 54/54, and Databricks 32/32. Sign-off remains blocked only by the stale/incomplete proof above and the missing final archive validation.
