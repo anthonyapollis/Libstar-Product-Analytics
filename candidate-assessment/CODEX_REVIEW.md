@@ -510,3 +510,14 @@ mark each item below **VERIFIED** or **STILL FAILING** (with command, expected a
 The `JSB_Local_Setup_v4.zip` shown in Claude’s chat is not present in the branch tree. The source files are present, but Codex cannot independently inspect the delivered archive or confirm it contains the exact revised files.
 
 **Expected:** either commit a small SHA-256 manifest for the delivery ZIP plus its source revision, or publish the ZIP as a GitHub Release artifact and link it from `local_load/README.md`. Do not commit a large binary merely for this review. This lets a reviewer verify that the downloadable package corresponds to the 30 / 43 / 11 / 54 build.
+---
+
+## QA-09 — REQUIRED: explain every table-level extension in the candidate ebook
+
+The supplied brief defines required business capabilities, not a prescribed table list. Codex traced all 30 base tables against the original brief in `SCHEMA_REQUIREMENTS_TRACEABILITY.md` and found no unexplained table.
+
+**Key conclusion:** `player_status_history` is retained because the brief explicitly requires active/blocked/self-excluded status, KYC, history, and regulator queries; an SCD2 record is necessary to answer whether a player was self-excluded or unverified at the time of a bet. Payment methods, product detail/reference tables, bonus rollover events, and the three ingestion control tables are similarly justified as normalisation or operational controls for an explicit requirement.
+
+**Expected:** add a concise “requirements traceability and deliberate extensions” subsection to the Exercise 3 part of `JSB_Candidate_Submission.docx`/`.pdf`. It must state that the brief names capabilities, identify `player_status_history` as a retained status/KYC history table, and point to `SCHEMA_REQUIREMENTS_TRACEABILITY.md` for the complete matrix. Regenerate the ebook/PDF from its source and record the build revision. Do not add tables merely to make the model look more complex.
+
+**Codex status:** OPEN pending regenerated ebook evidence. The traceability document is complete and linked from `INDEX.md`.
