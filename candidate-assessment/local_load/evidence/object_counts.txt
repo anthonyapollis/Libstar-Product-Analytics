@@ -1,0 +1,15 @@
+-- Object counts after local_load/01_load_submission_tables.sql + dbt build --full-refresh (MariaDB 10.11.14-MariaDB-0ubuntu0.24.04.1, 2026-09-29 05:08 UTC)
+-- SELECT table_schema, SUM(table_type='BASE TABLE') AS tables, SUM(table_type='VIEW') AS views, COUNT(*) AS objects FROM information_schema.tables WHERE table_schema IN ('jsb_assessment','jsb_platform','jsb_platform_staging','jsb_platform_marts') GROUP BY table_schema WITH ROLLUP;
+
++----------------------+--------+-------+---------+
+| table_schema         | tables | views | objects |
++----------------------+--------+-------+---------+
+| jsb_assessment       |      6 |     0 |       6 |
+| jsb_platform         |     24 |     0 |      24 |
+| jsb_platform_marts   |     13 |     0 |      13 |
+| jsb_platform_staging |      0 |    11 |      11 |
+| NULL                 |     43 |    11 |      54 |
++----------------------+--------+-------+---------+
+
+-- Tables without a primary key (expect none):
+(empty result = every table has a primary key)

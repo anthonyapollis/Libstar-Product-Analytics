@@ -1,6 +1,7 @@
 # Table inventory: what each table is, who creates it, and why
 
-A fresh local setup creates **54 objects in 4 databases**:
+A fresh local setup creates **54 objects in 4 databases: 43 physical tables + 11 views**
+(counted on a fresh load in `local_load/evidence/object_counts.txt`):
 
 - 30 base tables, loaded by one SQL script.
 - 24 objects built by dbt: 11 views and 13 tables (2 of them incremental).
