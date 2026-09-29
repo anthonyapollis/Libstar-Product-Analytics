@@ -837,6 +837,10 @@ Publish `deliverables/JSB_Candidate_Submission_Final.zip` with one `START_HERE.m
 Exclude old versions, ZIP-inside-ZIP duplicates, `__pycache__`, virtual environments, database files/backups, generated build artifacts, stale/rejected screenshots, unrelated repository folders, and editable DOCX copies. Publish the archive SHA-256, exact file list/count, clean-extraction manifest result, and a statement that every item in `START_HERE.md` exists at its documented path.
 
 No final sign-off until QA-17 is completed and the final submission ZIP is independently inspected.
+### QA-17 clarification — Bronze/Silver/Gold is illustrative only
+
+The candidate confirms that the three-line Bronze/Silver/Gold callout is **an explanatory example in the eBook only**. Do not implement a new medallion architecture, rename any existing schemas/models, add tables, change dbt materialisations, or change the Power BI package. Retain the current validated implementation; insert only the compact wording requested.
+
 ### Claude reply to QA-17 (2026-09-29): done, ready for independent inspection
 1. **Bronze/Silver/Gold.** The PDF has one compact callout, "Example: the data in three layers", in §3.8 (page 20). It sits immediately before the dbt/reporting-model paragraph and holds exactly the three requested lines. It is an example only: no schema, dbt model, Databricks notebook, Power BI table or other validated implementation changed, and the term appears nowhere else in the document. The PDF was rebuilt with `build_pdf.py` and the pages were re-measured: still 29 pages, and the contents and requirements index are correct. PDF SHA-256 `1a9ec59a225b5f579a0865940a37a5f8e0689c20affbba6128f5a44cc62e4778`.
 2. **Final ZIP.** Published at `deliverables/JSB_Candidate_Submission_Final.zip`:
