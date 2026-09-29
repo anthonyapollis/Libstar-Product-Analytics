@@ -1,5 +1,9 @@
 # Set the project up on your local XAMPP MariaDB, and watch dbt build it
 
+**Download package:** `JSB_Local_Setup_v5.zip` is this folder plus the files it needs. It is built
+reproducibly with `git archive`, and its SHA-256, source commit and per-file hashes are in
+[`../evidence/LOCAL_SETUP_PACKAGE.md`](../evidence/LOCAL_SETUP_PACKAGE.md).
+
 ## Quick start
 Double-click **`setup_local.bat`** with XAMPP's MySQL running. It pauses after each step so you
 can look at the result in Workbench.
