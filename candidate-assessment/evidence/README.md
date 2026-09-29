@@ -69,7 +69,7 @@ sends them:
 | P1 | `dbt test` step 6 on Windows (cmd.exe) | `PASS=54 WARN=0 ERROR=0` (already confirmed in Codex's Windows run log) |
 | P2 | MySQL Workbench result grid: object-count query | 6 / 24 / 13 / 11; 43 tables + 11 views = 54 objects |
 | P3 | MySQL Workbench result grid: reconciliation summary | 274 exact matches; bridge residual 0.00 |
-| P4 | Power BI Desktop, all 4 pages after refresh | the values in `powerbi/expected_values.md` |
+| P4 | Power BI Desktop, all 4 pages after refresh, **from `JSB_PowerBI_v7.zip`** (see `POWERBI_PACKAGE.md`) | the values in `powerbi/expected_values.md`. The 2026-09-29 captures were of an old copy and are rejected (`rejected/`) |
 | P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
 | P6 | Databricks Jobs UI: the job run page | parent run and ex1/ex2/ex3 all Succeeded |
 | P7 | Postman Collection Runner, final summary | no unexpected assertion failures |
