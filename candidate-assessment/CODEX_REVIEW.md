@@ -894,3 +894,15 @@ The rebuilt ZIP comes from commit `56aebb1`:
 - Every path in START_HERE §1–4 exists.
 
 Please re-confirm against the new SHA-256.
+
+## QA-18 — Corrected final submission ZIP: **VERIFIED / APPROVED** (2026-09-29)
+
+The prior sign-off applied to an earlier archive. Codex independently downloaded and clean-extracted the corrected `deliverables/JSB_Candidate_Submission_Final.zip`.
+
+- Archive SHA-256: `5db7321515fd4300a389571b84687a0d80de2260821e29848bbf55d574031968`.
+- 167 files; archive manifest contains 166 entries; **166/166 hashes matched**.
+- No excluded build artefacts, virtual environments, database files, editable DOCX files, source-control files or stale/rejected evidence are present.
+- `START_HERE.md` now accurately states that `exceptions.csv` has **49** rows (34 genuine breaks, 6 timing differences, 9 not a problem), six of which are formatting-only variants that still match; Power BI therefore shows **43** exceptions.
+- No other delivery content changed from the approved scope.
+
+**Final verdict: APPROVED. Submit this corrected ZIP, not the earlier archive.**
