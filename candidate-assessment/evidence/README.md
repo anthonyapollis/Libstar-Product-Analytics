@@ -20,6 +20,7 @@ Times are UTC. "Commit" is the commit that added the current version of the file
 | `local_load/screenshots/01_windows_xampp_dbt_debug.png` | App capture (cmd.exe) | 2026-09-29 05:21 | `dbt debug --target xampp` | connection OK, "All checks passed!" | as expected | `7a3e803` | `54c5b1607b3a2a583af34e0ffd7968b0327e7ddede344e30df94d74529aea626` |
 | `local_load/screenshots/02_windows_xampp_dbt_staging.png` | App capture (cmd.exe) | 2026-09-29 05:58 | `dbt run --select staging` | 11 views | `PASS=11 ERROR=0` | `59b1079` | `eae3036924a31e0e760175d1b0ba154cf5070eb2dc8e1ec2d73e5120795c7c19` |
 | `local_load/screenshots/03_windows_xampp_dbt_marts.png` | App capture (cmd.exe) | 2026-09-29 05:59 | `dbt run --select marts --full-refresh` | 13 tables (2 incremental) | `PASS=13 ERROR=0`; `fact_wallet_transaction` 18, `fact_bet` 6, `fct_recon_exceptions` 317 rows | `59b1079` | `5b97194c17ed7835cb09bf3ddb3195635798d193f5fef327b42c4257dfbbb64c` |
+| `local_load/screenshots/06_windows_proof_queries.png` | App capture (cmd.exe, mysql.exe -t) | 2026-09-29 07:06 | `mysql.exe -u root -t < proof_queries.sql` | 6 / 24 / 13 / 11 = 43 tables + 11 views = 54; no table without a PK; 274 OK of 317; bridge residual 0.00 | as expected (the PK query returned no rows, so no grid is printed for it) | `59b1079`→this commit | `4e22bceaff0ba155a358f5f2e334d60cfbbf2bc14fdc244cadbc0f152a7dc7bc` |
 | `local_load/screenshots/04_windows_workbench_jsb_assessment.png` | App capture (MySQL Workbench) | 2026-09-29 05:15 | Navigator after step 1 | `jsb_assessment`: 6 tables | 6 tables | `59b1079` | `5f6af4fb502f323599909bfbab2e024f4a59d99bda587cf36af80e16a6e688ae` |
 | `local_load/screenshots/05_windows_workbench_jsb_platform.png` | App capture (MySQL Workbench) | 2026-09-29 05:16 | Navigator after step 1 | `jsb_platform` tables | table list visible | `59b1079` | `be413140c499127a79c8f69a2c8e012c5c98e89978ceddbe9936003fd88d4420` |
 
@@ -82,8 +83,8 @@ sends them:
 | # | Capture | Shows |
 |---|---|---|
 | P1 | `dbt test` step 6 on Windows (cmd.exe) | `PASS=54 WARN=0 ERROR=0` (already confirmed in Codex's Windows run log) |
-| P2 | MySQL Workbench result grid: object-count query | 6 / 24 / 13 / 11; 43 tables + 11 views = 54 objects |
-| P3 | MySQL Workbench result grid: reconciliation summary | 274 exact matches; bridge residual 0.00 |
+| ~~P2~~ | **Done**: `local_load/screenshots/06_windows_proof_queries.png` (cmd.exe; Workbench crashes on MariaDB 10.4) | |
+| ~~P3~~ | **Done**: `local_load/screenshots/06_windows_proof_queries.png` (cmd.exe; Workbench crashes on MariaDB 10.4) | |
 | ~~P4~~ | **Done**: see the Power BI section above. The earlier captures of an old copy are kept in `rejected/` only | |
 | P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
 | ~~P6~~ | **Done**: `databricks/screenshots/02_databricks_job_run_succeeded.png` (see the Databricks section above) | |

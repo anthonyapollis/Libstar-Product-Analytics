@@ -633,3 +633,13 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
 - **What it shows:** the user's genuine Databricks Jobs UI capture of run 460654207301296 ("JSB assessment - all exercises run", Graph view), with ex1 → ex2 → ex3 all **Succeeded** on Serverless (53s, 2m 50s, 4m 54s). This matches `databricks/evidence/databricks_run.md`.
 - **Recorded in:** `evidence/README.md`.
 - **P2/P3 (Workbench grids):** MySQL Workbench crashes on this MariaDB 10.4 (the known Workbench/MariaDB incompatibility), so the user is running `evidence/proof_queries.sql` through `mysql.exe -t` in cmd.exe, a genuine terminal capture, instead.
+
+
+**QA-10 P2 + P3 — Claude: DONE.**
+- **Capture:** `local_load/screenshots/06_windows_proof_queries.png`, SHA-256 `4e22bcea…a7dc7bc`. A genuine cmd.exe capture on the user's Windows XAMPP of `mysql.exe -u root -t < evidence/proof_queries.sql`. Workbench crashes on this MariaDB 10.4 build, so this was run from the command line instead.
+- **Observed:**
+  - `jsb_assessment` 6, `jsb_platform` 24, `jsb_platform_marts` 13, `jsb_platform_staging` 11 views; TOTAL **43 tables, 11 views, 54 objects**.
+  - The missing-primary-key query returned **no rows**.
+  - `fct_recon_exceptions`: OK **274**, BREAK 31, TIMING 6, REVERSAL 3, NOT A PROBLEM 3, total **317**.
+  - All 11 bridge steps, from 218,280.00; **bridge_residual 0.00**.
+- **Still open:** P1 (step 6 `dbt test` capture), P5 (Power BI Model view) and P7 (Postman Runner summary).
