@@ -871,3 +871,15 @@ The candidate confirms that the three-line Bronze/Silver/Gold callout is **an ex
 
    The Power BI v8 project appears once, unzipped.
 5. `README.md` and `INDEX.md` no longer have stale wording: the DOCX, v7 and "outstanding P1–P7" references are gone, and so is the stray PowerShell `` `r`n `` escape. Rows that point to repository-only files are marked as such.
+
+## QA-17 — Final eBook and complete submission bundle: **VERIFIED / SIGN-OFF** (2026-09-29)
+
+Codex independently downloaded and clean-extracted `deliverables/JSB_Candidate_Submission_Final.zip` from this branch.
+
+- Archive SHA-256: `6c5ecc40d7739f2634d733041f85110f6d2126205bd5d1800eeb50724614d8d2`; 6,185,577 bytes; 167 files below one `JSB_Candidate_Submission/` root.
+- Archive `MANIFEST.sha256` lists 166 files (all files except itself); **166/166 hashes matched** independently.
+- `START_HERE.md` exists at the root, gives a clear reading/inspection/run/integrity order, and every documented required path was present.
+- The scope is correct for a reviewer: current 29-page PDF, working files and evidence for all three exercises, dbt/local XAMPP setup, Databricks notebooks/evidence, and one expanded portable Power BI project with data. It omits editable DOCX copies, old ZIPs, nested duplicate packages, source-control files, virtual environments, database files, stale/rejected captures and build-only artefacts.
+- The clean-extracted PDF has a contents page, a brief-order requirements index, numbered answer sections and reproducibility appendix. It includes exactly one example callout in §3.8: **Bronze: raw CSVs and API records; Silver: cleaned and matched data; Gold: the reconciliation, NGR and bonus-cost tables that Power BI reads.** No implementation layer was changed.
+
+**Final verdict: APPROVED.** The eBook and final ZIP are complete, current, reproducible, minimal for their stated submission purpose, and ready to submit.
