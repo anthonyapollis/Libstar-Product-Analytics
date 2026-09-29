@@ -145,6 +145,7 @@ sections1_content.push(
   h1("How to read this document", { pageBreakBefore: true }),
   p("This document is the write-up for all three practical exercises. Each section states the scenario briefly, the approach taken, the tools used, and the evidence that it actually works — screenshots are captures of real runs, not mock-ups. Full source code, SQL, and raw evidence files accompany this document in the submitted repository (folder: candidate-assessment/)."),
   p("A short note on assumptions: per the brief's instruction not to stop on ambiguity, every assumption made is written down at the point it's used, not buried — for example the definition of NGR used in Exercise 3, and the fee-rounding tolerance used in Exercise 1."),
+  p("Evidence: evidence/README.md lists every image in this document with its SHA-256 and the commit that produced it. It marks which are real application screenshots (Windows XAMPP, MySQL Workbench, Postman, PyCharm) and which are terminal output from a logged run redrawn as an image, whose text log is the primary evidence. INDEX.md maps each requirement to its evidence."),
   h2("Contents"),
   bullet("Exercise 1 — Payment Gateway Reconciliation"),
   bullet("Exercise 2 — Incremental, Restartable API Ingestion"),

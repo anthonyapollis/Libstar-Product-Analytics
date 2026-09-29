@@ -1,0 +1,85 @@
+# Evidence manifest (QA-10)
+
+Every image in the submission, what produced it, and its SHA-256, so a reviewer can tie each picture to
+a run and a commit. The three kinds are kept apart on purpose:
+
+| Kind | Meaning |
+|---|---|
+| **App capture** | A real screenshot of the named application, taken on the user's Windows PC (Postman, PyCharm, MySQL Workbench, cmd.exe). |
+| **Rendered log** | Real command output from a run in the build container, captured to the text file named. `submission_build/make_screenshot.py` then drew it as a terminal-style image. **The log file is the primary evidence**; the image is a readable copy of it, not a screen capture. |
+| **Generated diagram** | Drawn from source (Mermaid) by the build, not a run result. |
+
+Times are UTC. "Commit" is the commit that added the current version of the file. Check any file with
+`sha256sum <path>` (Windows: `certutil -hashfile <path> SHA256`).
+
+## Windows / XAMPP (user's PC, MariaDB 10.4.24, dbt 1.7.20 + mariadb 1.7.0)
+
+| File | Kind | Time | Action | Expected | Observed | Commit | SHA-256 |
+|---|---|---|---|---|---|---|---|
+| `local_load/screenshots/00_windows_xampp_step1_load.png` | App capture (cmd.exe) | 2026-09-29 05:17 | `setup_local.bat` step 1 | 326 / 306 / 1,024 / 4 / 1 rows; 24 `jsb_platform` tables | as expected | `59b1079` | `8077b176b909202c07813d35a2d86323675c9e00266ed6255aab3415683de935` |
+| `local_load/screenshots/01_windows_xampp_dbt_debug.png` | App capture (cmd.exe) | 2026-09-29 05:21 | `dbt debug --target xampp` | connection OK, "All checks passed!" | as expected | `7a3e803` | `54c5b1607b3a2a583af34e0ffd7968b0327e7ddede344e30df94d74529aea626` |
+| `local_load/screenshots/02_windows_xampp_dbt_staging.png` | App capture (cmd.exe) | 2026-09-29 05:58 | `dbt run --select staging` | 11 views | `PASS=11 ERROR=0` | `59b1079` | `eae3036924a31e0e760175d1b0ba154cf5070eb2dc8e1ec2d73e5120795c7c19` |
+| `local_load/screenshots/03_windows_xampp_dbt_marts.png` | App capture (cmd.exe) | 2026-09-29 05:59 | `dbt run --select marts --full-refresh` | 13 tables (2 incremental) | `PASS=13 ERROR=0`; `fact_wallet_transaction` 18, `fact_bet` 6, `fct_recon_exceptions` 317 rows | `59b1079` | `5b97194c17ed7835cb09bf3ddb3195635798d193f5fef327b42c4257dfbbb64c` |
+| `local_load/screenshots/04_windows_workbench_jsb_assessment.png` | App capture (MySQL Workbench) | 2026-09-29 05:15 | Navigator after step 1 | `jsb_assessment`: 6 tables | 6 tables | `59b1079` | `5f6af4fb502f323599909bfbab2e024f4a59d99bda587cf36af80e16a6e688ae` |
+| `local_load/screenshots/05_windows_workbench_jsb_platform.png` | App capture (MySQL Workbench) | 2026-09-29 05:16 | Navigator after step 1 | `jsb_platform` tables | table list visible | `59b1079` | `be413140c499127a79c8f69a2c8e012c5c98e89978ceddbe9936003fd88d4420` |
+
+The full Windows run, including step 6 (`dbt test`, `PASS=54`), the 43 + 11 = 54 object count and the
+zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xampp_run_20260929.md`.
+
+## Postman / PyCharm (user's PC)
+
+| File | Kind | Time | Action | Expected | Observed | Commit | SHA-256 |
+|---|---|---|---|---|---|---|---|
+| `exercise2-ingestion/screenshots/03_postman_runner_config.png` | App capture (Postman) | 2026-09-28 | Collection Runner set-up | all 7 requests, 1 iteration | as expected | `df739f9` | `3a6784aa09c9a865fdb8db7540722529889e1e83af54b7322c73d527d3814a68` |
+| `exercise2-ingestion/screenshots/04_postman_request0_200ok.png` | App capture (Postman) | 2026-09-28 | first page request | 200 OK | 200 OK | `df739f9` | `b673dd59c8d2642169a06147a31958d4d8c1dbef74ef6e6749ff7e6c76f0fe6f` |
+| `exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png` | App capture (Postman) | 2026-09-28 | Runner, pages 1–4 | paginated 200s | as expected | `df739f9` | `5db67f147b43beb1c7971b11d1f851db42de35e8b1485122c524b65ecb9139fc` |
+| `exercise2-ingestion/screenshots/06_postman_runner_total_1027.png` | App capture (Postman) | 2026-09-28 | Runner, pages 4–6 | "DONE", all rows returned | 1,027 rows over 6 pages; two assertions failed on request 2 (see note) | `df739f9` | `030dece9202a7c36b79042627f9ebed18cd07894cda4665fc5ce7ec61152d8c6` |
+| `exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png` | App capture (PyCharm) | 2026-09-28 | mock API running | server up | as expected | `df739f9` | `de49fc2480f5e84fd4c27159af54d1da442d18b94b8ee1329685cd595868adf9` |
+
+## Rendered logs (build container, MariaDB 10.11)
+
+| File | Source log | Time | Result | Commit | SHA-256 |
+|---|---|---|---|---|---|
+| `exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png` | output of `sql/03_reconciliation.sql` (reproduced by `sql/04_independent_check.py`) | 2026-09-28 | 274 matched; bridge residual 0.00 | `87f812c` | `9298f7b2468b6a9f9fba22c9ed3e95a1e150be9be92a3080c4ccd009345d1c6c` |
+| `exercise1-reconciliation/screenshots/02_three_way_agreement.png` | `exercise1-reconciliation/evidence/agreement_by_category.csv` | 2026-09-28 | SQL = dbt = pandas on all 317 rows | `87f812c` | `21e0019a61360306ed771556f1af1bed4a74a8f5675f1581f0a568a7e12098da` |
+| `exercise2-ingestion/screenshots/01_kill_restart_new_activity.png` | `exercise2-ingestion/evidence/run_transcript.txt` | 2026-09-28 | kill, restart, rerun, new activity: PASS | `cef2944` | `befa931f220ce6269bc3d9289476d0a857ed7dbf18ebd8b09a6fa2874eefd184` |
+| `exercise2-ingestion/screenshots/02_postman_newman_run.png` | `exercise2-ingestion/evidence/newman_run_clean.txt` | 2026-09-28 | 5 requests, 0 failed | `c9b58ba` | `baa5214b02f5b65e195fa5f1d888cc48952c09c747ec76639a5fb76656c86216` |
+| `exercise2-ingestion/screenshots/08_new_activity_final_state.png` | `exercise2-ingestion/evidence/run_transcript.txt` | 2026-09-28 | 25 new + 40 changed; table = API | `cef2944` | `a5e7c1a08f2609d68080cee8d960b87c5553553f93a51b8701dbf47e1b669fc5` |
+| `exercise3-schema-design/screenshots/01_example_queries_output.png` | `exercise3-schema-design/evidence/example_queries_output.txt` | 2026-09-28 | NGR 220.00; 18.18%; 1,160.00; 450 → 415; 4 min | `5574303` | `1e8140ffc3fa1a35781dec52c335296023ebc268f3fa7b1ed48238755434c3c3` |
+| `exercise3-schema-design/screenshots/02_ledger_posting_test.png` | `exercise3-schema-design/evidence/ledger_posting_test.txt` | 2026-09-28 | 17/17 PASS | `5574303` | `209da1266ecfdcff12876409fba9fd844c7335e3780304b43d90ee182a94c00f` |
+| `dbt_jsb_assessment/screenshots/01_dbt_build.png` | `dbt_jsb_assessment/evidence/dbt_build_output.txt` | 2026-09-28 | 78/78 PASS | `5574303` | `070215d94a2f762030d8c979e9eaa41a1f3531e76d4099f84e88f06390845e5e` |
+| `databricks/screenshots/01_local_test_run.png` | `databricks/evidence/local_test_run.txt` | 2026-09-29 | 32/32 PASS (Spark 4 + Delta 4) | `76a61dd` | `3c4f8b3fe0b7ec207bd5c4f1d0195dc0c068157388d56e3a8502e09ef062d5a6` |
+
+The Databricks serverless run itself is recorded in `databricks/evidence/databricks_run.md`: job and
+task run URLs, all SUCCESS, from the Jobs API.
+
+## Generated diagrams
+
+| File | Source | Commit | SHA-256 |
+|---|---|---|---|
+| `exercise3-schema-design/erd.png` | `exercise3-schema-design/erd.mmd` | `5574303` | `91249e1e32fd922be1f9aecea1e3cdf38f163bca63dd6d74dd3dbdbba1db7873` |
+| `powerbi/model.png` | `powerbi/model.mmd` | `5574303` | `dfa12022d2218a3e5c4175d38ad5edd932cf8b8457bd915261936db232b1b007` |
+
+## Still to capture (needs the user's screen)
+These can't be produced from the build container. They will be added here, with hashes, when the user
+sends them:
+
+| # | Capture | Shows |
+|---|---|---|
+| P1 | `dbt test` step 6 on Windows (cmd.exe) | `PASS=54 WARN=0 ERROR=0` (already confirmed in Codex's Windows run log) |
+| P2 | MySQL Workbench result grid: object-count query | 6 / 24 / 13 / 11; 43 tables + 11 views = 54 objects |
+| P3 | MySQL Workbench result grid: reconciliation summary | 274 exact matches; bridge residual 0.00 |
+| P4 | Power BI Desktop, all 4 pages after refresh | the values in `powerbi/expected_values.md` |
+| P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
+| P6 | Databricks Jobs UI: the job run page | parent run and ex1/ex2/ex3 all Succeeded |
+| P7 | Postman Collection Runner, final summary | no unexpected assertion failures |
+
+**Note on P7 and `06_postman_runner_total_1027.png`:** the two failed assertions in that capture are on
+request 2 ("Next page"). That is a one-shot documentation request with no retry logic, and it happened
+to land on one of the mock API's injected 429 (rate-limit) responses; only the counting request
+retries. It is not an API or ingestion failure: the same collection under Newman passes 5/5
+(`02_postman_newman_run.png`), and `ingest.py` retries every 429. 1,027 rather than 1,025 is the raw
+count including the API's in-page repeated rows, which `ingest.py` collapses. A clean Runner capture
+(P7) will replace it.
+
+The SQL for P2 and P3 is in `evidence/proof_queries.sql`, ready to paste into Workbench.
