@@ -131,7 +131,7 @@ sections1_content.push(
   new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: { after: 400 },
-    children: [new TextRun({ text: "MySQL 8.0 · MariaDB 10.11 (cross-verified) · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model)", size: 20, color: GREY })],
+    children: [new TextRun({ text: "MySQL 8.0 · MariaDB 10.11 (cross-verified) · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model) · Databricks (Delta Lake, serverless)", size: 20, color: GREY })],
   }),
   new Paragraph({
     alignment: AlignmentType.CENTER,
@@ -149,7 +149,8 @@ sections1_content.push(
   bullet("Exercise 1 — Payment Gateway Reconciliation"),
   bullet("Exercise 2 — Incremental, Restartable API Ingestion"),
   bullet("Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses"),
-  bullet("Power BI — Reporting Data Model and Report")
+  bullet("Power BI — Reporting Data Model and Report"),
+  bullet("Databricks — The Same Three Exercises on Delta Lake")
 );
 
 module.exports = { sections1_content, h1, h2, h3, p, pMixed, bullet, caption, imgPara, pageBreak, cell, table, BASE, NAVY, TEAL, GREY, LIGHT };

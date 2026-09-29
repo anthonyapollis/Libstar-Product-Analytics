@@ -1,19 +1,19 @@
-Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34007 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
-Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34007 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=46163 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=46163 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
 WARNING: Using incubator modules: jdk.incubator.vector
 Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-26/09/28 21:06:46 WARN Utils: Your hostname, vm, resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
-26/09/28 21:06:46 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/09/29 05:01:52 WARN Utils: Your hostname, vm, resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
+26/09/29 05:01:52 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
 :: loading settings :: url = jar:file:/root/.venvs/spark/lib/python3.11/site-packages/pyspark/jars/ivy-2.5.3.jar!/org/apache/ivy/core/settings/ivysettings.xml
 Ivy Default Cache set to: /root/.ivy2.5.2/cache
 The jars for the packages stored in: /root/.ivy2.5.2/jars
 io.delta#delta-spark_2.13 added as a dependency
-:: resolving dependencies :: org.apache.spark#spark-submit-parent-aa18f3a8-87c5-4d64-9b8b-6c4529c0a1fc;1.0
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-c03b13d5-51ff-4408-9fa2-7ef9c0855c81;1.0
 	confs: [default]
 	found io.delta#delta-spark_2.13;4.0.1 in central
 	found io.delta#delta-storage;4.0.1 in central
 	found org.antlr#antlr4-runtime;4.13.1 in central
-:: resolution report :: resolve 134ms :: artifacts dl 5ms
+:: resolution report :: resolve 212ms :: artifacts dl 6ms
 	:: modules in use:
 	io.delta#delta-spark_2.13;4.0.1 from central in [default]
 	io.delta#delta-storage;4.0.1 from central in [default]
@@ -24,10 +24,10 @@ io.delta#delta-spark_2.13 added as a dependency
 	---------------------------------------------------------------------
 	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
 	---------------------------------------------------------------------
-:: retrieving :: org.apache.spark#spark-submit-parent-aa18f3a8-87c5-4d64-9b8b-6c4529c0a1fc
+:: retrieving :: org.apache.spark#spark-submit-parent-c03b13d5-51ff-4408-9fa2-7ef9c0855c81
 	confs: [default]
-	0 artifacts copied, 3 already retrieved (0kB/4ms)
-26/09/28 21:06:47 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+	0 artifacts copied, 3 already retrieved (0kB/5ms)
+26/09/29 05:01:54 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
@@ -142,7 +142,7 @@ PASS: recon_key is unique (one row per deposit/settlement pair)
 |Timing difference|TIMING: settlement expected in next period (created near cut-off)                |D000330   |NULL          |GW-000330  |NULL        |150.00    |NULL        |NULL  |NULL        |NULL      |150.00          |
 +-----------------+---------------------------------------------------------------------------------+----------+--------------+-----------+------------+----------+------------+------+------------+----------+----------------+
 
-######## 01_exercise1_reconciliation: OK in 41s
+######## 01_exercise1_reconciliation: OK in 44s
 
 ######## 02_exercise2_incremental_ingestion ########
 Using jsb_assessment (Databricks: False)
@@ -187,7 +187,7 @@ PASS: the table matches the API exactly
 |run_id|status   |pages_fetched|rows_new|rows_changed|rows_unchanged|rows_rejected|rate_limit_hits|server_error_hits|seconds|error_message                                                            |
 +------+---------+-------------+--------+------------+--------------+-------------+---------------+-----------------+-------+-------------------------------------------------------------------------+
 |1     |ABANDONED|1            |50      |0           |0             |0            |0              |0                |NULL   |process stopped without finishing; later runs resumed from the checkpoint|
-|2     |COMPLETED|5            |899     |0           |51            |1            |0              |0                |29     |NULL                                                                     |
+|2     |COMPLETED|5            |899     |0           |51            |1            |0              |0                |28     |NULL                                                                     |
 |3     |COMPLETED|1            |0       |0           |1             |0            |0              |1                |7      |NULL                                                                     |
 |4     |COMPLETED|1            |25      |40          |1             |0            |0              |0                |6      |NULL                                                                     |
 +------+---------+-------------+--------+------------+--------------+-------------+---------------+-----------------+-------+-------------------------------------------------------------------------+
@@ -201,14 +201,14 @@ PASS: the table matches the API exactly
 +-------------+-----------+--------------------+--------+--------------------------+
 |source_system|next_cursor|last_updated_at     |last_id |updated_at                |
 +-------------+-----------+--------------------+--------+--------------------------+
-|mock_provider|NULL       |2026-09-04T00:16:00Z|TX001024|2026-09-28 21:08:44.012735|
+|mock_provider|NULL       |2026-09-04T00:16:00Z|TX001024|2026-09-29 05:03:59.335335|
 +-------------+-----------+--------------------+--------+--------------------------+
 
 PASS: the crashed run is marked ABANDONED
 PASS: a rerun with nothing new loads nothing
 PASS: after new activity: exactly 25 new and 40 changed
 PASS: the bad record (TX000777) is quarantined once
-######## 02_exercise2_incremental_ingestion: OK in 85s
+######## 02_exercise2_incremental_ingestion: OK in 82s
 
 ######## 03_exercise3_schema ########
 Using jsb_assessment (Databricks: False)
@@ -224,7 +224,7 @@ local run: 56 PK/FK declarations skipped (Unity Catalog only)
 |player_bonuses     |2  |
 +-------------------+---+
 
-26/09/28 21:10:06 ERROR Utils: Aborting task
+26/09/29 05:05:20 ERROR Utils: Aborting task
 org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK constraint ck_bets_stake_positive ((stake_real_amount + stake_bonus_amount) > 0) violated by row with values:
  - stake_bonus_amount : 0.0000
  - stake_real_amount : -5.0000
@@ -252,8 +252,8 @@ org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLA
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
-26/09/28 21:10:06 ERROR DeltaFileFormatWriter: Job job_202609282110065787775516954375206_1397 aborted.
-26/09/28 21:10:06 ERROR Executor: Exception in task 0.0 in stage 1397.0 (TID 12508)
+26/09/29 05:05:20 ERROR DeltaFileFormatWriter: Job job_2026092905052060881341974538496_1397 aborted.
+26/09/29 05:05:20 ERROR Executor: Exception in task 0.0 in stage 1397.0 (TID 12508)
 org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to file:/home/user/Libstar-Product-Analytics/candidate-assessment/databricks/.local-warehouse/jsb_assessment.db/bets. SQLSTATE: 58030
 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:772)
 	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.executeTask(DeltaFileFormatWriter.scala:469)
@@ -285,8 +285,8 @@ Caused by: org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [
 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1323)
 	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.executeTask(DeltaFileFormatWriter.scala:459)
 	... 12 more
-26/09/28 21:10:06 ERROR TaskSetManager: Task 0 in stage 1397.0 failed 1 times; aborting job
-26/09/28 21:10:06 ERROR DeltaFileFormatWriter: Aborting job ff2585f5-0e46-478e-9956-5ad7c22127d9
+26/09/29 05:05:20 ERROR TaskSetManager: Task 0 in stage 1397.0 failed 1 times; aborting job
+26/09/29 05:05:20 ERROR DeltaFileFormatWriter: Aborting job c963f95a-29a9-4fba-81bd-97f11573465a
 org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to file:/home/user/Libstar-Product-Analytics/candidate-assessment/databricks/.local-warehouse/jsb_assessment.db/bets. SQLSTATE: 58030
 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:772)
 	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.executeTask(DeltaFileFormatWriter.scala:469)
@@ -391,7 +391,7 @@ org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing r
 	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:804)
 	at org.apache.spark.sql.classic.SparkSession.sql(SparkSession.scala:449)
 	at org.apache.spark.sql.classic.SparkSession.sql(SparkSession.scala:467)
-	at jdk.internal.reflect.GeneratedMethodAccessor163.invoke(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor165.invoke(Unknown Source)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:52)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
@@ -552,4 +552,4 @@ PASS: player 2: 450.00 while the wrong credit stood, 415.00 after its reversal a
 
 PASS: player 2 failed, then succeeded 4 minutes later
 PASS: every wallet's cached balance equals the sum of its ledger
-######## 03_exercise3_schema: OK in 125s
+######## 03_exercise3_schema: OK in 124s

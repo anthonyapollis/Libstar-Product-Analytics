@@ -305,6 +305,42 @@ pbi.push(p("Power BI Desktop has since opened an earlier version of this project
 pbi.push(p("Building this layer also caught a real defect upstream. The seed data's wallet balance cache didn't match its own ledger, breaking the rule that the ledger is the truth. The seed was fixed, and a dbt test (assert_wallet_cache_matches_ledger) now fails the build if the two ever diverge. The test failed on the old data and passes on the corrected data."));
 
 // ===========================================================================
+// DATABRICKS
+// ===========================================================================
+const dbx = [];
+const RUN = "https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/308746372139777/run/";
+dbx.push(h1("Databricks — The Same Three Exercises on Delta Lake", { pageBreakBefore: true }));
+dbx.push(p("Tools used: Databricks Free Edition (serverless compute, Unity Catalog, Delta Lake); open-source Spark 4 + Delta 4 for the local test.", { italics: true, color: GREY, size: 20 }));
+dbx.push(p("The three exercises also run as Databricks notebooks. build_notebooks.py generates them from the project's own files, so they can't drift from the MySQL version: the two Exercise 1 CSVs, the Exercise 2 mock API and the retry and validation code from ingest.py, and Exercise 3's ddl.sql translated to Delta plus seed.sql. Each notebook ends with checks that fail loudly if a figure differs from the MySQL and dbt results."));
+dbx.push(table(
+  ["Notebook", "What it does", "Checks"],
+  [
+    ["01_exercise1_reconciliation", "Loads both files with an idempotent MERGE (twice, to prove no duplicates), categorises every row and builds the bridge", "17: every category's count and value equal MySQL/dbt; bridge residual 0.00"],
+    ["02_exercise2_incremental_ingestion", "Serves the supplied mock API inside the notebook and loads it into Delta with MERGE. Crashes on purpose between a page and its checkpoint, restarts, then loads new activity", "6: table equals the API after the restart and after new activity; exactly 25 new and 40 changed; crashed run ABANDONED; one reject"],
+    ["03_exercise3_schema", "The 24 tables in Delta with 39 enforced CHECK constraints and Unity Catalog keys, the seed data and the four queries", "9: negative stake refused; no duplicate on 44 keys; no orphan on 32 foreign keys; the four answers; cache = ledger"],
+  ],
+  [2600, 3960, 2800]
+));
+dbx.push(h2("Run on the Databricks workspace"));
+dbx.push(p("On 2026-09-28, one job ran the three notebooks in order (ex1 → ex2 → ex3) on serverless compute. All three tasks succeeded, and all 32 checks passed, the same total as the local test."));
+dbx.push(table(
+  ["Task", "Result", "Run id"],
+  [
+    ["Job: JSB assessment – all exercises", "SUCCESS", "460654207301296"],
+    ["ex1 — reconciliation", "SUCCESS · 17/17 PASS", "453545434689160"],
+    ["ex2 — incremental ingestion", "SUCCESS · 6/6 PASS", "340425981901042"],
+    ["ex3 — schema design", "SUCCESS · 9/9 PASS", "685793852884612"],
+  ],
+  [3800, 2800, 2760]
+));
+dbx.push(p("Run pages: " + RUN + "<run id>. The full URLs are in databricks/evidence/databricks_run.md.", { size: 18, color: GREY }));
+dbx.push(h2("What Databricks changes, and what it needed"));
+dbx.push(bullet("Keys: Unity Catalog primary and foreign keys are declared but not enforced, and there is no UNIQUE. Loads therefore MERGE on the key, and the notebooks check every key for duplicates and every foreign key for orphans. CHECK and NOT NULL are enforced by Delta, and the notebook proves it by trying a negative stake."));
+dbx.push(bullet("Restartability: Delta commits one table at a time, so writes are ordered data → rejects → checkpoint → counters, each an idempotent MERGE. A crash re-reads at most one page, and re-applying it changes nothing. Setting the job's Maximum concurrent runs to 1 replaces MySQL's GET_LOCK."));
+dbx.push(bullet("Two fixes only a real serverless run could show. First, serverless refuses connections to 127.0.0.1 and to fixed ports, so on Databricks the mock API binds an OS-assigned port and is called by host name. Second, Delta requires a generated column's type to match exactly, and DECIMAL(18,4) + DECIMAL(18,4) is DECIMAL(19,4), so generated expressions are now cast to the column type. No check was changed, and the local test still passes."));
+dbx.push(...imgPara(`${BASE}/databricks/screenshots/01_local_test_run.png`, 520, "The same notebooks on open-source Spark 4 + Delta 4 (run_local.py): all 32 checks pass."));
+
+// ===========================================================================
 // ASSEMBLE
 // ===========================================================================
 const numbering = {
@@ -365,6 +401,7 @@ const doc = new Document({
         ...ex2,
         ...ex3,
         ...pbi,
+        ...dbx,
       ],
     },
   ],
