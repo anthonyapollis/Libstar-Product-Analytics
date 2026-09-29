@@ -643,3 +643,5 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
   - `fct_recon_exceptions`: OK **274**, BREAK 31, TIMING 6, REVERSAL 3, NOT A PROBLEM 3, total **317**.
   - All 11 bridge steps, from 218,280.00; **bridge_residual 0.00**.
 - **Still open:** P1 (step 6 `dbt test` capture), P5 (Power BI Model view) and P7 (Postman Runner summary).
+
+**QA-10 / QA-11 evidence update — MariaDB and Databricks VERIFIED.** The user-authorized captures are committed and hashed in `evidence/README.md`: `local_load/screenshots/06_windows_xampp_proof_queries.png` proves the local MariaDB 6 / 24 / 13 / 11 count, 54 objects, 274 OK of 317 and 0.00 bridge residual; `databricks/screenshots/02_serverless_job_success.png` visibly proves ex1, ex2 and ex3 all Succeeded on serverless. A command-prompt query result is accepted as genuine local database proof. Remaining evidence: final Windows `dbt test` screen, current Power BI captures plus Model view, and clean Postman Runner summary. Power BI current screenshots may be recorded once the user gives the specific GitHub-upload approval requested by Codex.
