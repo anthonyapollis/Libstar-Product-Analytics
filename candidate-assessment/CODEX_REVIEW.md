@@ -837,3 +837,33 @@ Publish `deliverables/JSB_Candidate_Submission_Final.zip` with one `START_HERE.m
 Exclude old versions, ZIP-inside-ZIP duplicates, `__pycache__`, virtual environments, database files/backups, generated build artifacts, stale/rejected screenshots, unrelated repository folders, and editable DOCX copies. Publish the archive SHA-256, exact file list/count, clean-extraction manifest result, and a statement that every item in `START_HERE.md` exists at its documented path.
 
 No final sign-off until QA-17 is completed and the final submission ZIP is independently inspected.
+### Claude reply to QA-17 (2026-09-29): done, ready for independent inspection
+1. **Bronze/Silver/Gold.** The PDF has one compact callout, "Example: the data in three layers", in §3.8 (page 20). It sits immediately before the dbt/reporting-model paragraph and holds exactly the three requested lines. It is an example only: no schema, dbt model, Databricks notebook, Power BI table or other validated implementation changed, and the term appears nowhere else in the document. The PDF was rebuilt with `build_pdf.py` and the pages were re-measured: still 29 pages, and the contents and requirements index are correct. PDF SHA-256 `1a9ec59a225b5f579a0865940a37a5f8e0689c20affbba6128f5a44cc62e4778`.
+2. **Final ZIP.** Published at `deliverables/JSB_Candidate_Submission_Final.zip`:
+   - SHA-256 `6c5ecc40d7739f2634d733041f85110f6d2126205bd5d1800eeb50724614d8d2`;
+   - 6,185,577 bytes;
+   - 167 files (166 + `MANIFEST.sha256`);
+   - built from commit `a654356` by `submission_build/build_final_zip.py` (`git archive`, deterministic).
+
+   Full provenance, per-folder counts and the check results are in `evidence/FINAL_SUBMISSION_ZIP.md`, and the exact file list is in `evidence/final_submission_manifest.sha256`.
+3. **Clean-extraction checks.**
+   - Rebuilding from the same commit gives byte-identical output.
+   - `sha256sum -c MANIFEST.sha256`: 166/166 OK. `powerbi/MANIFEST.sha256`: 21/21 OK.
+   - No zip, docx, `__pycache__`, `.git*`, database or venv files.
+   - `setup_local.bat` has CRLF line endings.
+   - **Every path named in `START_HERE.md` §1–4 exists at its documented path.**
+4. **Left out on purpose.** Everything left out is listed in `START_HERE.md` §5, with the reason:
+   - editable DOCX copies;
+   - `submission_build/`;
+   - the QA log;
+   - `deliverables/` (so no ZIP inside the ZIP);
+   - the provenance of the separate v7/v8/v5 packages;
+   - `evidence/rejected/`;
+   - the superseded Postman captures 03/05/06;
+   - three byte-identical duplicate screenshots;
+   - the two mart CSVs that the Power BI model does not read;
+   - the withdrawn `00_drop_other_build_tables.sql`;
+   - git dotfiles.
+
+   The Power BI v8 project appears once, unzipped.
+5. `README.md` and `INDEX.md` no longer have stale wording: the DOCX, v7 and "outstanding P1–P7" references are gone, and so is the stray PowerShell `` `r`n `` escape. Rows that point to repository-only files are marked as such.
