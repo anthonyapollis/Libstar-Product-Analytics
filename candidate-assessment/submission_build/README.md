@@ -23,3 +23,6 @@ node main.js && soffice --headless --convert-to pdf ../JSB_Candidate_Submission.
 - `build_pdf.py`: the two-pass build that fills in the page numbers.
 - `make_screenshot.py`: renders captured terminal output as the terminal-style screenshots under
   each exercise's `screenshots/` folder.
+
+## Final submission ZIP
+`python submission_build/build_final_zip.py [COMMIT]` packs `deliverables/JSB_Candidate_Submission_Final.zip` from one commit with `git archive`, leaves out the repository-only files listed in `START_HERE.md` §5, adds a root `MANIFEST.sha256` and writes the ZIP deterministically, so the same commit gives the same bytes.

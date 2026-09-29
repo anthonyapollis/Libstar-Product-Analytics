@@ -5,10 +5,13 @@ reconciliation load and the ingestion program, Postman/Newman for the API contra
 reporting layer. Everything under this folder ran successfully in this environment — see each
 exercise's `evidence/`/`screenshots/` folder for captured output.
 
-> **A note on screenshots:** this was built in a headless cloud container with no GUI, so
-> "screenshots" here are rendered captures of the actual terminal output of each run (not staged) —
-> clearly labelled as such rather than pretending otherwise. Every number in them is real, reproducible
-> by re-running the commands in each exercise's README.`r`n`r`nFor a reviewer-first route through the deliverables and evidence, open `INDEX.md`.
+> **A note on screenshots:** there are two kinds, and each is labelled in `evidence/README.md`.
+> *App captures* are genuine screenshots taken on the candidate's Windows PC (Command Prompt, Postman,
+> Power BI Desktop, Databricks). *Rendered logs* are real command output from the build container,
+> drawn as a terminal-style image; the text file each one was drawn from sits beside it.
+
+For a reviewer-first route through the deliverables and evidence, open `START_HERE.md` (in the
+submission ZIP) or `INDEX.md`.
 
 ## Layout
 ```
@@ -52,7 +55,7 @@ cd dbt_jsb_assessment && export DBT_PROFILES_DIR=. && dbt build
 | Power BI | A Power BI project (`JSB_Assessment.pbip`) built on the dbt marts and covering all three exercises: 11 tables, 7 relationships, 28 DAX measures (22 calculations, 6 tile-colour rules), 4 report pages (NGR overview, player balances, reconciliation waterfall, ingestion monitoring). Data is embedded, so it opens and refreshes with no path to set. Generated and validated by script, with expected values for every visual. | `powerbi/README.md`, `powerbi/expected_values.md` |
 | Local database | `local_load/setup_local.bat` loads the 30 base tables into a local XAMPP MariaDB and runs dbt step by step (11 views, 13 tables, 54 tests). Every table is explained in `TABLE_INVENTORY.md`. | `local_load/README.md`, `TABLE_INVENTORY.md` |
 | Databricks | The same three exercises as Databricks notebooks on Delta Lake, built from the same files. Ran on the Databricks workspace (serverless) as one job: all 3 tasks succeeded, 32/32 checks reproduce the MySQL/dbt results. Also tested locally on Spark 4 + Delta 4. | `databricks/evidence/databricks_run.md`, `databricks/README.md` |
-| Write-up | The full submission as one document, with screenshots of every key step: `JSB_Candidate_Submission.docx` (and `.pdf`). | this folder |
+| Write-up | The full submission as one document, with screenshots of every key step: `JSB_Candidate_Submission.pdf` (29 pages; the editable `.docx` stays in the repository). | this folder |
 
 ## Tools used
 MySQL 8.0 and MariaDB 10.11 (all SQL verified on both) · Python 3.11 (stdlib `urllib`, `pymysql`,

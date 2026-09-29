@@ -298,6 +298,12 @@ ex3.push(p("The same answers come from the dbt marts, the Power BI expected valu
 
 ex3.push(h2("From operational design to a reporting model", { key: "ex3.reporting" }));
 ex3.push(answers("Exercise 3 · task 7: how the operational design becomes a reporting model (facts and dimensions) for dashboards. Chapter 4 builds it in Power BI"));
+ex3.push(summaryBox("Example: the data in three layers", [
+  "Bronze: raw CSVs and API records.",
+  "Silver: cleaned and matched data.",
+  "Gold: the reconciliation, NGR and bonus-cost tables that Power BI reads.",
+]));
+ex3.push(p(""));
 ex3.push(p("The dbt project (dbt_jsb_assessment/) builds a star schema: dim_player, dim_player_vip_tier_scd, dim_campaign and dim_date around three facts, each at one grain. fact_bet has one row per bet, with GGR, bonus cost, NGR and the paying campaign. fact_wallet_transaction has one row per ledger movement, loaded incrementally. fact_bonus_transaction has one row per grant, with its cost and outstanding liability. Two marts answer queries (a) and (b), and personal data never enters the model. The same project also runs Exercise 1's reconciliation as a tested model."));
 ex3.push(...imgPara(`${BASE}/dbt_jsb_assessment/screenshots/01_dbt_build.png`, 440, "dbt build across all three exercises: 78 of 78 pass (24 models, 54 tests), 0 errors. Every mart has a primary key; two models load incrementally."));
 ex3.push(p("The same build on the candidate's Windows PC (XAMPP MariaDB 10.4, dbt 1.7.20): staging 11/11, marts 13/13, dbt test 54/54, and 43 tables + 11 views = 54 objects with no table missing a primary key. The genuine captures are in local_load/screenshots/ and listed in evidence/README.md."));

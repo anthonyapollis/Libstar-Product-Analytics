@@ -4,15 +4,17 @@ This page is the reviewer’s map to the submission. Start with the consolidated
 
 ## Submission and quick review
 
+In the final submission ZIP, open `START_HERE.md` first. Items marked *repository only* are on the GitHub branch, not in the ZIP.
+
 | Need | Start here | Evidence / result |
 |---|---|---|
-| Candidate submission | `JSB_Candidate_Submission.pdf` or `.docx` | 29-page consolidated write-up (numbered sections, contents, requirements index) (Exercises 1–3, Power BI, Databricks) |
+| Candidate submission | `JSB_Candidate_Submission.pdf` | 29-page consolidated write-up (numbered sections, contents, requirements index) (Exercises 1–3, Power BI, Databricks) |
 | Object inventory and duplication rationale | `TABLE_INVENTORY.md` | 30 base tables + 13 dbt marts + 11 staging views = 54 objects (fresh count: `local_load/evidence/object_counts.txt`) |
 | Build/run instructions | `local_load/README.md` | `setup_local.bat` for local XAMPP MariaDB + dbt |
-| Evidence manifest (every image: kind, SHA-256, commit) | `evidence/README.md` | Windows app captures vs rendered logs are labelled; outstanding UI captures listed as P1–P7 |
-| Power BI package provenance | `evidence/POWERBI_PACKAGE.md` | `JSB_PowerBI_v7.zip`: only the project, its 11 exported tables, README and expected values; SHA-256, per-file hashes and the checks run |
-| Local setup package provenance | `evidence/LOCAL_SETUP_PACKAGE.md` | `JSB_Local_Setup_v5.zip` SHA-256 + per-file hashes, rebuildable with `git archive` |
-| Claude/Codex delivery status | `HANDOFF_CODEX.md` and `CODEX_REVIEW.md` | Build notes and independent QA record |
+| Evidence manifest (every image: kind, SHA-256, commit) | `evidence/README.md` | Windows app captures vs rendered logs are labelled; requested captures P1–P7 are all done |
+| Power BI package provenance | `evidence/POWERBI_PACKAGE.md` (repository only) | `JSB_PowerBI_v8.zip` (repository `deliverables/`): only the project, its 11 exported tables, README and expected values; SHA-256, per-file hashes and the checks run |
+| Local setup package provenance | `evidence/LOCAL_SETUP_PACKAGE.md` (repository only) | `JSB_Local_Setup_v5.zip` SHA-256 + per-file hashes, rebuildable with `git archive` |
+| Claude/Codex delivery status | `HANDOFF_CODEX.md` and `CODEX_REVIEW.md` (repository only, not in the submission ZIP) | Build notes and independent QA record |
 
 ## Exercise evidence
 
