@@ -8,7 +8,7 @@ exercise's `evidence/`/`screenshots/` folder for captured output.
 > **A note on screenshots:** this was built in a headless cloud container with no GUI, so
 > "screenshots" here are rendered captures of the actual terminal output of each run (not staged) —
 > clearly labelled as such rather than pretending otherwise. Every number in them is real, reproducible
-> by re-running the commands in each exercise's README.
+> by re-running the commands in each exercise's README.`r`n`r`nFor a reviewer-first route through the deliverables and evidence, open `INDEX.md`.
 
 ## Layout
 ```
