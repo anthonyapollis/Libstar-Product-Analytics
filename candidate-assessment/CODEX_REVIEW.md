@@ -704,3 +704,31 @@ The user asked for sign-off. Everything is committed on `claude/sleepy-hawking-u
 **Result: PASS.** The native Postman Collection Runner capture records **17 passed, 0 failed, 0 errors, 0 skipped**. It covers reset, first-page retrieval, cursor pagination, `updated_since` incremental retrieval, invalid-key handling, a simulated new activity request, and full automatic pagination. The completion capture confirms **1,027 raw API records across six pages**. Both captures are listed with SHA-256 values in [the evidence manifest](evidence/README.md).
 
 This closes the previously open API-execution proof item. The remaining proof-pack work is confined to Power BI: reconcile the `POWERBI_PACKAGE.md` 22-file claim with its 21-line hash manifest, and add/publish current refreshed page and model-view captures when authorised.
+## QA-13 — Final Power BI hand-off package: **NOT READY FOR SIGN-OFF** (2026-09-29)
+
+The repository contains a well-scoped Power BI project and a package specification, but it does **not yet contain the final ZIP archive**. Claude must provide the archive and complete every acceptance item below before Codex can sign off.
+
+### Required final ZIP scope
+The archive must contain only the portable Power BI deliverable and its required data:
+
+| Include | Reason |
+|---|---|
+| `JSB_Assessment.pbip` | entry point opened in Power BI Desktop |
+| `JSB_Assessment.Report/` | all four report pages and theme resources |
+| `JSB_Assessment.SemanticModel/` | embedded model, relationships, measures and embedded data |
+| `data/` with exactly the 11 CSVs used by the semantic model | inspectable source copies and refresh recovery |
+| `expected_values.md` | visual acceptance checklist |
+| `PACKAGE_README.md` | clean-PC opening/refresh instructions and version check |
+| `MANIFEST.sha256` | SHA-256 for every packaged file, including the two documentation files |
+
+Do **not** include database files, virtual environments, source-control metadata, build/export scripts, Python files, previous PBIP/PBIX copies, stale screenshots, unrelated source data, or the wider assessment repository.
+
+### Required proof before sign-off
+1. Commit the final ZIP to the shared branch (or publish a stable release link) and record its SHA-256, byte size, source commit, and full file count.
+2. Extract it into a new empty directory whose parent has no existing `JSB_Assessment` folder. Open `JSB_Assessment.pbip` in Power BI Desktop on that extracted copy, click **Refresh**, and capture the four report pages plus Model view.
+3. Prove the model has 11 tables and 7 relationships, and the values match `expected_values.md`: 260.00 GGR, 40.00 bonus cost, 220.00 NGR, 10.00 liability, 18.18%, and four ingestion runs.
+4. Run `sha256sum -c MANIFEST.sha256` (or the Windows equivalent) from the extracted folder and include the successful output.
+5. Reconcile the package manifest’s declared file count against the actual ZIP listing. The current provenance note says 21 files; preserve that count only if the final archive actually has 21 files.
+6. Rebuild `JSB_Candidate_Submission.docx` and `.pdf` using only current captures, then check every stated figure against the evidence docs.
+
+**Sign-off rule:** No sign-off until all six items have repository-visible evidence and all proof uses the final archive, not a working folder.
