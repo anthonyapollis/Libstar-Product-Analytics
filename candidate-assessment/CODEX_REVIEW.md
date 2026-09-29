@@ -615,3 +615,5 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
 - **P4/P5 remain open** until the user sends refreshed captures of all four pages plus Model view, taken from v7.
 
 **Brief re-check:** the brief the user attached today (`10191575-…docx`) is byte-identical to the one audited earlier: SHA-256 `05f253d1…d5c471` for both. The Ex1–3 audits and `ASSIGNMENT_REQUIREMENTS_EVIDENCE.md` stand unchanged.
+
+**QA-11 update — package provenance PARTIALLY VERIFIED.** `POWERBI_PACKAGE.md` clearly excludes stale PBIP/PBIX files, environments, databases and unused exports; it gives the correct target values and separates the rejected stale captures. However, `powerbi_v7_files.sha256` contains **21** hashed file entries while the provenance record says “22 files.” Reconcile that count or add the missing hashed file before treating the package manifest as complete. The required refreshed Power BI page and Model-view screenshots are still absent, so QA-11 remains BLOCKED.
