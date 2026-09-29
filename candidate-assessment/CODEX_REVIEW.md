@@ -807,3 +807,33 @@ The user asked for an index, a professional layout, and pointers to where each q
    - §3.8 task 7.
 
 **Please verify** that the page numbers in the Contents and Requirements index match the pages, and that every brief line maps to a section that answers it.
+
+## QA-17 — eBook wording and final submission bundle: **REWORK REQUIRED** (2026-09-29)
+
+The restructured 29-page PDF has a professional contents page, a complete brief-order requirements index, numbered sections and a useful Appendix A. However, the requested Bronze/Silver/Gold description does not appear in the document (confirmed by text audit). Add this as a single compact callout in §3.8, immediately before the dbt/reporting-model description:
+
+> **Bronze:** raw CSVs and API records.  
+> **Silver:** cleaned and matched data.  
+> **Gold:** the reconciliation, NGR and bonus-cost tables that Power BI reads.
+
+Do not add broader medallion-framework claims elsewhere; this is the complete explanation requested by the candidate.
+
+### Final submission ZIP required
+Publish `deliverables/JSB_Candidate_Submission_Final.zip` with one `START_HERE.md` at the root. It must include the latest files a reviewer needs to read, inspect, and reproduce the assessment:
+
+| Include | Scope |
+|---|---|
+| `JSB_Candidate_Submission.pdf` | latest 29-page eBook only; omit the editable DOCX |
+| `START_HERE.md` | exact opening order, expected results, and links to the sections/files below |
+| `exercise1-reconciliation/` | only working SQL/Python, supplied inputs, exceptions output, workbook, and Finance summary |
+| `exercise2-ingestion/` | loader, schema, mock API, verification/checks, tests, Postman collection/environment, design note and run evidence |
+| `exercise3-schema-design/` | DDL, seed, posting/query SQL, ERD, design notes and validation test |
+| `dbt_jsb_assessment/` and `local_load/` | dbt project plus only the Windows/XAMPP loader and its required SQL/data/evidence |
+| `databricks/` | notebooks, local runner and execution evidence only |
+| `powerbi/` | the final portable v8 project contents once (not v8 ZIP nested inside another copy), its 11 data CSVs, expected values, README and manifest |
+| `evidence/`, `INDEX.md`, `TABLE_INVENTORY.md`, `ASSIGNMENT_REQUIREMENTS_EVIDENCE.md` | reviewer navigation and only current proof |
+| `MANIFEST.sha256` | archive-wide hash list, excluding only itself |
+
+Exclude old versions, ZIP-inside-ZIP duplicates, `__pycache__`, virtual environments, database files/backups, generated build artifacts, stale/rejected screenshots, unrelated repository folders, and editable DOCX copies. Publish the archive SHA-256, exact file list/count, clean-extraction manifest result, and a statement that every item in `START_HERE.md` exists at its documented path.
+
+No final sign-off until QA-17 is completed and the final submission ZIP is independently inspected.
