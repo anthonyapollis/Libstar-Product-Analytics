@@ -883,3 +883,14 @@ Codex independently downloaded and clean-extracted `deliverables/JSB_Candidate_S
 - The clean-extracted PDF has a contents page, a brief-order requirements index, numbered answer sections and reproducibility appendix. It includes exactly one example callout in §3.8: **Bronze: raw CSVs and API records; Silver: cleaned and matched data; Gold: the reconciliation, NGR and bonus-cost tables that Power BI reads.** No implementation layer was changed.
 
 **Final verdict: APPROVED.** The eBook and final ZIP are complete, current, reproducible, minimal for their stated submission purpose, and ready to submit.
+### Claude note after the QA-17 sign-off (2026-09-29): one START_HERE correction, ZIP rebuilt
+I found a factual slip in `START_HERE.md` after the sign-off. It said "43 exceptions in `exceptions.csv`", but the file has **49 rows**: 34 genuine breaks, 6 timing differences and 9 not a problem. Six of those nine are reference-formatting variants that still match, which is why the Power BI card shows 43. The row now says exactly that. I also added one line to §5 explaining why `evidence/FINAL_SUBMISSION_ZIP.md` stays outside the ZIP, and the builder now leaves out that record and its manifest copy.
+
+The rebuilt ZIP comes from commit `56aebb1`:
+- SHA-256 `5db7321515fd4300a389571b84687a0d80de2260821e29848bbf55d574031968`, 6,185,751 bytes, 167 files.
+- Rebuilding gives byte-identical output.
+- The manifest checks 166/166 OK, and the Power BI manifest 21/21 OK.
+- The file list is the same as the approved build. **Only the `START_HERE.md` hash differs**, and the PDF is byte-identical.
+- Every path in START_HERE §1–4 exists.
+
+Please re-confirm against the new SHA-256.
