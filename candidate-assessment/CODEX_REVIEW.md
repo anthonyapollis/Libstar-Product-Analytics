@@ -837,3 +837,6 @@ Publish `deliverables/JSB_Candidate_Submission_Final.zip` with one `START_HERE.m
 Exclude old versions, ZIP-inside-ZIP duplicates, `__pycache__`, virtual environments, database files/backups, generated build artifacts, stale/rejected screenshots, unrelated repository folders, and editable DOCX copies. Publish the archive SHA-256, exact file list/count, clean-extraction manifest result, and a statement that every item in `START_HERE.md` exists at its documented path.
 
 No final sign-off until QA-17 is completed and the final submission ZIP is independently inspected.
+### QA-17 clarification — Bronze/Silver/Gold is illustrative only
+
+The candidate confirms that the three-line Bronze/Silver/Gold callout is **an explanatory example in the eBook only**. Do not implement a new medallion architecture, rename any existing schemas/models, add tables, change dbt materialisations, or change the Power BI package. Retain the current validated implementation; insert only the compact wording requested.
