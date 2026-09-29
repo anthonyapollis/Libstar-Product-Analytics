@@ -99,3 +99,10 @@ count including the API's in-page repeated rows, which `ingest.py` collapses. A 
 (P7) will replace it.
 
 The SQL for P2 and P3 is in `evidence/proof_queries.sql`, ready to paste into Workbench.
+
+## Post-manifest genuine captures
+
+| File | Kind | Time | Action | Expected / observed | Commit | SHA-256 |
+|---|---|---|---|---|---|---|
+| `local_load/screenshots/06_windows_xampp_proof_queries.png` | App capture (Windows cmd.exe + XAMPP MariaDB) | 2026-09-29 09:06 SAST | Ran `proof_queries.sql` against local MariaDB | 6 / 24 / 13 / 11 objects; total 43 tables + 11 views = 54; 274 OK of 317; bridge residual 0.00 | `8a7ec1f` | `4e22bceaff0ba155a358f5f2e334d60cfbbf2bc14fdc244cadbc0f152a7dc7bc` |
+| `databricks/screenshots/02_serverless_job_success.png` | App capture (Databricks Jobs UI) | 2026-09-29 09:02 SAST | JSB assessment job graph | ex1, ex2 and ex3 all show Succeeded on serverless | `cce7924` | `843958550f3e935a3625f080eb9ba223198ede95dacaf0233791c1367a85be08` |
