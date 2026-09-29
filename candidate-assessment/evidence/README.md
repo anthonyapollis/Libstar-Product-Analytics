@@ -9,21 +9,25 @@ a run and a commit. The three kinds are kept apart on purpose:
 | **Rendered log** | Real command output from a run in the build container, captured to the text file named. `submission_build/make_screenshot.py` then drew it as a terminal-style image. **The log file is the primary evidence**; the image is a readable copy of it, not a screen capture. |
 | **Generated diagram** | Drawn from source (Mermaid) by the build, not a run result. |
 
-Times are UTC. "Commit" is the commit that added the current version of the file. Check any file with
+**Cropping (QA-19):** 19 app captures were pixel-cropped to the producing application: the Claude app, browser
+tabs and address bar, desktop and taskbar were removed, with no resize or retouch. The SHA-256 values below are
+the cropped files. The crop boxes and the original hashes are in [`screenshot_crops.md`](screenshot_crops.md).
+
+Times are UTC. "Commit" is the commit that added the file (before cropping). Check any file with
 `sha256sum <path>` (Windows: `certutil -hashfile <path> SHA256`).
 
 ## Windows / XAMPP (user's PC, MariaDB 10.4.24, dbt 1.7.20 + mariadb 1.7.0)
 
 | File | Kind | Time | Action | Expected | Observed | Commit | SHA-256 |
 |---|---|---|---|---|---|---|---|
-| `local_load/screenshots/00_windows_xampp_step1_load.png` | App capture (cmd.exe) | 2026-09-29 05:17 | `setup_local.bat` step 1 | 326 / 306 / 1,024 / 4 / 1 rows; 24 `jsb_platform` tables | as expected | `59b1079` | `8077b176b909202c07813d35a2d86323675c9e00266ed6255aab3415683de935` |
-| `local_load/screenshots/01_windows_xampp_dbt_debug.png` | App capture (cmd.exe) | 2026-09-29 05:21 | `dbt debug --target xampp` | connection OK, "All checks passed!" | as expected | `7a3e803` | `54c5b1607b3a2a583af34e0ffd7968b0327e7ddede344e30df94d74529aea626` |
-| `local_load/screenshots/02_windows_xampp_dbt_staging.png` | App capture (cmd.exe) | 2026-09-29 05:58 | `dbt run --select staging` | 11 views | `PASS=11 ERROR=0` | `59b1079` | `eae3036924a31e0e760175d1b0ba154cf5070eb2dc8e1ec2d73e5120795c7c19` |
-| `local_load/screenshots/03_windows_xampp_dbt_marts.png` | App capture (cmd.exe) | 2026-09-29 05:59 | `dbt run --select marts --full-refresh` | 13 tables (2 incremental) | `PASS=13 ERROR=0`; `fact_wallet_transaction` 18, `fact_bet` 6, `fct_recon_exceptions` 317 rows | `59b1079` | `5b97194c17ed7835cb09bf3ddb3195635798d193f5fef327b42c4257dfbbb64c` |
-| `local_load/screenshots/06_windows_xampp_proof_queries.png` | App capture (cmd.exe, mysql.exe -t) | 2026-09-29 07:06 | `mysql.exe -u root -t < proof_queries.sql` | 6 / 24 / 13 / 11 = 43 tables + 11 views = 54; no table without a PK; 274 OK of 317; bridge residual 0.00 | as expected (the PK query returned no rows, so no grid is printed for it) | `cc822ec` | `4e22bceaff0ba155a358f5f2e334d60cfbbf2bc14fdc244cadbc0f152a7dc7bc` |
-| `local_load/screenshots/07_windows_xampp_dbt_test.png` | App capture (cmd.exe) | 2026-09-29 07:11 | `dbt.exe test --target xampp` (setup step 6) | 54 tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` in 5.82 s | `5ed6ca1` | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` |
-| `local_load/screenshots/04_windows_workbench_jsb_assessment.png` | App capture (MySQL Workbench) | 2026-09-29 05:15 | Navigator after step 1 | `jsb_assessment`: 6 tables | 6 tables | `59b1079` | `5f6af4fb502f323599909bfbab2e024f4a59d99bda587cf36af80e16a6e688ae` |
-| `local_load/screenshots/05_windows_workbench_jsb_platform.png` | App capture (MySQL Workbench) | 2026-09-29 05:16 | Navigator after step 1 | `jsb_platform` tables | table list visible | `59b1079` | `be413140c499127a79c8f69a2c8e012c5c98e89978ceddbe9936003fd88d4420` |
+| `local_load/screenshots/00_windows_xampp_step1_load.png` | App capture (cmd.exe) | 2026-09-29 05:17 | `setup_local.bat` step 1 | 326 / 306 / 1,024 / 4 / 1 rows; 24 `jsb_platform` tables | as expected | `59b1079` | `8f799467bb561169afa090fb4616c730600ece0387b54e81dfe01cc2fb249f55` |
+| `local_load/screenshots/01_windows_xampp_dbt_debug.png` | App capture (cmd.exe) | 2026-09-29 05:21 | `dbt debug --target xampp` | connection OK, "All checks passed!" | as expected | `7a3e803` | `7869ab9dd61490e8793158f50b4a809e17dc3de53b9dcdeb79f912a8691032eb` |
+| `local_load/screenshots/02_windows_xampp_dbt_staging.png` | App capture (cmd.exe) | 2026-09-29 05:58 | `dbt run --select staging` | 11 views | `PASS=11 ERROR=0` | `59b1079` | `18f47f61d6e53bc0f9a11b1200f4dc33c810ae9ca2c7ebbb4b3500b9b442ddbb` |
+| `local_load/screenshots/03_windows_xampp_dbt_marts.png` | App capture (cmd.exe) | 2026-09-29 05:59 | `dbt run --select marts --full-refresh` | 13 tables (2 incremental) | `PASS=13 ERROR=0`; `fact_wallet_transaction` 18, `fact_bet` 6, `fct_recon_exceptions` 317 rows | `59b1079` | `f701afbeacf4a7a19f60c311e1636c8e90becb8870a98cfddcad2327c059d27b` |
+| `local_load/screenshots/06_windows_xampp_proof_queries.png` | App capture (cmd.exe, mysql.exe -t) | 2026-09-29 07:06 | `mysql.exe -u root -t < proof_queries.sql` | 6 / 24 / 13 / 11 = 43 tables + 11 views = 54; no table without a PK; 274 OK of 317; bridge residual 0.00 | as expected (the PK query returned no rows, so no grid is printed for it) | `cc822ec` | `31e82b3dce0ce815aaa611fc2e5bcfe031cfe43b9c8418cacaae7775d8e850d5` |
+| `local_load/screenshots/07_windows_xampp_dbt_test.png` | App capture (cmd.exe) | 2026-09-29 07:11 | `dbt.exe test --target xampp` (setup step 6) | 54 tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` in 5.82 s | `5ed6ca1` | `c7523ccbe7bb1fbc4dd0e9a29ccfb700e6341262015c753d2c812bcad58ba846` |
+| `local_load/screenshots/04_windows_workbench_jsb_assessment.png` | App capture (MySQL Workbench) | 2026-09-29 05:15 | Navigator after step 1 | `jsb_assessment`: 6 tables | 6 tables | `59b1079` | `f03ee55fc5f5cb3e2949ad24f998a1f7e2b55f466b703462150e0f88843f35ab` |
+| `local_load/screenshots/05_windows_workbench_jsb_platform.png` | App capture (MySQL Workbench) | 2026-09-29 05:16 | Navigator after step 1 | `jsb_platform` tables | table list visible | `59b1079` | `63ccf8798aaa0f951f0a1690fab6b0f07c9867fbb40ec9d647e09c3736ac234c` |
 
 The full Windows run, including step 6 (`dbt test`, `PASS=54`), the 43 + 11 = 54 object count and the
 zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xampp_run_20260929.md`.
@@ -32,11 +36,11 @@ zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xamp
 
 | File | Kind | Time | Action | Expected | Observed | SHA-256 |
 |---|---|---|---|---|---|---|
-| `powerbi/screenshots/01_page1_ngr_overview.png` | App capture (Power BI Desktop) | 2026-09-29 06:52 | open v7, Refresh, Page 1 | 260 / 40 / 220 / 10; 18.18% | as expected | `af4916d8cb71a702497a73fdd47a4e193a14323ae8d4af37a84bbf2863d797e4` |
-| `powerbi/screenshots/02_page2_player_balances.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 2, full date range | 890 / 415 + 0 / 90 + 10; deposits 1,600 | as expected | `9bb99667b6a6ac3329b6c5f90eb9f3ac79756e66c289ad6c8d96e98468f55907` |
-| `powerbi/screenshots/03_page3_reconciliation.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 3 | 274 / 43 / 3,150.00 / 0.00 | as expected | `e52d1b70eaaab42710459e0d75f8700dbd5c67f01fd1741856f6cfa0d121a096` |
-| `powerbi/screenshots/04_page4_ingestion_monitoring.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 4 | 1,024 / 4 / 1 / 1; 587 / 214 / 207 / 16 | as expected | `de5957e01ee0f4464a6d7f7db89746a27e9698d4f25072cf09cd37e63f66f624` |
-| `powerbi/screenshots/05_model_view.png` | App capture (Power BI Desktop) | 2026-09-29 07:25 | Model view | 11 tables, 7 relationships | 11 tables; dim_player, dim_date and dim_campaign to the facts by 7 relationships; the 4 Ex1/Ex2 tables stand alone | `9758dfa64528111e19b67f1a0339b5b307cb20f10851624d28cb82070ef91257` |
+| `powerbi/screenshots/01_page1_ngr_overview.png` | App capture (Power BI Desktop) | 2026-09-29 06:52 | open v7, Refresh, Page 1 | 260 / 40 / 220 / 10; 18.18% | as expected | `91d73205315676b67acbf1f9037dc84dc0d31aa7678e3a43197433b8f255928d` |
+| `powerbi/screenshots/02_page2_player_balances.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 2, full date range | 890 / 415 + 0 / 90 + 10; deposits 1,600 | as expected | `093cbc5b9ef29c99ee80da7d1a21f79f2114c6f438261f8a46a0a00e705777ee` |
+| `powerbi/screenshots/03_page3_reconciliation.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 3 | 274 / 43 / 3,150.00 / 0.00 | as expected | `974bc0e6f653825e6f19d8768a60e152ccd7987ecd9f2494200876d31b2a1718` |
+| `powerbi/screenshots/04_page4_ingestion_monitoring.png` | App capture (Power BI Desktop) | 2026-09-29 06:53 | Page 4 | 1,024 / 4 / 1 / 1; 587 / 214 / 207 / 16 | as expected | `ab464cfadf8cbab19477096578106e68b77615227f6d62e2054d441a3f97a8d3` |
+| `powerbi/screenshots/05_model_view.png` | App capture (Power BI Desktop) | 2026-09-29 07:25 | Model view | 11 tables, 7 relationships | 11 tables; dim_player, dim_date and dim_campaign to the facts by 7 relationships; the 4 Ex1/Ex2 tables stand alone | `8ade4bef3e337f6adc70428f2968e64f3342d10b687160551e5dfe24c1af7444` |
 
 ## Postman / PyCharm (user's PC)
 
@@ -46,15 +50,15 @@ zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xamp
 | `exercise2-ingestion/screenshots/04_postman_request0_200ok.png` | App capture (Postman) | 2026-09-28 | first page request | 200 OK | 200 OK | `df739f9` | `b673dd59c8d2642169a06147a31958d4d8c1dbef74ef6e6749ff7e6c76f0fe6f` |
 | `exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png` | App capture (Postman) | 2026-09-28 | Runner, pages 1–4 | paginated 200s | as expected | `df739f9` | `5db67f147b43beb1c7971b11d1f851db42de35e8b1485122c524b65ecb9139fc` |
 | `exercise2-ingestion/screenshots/06_postman_runner_total_1027.png` | App capture (Postman) | 2026-09-28 | Runner, pages 4–6 | "DONE", all rows returned | 1,027 rows over 6 pages; two assertions failed on request 2 (see note) | `df739f9` | `030dece9202a7c36b79042627f9ebed18cd07894cda4665fc5ce7ec61152d8c6` |
-| `exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png` | App capture (Postman) | 2026-09-29 07:14 | Collection Runner, all 7 requests; mock API started with `--no-faults` | no unexpected failures | **17 tests: 17 passed, 0 failed, 0 errors**; every request 200 | `11c29b1` | `d56ef54c34774c94121bbf2fe9e73d35d03ea822f267e980370d93568013f9b7` |
-| `exercise2-ingestion/screenshots/10_postman_runner_clean_count_1027.png` | App capture (Postman) | 2026-09-29 07:14 | same run, end of request 6 (auto-paginating count) | all pages read to the end | 6 pages, "DONE -- TOTAL RECORDS RETURNED BY API: 1027" | `11c29b1` | `def3a1c6fe148047b0f9aab8983e48359286ebe5849afe6180e5c975b93d48c9` |
+| `exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png` | App capture (Postman) | 2026-09-29 07:14 | Collection Runner, all 7 requests; mock API started with `--no-faults` | no unexpected failures | **17 tests: 17 passed, 0 failed, 0 errors**; every request 200 | `11c29b1` | `0ca16be1b320763f26e17f8f361fcea8b9afb9e18daf77dc523b5c3c376b93b9` |
+| `exercise2-ingestion/screenshots/10_postman_runner_clean_count_1027.png` | App capture (Postman) | 2026-09-29 07:14 | same run, end of request 6 (auto-paginating count) | all pages read to the end | 6 pages, "DONE -- TOTAL RECORDS RETURNED BY API: 1027" | `11c29b1` | `ac80962202c6c2d69512ce4c1442a9d70f401742d41d6610eea5bc57ee79be70` |
 | `exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png` | App capture (PyCharm) | 2026-09-28 | mock API running | server up | as expected | `df739f9` | `de49fc2480f5e84fd4c27159af54d1da442d18b94b8ee1329685cd595868adf9` |
 
 ## Databricks (user's workspace, Jobs UI)
 
 | File | Kind | Time | Action | Expected | Observed | SHA-256 |
 |---|---|---|---|---|---|---|
-| `databricks/screenshots/02_serverless_job_success.png` | App capture (Databricks Jobs UI, Edge) | 2026-09-29 07:02 | open job run 460654207301296 ("JSB assessment - all exercises run"), Graph view | ex1 → ex2 → ex3 all Succeeded on serverless | ex1 Succeeded 53s, ex2 Succeeded 2m 50s, ex3 Succeeded 4m 54s; all Serverless | `843958550f3e935a3625f080eb9ba223198ede95dacaf0233791c1367a85be08` |
+| `databricks/screenshots/02_serverless_job_success.png` | App capture (Databricks Jobs UI, Edge) | 2026-09-29 07:02 | open job run 460654207301296 ("JSB assessment - all exercises run"), Graph view | ex1 → ex2 → ex3 all Succeeded on serverless | ex1 Succeeded 53s, ex2 Succeeded 2m 50s, ex3 Succeeded 4m 54s; all Serverless | `652a45ab6050b9077e8dcb2a79f83ea4b1c2fecf65f9b1ca418685890348b614` |
 
 ## Rendered logs (build container, MariaDB 10.11)
 
@@ -105,12 +109,12 @@ count including the API's in-page repeated rows, which `ingest.py` collapses. A 
 (P7) will replace it.
 
 The SQL for P2 and P3 is in `evidence/proof_queries.sql`, ready to paste into Workbench.
-| `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | App capture (Windows cmd.exe + XAMPP MariaDB) | 2026-09-29 09:11 SAST | `dbt test --target xampp` | All 54 dbt tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` | `b85ddf4` | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` |
+| `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | App capture (Windows cmd.exe + XAMPP MariaDB) | 2026-09-29 09:11 SAST | `dbt test --target xampp` | All 54 dbt tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` | `b85ddf4` | `c7523ccbe7bb1fbc4dd0e9a29ccfb700e6341262015c753d2c812bcad58ba846` |
 ## Latest genuine Postman Runner captures
 
 | Evidence | Tool and check | Observed result | SHA-256 | Git commit |
 |---|---|---|---|---|
-| `exercise2-ingestion/screenshots/09_postman_runner_all_tests_pass.png` | Postman Collection Runner, Exercise 2 mock transactions API | **17 passed; 0 failed; 0 errors; 0 skipped**. Requests shown include reset, first-page and next-page checks, all returning HTTP 200. | `d56ef54c34774c94121bbf2fe9e73d35d03ea822f267e980370d93568013f9b7` | `484e0c748fae4f6e9fa7b75d4978acee5b03032e` |
-| `exercise2-ingestion/screenshots/10_postman_runner_pagination_complete.png` | Postman Collection Runner, automatic pagination assertion | The collection follows six pages and confirms **1,027 raw API records returned**. | `def3a1c6fe148047b0f9aab8983e48359286ebe5849afe6180e5c975b93d48c9` | `699d4b7cb86c497c732150d06e232537751eeedf` |
+| `exercise2-ingestion/screenshots/09_postman_runner_all_tests_pass.png` | Postman Collection Runner, Exercise 2 mock transactions API | **17 passed; 0 failed; 0 errors; 0 skipped**. Requests shown include reset, first-page and next-page checks, all returning HTTP 200. | `0ca16be1b320763f26e17f8f361fcea8b9afb9e18daf77dc523b5c3c376b93b9` | `484e0c748fae4f6e9fa7b75d4978acee5b03032e` |
+| `exercise2-ingestion/screenshots/10_postman_runner_pagination_complete.png` | Postman Collection Runner, automatic pagination assertion | The collection follows six pages and confirms **1,027 raw API records returned**. | `ac80962202c6c2d69512ce4c1442a9d70f401742d41d6610eea5bc57ee79be70` | `699d4b7cb86c497c732150d06e232537751eeedf` |
 
 These are unedited Windows/Postman captures supplied during the run. They demonstrate the API contract and pagination behaviour; the separate MariaDB/dbt and Databricks evidence demonstrates the downstream platform results.

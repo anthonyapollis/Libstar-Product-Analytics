@@ -1,0 +1,31 @@
+# Screenshot crops (QA-19)
+
+The genuine Windows captures below were cropped to the producing application: other apps (the Claude
+desktop app), browser chrome, desktop and taskbar were removed. **Pixel crop only**: no resize, retouch
+or other edit. `submission_build/crop_screenshots.py` checks every output pixel against the same
+region of the original. The originals remain in git history at the listed SHA-256.
+
+| Image | Crop box (left, top, right, bottom) | Size | What was removed | Original SHA-256 | Cropped SHA-256 |
+|---|---|---|---|---|---|
+| `local_load/screenshots/00_windows_xampp_step1_load.png` | (59, 52, 1038, 564) | 1366×768 → 979×512 | cmd.exe window only; Claude app, desktop and taskbar removed | `8077b176b909202c07813d35a2d86323675c9e00266ed6255aab3415683de935` | `8f799467bb561169afa090fb4616c730600ece0387b54e81dfe01cc2fb249f55` |
+| `local_load/screenshots/01_windows_xampp_dbt_debug.png` | (59, 52, 1038, 564) | 1366×768 → 979×512 | cmd.exe window only; Claude app, desktop and taskbar removed | `54c5b1607b3a2a583af34e0ffd7968b0327e7ddede344e30df94d74529aea626` | `7869ab9dd61490e8793158f50b4a809e17dc3de53b9dcdeb79f912a8691032eb` |
+| `local_load/screenshots/02_windows_xampp_dbt_staging.png` | (59, 52, 1038, 564) | 1366×768 → 979×512 | cmd.exe window only; Claude app, desktop and taskbar removed | `eae3036924a31e0e760175d1b0ba154cf5070eb2dc8e1ec2d73e5120795c7c19` | `18f47f61d6e53bc0f9a11b1200f4dc33c810ae9ca2c7ebbb4b3500b9b442ddbb` |
+| `local_load/screenshots/03_windows_xampp_dbt_marts.png` | (59, 52, 1038, 564) | 1366×768 → 979×512 | cmd.exe window only; Claude app, desktop and taskbar removed | `5b97194c17ed7835cb09bf3ddb3195635798d193f5fef327b42c4257dfbbb64c` | `f701afbeacf4a7a19f60c311e1636c8e90becb8870a98cfddcad2327c059d27b` |
+| `local_load/screenshots/04_windows_workbench_jsb_assessment.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `5f6af4fb502f323599909bfbab2e024f4a59d99bda587cf36af80e16a6e688ae` | `f03ee55fc5f5cb3e2949ad24f998a1f7e2b55f466b703462150e0f88843f35ab` |
+| `local_load/screenshots/05_windows_workbench_jsb_platform.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `be413140c499127a79c8f69a2c8e012c5c98e89978ceddbe9936003fd88d4420` | `63ccf8798aaa0f951f0a1690fab6b0f07c9867fbb40ec9d647e09c3736ac234c` |
+| `local_load/screenshots/06_windows_xampp_proof_queries.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `4e22bceaff0ba155a358f5f2e334d60cfbbf2bc14fdc244cadbc0f152a7dc7bc` | `31e82b3dce0ce815aaa611fc2e5bcfe031cfe43b9c8418cacaae7775d8e850d5` |
+| `local_load/screenshots/07_windows_xampp_dbt_test.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` | `c7523ccbe7bb1fbc4dd0e9a29ccfb700e6341262015c753d2c812bcad58ba846` |
+| `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` | `c7523ccbe7bb1fbc4dd0e9a29ccfb700e6341262015c753d2c812bcad58ba846` |
+| `powerbi/screenshots/01_page1_ngr_overview.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `af4916d8cb71a702497a73fdd47a4e193a14323ae8d4af37a84bbf2863d797e4` | `91d73205315676b67acbf1f9037dc84dc0d31aa7678e3a43197433b8f255928d` |
+| `powerbi/screenshots/02_page2_player_balances.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `9bb99667b6a6ac3329b6c5f90eb9f3ac79756e66c289ad6c8d96e98468f55907` | `093cbc5b9ef29c99ee80da7d1a21f79f2114c6f438261f8a46a0a00e705777ee` |
+| `powerbi/screenshots/03_page3_reconciliation.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `e52d1b70eaaab42710459e0d75f8700dbd5c67f01fd1741856f6cfa0d121a096` | `974bc0e6f653825e6f19d8768a60e152ccd7987ecd9f2494200876d31b2a1718` |
+| `powerbi/screenshots/04_page4_ingestion_monitoring.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `de5957e01ee0f4464a6d7f7db89746a27e9698d4f25072cf09cd37e63f66f624` | `ab464cfadf8cbab19477096578106e68b77615227f6d62e2054d441a3f97a8d3` |
+| `powerbi/screenshots/05_model_view.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `9758dfa64528111e19b67f1a0339b5b307cb20f10851624d28cb82070ef91257` | `8ade4bef3e337f6adc70428f2968e64f3342d10b687160551e5dfe24c1af7444` |
+| `exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `d56ef54c34774c94121bbf2fe9e73d35d03ea822f267e980370d93568013f9b7` | `0ca16be1b320763f26e17f8f361fcea8b9afb9e18daf77dc523b5c3c376b93b9` |
+| `exercise2-ingestion/screenshots/09_postman_runner_all_tests_pass.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `d56ef54c34774c94121bbf2fe9e73d35d03ea822f267e980370d93568013f9b7` | `0ca16be1b320763f26e17f8f361fcea8b9afb9e18daf77dc523b5c3c376b93b9` |
+| `exercise2-ingestion/screenshots/10_postman_runner_clean_count_1027.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `def3a1c6fe148047b0f9aab8983e48359286ebe5849afe6180e5c975b93d48c9` | `ac80962202c6c2d69512ce4c1442a9d70f401742d41d6610eea5bc57ee79be70` |
+| `exercise2-ingestion/screenshots/10_postman_runner_pagination_complete.png` | (0, 0, 1366, 728) | 1366×768 → 1366×728 | taskbar removed | `def3a1c6fe148047b0f9aab8983e48359286ebe5849afe6180e5c975b93d48c9` | `ac80962202c6c2d69512ce4c1442a9d70f401742d41d6610eea5bc57ee79be70` |
+| `databricks/screenshots/02_serverless_job_success.png` | (0, 80, 1366, 728) | 1366×768 → 1366×648 | browser tabs, address bar and taskbar removed; run ID is in evidence/databricks_run.md | `843958550f3e935a3625f080eb9ba223198ede95dacaf0233791c1367a85be08` | `652a45ab6050b9077e8dcb2a79f83ea4b1c2fecf65f9b1ca418685890348b614` |
+
+Already app-only, unchanged: `exercise2-ingestion/screenshots/03_postman_runner_config.png`, `exercise2-ingestion/screenshots/04_postman_request0_200ok.png`, `exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png`, `exercise2-ingestion/screenshots/06_postman_runner_total_1027.png`, `exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png`.
+Rendered logs (terminal-style images drawn from text files) have no framing and are unchanged.
