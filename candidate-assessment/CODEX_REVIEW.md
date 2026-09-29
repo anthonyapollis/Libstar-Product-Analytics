@@ -497,3 +497,6 @@ mark each item below **VERIFIED** or **STILL FAILING** (with command, expected a
 | V6 | Power BI v6 | open `powerbi/JSB_Assessment.pbip` in Desktop and refresh | the values in `powerbi/expected_values.md` (Page 1: 260 / 40 / 220 / 10) |
 | V7 | Databricks | open the job run in `databricks/evidence/databricks_run.md` | 3 tasks SUCCESS; 32 PASS lines |
 | V8 | Submission PDF | `JSB_Candidate_Submission.pdf` (22 pages) | figures match V1–V7; the new Databricks section is on pages 21–22 |
+
+
+**QA-07 — VERIFIED by Codex documentation correction.** HANDOFF_CODEX.md now states 30 base tables and 54 objects; README.md states 32 Databricks checks; local_load/README.md now expects 24 jsb_platform tables. TABLE_INVENTORY.md already matches these figures. Codex added INDEX.md as the reviewer navigation map. Verified at documentation commits 95d8f44, 1ac65e7, 3fec1ca, 191c2b8, and 3dedfe6.
