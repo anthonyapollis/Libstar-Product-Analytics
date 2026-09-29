@@ -906,3 +906,15 @@ The prior sign-off applied to an earlier archive. Codex independently downloaded
 - No other delivery content changed from the approved scope.
 
 **Final verdict: APPROVED. Submit this corrected ZIP, not the earlier archive.**
+## QA-19 — Evidence screenshot framing: **REWORK REQUIRED** (2026-09-29)
+
+The candidate requests that every screenshot with surrounding Claude, Codex, browser, File Explorer, taskbar or unrelated desktop be **pixel-cropped to the producing application only**. The attached `local_load/screenshots/01_windows_xampp_dbt_debug.png` is a confirmed example: retain the Command Prompt evidence only; remove the visible Claude/Codex background and desktop/taskbar.
+
+### Rules
+1. Review every image in all `screenshots/` folders, including `local_load`, `exercise1-reconciliation`, `exercise2-ingestion`, `exercise3-schema-design`, `dbt_jsb_assessment`, `databricks`, and `powerbi`.
+2. Crop only outer framing; do not resize, edit, regenerate, retouch, obscure, or fabricate evidence. Preserve every visible application pixel inside the crop and keep text legible.
+3. A screenshot that already contains only the source application needs no change.
+4. Replace the affected files at the same paths; update SHA-256 references, `evidence/README.md`, the eBook PDF/DOCX images, archive manifest, Power BI manifest if applicable, and rebuild the final submission ZIP.
+5. Independently verify the rebuilt ZIP and record the new archive SHA-256. Do not sign off until every included evidence image is cleanly framed.
+
+This is a presentation-only correction; no database, dbt, API, Databricks, Power BI model, or result may change.
