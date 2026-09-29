@@ -935,3 +935,17 @@ This is a presentation-only correction; no database, dbt, API, Databricks, Power
    - **No 1366×768 uncropped capture is left in any `screenshots/` folder.**
    - Compared with the approved build, only the PDF, the 16 cropped images, `evidence/README.md`, `local_load/evidence/windows_xampp_run_20260929.md` and the new `screenshot_crops.md` differ.
    - Presentation only: no database, dbt, API, Databricks, Power BI model or result changed.
+
+## QA-20 — dbt explanation in the eBook: factual wording required
+
+The eBook already contains a genuine Windows/XAMPP dbt test capture and reports the local `dbt test` result (54/54) and the broader build evidence. Keep it.
+
+Do **not** state that this project uses dbt snapshots or that dbt “holds copies”. No dbt snapshot models are configured. The actual implementation is stronger and should be described accurately:
+
+- Raw source tables remain the operational inputs.
+- dbt **staging views** standardise names, types and matching logic without storing a second copy of source data.
+- dbt **marts** create tested reporting tables; two are incremental where the business grain supports it.
+- dbt supplies modular SQL, dependency-aware build order, repeatable runs, data-quality tests, documentation/lineage, and a stable reporting layer for Power BI.
+- The project’s audit/history requirements are handled by the append-only wallet ledger, ingestion run/checkpoint/reject tables, and source data retention — not by dbt snapshots.
+
+If adding a concise benefits callout, use the above facts and place it next to the existing dbt evidence without adding a new screenshot or making unverified snapshot claims.
