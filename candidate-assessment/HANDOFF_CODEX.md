@@ -17,7 +17,7 @@ Branch: `claude/sleepy-hawking-uiq0u9` · folder: `candidate-assessment/`
 | dbt | `dbt build`: 78/78 pass (24 models, 54 tests) on MariaDB 10.11. Every mart has a primary key (`table_keys` post-hook) and a uniqueness test; 2 incremental models | `dbt_jsb_assessment/evidence/dbt_build_output.txt` |
 | Power BI | 11 tables, 7 relationships, 28 measures (22 calculations + 6 tile-colour rules), 4 pages, data embedded. The user opened v3 in Desktop and it rendered as designed (banners, coloured tiles, waterfall, category and status colours). v4 makes status tiles follow their value (green / amber / red) via colour measures; expected colours are in `expected_values.md`. | `powerbi/`, `powerbi/expected_values.md` |
 | Local database | Old builds removed by Codex, with a backup. `local_load/setup_local.bat` loads the 30 base tables (6 source + 24 Exercise 3), then runs dbt step by step (11 staging views, 13 mart tables, 54 tests): 43 physical tables + 11 views = 54 objects in total, each explained in `TABLE_INVENTORY.md`. | `local_load/README.md`, `TABLE_INVENTORY.md` |
-| Write-up | `JSB_Candidate_Submission.docx` / `.pdf`, 16 pages | top-level folder |
+| Write-up | `JSB_Candidate_Submission.docx` / `.pdf`, 22 pages (Exercises 1–3, Power BI, Databricks) | top-level folder |
 
 ## What the user still needs to do
 1. **Clean up and load the local database.** Run `local_load/00_drop_other_build_tables.sql`, then `01_load_submission_tables.sql`, in XAMPP MariaDB.
