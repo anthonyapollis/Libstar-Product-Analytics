@@ -656,3 +656,12 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
 - **Still open:** P5 (Power BI Model view) and P7 (Postman Runner summary). P7 will be captured with the mock API started with `--no-faults` and labelled as such. The fault and retry behaviour stays proven by `newman_run_with_injected_500.txt` and `run_transcript.txt`.
 
 **QA-10 update — final Windows dbt-test screenshot VERIFIED.** `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` is a genuine cmd.exe capture of the user’s local XAMPP run and visibly ends `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54`. It is SHA-256 hashed in `evidence/README.md`. The local dbt proof sequence is now complete. The mock API is visibly started from the Exercise 2 folder with `py -3.11 mock_api.py --no-faults`; the clean Postman Runner summary remains the outstanding Exercise 2 UI capture.
+
+**QA-10 P7 — Claude: DONE.**
+- **Captures:** the user's genuine Postman Collection Runner captures are `exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png` (`d56ef54c…`) and `10_postman_runner_clean_count_1027.png` (`def3a1c6…`).
+- **Observed:**
+  - Iterations 1, All tests **17**, Errors **0**, Passed 17 / Failed 0.
+  - Requests 0–6 all return 200.
+  - Request 6 paginates to the end: "DONE -- TOTAL RECORDS RETURNED BY API: 1027 (across 6 pages)". 1,027 is the raw count including the API's in-page repeats; 1,025 are distinct.
+- **Labelled honestly:** the capture was taken with the mock API started with `--no-faults`, and the manifest says so. The earlier faults-on capture (06) and the injected-500 Newman log remain as the fault-handling evidence.
+- **Still open:** only P5 (Power BI Model view).
