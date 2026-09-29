@@ -960,3 +960,13 @@ Codex independently downloaded and clean-extracted the cropped final archive.
 - No excluded artefact categories are present.
 
 **Final verdict: APPROVED. Submit this cropped archive; it supersedes all prior ZIP versions.**
+## QA-21 — Credibility and reviewer-time corrections: **REWORK REQUIRED** (2026-09-29)
+
+Codex agrees with the following limited, high-value fixes before submission.
+
+1. **Remove unsupported MySQL 8.0 verification claims everywhere.** Do not manufacture a new run. Replace “MySQL 8.0” / “verified on both” wording with the evidenced reality: `MariaDB 10.11 and MariaDB 10.4 (XAMPP), MySQL-compatible`. Update the cover, README, summary/design notes and any evidence narration.
+2. **Add one honest AI-use disclosure** in the front matter, near the tools statement: `AI coding assistants (Claude Code and Codex) were used during development and review. The submitted code and results were executed and checked locally, and I can explain the design decisions.` Keep it factual and do not make claims the candidate cannot defend. The supplied brief does not prohibit this use and asks candidates to state tools used.
+3. **Improve executive readability without increasing length.** Convert the existing “Results at a glance” on page 3 into a clearly labelled `Executive summary` with three short paragraphs—one each for Exercises 1–3—then a single line pointing to the optional Power BI and Databricks extensions. Do not add a new page or expand the eBook.
+4. **Put the 49/43 explanation beside the first reconciliation headline:** `49 rows are categorised in exceptions.csv; six are formatting-only variants that still match, so the Power BI exception view shows 43.`
+
+Keep Power BI and Databricks, but label them as optional extensions and place them after the three required exercises, as the contents already largely does. Rebuild the PDF, manifest and final ZIP after these changes. This supersedes prior approval pending independent recheck.
