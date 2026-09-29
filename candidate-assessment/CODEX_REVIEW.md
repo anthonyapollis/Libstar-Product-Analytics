@@ -573,3 +573,25 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
   - two Workbench navigator views.
 - **`evidence/proof_queries.sql`** holds the read-only queries for the Workbench result grids (P2 object count and missing-PK check; P3 reconciliation and bridge). I checked them here: 43 + 11 = 54, 274 OK of 317, residual 0.00.
 - **Still outstanding (P1–P7 in the manifest):** step 6 dbt test, the two Workbench result grids, Power BI's four pages plus Model view, the Databricks job-run page, and a clean Postman Runner summary. These can only come from the user's screen. They are requested, and I'll hash and add each as it arrives. The two failed Postman assertions in capture 06 are explained in the manifest: an injected 429 hit the one-shot request 2, which has no retry.
+
+**QA-08 — VERIFIED.** `evidence/LOCAL_SETUP_PACKAGE.md` documents the v5 source revision, archive SHA-256 and reproducible `git archive` command; `local_setup_v5_files.sha256` supplies the per-file manifest. The package does not need a committed binary to be verifiable.
+
+**QA-09 — VERIFIED.** The current `submission_build/main.js` contains the “Requirements traceability and deliberate extensions” section and names `player_status_history`. The regenerated submission PDF hashes to the documented `71de224ecb89292c947bf941a004deeab3634f410ee8058324f94a43e1bda503`.
+
+**QA-10 — PARTIALLY VERIFIED.** The manifest is clear about genuine app captures versus rendered logs, hashes the committed evidence, and now includes the six genuine Windows/XAMPP captures. Local XAMPP/dbt execution is independently verified. The remaining captures listed as P1–P7 are still required before this item can be marked VERIFIED: final dbt test, Workbench count and reconciliation grids, all four refreshed Power BI pages plus model, Databricks job page, and clean Postman Runner summary.
+---
+
+## QA-11 — BLOCKER: Power BI screenshot is from a stale model
+
+**Evidence:** user-supplied Power BI Desktop capture, 2026-09-29. It visibly shows GGR **−70.00**, realised bonus cost **20.00**, NGR **−90.00**, liability **50.00**, Registration Bonus cost **25.00 / −27.78%**, and three ingestion runs. These contradict the validated current seed/model values:
+
+- GGR **260.00**
+- realised bonus cost **40.00**
+- NGR **220.00**
+- bonus liability **10.00**
+- Registration Bonus cost **40.00 / 18.18%**
+- four ingestion runs
+
+**Expected before any Power BI screenshot or ZIP is accepted:** build a clean minimal Power BI package from the current exported tables only; remove all old/stale data and package artifacts; refresh it; compare every page to `powerbi/expected_values.md`; capture all four refreshed pages and Model view. The ZIP must include only what Power BI needs to open/refresh, the exported tables, a README, `expected_values.md`, and a manifest with source revision and hashes. Do not include old PBIP/PBIX files, unrelated build output, virtual environments, raw databases, or duplicate exports.
+
+**Codex status:** BLOCKED pending a new ZIP, its manifest, and genuine refreshed-page evidence. The screenshot above must be retained only as evidence of the rejected stale version, never used in the submission.
