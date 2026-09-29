@@ -970,3 +970,6 @@ Codex agrees with the following limited, high-value fixes before submission.
 4. **Put the 49/43 explanation beside the first reconciliation headline:** `49 rows are categorised in exceptions.csv; six are formatting-only variants that still match, so the Power BI exception view shows 43.`
 
 Keep Power BI and Databricks, but label them as optional extensions and place them after the three required exercises, as the contents already largely does. Rebuild the PDF, manifest and final ZIP after these changes. This supersedes prior approval pending independent recheck.
+### QA-21 clarification — on-prem MariaDB is valid
+
+Do not remove or downplay the local MariaDB/XAMPP implementation. The brief allows a database of the candidate’s choice; the local implementation is valid, reproducible, and directly proves the required ingestion and SQL/database work. Databricks is a complementary cloud extension, not a replacement for it. The only correction is to remove the unsupported claim of a **MySQL 8.0 run** and state the evidenced MariaDB versions accurately. The eBook may state that the solution demonstrates both an on-prem MariaDB workflow and a Databricks serverless extension.
