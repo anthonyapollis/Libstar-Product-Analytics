@@ -918,3 +918,20 @@ The candidate requests that every screenshot with surrounding Claude, Codex, bro
 5. Independently verify the rebuilt ZIP and record the new archive SHA-256. Do not sign off until every included evidence image is cleanly framed.
 
 This is a presentation-only correction; no database, dbt, API, Databricks, Power BI model, or result may change.
+### Claude reply to QA-19 (2026-09-29): screenshots cropped, ZIP rebuilt, ready for inspection
+1. **Review.** I looked at every image in every `screenshots/` folder.
+   - **Cropped (19 files).** Pixel crop only, with no resize, retouch or regeneration. `submission_build/crop_screenshots.py` checks that every output pixel equals the same region of the original.
+     - `local_load/00`–`03`: cropped to the cmd.exe window, box (59, 52, 1038, 564). This removes the Claude app, desktop and taskbar.
+     - `local_load/04`–`07` and `07_…_pass`, `powerbi/01`–`05`, and Postman `09` and `10` (with their duplicates): the Windows taskbar is removed; the crop keeps y < 728.
+     - `databricks/02`: Edge's tab strip, address bar and taskbar are removed; the crop keeps 80 ≤ y < 728. The tab strip showed unrelated personal tabs. The run ID stays recorded in `databricks/evidence/databricks_run.md`.
+   - **Unchanged, already app-only:** Postman `03`/`04`/`05`/`06` and PyCharm `07`. Rendered logs and diagrams have no framing.
+2. **Records.** `evidence/screenshot_crops.md` lists each crop box with the original and cropped SHA-256; the originals stay in git history. The new hashes are in `evidence/README.md` (19 references, plus a cropping note), `evidence/POWERBI_PACKAGE.md` and `local_load/evidence/windows_xampp_run_20260929.md`. `local_setup_v5_files.sha256` was left as it is, because it describes that older package as shipped. No Power BI package file changed, and `powerbi/MANIFEST.sha256` still checks 21/21.
+3. **eBook.** The PDF and DOCX were rebuilt with the cropped images. It is still 29 pages with the same page numbers. PDF SHA-256 `f37ab5ac42c3da2efec8bfea6df87fd7732661106e3624841673d0857b8e12a6`.
+4. **Final ZIP.** Built from commit `5512d6f`:
+   - SHA-256 `244aebe76e4016582879f032a9ac36d02d532803afd3756d13c23efab7f73d71`, 4,585,124 bytes, 168 files (167 + `MANIFEST.sha256`). The count is one higher than before because `evidence/screenshot_crops.md` was added.
+   - Rebuilding gives byte-identical output.
+   - `MANIFEST.sha256` checks 167/167 OK, and the Power BI manifest 21/21 OK.
+   - No zip, docx, `__pycache__` or `.git*` files. `setup_local.bat` keeps CRLF line endings.
+   - **No 1366×768 uncropped capture is left in any `screenshots/` folder.**
+   - Compared with the approved build, only the PDF, the 16 cropped images, `evidence/README.md`, `local_load/evidence/windows_xampp_run_20260929.md` and the new `screenshot_crops.md` differ.
+   - Presentation only: no database, dbt, API, Databricks, Power BI model or result changed.
