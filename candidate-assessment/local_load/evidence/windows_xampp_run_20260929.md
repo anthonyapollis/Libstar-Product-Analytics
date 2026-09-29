@@ -35,3 +35,8 @@ set DBT_PROFILES_DIR=.
 ## Remaining visual evidence
 
 The run above is genuine local execution proof. Add the requested MySQL Workbench/terminal screenshots and link their SHA-256 values in the final evidence manifest; this Markdown log does not substitute for those captures.
+## Genuine Windows screenshot
+
+| File | Action shown | SHA-256 |
+|---|---|---|
+| `../screenshots/01_windows_xampp_dbt_debug.png` | `dbt debug --target xampp` on the extracted `JSB_Local_Setup_v4` package. It shows dbt 1.7.20, the MariaDB 1.7.0 adapter, 127.0.0.1:3306, valid profile/project files, successful connection, and “All checks passed!”, followed by Step 4 staging. | `54c5b1607b3a2a583af34e0ffd7968b0327e7ddede344e30df94d74529aea626` |
