@@ -70,6 +70,7 @@ need them to read, check or run the work. All of them are on the GitHub branch
 | `CODEX_REVIEW.md`, `HANDOFF_CODEX.md` | The independent QA log |
 | `deliverables/` (including `JSB_PowerBI_v8.zip`) | Separate packages. The same Power BI project is included here, unzipped |
 | `evidence/POWERBI_PACKAGE.md`, `evidence/LOCAL_SETUP_PACKAGE.md`, `evidence/powerbi_v7_files.sha256`, `evidence/local_setup_v5_files.sha256` | Provenance of those separate packages |
+| `evidence/FINAL_SUBMISSION_ZIP.md`, `evidence/final_submission_manifest.sha256` | The provenance record of this ZIP (its SHA-256 and file list). A file can't hold its own hash, so the record stays outside |
 | `evidence/rejected/` | Captures of an old Power BI copy, kept as a record of why they were rejected |
 | `exercise2-ingestion/screenshots/03_…`, `05_…`, `06_…` | Earlier Postman Runner captures, replaced by the clean run in `09_…` and `10_…` |
 | `exercise2-ingestion/screenshots/09_postman_runner_all_tests_pass.png`, `10_postman_runner_pagination_complete.png`, `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | Byte-identical copies of `09_postman_runner_clean_summary.png`, `10_postman_runner_clean_count_1027.png` and `07_windows_xampp_dbt_test.png` |

@@ -30,6 +30,7 @@ EXCLUDE_FILES = {
     "CODEX_REVIEW.md", "HANDOFF_CODEX.md",
     "evidence/POWERBI_PACKAGE.md", "evidence/LOCAL_SETUP_PACKAGE.md",
     "evidence/powerbi_v7_files.sha256", "evidence/local_setup_v5_files.sha256",
+    "evidence/FINAL_SUBMISSION_ZIP.md", "evidence/final_submission_manifest.sha256",
     "exercise2-ingestion/screenshots/03_postman_runner_config.png",
     "exercise2-ingestion/screenshots/05_postman_runner_pages_1_to_4.png",
     "exercise2-ingestion/screenshots/06_postman_runner_total_1027.png",
