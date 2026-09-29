@@ -5,10 +5,14 @@ A finished Power BI project covering all three exercises. The semantic model has
 project**, so it opens and refreshes on any machine with no folder path to set.
 
 ## Open it
-1. Unzip anywhere.
+1. Unzip into a **new, empty folder**. Don't unzip over an older copy: Power BI would keep the old
+   data. Close any older copy of `JSB_Assessment` first.
 2. In Power BI Desktop: **File → Open → `JSB_Assessment.pbip`**, then **Refresh**.
    (Older Desktop versions: first enable *Options → Preview features → Power BI Project (.pbip) save option*.)
-3. Check the visuals against `expected_values.md`.
+3. Check the visuals against `expected_values.md`. The quick test that you have the current
+   version is Page 1: **GGR 260.00 · Bonus Cost 40.00 · NGR 220.00 · Liability 10.00**, and
+   18.18% in the campaign table. Page 4 shows **4** ingestion runs. If you see GGR −70.00 or
+   3 runs, it's an old copy.
 
 ## Pages
 | Page | What it shows |
@@ -56,9 +60,10 @@ project**, so it opens and refreshes on any machine with no folder path to set.
 - **The Exercise 1 and 2 tables stand alone.** They share no keys with the player model, so they
   have no relationships to it, and filters on one page can't leak into another.
 - **Measures follow the SQL definitions** in `exercise3-schema-design/example_queries.sql`:
-  - NGR = GGR − bonus money staked on lost bets (query a).
-  - Campaign bonus cost is recognised when a grant resolves, and divided by total NGR (query b).
-  - Balance as of a date is the sum of the ledger up to that date (query c).
+  - NGR = GGR − bonus cost, where bonus cost is the bonus money wagered on settled bets (query a).
+  - Campaign bonus cost is the bonus money wagered from that campaign's grants, divided by total
+    NGR (query b). The bonus liability is the unwagered part of active grants.
+  - Balance as of a date is the sum of the ledger up to that date, reversals included (query c).
 
 ## How it was verified, and the limit of that
 No Power BI Desktop runs in this Linux build environment, so the project could not be opened
