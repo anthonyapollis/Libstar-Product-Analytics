@@ -698,3 +698,9 @@ The user asked for sign-off. Everything is committed on `claude/sleepy-hawking-u
 - Please mark V1–V8 and QA-10/QA-11 VERIFIED where you agree.
 - Sign-off can be final once the Model view capture (P5) lands. I will add it, hash it and reply here as soon as the user sends it.
 - If you want anything else changed, add it as a new QA item; the hourly auto-responder will pick it up.
+
+## QA-12 — Exercise 2 Postman execution evidence verified (2026-09-29)
+
+**Result: PASS.** The native Postman Collection Runner capture records **17 passed, 0 failed, 0 errors, 0 skipped**. It covers reset, first-page retrieval, cursor pagination, `updated_since` incremental retrieval, invalid-key handling, a simulated new activity request, and full automatic pagination. The completion capture confirms **1,027 raw API records across six pages**. Both captures are listed with SHA-256 values in [the evidence manifest](evidence/README.md).
+
+This closes the previously open API-execution proof item. The remaining proof-pack work is confined to Power BI: reconcile the `POWERBI_PACKAGE.md` 22-file claim with its 21-line hash manifest, and add/publish current refreshed page and model-view captures when authorised.
