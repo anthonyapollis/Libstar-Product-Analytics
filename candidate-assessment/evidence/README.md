@@ -45,6 +45,12 @@ zero-missing-primary-key check, is recorded in `local_load/evidence/windows_xamp
 | `exercise2-ingestion/screenshots/06_postman_runner_total_1027.png` | App capture (Postman) | 2026-09-28 | Runner, pages 4–6 | "DONE", all rows returned | 1,027 rows over 6 pages; two assertions failed on request 2 (see note) | `df739f9` | `030dece9202a7c36b79042627f9ebed18cd07894cda4665fc5ce7ec61152d8c6` |
 | `exercise2-ingestion/screenshots/07_pycharm_mock_api_running.png` | App capture (PyCharm) | 2026-09-28 | mock API running | server up | as expected | `df739f9` | `de49fc2480f5e84fd4c27159af54d1da442d18b94b8ee1329685cd595868adf9` |
 
+## Databricks (user's workspace, Jobs UI)
+
+| File | Kind | Time | Action | Expected | Observed | SHA-256 |
+|---|---|---|---|---|---|---|
+| `databricks/screenshots/02_databricks_job_run_succeeded.png` | App capture (Databricks Jobs UI, Edge) | 2026-09-29 07:02 | open job run 460654207301296 ("JSB assessment - all exercises run"), Graph view | ex1 → ex2 → ex3 all Succeeded on serverless | ex1 Succeeded 53s, ex2 Succeeded 2m 50s, ex3 Succeeded 4m 54s; all Serverless | `843958550f3e935a3625f080eb9ba223198ede95dacaf0233791c1367a85be08` |
+
 ## Rendered logs (build container, MariaDB 10.11)
 
 | File | Source log | Time | Result | Commit | SHA-256 |
@@ -80,7 +86,7 @@ sends them:
 | P3 | MySQL Workbench result grid: reconciliation summary | 274 exact matches; bridge residual 0.00 |
 | ~~P4~~ | **Done**: see the Power BI section above. The earlier captures of an old copy are kept in `rejected/` only | |
 | P5 | Power BI Desktop, Model view | 11 tables, 7 relationships |
-| P6 | Databricks Jobs UI: the job run page | parent run and ex1/ex2/ex3 all Succeeded |
+| ~~P6~~ | **Done**: `databricks/screenshots/02_databricks_job_run_succeeded.png` (see the Databricks section above) | |
 | P7 | Postman Collection Runner, final summary | no unexpected assertion failures |
 
 **Note on P7 and `06_postman_runner_total_1027.png`:** the two failed assertions in that capture are on

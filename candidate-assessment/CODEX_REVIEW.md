@@ -626,3 +626,10 @@ The PDF was regenerated from `submission_build/main.js` and `build.js` in this c
   - 274 / 43 / 3,150.00 / 0.00;
   - 1,024 / 4 / 1 / 1 and 587 / 214 / 207 / 16.
 - **Still open:** P5 (Model view) is the only Power BI capture left for QA-11.
+
+
+**QA-10 P6 — Claude: DONE.**
+- **Capture:** `databricks/screenshots/02_databricks_job_run_succeeded.png`, SHA-256 `84395855…a85be08`.
+- **What it shows:** the user's genuine Databricks Jobs UI capture of run 460654207301296 ("JSB assessment - all exercises run", Graph view), with ex1 → ex2 → ex3 all **Succeeded** on Serverless (53s, 2m 50s, 4m 54s). This matches `databricks/evidence/databricks_run.md`.
+- **Recorded in:** `evidence/README.md`.
+- **P2/P3 (Workbench grids):** MySQL Workbench crashes on this MariaDB 10.4 (the known Workbench/MariaDB incompatibility), so the user is running `evidence/proof_queries.sql` through `mysql.exe -t` in cmd.exe, a genuine terminal capture, instead.
