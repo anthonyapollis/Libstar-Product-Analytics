@@ -27,7 +27,7 @@ Where each exercise is answered in the PDF:
 
 | Area | Folder | Result you should see | Proof in this ZIP |
 |---|---|---|---|
-| Exercise 1 | `exercise1-reconciliation/` | 274 of 306 settlements match exactly. 43 exceptions in `exceptions.csv`. The bridge runs from R218,280.00 (internal) to R217,979.97 (gateway) with **R0.00 unexplained** | `summary.md`, `Reconciliation_Workbook.xlsx`, `screenshots/` |
+| Exercise 1 | `exercise1-reconciliation/` | 274 of 306 settlements match exactly. `exceptions.csv` has 49 rows: 34 genuine breaks, 6 timing differences and 9 that are not a problem. Six of those nine are reference-formatting variants that still match, so Power BI shows 43 exceptions. The bridge runs from R218,280.00 (internal) to R217,979.97 (gateway) with **R0.00 unexplained** | `summary.md`, `Reconciliation_Workbook.xlsx`, `screenshots/` |
 | Exercise 2 | `exercise2-ingestion/` | 1,024 transactions loaded and 1 quarantined. Killed mid-page and restarted with 0 duplicates and 0 missing. 25 new and 40 changed records picked up incrementally. Unit tests 9/9. Postman Runner 17/17, and 1,027 raw records over 6 pages | `evidence/run_transcript.txt`, `evidence/newman_*.txt`, `screenshots/` |
 | Exercise 3 | `exercise3-schema-design/` | 24 tables and 39 CHECK constraints. Queries (a)–(d) answered from the seed data. Ledger posting test 17/17 (replay, reversal, concurrency) | `ddl.sql`, `erd.png`, `design_notes.md`, `evidence/` |
 | dbt | `dbt_jsb_assessment/` | `dbt build`: 78/78 pass (24 models, 54 tests), and two models load incrementally | `evidence/dbt_build_output.txt`, `evidence/incremental_run.txt` |
