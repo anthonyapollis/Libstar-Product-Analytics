@@ -42,10 +42,12 @@ EXCLUDE_FILES = {
     "local_load/00_drop_other_build_tables.sql",
 }
 EXCLUDE_NAMES = {".gitignore", ".gitattributes"}
+# The Netlify landing page and its config sit at the folder root but are not part of the submission.
+EXCLUDE_ROOT = {"index.html", "netlify.toml"}
 
 
 def excluded(path):
-    return (path in EXCLUDE_FILES or path.startswith(EXCLUDE_PREFIXES)
+    return (path in EXCLUDE_FILES or path in EXCLUDE_ROOT or path.startswith(EXCLUDE_PREFIXES)
             or path.rsplit("/", 1)[-1] in EXCLUDE_NAMES or "__pycache__" in path)
 
 

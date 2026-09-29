@@ -1,0 +1,30 @@
+# Netlify: set the site's Base directory to `candidate-assessment` (Site configuration → Build & deploy).
+# Static files only; nothing to build.
+[build]
+  publish = "."
+  command = ""
+
+# Keep the submission out of search engines.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    X-Content-Type-Options = "nosniff"
+
+# Show Markdown, SQL, Python and logs in the browser instead of downloading them.
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+[[headers]]
+  for = "/*.sql"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+[[headers]]
+  for = "/*.py"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+[[headers]]
+  for = "/*.sha256"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"

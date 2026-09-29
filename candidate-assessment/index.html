@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>JSB Assessment Submission</title>
+<meta name="description" content="JSB Data Engineer practical assessment: reconciliation, incremental API ingestion, and database design with a reporting model.">
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --ink: #14213d; --ink-2: #44506a; --muted: #6b7489;
+    --line: #dde2ea; --accent: #1b5e9e; --accent-ink: #ffffff; --accent-soft: #e8f0f9;
+    --good: #1f7a4d; --good-soft: #e6f4ec; --shadow: 0 1px 2px rgba(20,33,61,.06), 0 4px 16px rgba(20,33,61,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141c; --surface: #171e29; --ink: #e8edf5; --ink-2: #b8c2d3; --muted: #8a95a8;
+      --line: #2a3444; --accent: #6aa8e8; --accent-ink: #0f141c; --accent-soft: #1c2a3c;
+      --good: #5cc48f; --good-soft: #16291f; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141c; --surface: #171e29; --ink: #e8edf5; --ink-2: #b8c2d3; --muted: #8a95a8;
+    --line: #2a3444; --accent: #6aa8e8; --accent-ink: #0f141c; --accent-soft: #1c2a3c;
+    --good: #5cc48f; --good-soft: #16291f; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 48px 0 28px; }
+  .eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 4.5vw, 40px); line-height: 1.15; margin: 0 0 12px; }
+  .lede { color: var(--ink-2); max-width: 720px; margin: 0 0 24px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn small { font-weight: 400; color: inherit; opacity: .75; }
+  section { padding: 28px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 22px; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; box-shadow: var(--shadow); }
+  .card h3 { font-size: 16px; margin: 0 0 4px; }
+  .card .tag { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+  .card ul { margin: 0; padding-left: 18px; color: var(--ink-2); }
+  .card li { margin: 3px 0; }
+  .num { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .card .links { margin-top: 12px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 13px; color: var(--muted); font-weight: 600; background: var(--accent-soft); }
+  tr:last-child td { border-bottom: 0; }
+  td.pg { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .shots { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  figure a { display: block; background: #0b0f15; }
+  figure img { display: block; width: 100%; height: 190px; object-fit: cover; object-position: top left; }
+  figcaption { padding: 10px 14px; font-size: 14px; color: var(--ink-2); }
+  figcaption b { color: var(--ink); display: block; }
+  .kind { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; background: var(--good-soft); color: var(--good); margin-top: 6px; }
+  .kind.gen { background: var(--accent-soft); color: var(--accent); }
+  code { font: 13px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
+  .note { font-size: 14px; color: var(--muted); }
+  footer { padding: 28px 0 48px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">JSB · Data Engineer practical assessment</p>
+  <h1>Candidate submission</h1>
+  <p class="lede">Three exercises, built and run end to end: a payment gateway reconciliation, an incremental and restartable API ingestion, and a database design for players, wallets, bets and bonuses with a reporting model. Every figure comes from running the code shown. The same work also runs in dbt, Power BI and Databricks.</p>
+  <div class="actions">
+    <a class="btn primary" href="JSB_Candidate_Submission.pdf">Read the eBook <small>PDF · 29 pages</small></a>
+    <a class="btn" href="deliverables/JSB_Candidate_Submission_Final.zip" download>Download the submission <small>ZIP · 4.6 MB</small></a>
+    <a class="btn" href="START_HERE.md">Start here <small>reading order</small></a>
+  </div>
+</header>
+
+<section>
+  <h2>Results at a glance</h2>
+  <p class="sub">Each card links to the files that prove it.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>1 · Payment gateway reconciliation</h3>
+      <p class="tag">MySQL · Python · dbt</p>
+      <ul>
+        <li><span class="num">274</span> of <span class="num">306</span> settlements match exactly</li>
+        <li><span class="num">49</span> differences: 34 genuine breaks, 6 timing, 9 not a problem</li>
+        <li>Bridge R218,280.00 → R217,979.97, <span class="num">R0.00</span> unexplained</li>
+        <li>Three independent implementations agree on all 317 rows</li>
+      </ul>
+      <div class="links"><a href="exercise1-reconciliation/Finance_Summary.pdf">Finance summary</a><a href="exercise1-reconciliation/exceptions.csv">exceptions.csv</a><a href="exercise1-reconciliation/Reconciliation_Workbook.xlsx">Workbook</a></div>
+    </div>
+    <div class="card">
+      <h3>2 · Incremental API ingestion</h3>
+      <p class="tag">Python · MySQL · Postman / Newman</p>
+      <ul>
+        <li><span class="num">1,024</span> loaded, <span class="num">1</span> quarantined, not dropped</li>
+        <li>Killed mid-page and restarted: 0 duplicates, 0 missing</li>
+        <li>25 new and 40 changed records picked up incrementally</li>
+        <li>Postman Runner <span class="num">17/17</span>, unit tests 9/9</li>
+      </ul>
+      <div class="links"><a href="exercise2-ingestion/design_note.md">Design note</a><a href="exercise2-ingestion/evidence/run_transcript.txt">Run transcript</a><a href="exercise2-ingestion/ingest.py">ingest.py</a></div>
+    </div>
+    <div class="card">
+      <h3>3 · Players, wallets, bets, bonuses</h3>
+      <p class="tag">MariaDB · Mermaid ERD</p>
+      <ul>
+        <li><span class="num">24</span> tables, <span class="num">39</span> CHECK constraints</li>
+        <li>Append-only ledger, idempotent posting with row locks</li>
+        <li>SCD2 history: VIP tier, tags, status and KYC</li>
+        <li>Queries (a)–(d) answered; posting test <span class="num">17/17</span></li>
+      </ul>
+      <div class="links"><a href="exercise3-schema-design/erd.png">ERD</a><a href="exercise3-schema-design/ddl.sql">ddl.sql</a><a href="exercise3-schema-design/design_notes.md">Design notes</a></div>
+    </div>
+    <div class="card">
+      <h3>dbt reporting layer</h3>
+      <p class="tag">dbt-core 1.7 · MySQL / MariaDB</p>
+      <ul>
+        <li><code>dbt build</code> <span class="num">78/78</span>: 24 models, 54 tests</li>
+        <li>Staging views, tested mart tables, 2 incremental models</li>
+        <li>Windows XAMPP run: <code>dbt test</code> <span class="num">54/54</span></li>
+      </ul>
+      <div class="links"><a href="dbt_jsb_assessment/README.md">README</a><a href="dbt_jsb_assessment/evidence/dbt_build_output.txt">Build log</a><a href="local_load/README.md">Local setup</a></div>
+    </div>
+    <div class="card">
+      <h3>Power BI</h3>
+      <p class="tag">.pbip project · data embedded</p>
+      <ul>
+        <li>11 tables, 7 relationships, 28 DAX measures, 4 pages</li>
+        <li>GGR <span class="num">260.00</span> · Bonus cost 40.00 · NGR <span class="num">220.00</span></li>
+        <li>Opens and refreshes with no path or connection to set</li>
+      </ul>
+      <div class="links"><a href="powerbi/PACKAGE_README.md">How to open</a><a href="powerbi/expected_values.md">Expected values</a></div>
+    </div>
+    <div class="card">
+      <h3>Databricks</h3>
+      <p class="tag">Delta Lake · serverless job</p>
+      <ul>
+        <li>All three exercises as one job: 3/3 tasks succeeded</li>
+        <li><span class="num">32/32</span> checks reproduce the MySQL and dbt results</li>
+      </ul>
+      <div class="links"><a href="databricks/README.md">README</a><a href="databricks/evidence/databricks_run.md">Run record</a></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Where each exercise is answered</h2>
+  <p class="sub">The eBook's requirements index (pages 4–5) maps every line of the brief to a section. The page links open the PDF at that page in most browsers.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Part</th><th>Sections</th><th>Pages</th></tr></thead>
+      <tbody>
+        <tr><td>Contents and requirements index</td><td>Front matter</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=2">2</a>–5</td></tr>
+        <tr><td>Exercise 1 · Payment gateway reconciliation</td><td>§1.1–1.7</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=6">6</a>–10</td></tr>
+        <tr><td>Exercise 2 · Incremental, restartable API ingestion</td><td>§2.1–2.7</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=11">11</a>–15</td></tr>
+        <tr><td>Exercise 3 · Players, wallets, bets and bonuses</td><td>§3.1–3.8</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=16">16</a>–21</td></tr>
+        <tr><td>Power BI reporting model and report</td><td>§4.1–4.4</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=22">22</a>–26</td></tr>
+        <tr><td>Databricks version of all three exercises</td><td>§5.1–5.2</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=27">27</a>–28</td></tr>
+        <tr><td>Files and how to reproduce</td><td>Appendix A</td><td class="pg"><a href="JSB_Candidate_Submission.pdf#page=29">29</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Evidence</h2>
+  <p class="sub">Genuine captures are from the candidate's Windows PC, cropped to the application only. Rendered images are drawn from real run logs, and the log files are the primary evidence. Every image is listed with its SHA-256 in <a href="evidence/README.md">evidence/README.md</a>.</p>
+  <div class="shots">
+    <figure><a href="powerbi/screenshots/01_page1_ngr_overview.png"><img src="powerbi/screenshots/01_page1_ngr_overview.png" alt="Power BI Desktop, NGR overview page: GGR 260, bonus cost 40, NGR 220, liability 10" loading="lazy"></a>
+      <figcaption><b>Power BI · NGR overview</b>GGR 260.00, bonus cost 40.00, NGR 220.00, liability 10.00<br><span class="kind">Genuine capture</span></figcaption></figure>
+    <figure><a href="powerbi/screenshots/03_page3_reconciliation.png"><img src="powerbi/screenshots/03_page3_reconciliation.png" alt="Power BI Desktop, reconciliation page with the bridge waterfall" loading="lazy"></a>
+      <figcaption><b>Power BI · Reconciliation</b>274 matched, bridge residual R0.00<br><span class="kind">Genuine capture</span></figcaption></figure>
+    <figure><a href="local_load/screenshots/07_windows_xampp_dbt_test.png"><img src="local_load/screenshots/07_windows_xampp_dbt_test.png" alt="Windows Command Prompt: dbt test PASS=54 on XAMPP MariaDB" loading="lazy"></a>
+      <figcaption><b>dbt test on Windows XAMPP</b>PASS=54, WARN=0, ERROR=0<br><span class="kind">Genuine capture</span></figcaption></figure>
+    <figure><a href="exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png"><img src="exercise2-ingestion/screenshots/09_postman_runner_clean_summary.png" alt="Postman Collection Runner: 17 passed, 0 failed" loading="lazy"></a>
+      <figcaption><b>Postman Collection Runner</b>17 tests: 17 passed, 0 failed<br><span class="kind">Genuine capture</span></figcaption></figure>
+    <figure><a href="databricks/screenshots/02_serverless_job_success.png"><img src="databricks/screenshots/02_serverless_job_success.png" alt="Databricks job run graph: ex1, ex2 and ex3 all succeeded" loading="lazy"></a>
+      <figcaption><b>Databricks serverless job</b>ex1 → ex2 → ex3, all succeeded<br><span class="kind">Genuine capture</span></figcaption></figure>
+    <figure><a href="dbt_jsb_assessment/screenshots/01_dbt_build.png"><img src="dbt_jsb_assessment/screenshots/01_dbt_build.png" alt="dbt build output: 78 of 78 pass" loading="lazy"></a>
+      <figcaption><b>dbt build</b>78/78 pass: 24 models, 54 tests<br><span class="kind gen">Rendered from log</span></figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Check the download</h2>
+  <p class="sub">The ZIP is built reproducibly from one commit and carries a SHA-256 for every file inside it.</p>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        <tr><th scope="row">File</th><td><a href="deliverables/JSB_Candidate_Submission_Final.zip" download>JSB_Candidate_Submission_Final.zip</a> · 168 files · 4,585,124 bytes</td></tr>
+        <tr><th scope="row">SHA-256</th><td><code>244aebe76e4016582879f032a9ac36d02d532803afd3756d13c23efab7f73d71</code></td></tr>
+        <tr><th scope="row">Check it</th><td>Windows: <code>certutil -hashfile JSB_Candidate_Submission_Final.zip SHA256</code><br>After unzipping: <code>sha256sum -c MANIFEST.sha256</code> (PowerShell steps are in START_HERE.md)</td></tr>
+        <tr><th scope="row">Provenance</th><td><a href="evidence/FINAL_SUBMISSION_ZIP.md">evidence/FINAL_SUBMISSION_ZIP.md</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  All data is fictitious and in NAD. This page links to the files in this folder, and the full repository holds the complete history.
+</footer>
+
+</div>
+</body>
+</html>
