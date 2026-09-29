@@ -100,3 +100,4 @@ count including the API's in-page repeated rows, which `ingest.py` collapses. A 
 (P7) will replace it.
 
 The SQL for P2 and P3 is in `evidence/proof_queries.sql`, ready to paste into Workbench.
+| `local_load/screenshots/07_windows_xampp_dbt_test_pass.png` | App capture (Windows cmd.exe + XAMPP MariaDB) | 2026-09-29 09:11 SAST | `dbt test --target xampp` | All 54 dbt tests pass | `PASS=54 WARN=0 ERROR=0 SKIP=0 TOTAL=54` | `b85ddf4` | `27c83a9a4d9d15f01f468d866f4180a81c0a8c8976cb1cbc8a567b79186e01a4` |
