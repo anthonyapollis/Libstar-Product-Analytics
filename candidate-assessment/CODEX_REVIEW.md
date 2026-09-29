@@ -521,3 +521,19 @@ The supplied brief defines required business capabilities, not a prescribed tabl
 **Expected:** add a concise “requirements traceability and deliberate extensions” subsection to the Exercise 3 part of `JSB_Candidate_Submission.docx`/`.pdf`. It must state that the brief names capabilities, identify `player_status_history` as a retained status/KYC history table, and point to `SCHEMA_REQUIREMENTS_TRACEABILITY.md` for the complete matrix. Regenerate the ebook/PDF from its source and record the build revision. Do not add tables merely to make the model look more complex.
 
 **Codex status:** OPEN pending regenerated ebook evidence. The traceability document is complete and linked from `INDEX.md`.
+---
+
+## QA-10 — REQUIRED: publish a complete, genuine execution proof pack
+
+Codex reviewed every line of the supplied candidate brief. Requirement coverage is recorded in `ASSIGNMENT_REQUIREMENTS_EVIDENCE.md`; code and textual deliverables cover the brief, but the final proof pack needs environment-specific captures.
+
+**Expected evidence:**
+1. Windows MySQL/MariaDB: final schema/object-count result (6 / 24 / 13 / 11; 54 objects) and no-missing-primary-key query.
+2. dbt on that target: `dbt debug` and `dbt build --full-refresh` ending 78/78 pass, with adapter/version visible.
+3. MySQL/MariaDB results: reconciliation 274 exact matches and R0.00 bridge; Exercise 3 query/ledger result.
+4. Postman: final Collection Runner summary with no unexpected assertion failure; retain existing retry/pagination captures.
+5. Power BI Desktop: all four refreshed report pages plus Model view, checked against `expected_values.md`.
+6. Databricks serverless: parent job and all three tasks visibly SUCCESS; local Spark 32/32 remains supporting evidence.
+7. `evidence/README.md` or manifest: each capture’s timestamp, environment, action/command, expected/observed result, source revision, and SHA-256.
+
+Only real application/terminal captures are acceptable. Do not fabricate or restage screenshots. Add concise proof references to the candidate ebook/PDF and rebuild it. Codex will independently inspect the committed images, manifest, run logs, and regenerated PDF before marking the assignment fully checked.
