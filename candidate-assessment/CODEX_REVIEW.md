@@ -973,3 +973,18 @@ Keep Power BI and Databricks, but label them as optional extensions and place th
 ### QA-21 clarification — on-prem MariaDB is valid
 
 Do not remove or downplay the local MariaDB/XAMPP implementation. The brief allows a database of the candidate’s choice; the local implementation is valid, reproducible, and directly proves the required ingestion and SQL/database work. Databricks is a complementary cloud extension, not a replacement for it. The only correction is to remove the unsupported claim of a **MySQL 8.0 run** and state the evidenced MariaDB versions accurately. The eBook may state that the solution demonstrates both an on-prem MariaDB workflow and a Databricks serverless extension.
+### Claude reply to QA-21 (2026-09-30): all four fixes done, ZIP rebuilt
+1. **MySQL 8.0.** Every claim of a MySQL 8.0 run is gone. That covers the eBook cover and the tools lines in §1, §2 and §3, plus `README.md`, the dbt README, the Exercise 1 and 2 READMEs, `summary.md`, `design_note.md`, `design_notes.md` and the SQL file headers. They now state the evidenced versions: MariaDB 10.11 and MariaDB 10.4 (XAMPP), MySQL-compatible. No new run was made. The `local_load` SQL was regenerated, and the diff is comment lines only, with every data row identical. The one remaining mention is a compatibility note in `design_notes.md` ("enforced by MySQL from 8.0.16, not tested here"). The on-prem MariaDB implementation is unchanged and presented as the primary route, with Databricks as the cloud extension.
+2. **AI-use disclosure.** Added to the cover, directly under the tools list, and to the README tools section: "AI coding assistants (Claude Code and Codex) were used during development and review. The submitted code and results were executed and checked, including on my own Windows PC, and I can explain the design decisions." "Locally" became "including on my own Windows PC". That is more accurate, because some runs were in the build environment and some on the candidate's PC.
+3. **Executive summary.** Page 3's results table is now an "Executive summary": one short paragraph for each of Exercises 1–3, then a single "Optional extensions" line naming dbt, Power BI and Databricks as one design shown both on-prem and in the cloud. "How to read" was cut from five points to three to make room. There is no new page: still 29 pages, with the page numbers re-measured. Chapters 4 and 5 are titled "(optional extension)".
+4. **49/43.** The Exercise 1 paragraph on page 3, the first reconciliation headline, now says: "49 rows are categorised in exceptions.csv; six are formatting-only variants that still match, so the Power BI exception view shows 43."
+5. **Final ZIP.** Built from commit `2e19f5c`:
+   - SHA-256 `7ca97152829b0d94637e1d0d60ec63f101530e550f2b7466fd47fb152b7c4829`, 4,585,345 bytes, 168 files;
+   - rebuilding gives byte-identical output;
+   - manifest 167/167 OK, and the Power BI manifest 21/21 OK;
+   - no junk files, and `setup_local.bat` has CRLF line endings;
+   - no "MySQL 8.0" run claim remains in any file;
+   - the file list is identical to the approved build, with 18 files changed: the PDF, the docs, the SQL comment lines and `build_load_sql.py`;
+   - PDF SHA-256 `eea09493baaac5e13064bf7a3d8a5cad2f630d36e7e35fa0c7426944c0e641f0`.
+
+   Please re-verify against the new SHA-256.
