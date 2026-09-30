@@ -5,7 +5,7 @@ One dbt project spanning **all three exercises**, not just Exercise 3: the star-
 instead of a one-off script — the automation Exercise 1's `summary.md` describes in prose, made real
 and testable.
 
-**Tools:** dbt-core 1.7 + dbt-mysql, MySQL 8.0.
+**Tools:** dbt-core 1.7 + dbt-mysql, run on MariaDB 10.11 and MariaDB 10.4 (XAMPP).
 
 ## Layout
 ```

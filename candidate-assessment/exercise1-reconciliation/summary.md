@@ -1,6 +1,6 @@
 # Payment Gateway Reconciliation — Weekly Summary
 **Period:** 2026-09-01 00:00 UTC to 2026-09-07 23:59 UTC | **Currency:** NAD | **Prepared for:** Finance Manager
-**Tools used:** MySQL 8.0 (schema, matching and categorisation logic), Python/pandas (load, export, cross-check)
+**Tools used:** MariaDB 10.11 and 10.4, MySQL-compatible (schema, matching and categorisation logic), Python/pandas (load, export, cross-check)
 
 ## Finance Manager summary (one page)
 A one-page version of this section, with the bridge, is `Finance_Summary.pdf`.

@@ -1,6 +1,7 @@
 # JSB Data Engineer — Practical Exercises
 
-All three exercises, built and verified end-to-end: MySQL 8.0 for every schema/query, Python for the
+All three exercises, built and verified end-to-end: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible, for every
+schema/query, Python for the
 reconciliation load and the ingestion program, Postman/Newman for the API contract, and dbt for the
 reporting layer. Everything under this folder ran successfully in this environment — see each
 exercise's `evidence/`/`screenshots/` folder for captured output.
@@ -58,6 +59,10 @@ cd dbt_jsb_assessment && export DBT_PROFILES_DIR=. && dbt build
 | Write-up | The full submission as one document, with screenshots of every key step: `JSB_Candidate_Submission.pdf` (29 pages; the editable `.docx` stays in the repository). | this folder |
 
 ## Tools used
-MySQL 8.0 and MariaDB 10.11 (all SQL verified on both) · Python 3.11 (stdlib `urllib`, `pymysql`,
+MariaDB 10.11 and MariaDB 10.4 (XAMPP), MySQL-compatible; all SQL ran on both MariaDB versions · Python 3.11 (stdlib `urllib`, `pymysql`,
 `pandas` for analysis only) · dbt-core 1.7 + dbt-mysql · Postman / Newman · Mermaid for the ERD ·
-Power BI (`.pbip` project).
+Power BI (`.pbip` project) · Databricks (Delta Lake, serverless).
+
+AI coding assistants (Claude Code and Codex) were used during development and review. The submitted
+code and results were executed and checked, including on my own Windows PC, and I can explain the
+design decisions.

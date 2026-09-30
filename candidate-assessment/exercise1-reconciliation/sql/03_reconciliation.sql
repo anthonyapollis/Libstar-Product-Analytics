@@ -1,5 +1,5 @@
 -- Exercise 1: Payment gateway reconciliation logic
--- Tool: MySQL 8.0
+-- Tool: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible
 --
 -- Contract: fee = ROUND(gross_amount * 0.02 + 1.00, 2); net_amount = gross_amount - fee.
 -- Matching key: normalised gateway_ref / merchant_ref (letters+digits, upper-cased) because the

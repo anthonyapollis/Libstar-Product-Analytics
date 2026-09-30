@@ -179,11 +179,16 @@ sections1_content.push(
   new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: { after: 400 },
-    children: [new TextRun({ text: "MySQL 8.0 · MariaDB 10.11 and 10.4 (XAMPP) · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model) · Databricks (Delta Lake, serverless)", size: 20, color: GREY })],
+    children: [new TextRun({ text: "MariaDB 10.11 and MariaDB 10.4 (XAMPP), MySQL-compatible · Python 3.11 · dbt-core 1.7 (dbt-mysql) · Postman / Newman · Mermaid · Power BI (data model) · Databricks (Delta Lake, serverless)", size: 20, color: GREY })],
   }),
   new Paragraph({
     alignment: AlignmentType.CENTER,
-    spacing: { before: 2000 },
+    spacing: { after: 200 },
+    children: [new TextRun({ text: "AI coding assistants (Claude Code and Codex) were used during development and review. The submitted code and results were executed and checked, including on my own Windows PC, and I can explain the design decisions.", size: 20, color: GREY })],
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 1400 },
     children: [new TextRun({ text: "Every number in this document was produced by actually running the code and queries shown — not hand-typed. Evidence for each figure lives in the accompanying repository.", italics: true, size: 20, color: GREY })],
   })
 );

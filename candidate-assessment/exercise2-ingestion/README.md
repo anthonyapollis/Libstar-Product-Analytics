@@ -17,7 +17,7 @@ duplicates, and quarantines bad records rather than dropping them. The design is
 
 ## Requirements
 - Python 3.9+ with `pip install pymysql`. The mock API itself needs only the standard library.
-- MySQL 8 or MariaDB 10.4+.
+- MariaDB 10.4+ (run on 10.11 and on 10.4 under XAMPP); the SQL is MySQL-compatible.
 
 Connection settings are read from the environment. The defaults are the mock API and the build
 container:

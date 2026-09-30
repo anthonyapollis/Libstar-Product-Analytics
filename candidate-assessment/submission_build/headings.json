@@ -177,8 +177,8 @@
  {
   "level": 1,
   "num": "4",
-  "title": "Power BI — Reporting Data Model and Report",
-  "label": "4. Power BI — Reporting Data Model and Report",
+  "title": "Power BI — Reporting Model and Report (optional extension)",
+  "label": "4. Power BI — Reporting Model and Report (optional extension)",
   "key": "pbi"
  },
  {
@@ -212,8 +212,8 @@
  {
   "level": 1,
   "num": "5",
-  "title": "Databricks — The Same Three Exercises on Delta Lake",
-  "label": "5. Databricks — The Same Three Exercises on Delta Lake",
+  "title": "Databricks — The Three Exercises on Delta Lake (optional extension)",
+  "label": "5. Databricks — The Three Exercises on Delta Lake (optional extension)",
   "key": "dbx"
  },
  {

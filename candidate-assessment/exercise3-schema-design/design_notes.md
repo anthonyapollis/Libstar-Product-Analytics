@@ -4,7 +4,7 @@ The answers follow the brief's seven tasks, in order. Everything here was run on
 - `ddl.sql`, `seed.sql`, `ledger_posting.sql` and `example_queries.sql`;
 - `test_ledger_posting.py`, which passes all 17 checks.
 
-The SQL uses MySQL 8.0.16+ syntax (CHECK constraints are enforced from 8.0.16).
+The SQL was run on MariaDB 10.11 and 10.4 (XAMPP). It is written to MySQL-compatible syntax; CHECK constraints are enforced by MariaDB 10.2+ (and by MySQL from 8.0.16, not tested here).
 
 ## 1. Tables, keys, types, constraints and indexes (`ddl.sql`, 24 tables)
 

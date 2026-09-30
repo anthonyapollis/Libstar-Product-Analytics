@@ -1,4 +1,4 @@
--- Exercise 2: Incremental, restartable API ingestion — MySQL 8.0 schema
+-- Exercise 2: Incremental, restartable API ingestion — MariaDB (MySQL-compatible) schema
 USE jsb_assessment;
 
 -- The target table: one row per provider transaction, upserted (never duplicated).

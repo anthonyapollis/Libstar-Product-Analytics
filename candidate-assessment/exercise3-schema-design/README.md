@@ -1,6 +1,6 @@
 # Exercise 3: database design for players, wallets, bets and bonuses
 
-**Tools:** MariaDB 10.11 (MySQL 8.0.16+ syntax), Mermaid (ERD), Python (the posting test).
+**Tools:** MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible syntax, Mermaid (ERD), Python (the posting test).
 
 | File | What it is | Brief task |
 |---|---|---|

@@ -10,7 +10,7 @@
 | Code | `sql/` (below), and the same rules as a dbt model: `../dbt_jsb_assessment/models/marts/fct_recon_exceptions.sql` |
 
 ## Reproduce
-MySQL 8 or MariaDB 10.4+. Set `DB_HOST`, `DB_PORT`, `DB_USER` and `DB_PASSWORD` if they differ from
+MariaDB 10.4+ (run on 10.11 and on 10.4 under XAMPP); the SQL is MySQL-compatible. Set `DB_HOST`, `DB_PORT`, `DB_USER` and `DB_PASSWORD` if they differ from
 the defaults in the scripts. Run from `sql/`:
 
 ```bash

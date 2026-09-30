@@ -1,6 +1,6 @@
 -- Exercise 1: Payment gateway reconciliation
 -- Schema for the two source extracts, loaded as-is (no cleansing on the way in).
--- Tool used: MySQL 8.0
+-- Tool used: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible
 
 CREATE DATABASE IF NOT EXISTS jsb_assessment CHARACTER SET utf8mb4;
 USE jsb_assessment;

@@ -100,11 +100,11 @@ ex1.push(...financeSummary());
 
 ex1.push(h2("Approach and matching rules", { key: "ex1.approach", pageBreakBefore: true }));
 ex1.push(answers("Exercise 1 · task 1: reconcile the two files and identify every difference · general: state the tools used"));
-ex1.push(p("Tools used: MySQL 8.0 for the schema, load and categorisation SQL; Python/pandas for the load script, CSV export and an independent cross-check of the bridge arithmetic.", { italics: true, color: GREY, size: 20 }));
+ex1.push(p("Tools used: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible, for the schema, load and categorisation SQL; Python/pandas for the load script, CSV export and an independent cross-check of the bridge arithmetic.", { italics: true, color: GREY, size: 20 }));
 ex1.push(p("Both source files were loaded as-is into MySQL. Matching between internal_deposits.gateway_ref and gateway_settlement.merchant_ref uses a normalised reference (upper-case, letters and digits only), because the gateway returns six of our references with different punctuation, case or spacing (\"GW_000020\", \"GW000102\", \"gw-000196 \", \" GW-000267 \" and others). An exact-match join would misclassify those six clean matches as breaks."));
 ex1.push(p("Every internal SUCCESS deposit and every gateway settlement row is either a clean match or one of twelve exception types: a genuine break, a timing difference, a business event (reversal), or not a problem at all. The rules live in exercise1-reconciliation/sql/03_reconciliation.sql and are ported into a dbt model (fct_recon_exceptions) so they run on a schedule with tests attached. The checks follow the brief's contract exactly: fee = 2% of gross + R1.00 to the cent, and net = gross − fee. Boundary tests at 1, 2 and 3 cents (sql/06_threshold_fixtures.py) confirm that every fee or net difference of a cent or more is flagged."));
 ex1.push(...imgPara(`${BASE}/exercise1-reconciliation/screenshots/01_reconciliation_categories_and_bridge.png`, 480,
-  "Actual output of sql/03_reconciliation.sql against MySQL 8.0, and of the independent row-by-row check."));
+  "Actual output of sql/03_reconciliation.sql on MariaDB 10.11, and of the independent row-by-row check."));
 
 ex1.push(h2("Exceptions by category", { key: "ex1.exceptions" }));
 ex1.push(answers("Exercise 1 · task 2: categories, each classified as genuine break, timing difference or not a problem · task 3: cause, financial impact, next step and who to involve · deliverable 1: the exceptions list"));
@@ -163,7 +163,7 @@ ex1.push(table(["Deliverable", "File (in exercise1-reconciliation/)"], [
 // ===========================================================================
 const ex2 = [];
 ex2.push(h1("Exercise 2 — Incremental, Restartable API Ingestion", { pageBreakBefore: true, num: true, key: "ex2" }));
-ex2.push(p("Tools used: Python 3 (standard library HTTP, plus pymysql), MySQL 8 / MariaDB for the target and control tables (the brief allows any database; this one also holds the other exercises and dbt), Postman/Newman for the API contract.", { italics: true, color: GREY, size: 20 }));
+ex2.push(p("Tools used: Python 3 (standard library HTTP, plus pymysql), MariaDB (MySQL-compatible) for the target and control tables (the brief allows any database; this one also holds the other exercises and dbt), Postman/Newman for the API contract.", { italics: true, color: GREY, size: 20 }));
 
 ex2.push(summaryBox("In brief", [
   "ingest.py loads every transaction once, then on each later run only new and changed ones, resuming from a checkpoint.",
@@ -229,7 +229,7 @@ ex2.push(table(["Step", "Command", "What it does"], [
 // ===========================================================================
 const ex3 = [];
 ex3.push(h1("Exercise 3 — Database Design: Players, Wallets, Bets, Bonuses", { pageBreakBefore: true, num: true, key: "ex3" }));
-ex3.push(p("Tools used: MariaDB 10.11 (MySQL 8.0.16+ syntax) for the schema, the posting procedures and the queries; Mermaid for the ERD; Python for the posting test; dbt for the reporting model.", { italics: true, color: GREY, size: 20 }));
+ex3.push(p("Tools used: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible, for the schema, the posting procedures and the queries; Mermaid for the ERD; Python for the posting test; dbt for the reporting model.", { italics: true, color: GREY, size: 20 }));
 
 ex3.push(summaryBox("In brief", [
   "24 tables: players with personal data split out, an append-only wallet ledger, one bet header with a detail table per product, and bonuses with event-sourced rollover.",
@@ -314,7 +314,7 @@ ex3.push(...imgPara(`${BASE}/local_load/screenshots/07_windows_xampp_dbt_test.pn
 // POWER BI
 // ===========================================================================
 const pbi = [];
-pbi.push(h1("Power BI — Reporting Data Model and Report", { pageBreakBefore: true, num: true, key: "pbi" }));
+pbi.push(h1("Power BI — Reporting Model and Report (optional extension)", { pageBreakBefore: true, num: true, key: "pbi" }));
 pbi.push(answers("Exercise 3 · task 7 in practice: the facts and dimensions as a working dashboard, with pages for Exercises 1 and 2 as well"));
 pbi.push(p("Tools used: Power BI project format (.pbip), generated by a Python script from one set of definitions, with the dbt marts embedded as data.", { italics: true, color: GREY, size: 20 }));
 pbi.push(p("The dbt marts become a Power BI project, JSB_Assessment.pbip, covering all three exercises. The semantic model has 11 tables, 7 relationships and 28 DAX measures (22 calculations and 6 colour rules for the KPI tiles), and the report has four pages. The data is embedded in the project, so it opens and refreshes on any machine with no folder path or database connection to set up. The same script writes the model, the report pages, the readable DAX file and a list of expected values, then validates them, so the four cannot drift apart."));
@@ -377,7 +377,7 @@ pbi.push(p("Building this layer also caught a real defect upstream. The seed dat
 // ===========================================================================
 const dbx = [];
 const RUN = "https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/308746372139777/run/";
-dbx.push(h1("Databricks — The Same Three Exercises on Delta Lake", { pageBreakBefore: true, num: true, key: "dbx" }));
+dbx.push(h1("Databricks — The Three Exercises on Delta Lake (optional extension)", { pageBreakBefore: true, num: true, key: "dbx" }));
 dbx.push(answers("Beyond the brief: the three exercises re-run on a cloud lakehouse, with the same results"));
 dbx.push(p("Tools used: Databricks Free Edition (serverless compute, Unity Catalog, Delta Lake); open-source Spark 4 + Delta 4 for the local test.", { italics: true, color: GREY, size: 20 }));
 dbx.push(p("The three exercises also run as Databricks notebooks. build_notebooks.py generates them from the project's own files, so they can't drift from the MySQL version: the two Exercise 1 CSVs, the Exercise 2 mock API and the retry and validation code from ingest.py, and Exercise 3's ddl.sql translated to Delta plus seed.sql. Each notebook ends with checks that fail loudly if a figure differs from the MySQL and dbt results."));
@@ -462,20 +462,22 @@ front.push(grid(["No.", "Title", "Page"], HEADINGS.map((h) => h.level === 1
 
 // How to read + results at a glance
 front.push(h1("How to read this document", { pageBreakBefore: true }));
-front.push(new Paragraph({ text: "1.  Start with the requirements index (next page). Every line of the brief is listed with the section and page that answers it.", spacing: { after: 100 } }));
-front.push(new Paragraph({ text: "2.  Each exercise opens with a short summary. Every section starts with an \"Answers\" tag naming the part of the brief it answers.", spacing: { after: 100 } }));
-front.push(new Paragraph({ text: "3.  Sections are numbered: chapter 1 is Exercise 1, chapter 2 is Exercise 2, chapter 3 is Exercise 3. Chapters 4 and 5 go beyond the brief: the Power BI report and the Databricks run.", spacing: { after: 100 } }));
-front.push(new Paragraph({ text: "4.  Assumptions are written down where they are used (for example §1.4 and the definitions in §3.7). All data is fictitious, amounts are NAD and times are UTC.", spacing: { after: 100 } }));
-front.push(new Paragraph({ text: "5.  Every figure comes from running the code. Appendix A lists the files and how to reproduce them; evidence/README.md lists every screenshot with its SHA-256, marking which are real application captures and which are logged terminal output redrawn as an image.", spacing: { after: 240 } }));
-front.push(h3("Results at a glance"));
-const RW = [2400, 5160, 1800];
-front.push(grid(["Exercise", "Result", "Where"], [
-  row(["1. Reconciliation", "274 of 306 settlements match exactly; 49 differences in 13 categories (34 breaks, 6 timing, 9 not a problem); bridge R218,280.00 → R217,979.97 with R0.00 unexplained", `${where("ex1.summary")[0]} · p. ${where("ex1.summary")[1]}`], RW),
-  row(["2. API ingestion", "Kill and restart lose nothing and duplicate nothing: 1,025 API ids = 1,024 loaded + 1 quarantined. After new activity, exactly 25 new + 40 changed loaded", `${where("ex2.evidence")[0]} · p. ${where("ex2.evidence")[1]}`], RW, { shade: LIGHT }),
-  row(["3. Database design", "24 tables, 39 CHECK constraints, append-only ledger; NGR 220.00, bonus cost 18.18% of NGR; balances provable at any time", `${where("ex3.queries")[0]} · p. ${where("ex3.queries")[1]}`], RW),
-  row(["Reporting (dbt, Power BI)", "dbt 78/78 pass (local and Windows); Power BI 260 / 40 / 220 / 10 verified in Desktop", `${where("ex3.reporting", "pbi.verified")[0]}`], RW, { shade: LIGHT }),
-  row(["Databricks", "One serverless job, ex1 → ex2 → ex3 all Succeeded; 32/32 checks", `${where("dbx.run")[0]} · p. ${where("dbx.run")[1]}`], RW),
-], RW));
+front.push(new Paragraph({ text: "1.  The requirements index (next page) lists every line of the brief with the section and page that answers it.", spacing: { after: 100 } }));
+front.push(new Paragraph({ text: "2.  Chapters 1–3 are the three required exercises. Each opens with a short summary, and every section starts with an \"Answers\" tag naming the part of the brief it answers. Chapters 4 and 5 are optional extensions.", spacing: { after: 100 } }));
+front.push(new Paragraph({ text: "3.  Assumptions are written where they are used (§1.4, §3.7). Data is fictitious, amounts are NAD and times UTC. Appendix A and evidence/README.md show how every figure and screenshot was produced.", spacing: { after: 240 } }));
+front.push(h3("Executive summary"));
+const ES = (lead, ref, text) => front.push(pMixed([
+  new TextRun({ text: lead, bold: true, color: NAVY }),
+  new TextRun({ text: ` (${where(ref)[0]}, p. ${where(ref)[1]}). `, color: GREY }),
+  new TextRun({ text }),
+], { spacing: { after: 140 } }));
+ES("Exercise 1 · Reconciliation", "ex1.summary", "274 of 306 settlements match exactly, and the bridge from the internal total of R218,280.00 to the gateway total of R217,979.97 has R0.00 unexplained. 49 rows are categorised in exceptions.csv; six are formatting-only variants that still match, so the Power BI exception view shows 43. The 49 are 34 genuine breaks, 6 timing differences and 9 that are not a problem, each with a cause, impact, next step and owner.");
+ES("Exercise 2 · Incremental ingestion", "ex2.evidence", "The loader is safe to stop at any point. Killed mid-page and restarted, it finished with 1,025 API ids = 1,024 loaded + 1 quarantined, with no duplicates and nothing missing. It retries rate limits and server errors, quarantines bad records instead of dropping them, and logs every run. After the new-activity step it loaded exactly 25 new and 40 changed records.");
+ES("Exercise 3 · Database design", "ex3.queries", "24 tables with keys, 39 CHECK constraints and an append-only wallet ledger, so any balance can be proved at any point in time and corrections are reversals, never edits. History is kept as SCD2 and personal data is held apart. Queries (a)–(d) run on the seed data: NGR 220.00, bonus cost 18.18% of NGR.");
+front.push(pMixed([
+  new TextRun({ text: "Optional extensions: ", bold: true, color: GREY }),
+  new TextRun({ text: "the same work as a dbt project (78/78 pass, also on Windows XAMPP), a Power BI report (chapter 4) and a Databricks serverless run (chapter 5, 32/32 checks), showing one design both on-prem on MariaDB and in the cloud.", color: GREY }),
+], { spacing: { after: 120 } }));
 
 // Requirements index
 front.push(h1("Requirements index: where each part of the brief is answered", { pageBreakBefore: true }));

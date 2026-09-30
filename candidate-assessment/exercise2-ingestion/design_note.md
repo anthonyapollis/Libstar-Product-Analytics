@@ -1,6 +1,6 @@
 # Exercise 2: design note
 
-**Database:** MySQL 8 / MariaDB (the brief allows any; the same server holds the other exercises
+**Database:** MariaDB, MySQL-compatible (the brief allows any; the same server holds the other exercises
 and dbt). **Program:** `ingest.py`, Python standard library plus `pymysql`.
 
 **Tracking progress.**

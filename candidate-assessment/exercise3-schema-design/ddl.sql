@@ -1,5 +1,5 @@
 -- Exercise 3: Database design for players, wallets, bets and bonuses
--- Tool: MySQL 8.0 / MariaDB 10.11 (InnoDB, utf8mb4). 24 tables.
+-- Tool: MariaDB 10.11 and 10.4 (XAMPP), MySQL-compatible (InnoDB, utf8mb4). 24 tables.
 --
 -- Design principles (justified in design_notes.md):
 --   * Money: DECIMAL(18,4) everywhere. Never FLOAT/DOUBLE for anything that touches a balance.
