@@ -1,0 +1,4 @@
+run_id,batch_dir,changed_employees,checks_run,new_issues,resolved_issues,open_issues
+1,data,49,True,17,0,17
+2,data,0,False,0,0,17
+3,data/simulated_run3,7,True,2,8,11

@@ -1,0 +1,10 @@
+employee_id,field,system_of_record,severity,source_value,e360_value,classification,reason
+E1015,monthly_salary,Payroll,Critical,57100.00,57100.00,Cannot verify,"Payroll holds conflicting values (57100.00 / 58600.00); Employee 360 took the first, but the system of record is ambiguous"
+E1012,employment_status,HR,Critical,Terminated,Active,Error,Employee 360 differs from the system of record
+E1018,monthly_salary,Payroll,Critical,62900.00,69400.00,Error,Employee 360 differs from the system of record
+E1037,currency,Payroll,Critical,USD,ZAR,Error,Employee 360 differs from the system of record
+E1044,monthly_salary,Payroll,Critical,,56200.00,Error,No payroll record; the Employee 360 value has no source
+E1044,currency,Payroll,Critical,,ZAR,Error,No payroll record; the Employee 360 value has no source
+E1020,department,HR,High,,Finance,Error,Blank in the system of record; the Employee 360 value cannot be traced to it
+E1033,department,HR,High,People,Sales,Error,Employee 360 differs from the system of record
+E1042,effective_date,HR,Medium,2026-11-19,2026-10-01,Legitimate exception,HR change is future-dated; Employee 360 correctly shows the value in force this month

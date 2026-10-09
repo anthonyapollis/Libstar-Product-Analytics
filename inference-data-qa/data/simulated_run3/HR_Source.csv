@@ -1,0 +1,49 @@
+employee_id,full_name,email,department,location,manager_id,employment_status,effective_date,last_updated
+E1001,Amira Jacobs,amira.jacobs@example.org,Operations,Johannesburg,,Active,2026/10/02,2026/10/02
+E1002,Thabo Mokoena,thabo.mokoena@example.org,Technology,Durban,,Active,2026/10/03,2026/10/03
+E1003,Ella Bennett,ella.bennett@example.org,People,Cape Town,,Active,2026/10/04,2026/10/04
+E1004,Sipho Dlamini,sipho.dlamini@example.org,Sales,Pretoria,,Active,2026/10/05,2026/10/05
+E1005,Chloe Meyer,chloe.meyer@example.org,Finance,Cape Town,,Active,2026/10/06,2026/10/06
+E1006,Liam Naidoo,liam.naidoo@example.org,Operations,Johannesburg,E1002,Active,2026/10/07,2026/10/07
+E1007,Nomsa Khumalo,nomsa.khumalo@example.org,Technology,Durban,E1003,Active,2026/10/01,2026/10/08
+E1008,Daniel Petersen,daniel.petersen@example.org,People,Cape Town,E1004,Active,2026/10/02,2026/10/01
+E1009,Aisha Khan,aisha.khan@example.org,Sales,Pretoria,E1005,Active,2026/10/03,2026/10/02
+E1010,Mia Williams,mia.williams@example.org,Finance,Cape Town,E1001,Active,2026/10/04,2026/10/03
+E1011,Lebo Molefe,lebo.molefe@example.org,Operations,Johannesburg,E1002,Active,2026/10/05,2026/10/04
+E1012,Oliver Brown,oliver.brown@example.org,Technology,Durban,E1003,Terminated,2026/10/06,2026/10/05
+E1013,Naledi Maseko,naledi.maseko@example.org,People,Cape Town,E1004,Active,2026/10/07,2026/10/06
+E1014,Ethan Smith,ethan.smith@example.org,Sales,Pretoria,E1005,Active,2026/10/01,2026/10/07
+E1015,Zanele Nkosi,zanele.nkosi@example.org,Finance,Cape Town,E1001,Active,2026/10/02,2026/10/08
+E1016,Adam Daniels,adam.daniels@example.org,Operations,Johannesburg,E1002,Active,2026/10/03,2026/10/01
+E1017,Kea Radebe,kea.radebe@example.org,Technology,Durban,E1003,Active,2026/10/04,2026/10/02
+E1018,Hannah Evans,hannah.evans@example.org,People,Cape Town,E1004,Active,2026/10/05,2026/10/03
+E1019,Musa Ndlovu,musa.ndlovu@example.org,Sales,Pretoria,E1005,Active,2026/10/06,2026/10/04
+E1020,Sofia Adams,sofia.adams@example.org,Finance,Cape Town,E1001,Active,2026/10/07,2026/10/09
+E1021,Ryan Cooper,ryan.cooper@example.org,Operations,Johannesburg,E1002,Active,2026/10/01,2026/10/06
+E1022,Ayanda Zulu,ayanda.zulu@example.org,Technology,Durban,E1003,Active,2026/10/02,2026/10/07
+E1023,Priya Pillay,priya.pillay@example.org,People,Cape Town,E1004,Active,2026/10/03,2026/10/08
+E1024,Noah Green,noah.green@example.org,Sales,Pretoria,E9999,Active,2026/10/04,2026/10/01
+E1025,Fatima Isaacs,fatima.isaacs@example.org,Finance,Cape Town,E1001,Active,2026/10/05,2026/10/02
+E1026,Jacob Clarke,jacob.clarke@example.org,Operations,Johannesburg,E1002,Active,2026/10/06,2026/10/03
+E1027,Tumi Mbatha,tumi.mbatha@example.org,Technology,Durban,E1003,Active,2026/10/07,2026/10/04
+E1028,Isabella Ross,isabella.ross@example.org,People,Cape Town,E1004,Active,2026/10/01,2026/10/05
+E1029,Sibusiso Sithole,sibusiso.sithole@example.org,Sales,Pretoria,E1005,Terminated,2026/10/02,2026/10/06
+E1030,Leah Young,leah.young@example.org,Finance,Cape Town,E1001,Active,2026/10/03,2026/07/01
+E1031,Mpho Mthembu,mpho.mthembu@example.org,Operations,Johannesburg,E1002,Active,2026/10/04,2026/10/08
+E1032,James Reed,james.reed@example.org,Technology,Durban,E1003,Active,2026/10/05,2026/10/01
+E1033,Nandi Botha,nandi.botha@example.org,People,Cape Town,E1004,Active,2026/10/06,2026/10/02
+E1034,Leo White,leo.white@example.org,Sales,Pretoria,E1005,Active,2026/10/07,2026/10/03
+E1035,Palesa Mokoena,,Finance,Cape Town,E1001,Active,2026/10/01,2026/10/04
+E1036,Ben Scott,ben.scott@example.org,Operations,Johannesburg,E1002,Active,2026/10/02,2026/10/05
+E1037,Kabelo Mokoena,kabelo.mokoena@example.org,Technology,Durban,E1003,Active,2026/10/03,2026/10/06
+E1038,Emma Davis,emma.davis@example.org,People,Cape Town,E1004,Active,2026/10/04,2026/10/07
+E1039,Yusuf Patel,yusuf.patel@example.org,Sales,Pretoria,E1005,Active,2026/10/05,2026/10/08
+E1040,Ava Johnson,ava.johnson@example.org,Finance,CPT,E1001,Active,2026/10/06,2026/10/01
+E1041,Bongani Cele,bongani.cele@example.org,Operations,Johannesburg,E1002,Terminated,2026/10/07,2026/10/02
+E1042,Grace Lewis,grace.lewis@example.org,Technology,Durban,E1003,Active,2026/11/19,2026/10/03
+E1043,Reuben Daniels,reuben.daniels@example.org,People,Cape Town,E1004,Active,2026/10/02,2026/10/04
+E1044,Karabo Sekgobela,karabo.sekgobela@example.org,Sales,Pretoria,E1005,Active,2026/10/03,2026/10/05
+E1045,Zoe Martin,zoe.martin@example.org,Finance,Cape Town,E9998,Active,2026/10/04,2026/10/09
+E1046,Khaya Mbeki,khaya.mbeki@example.org,Operations,Johannesburg,E1002,Active,2026/10/05,2026/10/07
+E1047,Sara Ahmed,sara.ahmed@example.org,Technology,Durban,E1003,Active,2026/10/06,2026/10/08
+E1048,Nathan Hill,nathan.hill@example.org,People,Cape Town,E1004,Active,2026/10/07,2026/10/01

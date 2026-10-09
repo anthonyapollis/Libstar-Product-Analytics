@@ -1,0 +1,4 @@
+source,oldest_update,newest_update,rows_older_than_30d,pay_periods
+HR,2026-07-01,2026-10-08,1,
+Payroll,2026-10-07,2026-10-07,0,2026-09
+Employee_360,2026-07-02,2026-10-08,1,

@@ -1,0 +1,9 @@
+measure,value
+Employees in HR (system of record),48
+Rows in Employee 360,48
+Matched on employee_id,47
+"Missing downstream (in HR, not in Employee 360)",1
+"Unexpected downstream (in Employee 360, not in HR)",1
+Matched employees with at least one field error,6
+Matched employees whose value cannot be verified (conflicting source),1
+Field differences that are legitimate exceptions,1

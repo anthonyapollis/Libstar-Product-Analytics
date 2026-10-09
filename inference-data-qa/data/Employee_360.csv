@@ -1,0 +1,49 @@
+employee_id,full_name,department,location,manager_id,employment_status,monthly_salary_zar,currency,effective_date,last_updated
+E1001,Amira Jacobs,Operations,Johannesburg,,Active,29900,ZAR,2026-10-02,2026-10-08
+E1002,Thabo Mokoena,Technology,Durban,,Active,31900,ZAR,2026-10-03,2026-10-08
+E1003,Ella Bennett,People,Cape Town,,Active,33800,ZAR,2026-10-04,2026-10-08
+E1004,Sipho Dlamini,Sales,Pretoria,,Active,35700,ZAR,2026-10-05,2026-10-08
+E1005,Chloe Meyer,Finance,Cape Town,,Active,37700,ZAR,2026-10-06,2026-10-08
+E1006,Liam Naidoo,Operations,Johannesburg,E1002,Active,39600,ZAR,2026-10-07,2026-10-08
+E1007,Nomsa Khumalo,Technology,Durban,E1003,Active,41600,ZAR,2026-10-01,2026-10-08
+E1008,Daniel Petersen,People,Cape Town,E1004,Active,43500,ZAR,2026-10-02,2026-10-08
+E1009,Aisha Khan,Sales,Pretoria,E1005,Active,45400,ZAR,2026-10-03,2026-10-08
+E1010,Mia Williams,Finance,Cape Town,E1001,Active,47400,ZAR,2026-10-04,2026-10-08
+E1011,Lebo Molefe,Operations,Johannesburg,E1002,Active,49300,ZAR,2026-10-05,2026-10-08
+E1012,Oliver Brown,Technology,Durban,E1003,Active,51200,ZAR,2026-10-06,2026-10-08
+E1013,Naledi Maseko,People,Cape Town,E1004,Active,53200,ZAR,2026-10-07,2026-10-08
+E1014,Ethan Smith,Sales,Pretoria,E1005,Active,55100,ZAR,2026-10-01,2026-10-08
+E1015,Zanele Nkosi,Finance,Cape Town,E1001,Active,57100,ZAR,2026-10-02,2026-10-08
+E1016,Adam Daniels,Operations,Johannesburg,E1002,Active,59000,ZAR,2026-10-03,2026-10-08
+E1017,Kea Radebe,Technology,Durban,E1003,Active,60900,ZAR,2026-10-04,2026-10-08
+E1018,Hannah Evans,People,Cape Town,E1004,Active,69400,ZAR,2026-10-05,2026-10-08
+E1019,Musa Ndlovu,Sales,Pretoria,E1005,Active,64800,ZAR,2026-10-06,2026-10-08
+E1020,Sofia Adams,Finance,Cape Town,E1001,Active,66700,ZAR,2026-10-07,2026-10-08
+E1021,Ryan Cooper,Operations,Johannesburg,E1002,Active,68700,ZAR,2026-10-01,2026-10-08
+E1022,Ayanda Zulu,Technology,Durban,E1003,Active,70600,ZAR,2026-10-02,2026-10-08
+E1023,Priya Pillay,People,Cape Town,E1004,Active,72600,ZAR,2026-10-03,2026-10-08
+E1024,Noah Green,Sales,Pretoria,E9999,Active,74500,ZAR,2026-10-04,2026-10-08
+E1025,Fatima Isaacs,Finance,Cape Town,E1001,Active,76400,ZAR,2026-10-05,2026-10-08
+E1026,Jacob Clarke,Operations,Johannesburg,E1002,Active,78400,ZAR,2026-10-06,2026-10-08
+E1028,Isabella Ross,People,Cape Town,E1004,Active,82200,ZAR,2026-10-01,2026-10-08
+E1029,Sibusiso Sithole,Sales,Pretoria,E1005,Terminated,84200,ZAR,2026-10-02,2026-10-08
+E1030,Leah Young,Finance,Cape Town,E1001,Active,29100,ZAR,2026-10-03,2026-07-02
+E1031,Mpho Mthembu,Operations,Johannesburg,E1002,Active,31000,ZAR,2026-10-04,2026-10-08
+E1032,James Reed,Technology,Durban,E1003,Active,33000,ZAR,2026-10-05,2026-10-08
+E1033,Nandi Botha,Sales,Cape Town,E1004,Active,34900,ZAR,2026-10-06,2026-10-08
+E1034,Leo White,Sales,Pretoria,E1005,Active,36900,ZAR,2026-10-07,2026-10-08
+E1035,Palesa Mokoena,Finance,Cape Town,E1001,Active,38800,ZAR,2026-10-01,2026-10-08
+E1036,Ben Scott,Operations,Johannesburg,E1002,Active,40700,ZAR,2026-10-02,2026-10-08
+E1037,Kabelo Mokoena,Technology,Durban,E1003,Active,42700,ZAR,2026-10-03,2026-10-08
+E1038,Emma Davis,People,Cape Town,E1004,Active,44600,ZAR,2026-10-04,2026-10-08
+E1039,Yusuf Patel,Sales,Pretoria,E1005,Active,46500,ZAR,2026-10-05,2026-10-08
+E1040,Ava Johnson,Finance,Cape Town,E1001,Active,48500,ZAR,2026-10-06,2026-10-08
+E1041,Bongani Cele,Operations,Johannesburg,E1002,Terminated,50400,ZAR,2026-10-07,2026-10-08
+E1042,Grace Lewis,Technology,Durban,E1003,Active,52400,ZAR,2026-10-01,2026-10-08
+E1043,Reuben Daniels,People,Cape Town,E1004,Active,54300,ZAR,2026-10-02,2026-10-08
+E1044,Karabo Sekgobela,Sales,Pretoria,E1005,Active,56200,ZAR,2026-10-03,2026-10-08
+E1045,Zoe Martin,Finance,Cape Town,E1001,Active,58200,ZAR,2026-10-04,2026-10-08
+E1046,Khaya Mbeki,Operations,Johannesburg,E1002,Active,60100,ZAR,2026-10-05,2026-10-08
+E1047,Sara Ahmed,Technology,Durban,E1003,Active,62000,ZAR,2026-10-06,2026-10-08
+E1048,Nathan Hill,People,Cape Town,E1004,Active,64000,ZAR,2026-10-07,2026-10-08
+E1099,Unknown Legacy Employee,People,Cape Town,E1004,Active,82200,ZAR,2026-10-01,2026-10-08

@@ -1,0 +1,423 @@
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=33525 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=33525 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+WARNING: Using incubator modules: jdk.incubator.vector
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/10/09 19:46:14 WARN Utils: Your hostname, vm, resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
+26/10/09 19:46:14 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/root/.venvs/spark/lib/python3.11/site-packages/pyspark/jars/ivy-2.5.3.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /root/.ivy2.5.2/cache
+The jars for the packages stored in: /root/.ivy2.5.2/jars
+io.delta#delta-spark_2.13 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-09d39a92-913d-46c7-b5c6-d8a9bcb74271;1.0
+	confs: [default]
+	found io.delta#delta-spark_2.13;4.0.1 in central
+	found io.delta#delta-storage;4.0.1 in central
+	found org.antlr#antlr4-runtime;4.13.1 in central
+:: resolution report :: resolve 150ms :: artifacts dl 5ms
+	:: modules in use:
+	io.delta#delta-spark_2.13;4.0.1 from central in [default]
+	io.delta#delta-storage;4.0.1 from central in [default]
+	org.antlr#antlr4-runtime;4.13.1 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-09d39a92-913d-46c7-b5c6-d8a9bcb74271
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/5ms)
+26/10/09 19:46:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+
+====================================================================================================
+RUN with batch_dir=data
+====================================================================================================
+run 1, batch folder: data
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|hr     |1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
+|payroll|1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
+|e360   |1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
++-------+--------+------------+-------------+------------+-------+--------------------------+
+
+employees with a change this run: 49
+project root /home/user/Libstar-Product-Analytics/inference-data-qa; extract date 2026-10-08; reporting month ends 2026-10-31
+
+1. Profiling (Spark SQL). Each statement is one result set in the notebook.
++------------+---------+------------+--------------+------+------+
+|source      |row_count|distinct_ids|duplicate_rows|min_id|max_id|
++------------+---------+------------+--------------+------+------+
+|HR          |48       |48          |0             |E1001 |E1048 |
+|Payroll     |48       |47          |1             |E1001 |E1048 |
+|Employee_360|48       |48          |0             |E1001 |E1099 |
++------------+---------+------------+--------------+------+------+
+
+
+P2. Null or blank rate for every column that has any (stack() turns columns into rows).
++------------+-----------+---------+----------+--------+
+|source      |column_name|row_count|null_count|null_pct|
++------------+-----------+---------+----------+--------+
+|Employee_360|manager_id |48       |5         |10.4    |
+|HR          |department |48       |1         |2.1     |
+|HR          |email      |48       |1         |2.1     |
+|HR          |manager_id |48       |5         |10.4    |
++------------+-----------+---------+----------+--------+
+
+
+P3. Duplicate keys, with the conflicting values side by side.
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
+|employee_id|key_occurrence|key_count|payroll_status|monthly_salary|currency|pay_period|last_updated|
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
+|E1015      |1             |2        |Payable       |57100.00      |ZAR     |2026-09   |2026-10-07  |
+|E1015      |2             |2        |Payable       |58600.00      |ZAR     |2026-09   |2026-10-07  |
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
+
+
+P4. Freshness: how old each source is relative to the extract date, and the payroll period.
++------------+-------------+-------------+-------------------+-----------+
+|source      |oldest_update|newest_update|rows_older_than_30d|pay_periods|
++------------+-------------+-------------+-------------------+-----------+
+|HR          |2026-07-01   |2026-10-08   |1                  |NULL       |
+|Payroll     |2026-10-07   |2026-10-07   |0                  |2026-09    |
+|Employee_360|2026-07-02   |2026-10-08   |1                  |NULL       |
++------------+-------------+-------------+-------------------+-----------+
+
+
+P5. Unexpected patterns worth a human look (not all of them are errors).
++------------------------------------------------------------------------------------+-------------+-----------+
+|pattern                                                                             |rows_affected|example_ids|
++------------------------------------------------------------------------------------+-------------+-----------+
+|HR dates use yyyy/MM/dd; the other files use ISO yyyy-MM-dd                         |48           |NULL       |
+|HR effective_date after the reporting month (future-dated change)                   |1            |E1042      |
+|HR last_updated earlier than effective_date (change keyed in before it takes effect)|23           |NULL       |
+|Location alias (CPT for Cape Town)                                                  |1            |E1040      |
+|Payroll currency other than ZAR in a ZAR salary column                              |1            |E1037      |
+|Payroll pay_period is not the reporting month                                       |48           |NULL       |
++------------------------------------------------------------------------------------+-------------+-----------+
+
+
+check_failures
++-------+-----------+-------------+--------------------------------------------------------+
+|rule_id|employee_id|source       |detail                                                  |
++-------+-----------+-------------+--------------------------------------------------------+
+|DQ01   |E1015      |Payroll      |2 rows for one employee_id                              |
+|DQ02   |E1020      |HR           |blank: department                                       |
+|DQ02   |E1035      |HR           |blank: email                                            |
+|DQ03   |E1024      |Employee_360 |manager_id E9999 is not in HR                           |
+|DQ03   |E1024      |HR           |manager_id E9999 is not in HR                           |
+|DQ04   |E1029      |HR vs Payroll|HR Terminated, payroll Payable (HR effective 2026-10-02)|
+|DQ04   |E1044      |HR vs Payroll|HR Active but no payroll record                         |
+|DQ05   |E1037      |Payroll      |currency USD in monthly_salary_zar                      |
+|DQ06   |E1030      |Employee_360 |last_updated 2026-07-02, 98 days before the extract     |
+|DQ06   |E1030      |HR           |last_updated 2026-07-01, 99 days before the extract     |
++-------+-----------+-------------+--------------------------------------------------------+
+
+
+recon_keys
++-----------+-----------------------+---------------------+-----+----------+-------+
+|employee_id|full_name              |key_status           |in_hr|in_payroll|in_e360|
++-----------+-----------------------+---------------------+-----+----------+-------+
+|E1027      |Tumi Mbatha            |Missing downstream   |true |true      |false  |
+|E1099      |Unknown Legacy Employee|Unexpected downstream|false|false     |true   |
++-----------+-----------------------+---------------------+-----+----------+-------+
+
+
+R2. Why matching totals prove nothing: all three files have 48 rows, yet the key sets differ.
++--------------------+---+-------+------------+
+|measure             |hr |payroll|employee_360|
++--------------------+---+-------+------------+
+|Row count           |48 |48     |48          |
+|Distinct employee_id|48 |47     |48          |
+|IDs also in HR      |48 |47     |47          |
++--------------------+---+-------+------------+
+
+
+R3. The same point with money. A net salary difference looks like one modest gap, but it is the sum
++-------------+----------+--------------+----------------+---------------------------+--------------------------------------------------------------+
+|payroll_total|e360_total|net_difference|gross_difference|employees_with_a_difference|by_employee                                                   |
++-------------+----------+--------------+----------------+---------------------------+--------------------------------------------------------------+
+|2482700.00   |2547300.00|64600.00      |225200.00       |4                          |E1018 6500.00, E1027 -80300.00, E1044 56200.00, E1099 82200.00|
++-------------+----------+--------------+----------------+---------------------------+--------------------------------------------------------------+
+
+
+R4. Evidence for the root-cause note: is each unexpected Employee 360 record a copy of a real one?
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+
+|unexpected_id|unexpected_name        |lookalike_id|lookalike_name|attributes_equal_of_8|department|location |manager_id|monthly_salary|effective_date|
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+
+|E1099        |Unknown Legacy Employee|E1028       |Isabella Ross |8                    |People    |Cape Town|E1004     |82200.00      |2026-10-01    |
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+
+
++-----------+-----------------+----------------+--------+------------+----------+--------------------+--------------------------------------------------------------------------------------------------------------------------+
+|employee_id|field            |system_of_record|severity|source_value|e360_value|classification      |reason                                                                                                                    |
++-----------+-----------------+----------------+--------+------------+----------+--------------------+--------------------------------------------------------------------------------------------------------------------------+
+|E1015      |monthly_salary   |Payroll         |Critical|57100.00    |57100.00  |Cannot verify       |Payroll holds conflicting values (57100.00 / 58600.00); Employee 360 took the first, but the system of record is ambiguous|
+|E1012      |employment_status|HR              |Critical|Terminated  |Active    |Error               |Employee 360 differs from the system of record                                                                            |
+|E1018      |monthly_salary   |Payroll         |Critical|62900.00    |69400.00  |Error               |Employee 360 differs from the system of record                                                                            |
+|E1037      |currency         |Payroll         |Critical|USD         |ZAR       |Error               |Employee 360 differs from the system of record                                                                            |
+|E1044      |monthly_salary   |Payroll         |Critical|NULL        |56200.00  |Error               |No payroll record; the Employee 360 value has no source                                                                   |
+|E1044      |currency         |Payroll         |Critical|NULL        |ZAR       |Error               |No payroll record; the Employee 360 value has no source                                                                   |
+|E1020      |department       |HR              |High    |NULL        |Finance   |Error               |Blank in the system of record; the Employee 360 value cannot be traced to it                                              |
+|E1033      |department       |HR              |High    |People      |Sales     |Error               |Employee 360 differs from the system of record                                                                            |
+|E1042      |effective_date   |HR              |Medium  |2026-11-19  |2026-10-01|Legitimate exception|HR change is future-dated; Employee 360 correctly shows the value in force this month                                     |
++-----------+-----------------+----------------+--------+------------+----------+--------------------+--------------------------------------------------------------------------------------------------------------------------+
+
++---------------------------------------------------------------------+-----+
+|measure                                                              |value|
++---------------------------------------------------------------------+-----+
+|Employees in HR (system of record)                                   |48   |
+|Rows in Employee 360                                                 |48   |
+|Matched on employee_id                                               |47   |
+|Missing downstream (in HR, not in Employee 360)                      |1    |
+|Unexpected downstream (in Employee 360, not in HR)                   |1    |
+|Matched employees with at least one field error                      |6    |
+|Matched employees whose value cannot be verified (conflicting source)|1    |
+|Field differences that are legitimate exceptions                     |1    |
++---------------------------------------------------------------------+-----+
+
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+---------------------------------+
+|rule_id|rule                                                                        |dimension            |status|affected_count|severity|action       |alert_when_affected|alert_fired|blocks_release|owner                        |affected_ids                     |
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+---------------------------------+
+|DQ01   |employee_id unique in every source                                          |Uniqueness           |FAIL  |1             |Critical|Block release|> 0                |true       |true          |Payroll data owner           |E1015                            |
+|DQ02   |Mandatory HR fields populated                                               |Completeness         |FAIL  |2             |Medium  |Monitor      |> 1                |true       |false         |HR data steward              |E1020, E1035                     |
+|DQ03   |manager_id exists in HR                                                     |Referential integrity|FAIL  |1             |High    |Alert now    |> 0                |true       |false         |HR data steward              |E1024                            |
+|DQ04   |HR status agrees with payroll status                                        |Consistency          |FAIL  |2             |Critical|Alert now    |> 0                |true       |false         |Payroll and HR operations    |E1029, E1044                     |
+|DQ05   |Payroll salary is a positive ZAR amount                                     |Validity             |FAIL  |1             |High    |Block release|> 0                |true       |true          |Payroll data owner           |E1037                            |
+|DQ06   |Record updated within 30 days of the extract                                |Freshness            |FAIL  |1             |Medium  |Monitor      |> 2                |false      |false         |Source system owners         |E1030                            |
+|RC01   |Every HR employee is in Employee 360                                        |Reconciliation       |FAIL  |1             |Critical|Block release|> 0                |true       |true          |Employee 360 build team      |E1027                            |
+|RC02   |No Employee 360 record without an HR employee                               |Reconciliation       |FAIL  |1             |Critical|Block release|> 0                |true       |true          |Employee 360 build team / MDM|E1099                            |
+|RC03   |Status, salary and currency match (and can be verified against) their source|Reconciliation       |FAIL  |5             |Critical|Block release|> 0                |true       |true          |Employee 360 build team      |E1012, E1015, E1018, E1037, E1044|
+|RC04   |Department, manager, location and name match HR                             |Reconciliation       |FAIL  |2             |High    |Alert now    |> 0                |true       |false         |Employee 360 build team      |E1020, E1033                     |
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+---------------------------------+
+
+Release decision: BLOCK - do not publish this Employee 360 build
+{'changed_employees': 49, 'checks_run': True, 'new_issues': 17, 'resolved_issues': 0, 'open_issues': 17}
++-------+-----------+--------------------------------------------------------------------------------------------------------+------+--------------+-------------+------------+
+|rule_id|employee_id|detail                                                                                                  |status|first_seen_run|last_seen_run|resolved_run|
++-------+-----------+--------------------------------------------------------------------------------------------------------+------+--------------+-------------+------------+
+|DQ01   |E1015      |2 rows for one employee_id                                                                              |Open  |1             |1            |NULL        |
+|DQ02   |E1020      |blank: department                                                                                       |Open  |1             |1            |NULL        |
+|DQ02   |E1035      |blank: email                                                                                            |Open  |1             |1            |NULL        |
+|DQ03   |E1024      |manager_id E9999 is not in HR                                                                           |Open  |1             |1            |NULL        |
+|DQ04   |E1029      |HR Terminated, payroll Payable (HR effective 2026-10-02)                                                |Open  |1             |1            |NULL        |
+|DQ04   |E1044      |HR Active but no payroll record                                                                         |Open  |1             |1            |NULL        |
+|DQ05   |E1037      |currency USD in monthly_salary_zar                                                                      |Open  |1             |1            |NULL        |
+|DQ06   |E1030      |last_updated 2026-07-01, 99 days before the extract; last_updated 2026-07-02, 98 days before the extract|Open  |1             |1            |NULL        |
+|RC01   |E1027      |Missing downstream                                                                                      |Open  |1             |1            |NULL        |
+|RC02   |E1099      |Unexpected downstream                                                                                   |Open  |1             |1            |NULL        |
+|RC03   |E1012      |employment_status: Terminated -> Active                                                                 |Open  |1             |1            |NULL        |
+|RC03   |E1015      |monthly_salary: 57100.00 -> 57100.00 (cannot verify: payroll holds conflicting values)                  |Open  |1             |1            |NULL        |
+|RC03   |E1018      |monthly_salary: 62900.00 -> 69400.00                                                                    |Open  |1             |1            |NULL        |
+|RC03   |E1037      |currency: USD -> ZAR                                                                                    |Open  |1             |1            |NULL        |
+|RC03   |E1044      |currency: blank -> ZAR; monthly_salary: blank -> 56200.00                                               |Open  |1             |1            |NULL        |
+|RC04   |E1020      |department: blank -> Finance                                                                            |Open  |1             |1            |NULL        |
+|RC04   |E1033      |department: People -> Sales                                                                             |Open  |1             |1            |NULL        |
++-------+-----------+--------------------------------------------------------------------------------------------------------+------+--------------+-------------+------------+
+
+
+====================================================================================================
+RUN with batch_dir=data
+====================================================================================================
+run 2, batch folder: data
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|hr     |1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
+|payroll|1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
+|e360   |1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
++-------+--------+------------+-------------+------------+-------+--------------------------+
+
+employees with a change this run: 0
+No source changed since the last run: checks skipped, no compute spent, no alerts.
+
+====================================================================================================
+RUN with batch_dir=data/simulated_run3
+====================================================================================================
+run 3, batch folder: data/simulated_run3
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
++-------+--------+------------+-------------+------------+-------+--------------------------+
+|hr     |2       |48          |2            |2           |false  |2026-10-09 19:48:32.370224|
+|payroll|2       |47          |1            |2           |false  |2026-10-09 19:48:32.370224|
+|e360   |2       |48          |2            |2           |false  |2026-10-09 19:48:32.370224|
++-------+--------+------------+-------------+------------+-------+--------------------------+
+
+employees with a change this run: 7
+project root /home/user/Libstar-Product-Analytics/inference-data-qa; extract date 2026-10-08; reporting month ends 2026-10-31
+
+1. Profiling (Spark SQL). Each statement is one result set in the notebook.
++------------+---------+------------+--------------+------+------+
+|source      |row_count|distinct_ids|duplicate_rows|min_id|max_id|
++------------+---------+------------+--------------+------+------+
+|HR          |48       |48          |0             |E1001 |E1048 |
+|Payroll     |47       |47          |0             |E1001 |E1048 |
+|Employee_360|48       |48          |0             |E1001 |E1048 |
++------------+---------+------------+--------------+------+------+
+
+
+P2. Null or blank rate for every column that has any (stack() turns columns into rows).
++------------+-----------+---------+----------+--------+
+|source      |column_name|row_count|null_count|null_pct|
++------------+-----------+---------+----------+--------+
+|Employee_360|manager_id |48       |5         |10.4    |
+|HR          |email      |48       |1         |2.1     |
+|HR          |manager_id |48       |5         |10.4    |
++------------+-----------+---------+----------+--------+
+
+
+P3. Duplicate keys, with the conflicting values side by side.
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
+|employee_id|key_occurrence|key_count|payroll_status|monthly_salary|currency|pay_period|last_updated|
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
++-----------+--------------+---------+--------------+--------------+--------+----------+------------+
+
+
+P4. Freshness: how old each source is relative to the extract date, and the payroll period.
++------------+-------------+-------------+-------------------+-----------+
+|source      |oldest_update|newest_update|rows_older_than_30d|pay_periods|
++------------+-------------+-------------+-------------------+-----------+
+|HR          |2026-07-01   |2026-10-09   |1                  |NULL       |
+|Payroll     |2026-10-07   |2026-10-09   |0                  |2026-09    |
+|Employee_360|2026-07-02   |2026-10-09   |1                  |NULL       |
++------------+-------------+-------------+-------------------+-----------+
+
+
+P5. Unexpected patterns worth a human look (not all of them are errors).
++------------------------------------------------------------------------------------+-------------+-----------+
+|pattern                                                                             |rows_affected|example_ids|
++------------------------------------------------------------------------------------+-------------+-----------+
+|HR dates use yyyy/MM/dd; the other files use ISO yyyy-MM-dd                         |48           |NULL       |
+|HR effective_date after the reporting month (future-dated change)                   |1            |E1042      |
+|HR last_updated earlier than effective_date (change keyed in before it takes effect)|22           |NULL       |
+|Location alias (CPT for Cape Town)                                                  |1            |E1040      |
+|Payroll currency other than ZAR in a ZAR salary column                              |1            |E1037      |
+|Payroll pay_period is not the reporting month                                       |47           |NULL       |
++------------------------------------------------------------------------------------+-------------+-----------+
+
+
+check_failures
++-------+-----------+-------------+---------------------------------------------------+
+|rule_id|employee_id|source       |detail                                             |
++-------+-----------+-------------+---------------------------------------------------+
+|DQ02   |E1035      |HR           |blank: email                                       |
+|DQ03   |E1024      |Employee_360 |manager_id E9999 is not in HR                      |
+|DQ03   |E1024      |HR           |manager_id E9999 is not in HR                      |
+|DQ03   |E1045      |HR           |manager_id E9998 is not in HR                      |
+|DQ04   |E1044      |HR vs Payroll|HR Active but no payroll record                    |
+|DQ05   |E1037      |Payroll      |currency USD in monthly_salary_zar                 |
+|DQ06   |E1030      |Employee_360 |last_updated 2026-07-02, 98 days before the extract|
+|DQ06   |E1030      |HR           |last_updated 2026-07-01, 99 days before the extract|
++-------+-----------+-------------+---------------------------------------------------+
+
+
+recon_keys
++-----------+---------+----------+-----+----------+-------+
+|employee_id|full_name|key_status|in_hr|in_payroll|in_e360|
++-----------+---------+----------+-----+----------+-------+
++-----------+---------+----------+-----+----------+-------+
+
+
+R2. Why matching totals prove nothing: all three files have 48 rows, yet the key sets differ.
++--------------------+---+-------+------------+
+|measure             |hr |payroll|employee_360|
++--------------------+---+-------+------------+
+|Row count           |48 |47     |48          |
+|Distinct employee_id|48 |47     |48          |
+|IDs also in HR      |48 |47     |48          |
++--------------------+---+-------+------------+
+
+
+R3. The same point with money. A net salary difference looks like one modest gap, but it is the sum
++-------------+----------+--------------+----------------+---------------------------+-----------------------------+
+|payroll_total|e360_total|net_difference|gross_difference|employees_with_a_difference|by_employee                  |
++-------------+----------+--------------+----------------+---------------------------+-----------------------------+
+|2482700.00   |2545400.00|62700.00      |62700.00        |2                          |E1018 6500.00, E1044 56200.00|
++-------------+----------+--------------+----------------+---------------------------+-----------------------------+
+
+
+R4. Evidence for the root-cause note: is each unexpected Employee 360 record a copy of a real one?
++-------------+---------------+------------+--------------+---------------------+----------+--------+----------+--------------+--------------+
+|unexpected_id|unexpected_name|lookalike_id|lookalike_name|attributes_equal_of_8|department|location|manager_id|monthly_salary|effective_date|
++-------------+---------------+------------+--------------+---------------------+----------+--------+----------+--------------+--------------+
++-------------+---------------+------------+--------------+---------------------+----------+--------+----------+--------------+--------------+
+
++-----------+--------------+----------------+--------+------------+----------+--------------------+-------------------------------------------------------------------------------------+
+|employee_id|field         |system_of_record|severity|source_value|e360_value|classification      |reason                                                                               |
++-----------+--------------+----------------+--------+------------+----------+--------------------+-------------------------------------------------------------------------------------+
+|E1018      |monthly_salary|Payroll         |Critical|62900.00    |69400.00  |Error               |Employee 360 differs from the system of record                                       |
+|E1037      |currency      |Payroll         |Critical|USD         |ZAR       |Error               |Employee 360 differs from the system of record                                       |
+|E1044      |monthly_salary|Payroll         |Critical|NULL        |56200.00  |Error               |No payroll record; the Employee 360 value has no source                              |
+|E1044      |currency      |Payroll         |Critical|NULL        |ZAR       |Error               |No payroll record; the Employee 360 value has no source                              |
+|E1033      |department    |HR              |High    |People      |Sales     |Error               |Employee 360 differs from the system of record                                       |
+|E1045      |manager_id    |HR              |High    |E9998       |E1001     |Error               |Employee 360 differs from the system of record                                       |
+|E1042      |effective_date|HR              |Medium  |2026-11-19  |2026-10-01|Legitimate exception|HR change is future-dated; Employee 360 correctly shows the value in force this month|
++-----------+--------------+----------------+--------+------------+----------+--------------------+-------------------------------------------------------------------------------------+
+
++---------------------------------------------------------------------+-----+
+|measure                                                              |value|
++---------------------------------------------------------------------+-----+
+|Employees in HR (system of record)                                   |48   |
+|Rows in Employee 360                                                 |48   |
+|Matched on employee_id                                               |48   |
+|Missing downstream (in HR, not in Employee 360)                      |0    |
+|Unexpected downstream (in Employee 360, not in HR)                   |0    |
+|Matched employees with at least one field error                      |5    |
+|Matched employees whose value cannot be verified (conflicting source)|0    |
+|Field differences that are legitimate exceptions                     |1    |
++---------------------------------------------------------------------+-----+
+
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+-------------------+
+|rule_id|rule                                                                        |dimension            |status|affected_count|severity|action       |alert_when_affected|alert_fired|blocks_release|owner                        |affected_ids       |
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+-------------------+
+|DQ01   |employee_id unique in every source                                          |Uniqueness           |PASS  |0             |Critical|Block release|> 0                |false      |false         |Payroll data owner           |                   |
+|DQ02   |Mandatory HR fields populated                                               |Completeness         |FAIL  |1             |Medium  |Monitor      |> 1                |false      |false         |HR data steward              |E1035              |
+|DQ03   |manager_id exists in HR                                                     |Referential integrity|FAIL  |2             |High    |Alert now    |> 0                |true       |false         |HR data steward              |E1024, E1045       |
+|DQ04   |HR status agrees with payroll status                                        |Consistency          |FAIL  |1             |Critical|Alert now    |> 0                |true       |false         |Payroll and HR operations    |E1044              |
+|DQ05   |Payroll salary is a positive ZAR amount                                     |Validity             |FAIL  |1             |High    |Block release|> 0                |true       |true          |Payroll data owner           |E1037              |
+|DQ06   |Record updated within 30 days of the extract                                |Freshness            |FAIL  |1             |Medium  |Monitor      |> 2                |false      |false         |Source system owners         |E1030              |
+|RC01   |Every HR employee is in Employee 360                                        |Reconciliation       |PASS  |0             |Critical|Block release|> 0                |false      |false         |Employee 360 build team      |                   |
+|RC02   |No Employee 360 record without an HR employee                               |Reconciliation       |PASS  |0             |Critical|Block release|> 0                |false      |false         |Employee 360 build team / MDM|                   |
+|RC03   |Status, salary and currency match (and can be verified against) their source|Reconciliation       |FAIL  |3             |Critical|Block release|> 0                |true       |true          |Employee 360 build team      |E1018, E1037, E1044|
+|RC04   |Department, manager, location and name match HR                             |Reconciliation       |FAIL  |2             |High    |Alert now    |> 0                |true       |false         |Employee 360 build team      |E1033, E1045       |
++-------+----------------------------------------------------------------------------+---------------------+------+--------------+--------+-------------+-------------------+-----------+--------------+-----------------------------+-------------------+
+
+Release decision: BLOCK - do not publish this Employee 360 build
+New issues this run (these are the alerts):
++-------+-----------+--------+-----------------------+-----------------------------+
+|rule_id|employee_id|severity|owner                  |detail                       |
++-------+-----------+--------+-----------------------+-----------------------------+
+|DQ03   |E1045      |High    |HR data steward        |manager_id E9998 is not in HR|
+|RC04   |E1045      |High    |Employee 360 build team|manager_id: E9998 -> E1001   |
++-------+-----------+--------+-----------------------+-----------------------------+
+
+{'changed_employees': 7, 'checks_run': True, 'new_issues': 2, 'resolved_issues': 8, 'open_issues': 11}
++-------+-----------+--------------------------------------------------------------------------------------------------------+--------+--------------+-------------+------------+
+|rule_id|employee_id|detail                                                                                                  |status  |first_seen_run|last_seen_run|resolved_run|
++-------+-----------+--------------------------------------------------------------------------------------------------------+--------+--------------+-------------+------------+
+|DQ02   |E1035      |blank: email                                                                                            |Open    |1             |3            |NULL        |
+|DQ03   |E1024      |manager_id E9999 is not in HR                                                                           |Open    |1             |3            |NULL        |
+|DQ03   |E1045      |manager_id E9998 is not in HR                                                                           |Open    |3             |3            |NULL        |
+|DQ04   |E1044      |HR Active but no payroll record                                                                         |Open    |1             |3            |NULL        |
+|DQ05   |E1037      |currency USD in monthly_salary_zar                                                                      |Open    |1             |3            |NULL        |
+|DQ06   |E1030      |last_updated 2026-07-01, 99 days before the extract; last_updated 2026-07-02, 98 days before the extract|Open    |1             |3            |NULL        |
+|RC03   |E1018      |monthly_salary: 62900.00 -> 69400.00                                                                    |Open    |1             |3            |NULL        |
+|RC03   |E1037      |currency: USD -> ZAR                                                                                    |Open    |1             |3            |NULL        |
+|RC03   |E1044      |currency: blank -> ZAR; monthly_salary: blank -> 56200.00                                               |Open    |1             |3            |NULL        |
+|RC04   |E1033      |department: People -> Sales                                                                             |Open    |1             |3            |NULL        |
+|RC04   |E1045      |manager_id: E9998 -> E1001                                                                              |Open    |3             |3            |NULL        |
+|DQ01   |E1015      |2 rows for one employee_id                                                                              |Resolved|1             |1            |3           |
+|DQ02   |E1020      |blank: department                                                                                       |Resolved|1             |1            |3           |
+|DQ04   |E1029      |HR Terminated, payroll Payable (HR effective 2026-10-02)                                                |Resolved|1             |1            |3           |
+|RC01   |E1027      |Missing downstream                                                                                      |Resolved|1             |1            |3           |
+|RC02   |E1099      |Unexpected downstream                                                                                   |Resolved|1             |1            |3           |
+|RC03   |E1012      |employment_status: Terminated -> Active                                                                 |Resolved|1             |1            |3           |
+|RC03   |E1015      |monthly_salary: 57100.00 -> 57100.00 (cannot verify: payroll holds conflicting values)                  |Resolved|1             |1            |3           |
+|RC04   |E1020      |department: blank -> Finance                                                                            |Resolved|1             |1            |3           |
++-------+-----------+--------------------------------------------------------------------------------------------------------+--------+--------------+-------------+------------+
+
+wrote outputs/incremental_runs.csv (3 rows)
+wrote outputs/incremental_batches.csv (6 rows)
+wrote outputs/incremental_issues.csv (19 rows)

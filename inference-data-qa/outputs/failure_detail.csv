@@ -1,0 +1,21 @@
+rule_id,employee_id,source,detail
+DQ01,E1015,Payroll,2 rows for one employee_id
+DQ02,E1020,HR,blank: department
+DQ02,E1035,HR,blank: email
+DQ03,E1024,HR,manager_id E9999 is not in HR
+DQ03,E1024,Employee_360,manager_id E9999 is not in HR
+DQ04,E1029,HR vs Payroll,"HR Terminated, payroll Payable (HR effective 2026-10-02)"
+DQ04,E1044,HR vs Payroll,HR Active but no payroll record
+DQ05,E1037,Payroll,currency USD in monthly_salary_zar
+DQ06,E1030,HR,"last_updated 2026-07-01, 99 days before the extract"
+DQ06,E1030,Employee_360,"last_updated 2026-07-02, 98 days before the extract"
+RC01,E1027,HR vs Employee 360,Missing downstream
+RC02,E1099,HR vs Employee 360,Unexpected downstream
+RC03,E1012,Source vs Employee 360,employment_status: Terminated -> Active
+RC03,E1015,Source vs Employee 360,monthly_salary: 57100.00 -> 57100.00 (cannot verify: payroll holds conflicting values)
+RC03,E1018,Source vs Employee 360,monthly_salary: 62900.00 -> 69400.00
+RC03,E1037,Source vs Employee 360,currency: USD -> ZAR
+RC03,E1044,Source vs Employee 360,monthly_salary: blank -> 56200.00
+RC03,E1044,Source vs Employee 360,currency: blank -> ZAR
+RC04,E1020,Source vs Employee 360,department: blank -> Finance
+RC04,E1033,Source vs Employee 360,department: People -> Sales

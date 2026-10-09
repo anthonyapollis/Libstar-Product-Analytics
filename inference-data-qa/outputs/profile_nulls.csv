@@ -1,0 +1,5 @@
+source,column_name,row_count,null_count,null_pct
+Employee_360,manager_id,48,5,10.4
+HR,department,48,1,2.1
+HR,email,48,1,2.1
+HR,manager_id,48,5,10.4

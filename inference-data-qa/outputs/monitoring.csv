@@ -1,0 +1,11 @@
+rule_id,rule,dimension,status,affected_count,severity,action,alert_when_affected,alert_fired,blocks_release,owner,affected_ids
+DQ01,employee_id unique in every source,Uniqueness,FAIL,1,Critical,Block release,> 0,True,True,Payroll data owner,E1015
+DQ02,Mandatory HR fields populated,Completeness,FAIL,2,Medium,Monitor,> 1,True,False,HR data steward,"E1020, E1035"
+DQ03,manager_id exists in HR,Referential integrity,FAIL,1,High,Alert now,> 0,True,False,HR data steward,E1024
+DQ04,HR status agrees with payroll status,Consistency,FAIL,2,Critical,Alert now,> 0,True,False,Payroll and HR operations,"E1029, E1044"
+DQ05,Payroll salary is a positive ZAR amount,Validity,FAIL,1,High,Block release,> 0,True,True,Payroll data owner,E1037
+DQ06,Record updated within 30 days of the extract,Freshness,FAIL,1,Medium,Monitor,> 2,False,False,Source system owners,E1030
+RC01,Every HR employee is in Employee 360,Reconciliation,FAIL,1,Critical,Block release,> 0,True,True,Employee 360 build team,E1027
+RC02,No Employee 360 record without an HR employee,Reconciliation,FAIL,1,Critical,Block release,> 0,True,True,Employee 360 build team / MDM,E1099
+RC03,"Status, salary and currency match (and can be verified against) their source",Reconciliation,FAIL,5,Critical,Block release,> 0,True,True,Employee 360 build team,"E1012, E1015, E1018, E1037, E1044"
+RC04,"Department, manager, location and name match HR",Reconciliation,FAIL,2,High,Alert now,> 0,True,False,Employee 360 build team,"E1020, E1033"

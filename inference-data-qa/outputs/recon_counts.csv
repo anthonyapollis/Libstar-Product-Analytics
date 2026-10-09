@@ -1,0 +1,4 @@
+measure,hr,payroll,employee_360
+Row count,48,48,48
+Distinct employee_id,48,47,48
+IDs also in HR,48,47,47

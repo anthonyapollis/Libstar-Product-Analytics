@@ -1,0 +1,7 @@
+source,batch_id,rows_in_file,rows_inserted,rows_dropped,skipped
+e360,1,48,48,0,False
+hr,1,48,48,0,False
+payroll,1,48,48,0,False
+e360,2,48,2,2,False
+hr,2,48,2,2,False
+payroll,2,47,1,2,False

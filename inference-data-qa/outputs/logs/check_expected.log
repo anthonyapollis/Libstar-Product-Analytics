@@ -1,0 +1,12 @@
+OK   DQ01: expected ['E1015']
+OK   DQ02: expected ['E1020', 'E1035']
+OK   DQ03: expected ['E1024']
+OK   DQ04: expected ['E1029', 'E1044']
+OK   DQ05: expected ['E1037']
+OK   DQ06: expected ['E1030']
+OK   RC01: expected ['E1027']
+OK   RC02: expected ['E1099']
+OK   RC03: expected ['E1012', 'E1015', 'E1018', 'E1037', 'E1044']
+OK   RC04: expected ['E1020', 'E1033']
+
+10/10 rules agree with the independent calculation

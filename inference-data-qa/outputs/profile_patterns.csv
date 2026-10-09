@@ -1,0 +1,7 @@
+pattern,rows_affected,example_ids
+HR dates use yyyy/MM/dd; the other files use ISO yyyy-MM-dd,48,
+HR effective_date after the reporting month (future-dated change),1,E1042
+HR last_updated earlier than effective_date (change keyed in before it takes effect),23,
+Location alias (CPT for Cape Town),1,E1040
+Payroll currency other than ZAR in a ZAR salary column,1,E1037
+Payroll pay_period is not the reporting month,48,

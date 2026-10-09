@@ -1,0 +1,4 @@
+source,row_count,distinct_ids,duplicate_rows,min_id,max_id
+HR,48,48,0,E1001,E1048
+Payroll,48,47,1,E1001,E1048
+Employee_360,48,48,0,E1001,E1099

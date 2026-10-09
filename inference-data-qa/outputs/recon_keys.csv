@@ -1,0 +1,3 @@
+employee_id,full_name,key_status,in_hr,in_payroll,in_e360
+E1027,Tumi Mbatha,Missing downstream,True,True,False
+E1099,Unknown Legacy Employee,Unexpected downstream,False,False,True
