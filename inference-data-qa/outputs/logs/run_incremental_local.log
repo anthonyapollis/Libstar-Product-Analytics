@@ -1,19 +1,19 @@
-Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=33525 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
-Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=33525 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=42687 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=42687 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
 WARNING: Using incubator modules: jdk.incubator.vector
 Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-26/10/09 19:46:14 WARN Utils: Your hostname, vm, resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
-26/10/09 19:46:14 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/09 20:07:21 WARN Utils: Your hostname, vm, resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
+26/10/09 20:07:21 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
 :: loading settings :: url = jar:file:/root/.venvs/spark/lib/python3.11/site-packages/pyspark/jars/ivy-2.5.3.jar!/org/apache/ivy/core/settings/ivysettings.xml
 Ivy Default Cache set to: /root/.ivy2.5.2/cache
 The jars for the packages stored in: /root/.ivy2.5.2/jars
 io.delta#delta-spark_2.13 added as a dependency
-:: resolving dependencies :: org.apache.spark#spark-submit-parent-09d39a92-913d-46c7-b5c6-d8a9bcb74271;1.0
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-2901cc3c-6f19-462f-9b4f-e47ef99b86bb;1.0
 	confs: [default]
 	found io.delta#delta-spark_2.13;4.0.1 in central
 	found io.delta#delta-storage;4.0.1 in central
 	found org.antlr#antlr4-runtime;4.13.1 in central
-:: resolution report :: resolve 150ms :: artifacts dl 5ms
+:: resolution report :: resolve 143ms :: artifacts dl 4ms
 	:: modules in use:
 	io.delta#delta-spark_2.13;4.0.1 from central in [default]
 	io.delta#delta-storage;4.0.1 from central in [default]
@@ -24,24 +24,24 @@ io.delta#delta-spark_2.13 added as a dependency
 	---------------------------------------------------------------------
 	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
 	---------------------------------------------------------------------
-:: retrieving :: org.apache.spark#spark-submit-parent-09d39a92-913d-46c7-b5c6-d8a9bcb74271
+:: retrieving :: org.apache.spark#spark-submit-parent-2901cc3c-6f19-462f-9b4f-e47ef99b86bb
 	confs: [default]
-	0 artifacts copied, 3 already retrieved (0kB/5ms)
-26/10/09 19:46:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+	0 artifacts copied, 3 already retrieved (0kB/6ms)
+26/10/09 20:07:21 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
 
 ====================================================================================================
-RUN with batch_dir=data
+RUN 1 with batch_dir=data
 ====================================================================================================
 run 1, batch folder: data
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 |source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
 +-------+--------+------------+-------------+------------+-------+--------------------------+
-|hr     |1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
-|payroll|1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
-|e360   |1       |48          |48           |0           |false  |2026-10-09 19:46:46.637802|
+|hr     |1       |48          |48           |0           |false  |2026-10-09 20:07:53.377796|
+|payroll|1       |48          |48           |0           |false  |2026-10-09 20:07:53.377796|
+|e360   |1       |48          |48           |0           |false  |2026-10-09 20:07:53.377796|
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 
 employees with a change this run: 49
@@ -218,31 +218,70 @@ Release decision: BLOCK - do not publish this Employee 360 build
 +-------+-----------+--------------------------------------------------------------------------------------------------------+------+--------------+-------------+------------+
 
 
+Gold vs the delivered Employee 360: what reporting would show from each.
++--------------------------------------------------------------+----+--------------+
+|measure                                                       |gold|delivered_e360|
++--------------------------------------------------------------+----+--------------+
+|Employees                                                     |48  |48            |
+|Active employees                                              |45  |46            |
+|Employees with a verified ZAR salary                          |45  |48            |
+|Trusted records (no open source-quality rule, salary verified)|40  |NULL          |
++--------------------------------------------------------------+----+--------------+
+
+Gold records that are not trusted, and why:
++-----------+-----------------+--------------+------------------+---------------+
+|employee_id|employment_status|payroll_status|monthly_salary_zar|dq_rules_failed|
++-----------+-----------------+--------------+------------------+---------------+
+|E1015      |Active           |Payable       |NULL              |[DQ01]         |
+|E1020      |Active           |Payable       |66700.00          |[DQ02]         |
+|E1024      |Active           |Payable       |74500.00          |[DQ03]         |
+|E1029      |Terminated       |Payable       |84200.00          |[DQ04]         |
+|E1030      |Active           |Payable       |29100.00          |[DQ06]         |
+|E1035      |Active           |Payable       |38800.00          |[DQ02]         |
+|E1037      |Active           |Payable       |NULL              |[DQ05]         |
+|E1044      |Active           |NULL          |NULL              |[DQ04]         |
++-----------+-----------------+--------------+------------------+---------------+
+
++------+---------------------+---------+
+|layer |table_name           |row_count|
++------+---------------------+---------+
+|Bronze|bronze_hr            |48       |
+|Bronze|bronze_payroll       |48       |
+|Bronze|bronze_e360          |48       |
+|Silver|silver_hr            |48       |
+|Silver|silver_payroll       |48       |
+|Silver|silver_e360_delivered|48       |
+|Gold  |gold_employee_360    |48       |
+|Gold  |gold_dq_monitoring   |10       |
+|Gold  |dq_issues            |17       |
++------+---------------------+---------+
+
+
 ====================================================================================================
-RUN with batch_dir=data
+RUN 2 with batch_dir=data
 ====================================================================================================
 run 2, batch folder: data
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 |source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
 +-------+--------+------------+-------------+------------+-------+--------------------------+
-|hr     |1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
-|payroll|1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
-|e360   |1       |48          |0            |0           |true   |2026-10-09 19:48:18.658092|
+|hr     |1       |48          |0            |0           |true   |2026-10-09 20:09:59.946351|
+|payroll|1       |48          |0            |0           |true   |2026-10-09 20:09:59.946351|
+|e360   |1       |48          |0            |0           |true   |2026-10-09 20:09:59.946351|
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 
 employees with a change this run: 0
 No source changed since the last run: checks skipped, no compute spent, no alerts.
 
 ====================================================================================================
-RUN with batch_dir=data/simulated_run3
+RUN 3 with batch_dir=data/simulated_run3
 ====================================================================================================
 run 3, batch folder: data/simulated_run3
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 |source |batch_id|rows_in_file|rows_inserted|rows_dropped|skipped|loaded_at                 |
 +-------+--------+------------+-------------+------------+-------+--------------------------+
-|hr     |2       |48          |2            |2           |false  |2026-10-09 19:48:32.370224|
-|payroll|2       |47          |1            |2           |false  |2026-10-09 19:48:32.370224|
-|e360   |2       |48          |2            |2           |false  |2026-10-09 19:48:32.370224|
+|hr     |2       |48          |2            |2           |false  |2026-10-09 20:10:13.049716|
+|payroll|2       |47          |1            |2           |false  |2026-10-09 20:10:13.049716|
+|e360   |2       |48          |2            |2           |false  |2026-10-09 20:10:13.049716|
 +-------+--------+------------+-------------+------------+-------+--------------------------+
 
 employees with a change this run: 7
@@ -418,6 +457,49 @@ New issues this run (these are the alerts):
 |RC04   |E1020      |department: blank -> Finance                                                                            |Resolved|1             |1            |3           |
 +-------+-----------+--------------------------------------------------------------------------------------------------------+--------+--------------+-------------+------------+
 
+
+Gold vs the delivered Employee 360: what reporting would show from each.
++--------------------------------------------------------------+----+--------------+
+|measure                                                       |gold|delivered_e360|
++--------------------------------------------------------------+----+--------------+
+|Employees                                                     |48  |48            |
+|Active employees                                              |45  |45            |
+|Employees with a verified ZAR salary                          |46  |48            |
+|Trusted records (no open source-quality rule, salary verified)|42  |NULL          |
++--------------------------------------------------------------+----+--------------+
+
+Gold records that are not trusted, and why:
++-----------+-----------------+--------------+------------------+---------------+
+|employee_id|employment_status|payroll_status|monthly_salary_zar|dq_rules_failed|
++-----------+-----------------+--------------+------------------+---------------+
+|E1024      |Active           |Payable       |74500.00          |[DQ03]         |
+|E1030      |Active           |Payable       |29100.00          |[DQ06]         |
+|E1035      |Active           |Payable       |38800.00          |[DQ02]         |
+|E1037      |Active           |Payable       |NULL              |[DQ05]         |
+|E1044      |Active           |NULL          |NULL              |[DQ04]         |
+|E1045      |Active           |Payable       |58200.00          |[DQ03]         |
++-----------+-----------------+--------------+------------------+---------------+
+
++------+---------------------+---------+
+|layer |table_name           |row_count|
++------+---------------------+---------+
+|Bronze|bronze_hr            |50       |
+|Bronze|bronze_payroll       |49       |
+|Bronze|bronze_e360          |50       |
+|Silver|silver_hr            |48       |
+|Silver|silver_payroll       |47       |
+|Silver|silver_e360_delivered|48       |
+|Gold  |gold_employee_360    |48       |
+|Gold  |gold_dq_monitoring   |20       |
+|Gold  |dq_issues            |19       |
++------+---------------------+---------+
+
+wrote outputs/medallion_gold_employee_360.csv (48 rows)
+wrote outputs/medallion_layers.csv (9 rows)
+wrote outputs/medallion_gold_vs_delivered.csv (4 rows)
+wrote outputs/medallion_run3_gold_employee_360.csv (48 rows)
+wrote outputs/medallion_run3_layers.csv (9 rows)
+wrote outputs/medallion_run3_gold_vs_delivered.csv (4 rows)
 wrote outputs/incremental_runs.csv (3 rows)
 wrote outputs/incremental_batches.csv (6 rows)
 wrote outputs/incremental_issues.csv (19 rows)

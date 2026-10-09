@@ -1,0 +1,59 @@
+# Azure DevOps pipeline. Not executed in this repository (no Azure DevOps project was available).
+trigger:
+  branches: { include: [ main ] }
+pr:
+  branches: { include: [ main ] }
+
+variables:
+  - group: databricks-employee360   # DATABRICKS_HOST, ARM_CLIENT_ID, ARM_CLIENT_SECRET, ARM_TENANT_ID (Key Vault-linked)
+
+stages:
+  - stage: Test   # every PR: local PySpark on the build agent, no Databricks compute
+    jobs:
+      - job: checks
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - task: UsePythonVersion@0
+            inputs: { versionSpec: "3.11" }
+          - script: pip install "pyspark==4.0.*" "delta-spark==4.0.*"
+            displayName: Install PySpark
+          - script: python run_local.py && python tests/check_expected.py
+            displayName: Run checks on fixtures and compare with independent results
+          - script: python run_incremental_local.py
+            displayName: Incremental demo (skip, resolve, new-issue alert)
+
+  - stage: DeployTest
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: deploy
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - script: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+            displayName: Install Databricks CLI
+          - script: databricks bundle validate -t test && databricks bundle deploy -t test && databricks bundle run employee360_dq -t test
+            displayName: Deploy to test and smoke-run on fixture data
+            env:
+              DATABRICKS_HOST: $(DATABRICKS_HOST)
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+  - stage: DeployProd
+    dependsOn: DeployTest
+    jobs:
+      - deployment: prod
+        environment: employee360-prod   # approval gate configured on this environment
+        pool: { vmImage: ubuntu-latest }
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - script: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+                - script: databricks bundle deploy -t prod
+                  env:
+                    DATABRICKS_HOST: $(DATABRICKS_HOST)
+                    ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+                    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+                    ARM_TENANT_ID: $(ARM_TENANT_ID)

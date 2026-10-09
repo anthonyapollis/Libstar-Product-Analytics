@@ -1,0 +1,41 @@
+# Databricks Asset Bundle: deploys the notebooks and defines the scheduled job.
+# Not executed in this repository (no Azure workspace was available); `databricks bundle validate` is the first CI step.
+bundle:
+  name: employee360-dq
+
+include: []
+
+variables:
+  target_schema:
+    default: workspace.employee360_dq
+  alert_email:
+    default: data-engineering-oncall@example.org
+
+resources:
+  jobs:
+    employee360_dq:
+      name: employee360-dq-${bundle.target}
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"   # 06:00 daily, after the HR and payroll extracts land
+        timezone_id: Africa/Johannesburg
+      email_notifications:
+        on_failure: [ "${var.alert_email}" ]
+      tasks:
+        - task_key: dq_checks
+          notebook_task:
+            notebook_path: ./notebooks/employee360_medallion.py
+            base_parameters:
+              batch_dir: data
+              target_schema: ${var.target_schema}
+              fail_on_block: "true"
+        - task_key: publish_employee360
+          depends_on: [ { task_key: dq_checks } ]   # runs only if no blocking rule failed
+          notebook_task:
+            notebook_path: ./notebooks/publish_placeholder.py
+
+targets:
+  test:
+    mode: development
+    default: true
+  prod:
+    mode: production
