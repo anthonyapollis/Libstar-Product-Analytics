@@ -30,7 +30,9 @@ working, explainable solution with strong judgement* over an elaborate framework
   categories show E1042 as a legitimate exception that is not counted as a failure. Every dataset was checked against
   the local outputs. Access is private: owner and admins only, embedded credentials off, no shares or schedules
   (`evidence/databricks_dashboard.md`).
-- **eBook:** `Employee360_DQ_eBook.pdf`, 20 pages. Every table is read from `outputs/` or `evidence/`, and every image is
-  listed in Appendix B with its kind and SHA-256. Screenshots of the dashboard, taken by the candidate, are still to
-  come; they will go in as genuine captures (`ebook/img/genuine_*.png`).
+- **eBook:** `Employee360_DQ_eBook.pdf`, 22 pages. Every table is read from `outputs/` or `evidence/`, and every image is
+  listed in Appendix B with its kind and SHA-256. Five screenshots of dashboard pages 1 and 2, taken by the candidate in
+  their own browser, are in chapter 8 as genuine captures (`ebook/img/genuine_*.png`). They are pixel crops only; the
+  crop boxes and the hashes of the originals and the crops are in `evidence/dashboard_screenshots.md`. Captures of
+  page 3 (pipeline runs and issue lifecycle) are still to come.
 - **Please verify:** the eBook's claims against the outputs, and the dashboard evidence.

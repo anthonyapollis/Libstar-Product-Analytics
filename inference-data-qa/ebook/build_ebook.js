@@ -320,13 +320,17 @@ if (fs.existsSync(dbxMd)) {
     ]));
   }
 
+  const gcaps = {
+    "genuine_dashboard_1_counters_chart.png": "Dashboard page 1, Release gate: BLOCK, 10 of 10 rules failing, 5 blocking, 13 employees affected, 40 of 48 Gold records trusted; affected employees per rule by severity (cropped above a desktop notification that covered the lower chart).",
+    "genuine_dashboard_1_rule_table.png": "Dashboard page 1: the monitoring table for run 1 (supplied data), with severity, action and alert threshold.",
+    "genuine_dashboard_2_gold.png": "Dashboard page 2: Gold against the delivered Employee 360 (45 vs 46 active), and the untrusted Gold employees.",
+    "genuine_dashboard_2_recon_categories.png": "Dashboard page 2: employees per reconciliation category. The legitimate exception is grey and not counted as a failure.",
+    "genuine_dashboard_2_failure_detail.png": "Dashboard page 2: failure detail by rule and employee.",
+  };
   const imgs = fs.readdirSync(IMG).filter(f => /^genuine_.*\.png$/.test(f)).sort();
-  for (const f of imgs) {
-    const genuine = f.startsWith("genuine_");
-    body.push(...figure(f, 600, f.replace(/^(genuine|databricks)_|\.png$/g, "").replace(/_/g, " "),
-      genuine ? "Screen capture (candidate's browser)" : "Databricks run export",
-      genuine ? "supplied by the candidate" : "evidence/databricks_exports/"));
-  }
+  if (imgs.length) body.push(p("Screenshots taken by the candidate in their own signed-in browser, cropped only to remove the browser bar and taskbar (evidence/dashboard_screenshots.md has the crop boxes and the SHA-256 of each original)."));
+  for (const f of imgs)
+    body.push(...figure(f, 600, gcaps[f] || f.replace(/^genuine_|\.png$/g, "").replace(/_/g, " "), "Screen capture (candidate's browser)", "evidence/dashboard_screenshots.md"));
 }
 
 // 9. AI use
