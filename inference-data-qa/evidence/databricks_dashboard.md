@@ -180,3 +180,74 @@ re-run, and none of them contains E1042.
     is the same.
   - `dashboards/employee360_dq.lvdash.json` is the `serialized_dashboard` from that `GET`.
 - **Not seen rendered:** as above, the bar colours and the text box have not been checked visually.
+
+## Access and privacy
+Checked at 21:41–21:43 UTC on 2026-10-09, after the reconciliation update and its republish at 21:39:43.
+
+**The user's decision (workspace owner):** publish privately; owner-only access; no shares; no public or embed
+links; "embed credentials" off. The data is synthetic HR data but is treated as sensitive.
+
+`<owner>` below is the workspace owner's user name (their email address, masked here as elsewhere in this file).
+The workspace has 1 user, and the `admins` group has 1 member, the owner.
+
+### Location
+`GET /api/2.0/lakeview/dashboards/01f1c4297bf619938e952fea8dfa289b`: parent path
+`/Users/<owner>/inference-data-qa`, which is inside the owner's own folder. Lifecycle ACTIVE, etag `389406813`,
+last updated 21:39:33. No change to the content.
+
+### Dashboard ACL (`GET /api/2.0/permissions/dashboards/<id>`, object `/dashboards/808828254632327`)
+| Principal | Type | Permission | Inherited from |
+|---|---|---|---|
+| `<owner>` | user | CAN_MANAGE | `/directories/707953665564752` (the owner's home folder) |
+| `admins` | group | CAN_MANAGE | `/directories/` (workspace root) |
+
+Before and after are the same. There are no explicit grants: no `users` group, no account groups, no other
+users and no service principals, so nothing needed removing. The `admins` inheritance cannot be removed, and on
+this single-user workspace its only member is the owner.
+
+**Not done:** `PUT .../permissions/dashboards/<id>` with only the owner as CAN_MANAGE. This would have turned the
+owner's inherited grant into an explicit one. The session's permission guard blocked the call. It would not have
+removed anyone, because no other principal has access. The owner can apply it in the UI (Share → owner
+CAN_MANAGE) if an explicit grant is wanted.
+
+### Folder ACL (`GET /api/2.0/permissions/directories/3103041735518336`, `/Users/<owner>/inference-data-qa`)
+| Principal | Type | Permission | Inherited from |
+|---|---|---|---|
+| `<owner>` | user | CAN_MANAGE | `/directories/707953665564752` |
+| `admins` | group | CAN_MANAGE | `/directories/` |
+
+There are no explicit grants on the folder. Before and after are the same.
+
+### Publishing
+`GET /api/2.0/lakeview/dashboards/<id>/published`:
+
+| Field | Value |
+|---|---|
+| `embed_credentials` | **false** |
+| `warehouse_id` | `bc1f90f992e51d23` (Serverless Starter Warehouse) |
+| `revision_create_time` | 2026-10-09T21:39:43.566Z |
+
+The published revision (21:39:43) is newer than the last draft update (21:39:33), so it already holds the
+current content with embedded credentials off. A republish (`POST .../published` with `embed_credentials: false`)
+was attempted but blocked by the session's permission guard. It would have changed nothing. Because credentials
+are not embedded, viewers run the queries with their own permissions, and there is no viewer other than the owner.
+
+- Published URL (opens only for signed-in users with access):
+  https://dbc-ea48b979-9753.cloud.databricks.com/dashboardsv3/01f1c4297bf619938e952fea8dfa289b/published
+- No public, embed or share links have been created.
+
+### Schedules and subscriptions
+`GET /api/2.0/lakeview/dashboards/<id>/schedules` returned `{}`. There are no schedules and no subscriptions,
+so nothing sends the dashboard to anyone, and there was nothing to delete.
+
+### Data access (Unity Catalog)
+| Securable | Owner | Explicit grants (`SHOW GRANTS`, `GET /api/2.1/unity-catalog/permissions`) |
+|---|---|---|
+| Schema `workspace.employee360_medallion` | `<owner>` | none |
+| Catalog `workspace` | `_workspace_admins_workspace_7474649344710062` | none (recorded only, not changed) |
+
+`account users` and other principals have no grants on the schema. Nothing was revoked.
+
+### Changes made
+None. Every check already met the decision: no shares, no grants beyond the owner and inherited `admins`,
+`embed_credentials: false`, no schedules, and no schema grants.
