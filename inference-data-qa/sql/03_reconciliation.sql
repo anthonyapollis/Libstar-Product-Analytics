@@ -3,7 +3,7 @@
 
 -- R1. Key coverage: every employee in HR should be in Employee 360, and nothing else should be.
 CREATE OR REPLACE TEMP VIEW recon_keys AS
-WITH hr AS (SELECT employee_id, employment_status FROM stg_hr),
+WITH hr AS (SELECT employee_id, employment_status, full_name FROM stg_hr),
 py AS (SELECT DISTINCT employee_id FROM stg_payroll),
 e  AS (SELECT employee_id, full_name FROM stg_e360)
 SELECT coalesce(hr.employee_id, e.employee_id) AS employee_id,
@@ -13,7 +13,7 @@ SELECT coalesce(hr.employee_id, e.employee_id) AS employee_id,
        CASE WHEN e.employee_id IS NULL THEN 'Missing downstream'
             WHEN hr.employee_id IS NULL THEN 'Unexpected downstream'
             ELSE 'Matched' END AS key_status,
-       coalesce(e.full_name, (SELECT full_name FROM stg_hr x WHERE x.employee_id = hr.employee_id)) AS full_name
+       coalesce(e.full_name, hr.full_name) AS full_name
 FROM hr
 FULL OUTER JOIN e ON e.employee_id = hr.employee_id
 LEFT JOIN py ON py.employee_id = coalesce(hr.employee_id, e.employee_id);

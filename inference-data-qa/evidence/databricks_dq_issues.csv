@@ -1,0 +1,20 @@
+rule_id,employee_id,status,first_seen_run,last_seen_run,resolved_run,detail
+DQ01,E1015,Resolved,1,1,3,2 rows for one employee_id
+DQ02,E1020,Resolved,1,1,3,blank: department
+DQ02,E1035,Open,1,3,,blank: email
+DQ03,E1024,Open,1,3,,manager_id E9999 is not in HR
+DQ03,E1045,Open,3,3,,manager_id E9998 is not in HR
+DQ04,E1029,Resolved,1,1,3,"HR Terminated, payroll Payable (HR effective 2026-10-02)"
+DQ04,E1044,Open,1,3,,HR Active but no payroll record
+DQ05,E1037,Open,1,3,,currency USD in monthly_salary_zar
+DQ06,E1030,Open,1,3,,"last_updated 2026-07-01, 99 days before the extract; last_updated 2026-07-02, 98 days before the extract"
+RC01,E1027,Resolved,1,1,3,Missing downstream
+RC02,E1099,Resolved,1,1,3,Unexpected downstream
+RC03,E1012,Resolved,1,1,3,employment_status: Terminated -> Active
+RC03,E1015,Resolved,1,1,3,monthly_salary: 57100.00 -> 57100.00 (cannot verify: payroll holds conflicting values)
+RC03,E1018,Open,1,3,,monthly_salary: 62900.00 -> 69400.00
+RC03,E1037,Open,1,3,,currency: USD -> ZAR
+RC03,E1044,Open,1,3,,currency: blank -> ZAR; monthly_salary: blank -> 56200.00
+RC04,E1020,Resolved,1,1,3,department: blank -> Finance
+RC04,E1033,Open,1,3,,department: People -> Sales
+RC04,E1045,Open,3,3,,manager_id: E9998 -> E1001
