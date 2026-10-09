@@ -26,6 +26,7 @@ SELECT * FROM workspace.employee360_medallion.gold_employee_360 VERSION AS OF <r
 CREATE OR REPLACE TABLE workspace.employee360_medallion.silver_e360_delivered_supplied AS
 SELECT * FROM workspace.employee360_medallion.silver_e360_delivered VERSION AS OF <run 1 version>;
 ```
+For the runs on 2026-10-09, run 1 wrote version 0 of both tables.
 
 ## Pages
 ### 1. Release gate (supplied data)
@@ -69,15 +70,11 @@ SELECT * FROM workspace.employee360_medallion.silver_e360_delivered VERSION AS O
 | `batches` | `M.ingest_batches`:<br>• `rows_unchanged = rows_in_file - rows_inserted`<br>• the run that loaded each batch (the first `dq_runs.run_at` at or after `loaded_at`) |
 
 ## Redeploy
-**Asset Bundle:** add a `dashboards` resource to `databricks.yml` and run `databricks bundle deploy`:
-```yaml
-resources:
-  dashboards:
-    employee360_dq:
-      display_name: Employee 360 Data Quality
-      file_path: ./dashboards/employee360_dq.lvdash.json
-      warehouse_id: <serverless SQL warehouse id>
-      embed_credentials: true
+**Asset Bundle:** `databricks.yml` already declares the `dashboards.employee360_dq` resource. It points at
+this file and sets `embed_credentials: false`. The dashboard is private and owner-only (see `docs/operations.md`).
+Deploy with:
+```bash
+databricks bundle deploy -t test --var warehouse_id=<serverless SQL warehouse id>
 ```
 
 **REST API:**
@@ -91,7 +88,7 @@ JSON
 
 # publish it
 curl -X POST "$HOST/api/2.0/lakeview/dashboards/<dashboard_id>/published" \
-     -d '{"embed_credentials": true, "warehouse_id": "<id>"}'
+     -d '{"embed_credentials": false, "warehouse_id": "<id>"}'
 ```
 To update an existing dashboard, `PATCH /api/2.0/lakeview/dashboards/<dashboard_id>` with a new
 `serialized_dashboard`, then publish again.

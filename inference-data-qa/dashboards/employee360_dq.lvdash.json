@@ -1,0 +1,1090 @@
+{
+  "datasets": [
+    {
+      "name": "gate_kpis",
+      "displayName": "Release gate KPIs (run 1, supplied data)",
+      "queryLines": [
+        "SELECT CASE WHEN count_if(m.blocks_release) > 0 THEN 'BLOCK' ELSE 'RELEASE' END AS release_decision,\n",
+        "       concat(count_if(m.status = 'FAIL'), ' of ', count(*))                      AS rules_failing,\n",
+        "       count_if(m.blocks_release)                                                 AS blocking_rules,\n",
+        "       (SELECT count(DISTINCT employee_id) FROM workspace.employee360_medallion.dq_failure_detail\n",
+        "         WHERE run_ts = (SELECT min(run_ts) FROM workspace.employee360_medallion.dq_failure_detail))                                                AS employees_failing,\n",
+        "       (SELECT concat(count_if(is_trusted), ' of ', count(*))\n",
+        "          FROM workspace.employee360_medallion.gold_employee_360_supplied)                                    AS gold_trusted\n",
+        "FROM workspace.employee360_medallion.gold_dq_monitoring m\n",
+        "WHERE m.run_id = 1\n"
+      ]
+    },
+    {
+      "name": "rules",
+      "displayName": "Monitoring by rule (run 1, supplied data)",
+      "queryLines": [
+        "SELECT rule_id, rule, dimension, status, affected_count, severity, action,\n",
+        "       alert_when_affected AS alert_threshold, alert_fired, blocks_release, owner, affected_ids,\n",
+        "       concat(rule_id, ' (', severity, ')') AS rule_label\n",
+        "FROM workspace.employee360_medallion.gold_dq_monitoring\n",
+        "WHERE run_id = 1\n",
+        "ORDER BY CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 ELSE 3 END, rule_id\n"
+      ]
+    },
+    {
+      "name": "gold_vs_delivered",
+      "displayName": "Gold vs delivered Employee 360 (supplied data)",
+      "queryLines": [
+        "SELECT 1 AS sort, 'Employees' AS measure,\n",
+        "       (SELECT count(*) FROM workspace.employee360_medallion.gold_employee_360_supplied) AS gold,\n",
+        "       (SELECT count(*) FROM workspace.employee360_medallion.silver_e360_delivered_supplied) AS delivered_e360\n",
+        "UNION ALL\n",
+        "SELECT 2, 'Active employees',\n",
+        "       (SELECT count_if(employment_status = 'Active') FROM workspace.employee360_medallion.gold_employee_360_supplied),\n",
+        "       (SELECT count_if(employment_status = 'Active') FROM workspace.employee360_medallion.silver_e360_delivered_supplied)\n",
+        "UNION ALL\n",
+        "SELECT 3, 'Employees with a verified ZAR salary',\n",
+        "       (SELECT count(monthly_salary_zar) FROM workspace.employee360_medallion.gold_employee_360_supplied),\n",
+        "       (SELECT count(monthly_salary) FROM workspace.employee360_medallion.silver_e360_delivered_supplied)\n",
+        "UNION ALL\n",
+        "SELECT 4, 'Trusted records (no open source-quality rule, salary verified)',\n",
+        "       (SELECT count_if(is_trusted) FROM workspace.employee360_medallion.gold_employee_360_supplied), NULL\n",
+        "ORDER BY sort\n"
+      ]
+    },
+    {
+      "name": "gold_untrusted",
+      "displayName": "Untrusted Gold employees (supplied data)",
+      "queryLines": [
+        "SELECT employee_id, full_name, employment_status, payroll_status, monthly_salary_zar,\n",
+        "       array_join(dq_rules_failed, ', ') AS dq_rules_failed\n",
+        "FROM workspace.employee360_medallion.gold_employee_360_supplied\n",
+        "WHERE NOT is_trusted\n",
+        "ORDER BY employee_id\n"
+      ]
+    },
+    {
+      "name": "failure_detail",
+      "displayName": "Failure detail (run 1, supplied data)",
+      "queryLines": [
+        "SELECT rule_id, employee_id, source, detail\n",
+        "FROM workspace.employee360_medallion.dq_failure_detail\n",
+        "WHERE run_ts = (SELECT min(run_ts) FROM workspace.employee360_medallion.dq_failure_detail)\n",
+        "ORDER BY rule_id, employee_id, source\n"
+      ]
+    },
+    {
+      "name": "runs",
+      "displayName": "Issues per pipeline run",
+      "queryLines": [
+        "SELECT run_id, CASE run_id WHEN 1 THEN 'Run 1 (supplied data)' WHEN 2 THEN 'Run 2 (same files, skipped)'\n",
+        "       WHEN 3 THEN 'Run 3 (simulated delivery)' ELSE concat('Run ', run_id) END AS run_label, measure, issues\n",
+        "FROM workspace.employee360_medallion.dq_runs\n",
+        "LATERAL VIEW stack(3, 'New', new_issues, 'Resolved', resolved_issues, 'Open', open_issues) s AS measure, issues\n",
+        "ORDER BY run_id, measure\n"
+      ]
+    },
+    {
+      "name": "issues",
+      "displayName": "Issue lifecycle (state after Run 3 (simulated delivery))",
+      "queryLines": [
+        "SELECT rule_id, employee_id, status, first_seen_run, last_seen_run, resolved_run, detail\n",
+        "FROM workspace.employee360_medallion.dq_issues\n",
+        "ORDER BY rule_id, employee_id\n"
+      ]
+    },
+    {
+      "name": "batches",
+      "displayName": "Ingest batches",
+      "queryLines": [
+        "SELECT b.source, b.batch_id,\n",
+        "       (SELECT CASE run_id WHEN 1 THEN 'Run 1 (supplied data)' WHEN 2 THEN 'Run 2 (same files, skipped)'\n",
+        "       WHEN 3 THEN 'Run 3 (simulated delivery)' ELSE concat('Run ', run_id) END FROM workspace.employee360_medallion.dq_runs r WHERE r.run_at >= b.loaded_at ORDER BY r.run_at LIMIT 1) AS loaded_by_run,\n",
+        "       b.rows_in_file, b.rows_inserted, b.rows_in_file - b.rows_inserted AS rows_unchanged,\n",
+        "       b.rows_dropped, b.skipped AS file_skipped, b.loaded_at\n",
+        "FROM workspace.employee360_medallion.ingest_batches b\n",
+        "ORDER BY b.batch_id, b.source\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "release_gate",
+      "displayName": "Release gate (supplied data)",
+      "layout": [
+        {
+          "widget": {
+            "name": "intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Release gate: supplied data (run 1)\n",
+                "**BLOCK** means at least one rule marked *Block release* failed, so this Employee 360 delivery must not be published to reporting until those rules pass. Source: the medallion pipeline (`notebooks/employee360_medallion.py`, Bronze \u2192 Silver \u2192 Gold) run on the supplied HR, payroll and Employee 360 extracts; monitoring snapshot `gold_dq_monitoring` where `run_id = 1`. Run 3 figures (simulated delivery) appear only on the *Pipeline runs* page and are labelled."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "c_decision",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gate_kpis",
+                  "fields": [
+                    {
+                      "name": "release_decision",
+                      "expression": "`release_decision`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "release_decision",
+                  "displayName": "Release decision"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Release decision"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_failing",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gate_kpis",
+                  "fields": [
+                    {
+                      "name": "rules_failing",
+                      "expression": "`rules_failing`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "rules_failing",
+                  "displayName": "Rules failing"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Rules failing"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_blocking",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gate_kpis",
+                  "fields": [
+                    {
+                      "name": "blocking_rules",
+                      "expression": "`blocking_rules`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "blocking_rules",
+                  "displayName": "Blocking rules failing"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Blocking rules failing"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 2,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_employees",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gate_kpis",
+                  "fields": [
+                    {
+                      "name": "employees_failing",
+                      "expression": "`employees_failing`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "employees_failing",
+                  "displayName": "Employees with \u22651 failure"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Employees with \u22651 failure"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_trusted",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gate_kpis",
+                  "fields": [
+                    {
+                      "name": "gold_trusted",
+                      "expression": "`gold_trusted`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "gold_trusted",
+                  "displayName": "Gold trusted records"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gold trusted records"
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 2,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_rules",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "rules",
+                  "fields": [
+                    {
+                      "name": "rule_label",
+                      "expression": "`rule_label`"
+                    },
+                    {
+                      "name": "affected_count",
+                      "expression": "`affected_count`"
+                    },
+                    {
+                      "name": "severity",
+                      "expression": "`severity`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "affected_count",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Affected employees"
+                },
+                "y": {
+                  "fieldName": "rule_label",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  },
+                  "displayName": "Rule"
+                },
+                "color": {
+                  "fieldName": "severity",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Critical",
+                        "color": "#D32F2F"
+                      },
+                      {
+                        "value": "High",
+                        "color": "#F57C00"
+                      },
+                      {
+                        "value": "Medium",
+                        "color": "#FFB300"
+                      }
+                    ]
+                  },
+                  "displayName": "Severity"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Affected employees per rule (run 1)",
+                "showDescription": true,
+                "description": "Coloured by severity: Critical red, High orange, Medium amber"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "t_rules",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "rules",
+                  "fields": [
+                    {
+                      "name": "rule_id",
+                      "expression": "`rule_id`"
+                    },
+                    {
+                      "name": "rule",
+                      "expression": "`rule`"
+                    },
+                    {
+                      "name": "dimension",
+                      "expression": "`dimension`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    },
+                    {
+                      "name": "severity",
+                      "expression": "`severity`"
+                    },
+                    {
+                      "name": "action",
+                      "expression": "`action`"
+                    },
+                    {
+                      "name": "alert_threshold",
+                      "expression": "`alert_threshold`"
+                    },
+                    {
+                      "name": "owner",
+                      "expression": "`owner`"
+                    },
+                    {
+                      "name": "affected_ids",
+                      "expression": "`affected_ids`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "rule_id",
+                    "displayName": "Rule"
+                  },
+                  {
+                    "fieldName": "rule",
+                    "displayName": "Description"
+                  },
+                  {
+                    "fieldName": "dimension",
+                    "displayName": "Dimension"
+                  },
+                  {
+                    "fieldName": "status",
+                    "displayName": "Status"
+                  },
+                  {
+                    "fieldName": "severity",
+                    "displayName": "Severity"
+                  },
+                  {
+                    "fieldName": "action",
+                    "displayName": "Action"
+                  },
+                  {
+                    "fieldName": "alert_threshold",
+                    "displayName": "Alert threshold"
+                  },
+                  {
+                    "fieldName": "owner",
+                    "displayName": "Owner"
+                  },
+                  {
+                    "fieldName": "affected_ids",
+                    "displayName": "Affected IDs"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Monitoring table (run 1, supplied data)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 11,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "recon_gold",
+      "displayName": "Reconciliation and Gold",
+      "layout": [
+        {
+          "widget": {
+            "name": "t_gvd",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gold_vs_delivered",
+                  "fields": [
+                    {
+                      "name": "measure",
+                      "expression": "`measure`"
+                    },
+                    {
+                      "name": "gold",
+                      "expression": "`gold`"
+                    },
+                    {
+                      "name": "delivered_e360",
+                      "expression": "`delivered_e360`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "measure",
+                    "displayName": "Measure"
+                  },
+                  {
+                    "fieldName": "gold",
+                    "displayName": "Gold"
+                  },
+                  {
+                    "fieldName": "delivered_e360",
+                    "displayName": "Delivered Employee 360"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gold vs delivered Employee 360 (supplied data)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "t_untrusted",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "gold_untrusted",
+                  "fields": [
+                    {
+                      "name": "employee_id",
+                      "expression": "`employee_id`"
+                    },
+                    {
+                      "name": "full_name",
+                      "expression": "`full_name`"
+                    },
+                    {
+                      "name": "employment_status",
+                      "expression": "`employment_status`"
+                    },
+                    {
+                      "name": "payroll_status",
+                      "expression": "`payroll_status`"
+                    },
+                    {
+                      "name": "monthly_salary_zar",
+                      "expression": "`monthly_salary_zar`"
+                    },
+                    {
+                      "name": "dq_rules_failed",
+                      "expression": "`dq_rules_failed`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "employee_id",
+                    "displayName": "Employee"
+                  },
+                  {
+                    "fieldName": "full_name",
+                    "displayName": "Name"
+                  },
+                  {
+                    "fieldName": "employment_status",
+                    "displayName": "Status"
+                  },
+                  {
+                    "fieldName": "payroll_status",
+                    "displayName": "Payroll status"
+                  },
+                  {
+                    "fieldName": "monthly_salary_zar",
+                    "displayName": "Salary (ZAR)"
+                  },
+                  {
+                    "fieldName": "dq_rules_failed",
+                    "displayName": "DQ rules failed"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Untrusted Gold employees (supplied data)"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "f_rule",
+            "queries": [
+              {
+                "name": "failure_detail_rule_id",
+                "query": {
+                  "datasetName": "failure_detail",
+                  "fields": [
+                    {
+                      "name": "rule_id",
+                      "expression": "`rule_id`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "rule_id",
+                    "displayName": "Rule",
+                    "queryName": "failure_detail_rule_id"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Rule"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "t_failures",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "failure_detail",
+                  "fields": [
+                    {
+                      "name": "rule_id",
+                      "expression": "`rule_id`"
+                    },
+                    {
+                      "name": "employee_id",
+                      "expression": "`employee_id`"
+                    },
+                    {
+                      "name": "source",
+                      "expression": "`source`"
+                    },
+                    {
+                      "name": "detail",
+                      "expression": "`detail`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "rule_id",
+                    "displayName": "Rule"
+                  },
+                  {
+                    "fieldName": "employee_id",
+                    "displayName": "Employee"
+                  },
+                  {
+                    "fieldName": "source",
+                    "displayName": "Source"
+                  },
+                  {
+                    "fieldName": "detail",
+                    "displayName": "Detail"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Failure detail (run 1, supplied data)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "runs_issues",
+      "displayName": "Pipeline runs and issue lifecycle",
+      "layout": [
+        {
+          "widget": {
+            "name": "bar_runs",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "runs",
+                  "fields": [
+                    {
+                      "name": "run_label",
+                      "expression": "`run_label`"
+                    },
+                    {
+                      "name": "measure",
+                      "expression": "`measure`"
+                    },
+                    {
+                      "name": "issues",
+                      "expression": "`issues`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "run_label",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Run"
+                },
+                "y": {
+                  "fieldName": "issues",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Issues"
+                },
+                "color": {
+                  "fieldName": "measure",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Issues"
+                }
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "New, resolved and open issues per run",
+                "showDescription": true,
+                "description": "Run 1 = supplied data; Run 2 = same files, skipped; Run 3 = simulated delivery (labelled SIMULATED fixes)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "f_status",
+            "queries": [
+              {
+                "name": "issues_status",
+                "query": {
+                  "datasetName": "issues",
+                  "fields": [
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "status",
+                    "displayName": "Issue status",
+                    "queryName": "issues_status"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Issue status"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "t_issues",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "issues",
+                  "fields": [
+                    {
+                      "name": "rule_id",
+                      "expression": "`rule_id`"
+                    },
+                    {
+                      "name": "employee_id",
+                      "expression": "`employee_id`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    },
+                    {
+                      "name": "first_seen_run",
+                      "expression": "`first_seen_run`"
+                    },
+                    {
+                      "name": "last_seen_run",
+                      "expression": "`last_seen_run`"
+                    },
+                    {
+                      "name": "resolved_run",
+                      "expression": "`resolved_run`"
+                    },
+                    {
+                      "name": "detail",
+                      "expression": "`detail`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "rule_id",
+                    "displayName": "Rule"
+                  },
+                  {
+                    "fieldName": "employee_id",
+                    "displayName": "Employee"
+                  },
+                  {
+                    "fieldName": "status",
+                    "displayName": "Status"
+                  },
+                  {
+                    "fieldName": "first_seen_run",
+                    "displayName": "First seen run"
+                  },
+                  {
+                    "fieldName": "last_seen_run",
+                    "displayName": "Last seen run"
+                  },
+                  {
+                    "fieldName": "resolved_run",
+                    "displayName": "Resolved run"
+                  },
+                  {
+                    "fieldName": "detail",
+                    "displayName": "Detail"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Issue lifecycle (state after Run 3 (simulated delivery))",
+                "showDescription": true,
+                "description": "Resolved in run 3 means the simulated delivery fixed it, not the supplied data"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "t_batches",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "batches",
+                  "fields": [
+                    {
+                      "name": "source",
+                      "expression": "`source`"
+                    },
+                    {
+                      "name": "batch_id",
+                      "expression": "`batch_id`"
+                    },
+                    {
+                      "name": "loaded_by_run",
+                      "expression": "`loaded_by_run`"
+                    },
+                    {
+                      "name": "rows_in_file",
+                      "expression": "`rows_in_file`"
+                    },
+                    {
+                      "name": "rows_inserted",
+                      "expression": "`rows_inserted`"
+                    },
+                    {
+                      "name": "rows_unchanged",
+                      "expression": "`rows_unchanged`"
+                    },
+                    {
+                      "name": "rows_dropped",
+                      "expression": "`rows_dropped`"
+                    },
+                    {
+                      "name": "file_skipped",
+                      "expression": "`file_skipped`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "source",
+                    "displayName": "Source"
+                  },
+                  {
+                    "fieldName": "batch_id",
+                    "displayName": "Batch"
+                  },
+                  {
+                    "fieldName": "loaded_by_run",
+                    "displayName": "Loaded by run"
+                  },
+                  {
+                    "fieldName": "rows_in_file",
+                    "displayName": "Rows in file"
+                  },
+                  {
+                    "fieldName": "rows_inserted",
+                    "displayName": "Inserted"
+                  },
+                  {
+                    "fieldName": "rows_unchanged",
+                    "displayName": "Skipped (already loaded)"
+                  },
+                  {
+                    "fieldName": "rows_dropped",
+                    "displayName": "No longer delivered"
+                  },
+                  {
+                    "fieldName": "file_skipped",
+                    "displayName": "File skipped"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ingest batches (Bronze)",
+                "showDescription": true,
+                "description": "Skipped = rows already in Bronze from an earlier batch (rows in file minus inserted). Run 2 skipped every file (same hash), so it wrote no rows here"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 6,
+            "height": 5
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ]
+}
