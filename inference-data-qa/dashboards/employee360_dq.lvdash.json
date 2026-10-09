@@ -101,6 +101,37 @@
         "FROM workspace.employee360_medallion.ingest_batches b\n",
         "ORDER BY b.batch_id, b.source\n"
       ]
+    },
+    {
+      "name": "reconciliation_categories",
+      "displayName": "Reconciliation categories (latest run, supplied data)",
+      "queryLines": [
+        "WITH k AS (\n",
+        "  SELECT employee_id, key_status AS category FROM workspace.employee360_medallion.dq_recon_keys\n",
+        "  WHERE run_ts = (SELECT max(run_ts) FROM workspace.employee360_medallion.dq_recon_keys)\n",
+        "    AND key_status IN ('Missing downstream', 'Unexpected downstream')),\n",
+        "f AS (\n",
+        "  SELECT employee_id, CASE classification WHEN 'Error' THEN 'Field error' ELSE classification END AS category\n",
+        "  FROM workspace.employee360_medallion.dq_recon_fields\n",
+        "  WHERE run_ts = (SELECT max(run_ts) FROM workspace.employee360_medallion.dq_recon_fields)),\n",
+        "cat AS (\n",
+        "  SELECT * FROM VALUES\n",
+        "    (1, 'Missing downstream', true, 'Critical', 'In HR and payroll but missing from Employee 360 (RC01)'),\n",
+        "    (2, 'Unexpected downstream', true, 'Critical', 'In Employee 360 with no HR or payroll record (RC02)'),\n",
+        "    (3, 'Field error', true, 'Critical / High', 'Employee 360 differs from, or cannot be traced to, the system of record (RC03, RC04)'),\n",
+        "    (4, 'Cannot verify', true, 'Critical', 'The system of record is ambiguous, so the Employee 360 value cannot be verified (RC03)'),\n",
+        "    (5, 'Legitimate exception', false, 'Not a failure', 'A difference that is correct (e.g. a future-dated HR change); shown for transparency, does not count as a failure or block release')\n",
+        "    AS t(sort_order, category, counts_as_failure, severity, meaning))\n",
+        "SELECT c.sort_order, c.category,\n",
+        "       count(DISTINCT e.employee_id) AS employees,\n",
+        "       array_join(array_sort(collect_set(e.employee_id)), ', ') AS employee_ids,\n",
+        "       c.counts_as_failure,\n",
+        "       CASE WHEN c.counts_as_failure THEN 'Counts as failure' ELSE 'Not a failure' END AS failure_label,\n",
+        "       c.severity, c.meaning\n",
+        "FROM cat c LEFT JOIN (SELECT * FROM k UNION ALL SELECT * FROM f) e ON e.category = c.category\n",
+        "GROUP BY c.sort_order, c.category, c.counts_as_failure, c.severity, c.meaning\n",
+        "ORDER BY c.sort_order"
+      ]
     }
   ],
   "pages": [
@@ -664,6 +695,185 @@
         },
         {
           "widget": {
+            "name": "recon_categories_note",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Reconciliation categories (supplied data)\n",
+                "Employees per reconciliation category from the latest run of `dq_recon_keys` and `dq_recon_fields`. Red categories count as failures. **Legitimate exceptions are differences that are correct (e.g. a future-dated HR change); they are shown for transparency and do not count as failures or block release.** They are shown in grey and are not included in any failure counter on this dashboard."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_recon_categories",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "reconciliation_categories",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "employees",
+                      "expression": "`employees`"
+                    },
+                    {
+                      "name": "failure_label",
+                      "expression": "`failure_label`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "employees",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Employees"
+                },
+                "y": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  },
+                  "displayName": "Category"
+                },
+                "color": {
+                  "fieldName": "failure_label",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Counts as failure",
+                        "color": "#D32F2F"
+                      },
+                      {
+                        "value": "Not a failure",
+                        "color": "#9E9E9E"
+                      }
+                    ]
+                  },
+                  "displayName": "Counts as failure?"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Employees per reconciliation category (latest run, supplied data)",
+                "showDescription": true,
+                "description": "Red: counts as a failure. Grey: legitimate exception, not a failure"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "t_recon_categories",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "reconciliation_categories",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "employees",
+                      "expression": "`employees`"
+                    },
+                    {
+                      "name": "employee_ids",
+                      "expression": "`employee_ids`"
+                    },
+                    {
+                      "name": "counts_as_failure",
+                      "expression": "`counts_as_failure`"
+                    },
+                    {
+                      "name": "severity",
+                      "expression": "`severity`"
+                    },
+                    {
+                      "name": "meaning",
+                      "expression": "`meaning`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "category",
+                    "displayName": "Category"
+                  },
+                  {
+                    "fieldName": "employees",
+                    "displayName": "Employees"
+                  },
+                  {
+                    "fieldName": "employee_ids",
+                    "displayName": "Employee IDs"
+                  },
+                  {
+                    "fieldName": "counts_as_failure",
+                    "displayName": "Counts as failure"
+                  },
+                  {
+                    "fieldName": "severity",
+                    "displayName": "Severity"
+                  },
+                  {
+                    "fieldName": "meaning",
+                    "displayName": "Meaning"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Reconciliation categories: employees, failure status and meaning"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
             "name": "f_rule",
             "queries": [
               {
@@ -700,7 +910,7 @@
           },
           "position": {
             "x": 0,
-            "y": 5,
+            "y": 17,
             "width": 2,
             "height": 1
           }
@@ -766,7 +976,7 @@
           },
           "position": {
             "x": 0,
-            "y": 6,
+            "y": 18,
             "width": 6,
             "height": 8
           }

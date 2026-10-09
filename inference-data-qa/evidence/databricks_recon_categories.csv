@@ -1,0 +1,6 @@
+sort_order,category,employees,employee_ids,counts_as_failure,failure_label,severity,meaning
+1,Missing downstream,1,E1027,true,Counts as failure,Critical,In HR and payroll but missing from Employee 360 (RC01)
+2,Unexpected downstream,1,E1099,true,Counts as failure,Critical,In Employee 360 with no HR or payroll record (RC02)
+3,Field error,6,"E1012, E1018, E1020, E1033, E1037, E1044",true,Counts as failure,Critical / High,"Employee 360 differs from, or cannot be traced to, the system of record (RC03, RC04)"
+4,Cannot verify,1,E1015,true,Counts as failure,Critical,"The system of record is ambiguous, so the Employee 360 value cannot be verified (RC03)"
+5,Legitimate exception,1,E1042,false,Not a failure,Not a failure,"A difference that is correct (e.g. a future-dated HR change); shown for transparency, does not count as a failure or block release"

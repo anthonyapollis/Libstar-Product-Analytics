@@ -47,6 +47,16 @@ For the runs on 2026-10-09, run 1 wrote version 0 of both tables.
   - verified ZAR salaries: 45 vs 48;
   - trusted records: 40 in Gold.
 - **Untrusted Gold employees (8):** status, payroll status, salary and `dq_rules_failed`.
+- **Reconciliation categories (latest run, supplied data):**
+  - text box: legitimate exceptions are differences that are correct (e.g. a future-dated HR change); they are
+    shown for transparency and do not count as failures or block release;
+  - bar chart of employees per category, coloured by whether the category counts as a failure (red) or not
+    (grey): Missing downstream 1 (E1027), Unexpected downstream 1 (E1099), Field error 6, Cannot verify 1
+    (E1015), Legitimate exception 1 (E1042, grey);
+  - table of category, employees, employee IDs, counts as failure, severity and meaning.
+
+  Legitimate exceptions are in no failure counter: the page 1 counters and the failure detail come from
+  `gold_dq_monitoring` and `dq_failure_detail`, which do not contain them.
 - **Failure detail for run 1:** 20 rows of rule, employee, source and detail, with a filter on rule.
 
 ### 3. Pipeline runs and issue lifecycle
@@ -65,6 +75,7 @@ For the runs on 2026-10-09, run 1 wrote version 0 of both tables.
 | `gold_vs_delivered` | Counts from `gold_employee_360_supplied` and `silver_e360_delivered_supplied` (the same measures as `sql/10_silver_gold.sql`) |
 | `gold_untrusted` | `gold_employee_360_supplied WHERE NOT is_trusted` |
 | `failure_detail` | `M.dq_failure_detail WHERE run_ts = (SELECT min(run_ts) ...)` (run 1) |
+| `reconciliation_categories` | One row per category from the latest `run_ts` of `M.dq_recon_keys` (Missing / Unexpected downstream) and `M.dq_recon_fields` (`Error` → Field error, Cannot verify, Legitimate exception):<br>• distinct employees and their IDs<br>• `counts_as_failure` (false only for Legitimate exception), severity and meaning |
 | `runs` | `M.dq_runs` unpivoted with `stack(3, 'New', ..., 'Resolved', ..., 'Open', ...)`, with run labels |
 | `issues` | `M.dq_issues` |
 | `batches` | `M.ingest_batches`:<br>• `rows_unchanged = rows_in_file - rows_inserted`<br>• the run that loaded each batch (the first `dq_runs.run_at` at or after `loaded_at`) |

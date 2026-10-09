@@ -113,3 +113,70 @@ skipped rows, so the dashboard labels it "No longer delivered".
   - later appends to `gold_dq_monitoring` have a different `run_id`.
 
   If it replaces `gold_employee_360` again, the `_supplied` snapshots are unaffected.
+
+## Reconciliation categories
+Added to page 2 ("Reconciliation and Gold"): a `reconciliation_categories` dataset, a text box, a bar chart and a
+table. Legitimate exceptions are shown, but they are not presented as failures.
+
+### The run that wrote the reconciliation detail
+`notebooks/employee360_dq.py` (commit 18aaf41) also saves `dq_recon_keys` and `dq_recon_fields`, including
+legitimate exceptions. The notebook was re-imported to `/Workspace/Users/<user>/inference-data-qa/notebooks/employee360_dq`
+(overwrite, PYTHON, SOURCE). It then ran once on the supplied CSVs in `data/`, after all three medallion runs had
+finished, so the latest `run_ts` is the supplied data and not the simulated run 3.
+
+| Run name | Task key | Parameters | Run ID | Result | Start → end |
+|---|---|---|---|---|---|
+| Employee360 DQ \| Reconciliation detail for dashboard \| supplied data | `reconciliation_detail_supplied_data` | as_of_date=2026-10-08, snapshot_end=2026-10-31, target_schema=workspace.employee360_medallion, fail_on_block=false | [886182844809097](https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/825279651182009/run/886182844809097) | SUCCESS, first attempt, no code change | 21:36:13 → 21:38:09 (115 s) |
+
+It appended:
+- `dq_recon_keys`: all 49 keys, 47 of them Matched (run_ts 2026-10-09T21:37:54.368Z);
+- `dq_recon_fields`: 9 rows (run_ts 2026-10-09T21:37:58.026Z).
+
+Before this run, neither table existed in the schema. The same run also appended to `dq_monitoring` and
+`dq_failure_detail` with a later `run_ts`. The page 1 datasets read `gold_dq_monitoring WHERE run_id = 1` and the
+earliest `dq_failure_detail` run, so they are unchanged. After the update `gate_kpis` still returns BLOCK,
+"10 of 10", 5, 13 and "40 of 48".
+
+### Latest run vs local outputs (SQL Statement API)
+- **`dq_recon_keys` vs `outputs/recon_keys.csv`:** the rows other than Matched are identical, compared on all six
+  columns by name:
+  - E1027 Tumi Mbatha, Missing downstream (in HR and payroll, not in Employee 360);
+  - E1099 Unknown Legacy Employee, Unexpected downstream (only in Employee 360).
+- **`dq_recon_fields` vs `outputs/recon_fields.csv`:** the 9 rows are identical on all 8 columns:
+  - Error: E1012, E1018, E1037, E1044 (×2), E1020, E1033;
+  - Cannot verify: E1015;
+  - Legitimate exception: E1042.
+
+### Dataset query result vs local outputs
+The `reconciliation_categories` query was taken from the definition returned by `GET` and run on warehouse
+`bc1f90f992e51d23`. Raw result: [`databricks_recon_categories.csv`](databricks_recon_categories.csv).
+
+| Category | Employees | Employee IDs | counts_as_failure | Local outputs | Match |
+|---|---:|---|---|---|---|
+| Missing downstream | 1 | E1027 | true | `recon_keys.csv`: E1027 | yes |
+| Unexpected downstream | 1 | E1099 | true | `recon_keys.csv`: E1099 | yes |
+| Field error | 6 | E1012, E1018, E1020, E1033, E1037, E1044 | true | `recon_fields.csv` Error: the same 6 (E1044 on 2 fields) | yes |
+| Cannot verify | 1 | E1015 | true | `recon_fields.csv`: E1015 | yes |
+| Legitimate exception | 1 | E1042 | **false** | `recon_fields.csv`: E1042 (future-dated HR change) | yes |
+
+E1042 does not appear in any failure dataset: `gate_kpis`, `rules`, `failure_detail` and `gold_untrusted` were
+re-run, and none of them contains E1042.
+
+### Dashboard update
+- **Update:** `PATCH /api/2.0/lakeview/dashboards/01f1c4297bf619938e952fea8dfa289b` with the new
+  `serialized_dashboard` and the current etag (`9148288357` → `389406813`).
+- **New items on page 2, inserted at y = 5** (the rule filter and the failure detail moved down 12 rows):
+  - `recon_categories_note`: a text box with the legitimate-exception statement;
+  - `bar_recon_categories`: a bar chart of employees per category. Colour comes from `failure_label`:
+    "Counts as failure" is red `#D32F2F` and "Not a failure" is grey `#9E9E9E`;
+  - `t_recon_categories`: a table of category, employees, employee IDs, counts as failure, severity and meaning.
+- **Republished** with `POST .../published` at 21:39:43, keeping `embed_credentials: false` and warehouse
+  `bc1f90f992e51d23`. The build brief for this change asked for `embed_credentials: true`. The user's recorded
+  decision is private, owner-only, with embedded credentials off (`docs/operations.md`, `databricks.yml`), so
+  that setting was kept. Permissions are unchanged: only the owner and `admins` have CAN_MANAGE.
+- **Check:** `GET` returned 9 datasets and 19 widgets, with `reconciliation_categories` and its query text
+  unchanged and all 3 new widgets at their positions.
+  - The only normalisation: the server joined the text box's lines that had no newline into one line. The text
+    is the same.
+  - `dashboards/employee360_dq.lvdash.json` is the `serialized_dashboard` from that `GET`.
+- **Not seen rendered:** as above, the bar colours and the text box have not been checked visually.
