@@ -1,0 +1,49 @@
+employee_id,full_name,department,location,manager_id,employment_status,effective_date,future_dated_change,payroll_status,monthly_salary_zar,dq_rules_failed,is_trusted
+E1001,Amira Jacobs,Operations,Johannesburg,,Active,2026-10-02,false,Payable,29900.00,[],true
+E1002,Thabo Mokoena,Technology,Durban,,Active,2026-10-03,false,Payable,31900.00,[],true
+E1003,Ella Bennett,People,Cape Town,,Active,2026-10-04,false,Payable,33800.00,[],true
+E1004,Sipho Dlamini,Sales,Pretoria,,Active,2026-10-05,false,Payable,35700.00,[],true
+E1005,Chloe Meyer,Finance,Cape Town,,Active,2026-10-06,false,Payable,37700.00,[],true
+E1006,Liam Naidoo,Operations,Johannesburg,E1002,Active,2026-10-07,false,Payable,39600.00,[],true
+E1007,Nomsa Khumalo,Technology,Durban,E1003,Active,2026-10-01,false,Payable,41600.00,[],true
+E1008,Daniel Petersen,People,Cape Town,E1004,Active,2026-10-02,false,Payable,43500.00,[],true
+E1009,Aisha Khan,Sales,Pretoria,E1005,Active,2026-10-03,false,Payable,45400.00,[],true
+E1010,Mia Williams,Finance,Cape Town,E1001,Active,2026-10-04,false,Payable,47400.00,[],true
+E1011,Lebo Molefe,Operations,Johannesburg,E1002,Active,2026-10-05,false,Payable,49300.00,[],true
+E1012,Oliver Brown,Technology,Durban,E1003,Terminated,2026-10-06,false,Stopped,51200.00,[],true
+E1013,Naledi Maseko,People,Cape Town,E1004,Active,2026-10-07,false,Payable,53200.00,[],true
+E1014,Ethan Smith,Sales,Pretoria,E1005,Active,2026-10-01,false,Payable,55100.00,[],true
+E1015,Zanele Nkosi,Finance,Cape Town,E1001,Active,2026-10-02,false,Payable,57100.00,[],true
+E1016,Adam Daniels,Operations,Johannesburg,E1002,Active,2026-10-03,false,Payable,59000.00,[],true
+E1017,Kea Radebe,Technology,Durban,E1003,Active,2026-10-04,false,Payable,60900.00,[],true
+E1018,Hannah Evans,People,Cape Town,E1004,Active,2026-10-05,false,Payable,62900.00,[],true
+E1019,Musa Ndlovu,Sales,Pretoria,E1005,Active,2026-10-06,false,Payable,64800.00,[],true
+E1020,Sofia Adams,Finance,Cape Town,E1001,Active,2026-10-07,false,Payable,66700.00,[],true
+E1021,Ryan Cooper,Operations,Johannesburg,E1002,Active,2026-10-01,false,Payable,68700.00,[],true
+E1022,Ayanda Zulu,Technology,Durban,E1003,Active,2026-10-02,false,Payable,70600.00,[],true
+E1023,Priya Pillay,People,Cape Town,E1004,Active,2026-10-03,false,Payable,72600.00,[],true
+E1024,Noah Green,Sales,Pretoria,E9999,Active,2026-10-04,false,Payable,74500.00,"[""DQ03""]",false
+E1025,Fatima Isaacs,Finance,Cape Town,E1001,Active,2026-10-05,false,Payable,76400.00,[],true
+E1026,Jacob Clarke,Operations,Johannesburg,E1002,Active,2026-10-06,false,Payable,78400.00,[],true
+E1027,Tumi Mbatha,Technology,Durban,E1003,Active,2026-10-07,false,Payable,80300.00,[],true
+E1028,Isabella Ross,People,Cape Town,E1004,Active,2026-10-01,false,Payable,82200.00,[],true
+E1029,Sibusiso Sithole,Sales,Pretoria,E1005,Terminated,2026-10-02,false,Stopped,84200.00,[],true
+E1030,Leah Young,Finance,Cape Town,E1001,Active,2026-10-03,false,Payable,29100.00,"[""DQ06""]",false
+E1031,Mpho Mthembu,Operations,Johannesburg,E1002,Active,2026-10-04,false,Payable,31000.00,[],true
+E1032,James Reed,Technology,Durban,E1003,Active,2026-10-05,false,Payable,33000.00,[],true
+E1033,Nandi Botha,People,Cape Town,E1004,Active,2026-10-06,false,Payable,34900.00,[],true
+E1034,Leo White,Sales,Pretoria,E1005,Active,2026-10-07,false,Payable,36900.00,[],true
+E1035,Palesa Mokoena,Finance,Cape Town,E1001,Active,2026-10-01,false,Payable,38800.00,"[""DQ02""]",false
+E1036,Ben Scott,Operations,Johannesburg,E1002,Active,2026-10-02,false,Payable,40700.00,[],true
+E1037,Kabelo Mokoena,Technology,Durban,E1003,Active,2026-10-03,false,Payable,,"[""DQ05""]",false
+E1038,Emma Davis,People,Cape Town,E1004,Active,2026-10-04,false,Payable,44600.00,[],true
+E1039,Yusuf Patel,Sales,Pretoria,E1005,Active,2026-10-05,false,Payable,46500.00,[],true
+E1040,Ava Johnson,Finance,Cape Town,E1001,Active,2026-10-06,false,Payable,48500.00,[],true
+E1041,Bongani Cele,Operations,Johannesburg,E1002,Terminated,2026-10-07,false,Stopped,50400.00,[],true
+E1042,Grace Lewis,Technology,Durban,E1003,Active,2026-11-19,true,Payable,52400.00,[],true
+E1043,Reuben Daniels,People,Cape Town,E1004,Active,2026-10-02,false,Payable,54300.00,[],true
+E1044,Karabo Sekgobela,Sales,Pretoria,E1005,Active,2026-10-03,false,,,"[""DQ04""]",false
+E1045,Zoe Martin,Finance,Cape Town,E9998,Active,2026-10-04,false,Payable,58200.00,"[""DQ03""]",false
+E1046,Khaya Mbeki,Operations,Johannesburg,E1002,Active,2026-10-05,false,Payable,60100.00,[],true
+E1047,Sara Ahmed,Technology,Durban,E1003,Active,2026-10-06,false,Payable,62000.00,[],true
+E1048,Nathan Hill,People,Cape Town,E1004,Active,2026-10-07,false,Payable,64000.00,[],true

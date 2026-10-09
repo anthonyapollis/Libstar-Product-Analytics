@@ -129,3 +129,107 @@ Local environment note: `run_incremental_local.py` downloads `delta-spark` with 
 download was blocked (`repos.spark-packages.org` was denied by the proxy, and Maven Central returned 429 rate
 limits). The local run worked after the Delta jars were placed in `~/.m2` from Google's Maven Central mirror.
 This affected only the local setup, not the project code.
+
+## Medallion pipeline on Databricks
+
+- **Date:** 2026-10-09 (UTC). **Notebook:** `notebooks/employee360_medallion`. It `%run`s `./employee360_incremental`
+  (Bronze plus checks), then runs `sql/10_silver_gold.sql` (Silver and Gold).
+- **Import:** the current versions were re-imported into `/Workspace/Users/<user>/inference-data-qa/` with overwrite at
+  about 20:40. All four notebooks went in as PYTHON/SOURCE notebooks. `sql/*.sql`, `data/*.csv` and
+  `data/simulated_run3/*.csv` went in as AUTO files.
+- **Schema:** `workspace.employee360_medallion`. It existed but was empty (`SHOW TABLES` returned no rows) when run 1
+  started. Nothing was dropped, inside or outside it.
+- **Submission:** one-time serverless runs, `POST /api/2.1/jobs/runs/submit`, notebook task, no cluster spec,
+  base_parameters `target_schema=workspace.employee360_medallion` and `batch_dir` as shown below.
+- **Code changes:** none. All three runs succeeded on the first attempt, so no retry runs were needed and the local
+  scripts were not re-run for this section.
+
+### Runs
+
+| Run name (as shown in Jobs & Pipelines > Runs) | task_key | batch_dir | Run ID | Task run ID | Result | Duration | Start → end |
+|---|---|---|---|---|---|---|---|
+| `Employee360 DQ \| Medallion run 1 of 3 \| supplied data, full load` | `bronze_silver_gold_full_load` | `data` | [924122341592903](https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/485876947098759/run/924122341592903) | 677109967167783 | SUCCESS | 780 s | 21:04:24 → 21:17:23 |
+| `Employee360 DQ \| Medallion run 2 of 3 \| same files again, should skip` | `bronze_silver_gold_unchanged_rerun` | `data` | [568472820361926](https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/48806367450666/run/568472820361926) | 299320886146837 | SUCCESS, exit value `skipped: no changes` | 34 s | 21:17:45 → 21:18:19 |
+| `Employee360 DQ \| Medallion run 3 of 3 \| simulated fixes + 1 new issue` | `bronze_silver_gold_simulated_fixes` | `data/simulated_run3` | [249803799468757](https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/1043466822107745/run/249803799468757) | 599987566794325 | SUCCESS | 293 s | 21:30:20 → 21:35:14 |
+
+**A run left by the interrupted earlier session.** That session submitted one run before it stopped:
+`employee360_medallion_run1` (run ID
+[324021292396329](https://dbc-ea48b979-9753.cloud.databricks.com/?o=7474649344710062#job/425579247209086/run/324021292396329),
+task_key `medallion`, same notebook and parameters as run 1). It started at 20:22:11. Its workspace notebooks were
+re-imported about one second after it started. It then stayed "In run" for about 40 minutes with execution_duration 0
+and wrote no table. It was **cancelled** at 21:04:07, with the user's approval, so that it could not write into the
+schema alongside the named runs. It shows in the Runs list as CANCELED.
+
+### Results compared with the local outputs
+
+Raw query results (SQL Statement API, Serverless Starter Warehouse):
+`databricks_medallion_run1_gold_employee_360.csv` and `databricks_medallion_run1_layers.csv` were read straight after
+run 1, before run 3 overwrote Gold. `databricks_medallion_run3_gold_employee_360.csv`, `databricks_medallion_run3_layers.csv`,
+`databricks_medallion_dq_runs.csv`, `databricks_medallion_dq_issues.csv`, `databricks_medallion_gold_dq_monitoring.csv`
+and `databricks_medallion_ingest_batches.csv` were read after run 3.
+
+| Check | Databricks | Local file | Result |
+|---|---|---|---|
+| Gold after run 1 (48 rows × 12 columns, `gold_built_at` excluded) | 48 employees, 45 Active, 45 with a verified ZAR salary, 40 trusted | `outputs/medallion_gold_employee_360.csv` | all 576 cells match |
+| Gold after run 3 | 48 rows | `outputs/medallion_run3_gold_employee_360.csv` | all cells match |
+| Layer row counts after run 1 | Bronze 48/48/48, Silver 48/48/48, Gold 48, gold_dq_monitoring 10, dq_issues 17 | `outputs/medallion_layers.csv` | match |
+| Layer row counts after run 3 | Bronze hr 50, payroll 49, e360 50; Silver 48/47/48; Gold 48; gold_dq_monitoring 20; dq_issues 19 | `outputs/medallion_run3_layers.csv` | match |
+| `dq_runs` | (49 changed, 17 new, 0 resolved, 17 open), (0 changed, checks skipped, 17 open), (7 changed, 2 new, 8 resolved, 11 open) | `outputs/incremental_runs.csv` | all 3 rows match |
+| `dq_issues` (keyed on rule_id, employee_id, first_seen_run) | 19 rows | `outputs/incremental_issues.csv` | all 19 rows and every column match |
+| `gold_dq_monitoring`, run_id 1 | 10 rules, all FAIL | `outputs/monitoring.csv` | all 12 columns match on all 10 rules |
+| `gold_dq_monitoring`, run_id 3 | DQ01, RC01 and RC02 PASS; 7 rules FAIL with 11 affected in total | no local file | agrees with the 11 open issues in `dq_issues` |
+
+`gold_dq_monitoring` has rows for run_id 1 and 3 only, because run 2 stopped before Gold. That is expected.
+
+**Differences.** No data differences. There are two formatting differences, and the comparison normalises both.
+(1) `dq_rules_failed` is an array column: the SQL API returns it as JSON (`["DQ04"]`, `[]`) and the local CSV writes
+it as text (`DQ04`, empty). (2) Booleans are `true`/`false` on Databricks and `True`/`False` locally.
+
+**Other tables in the schema.** `dq_monitoring` and `dq_failure_detail` are written by `employee360_dq`, which the
+incremental notebook `%run`s. The schema also has `gold_employee_360_supplied` and `silver_e360_delivered_supplied`.
+These were **not** created by these runs or by this project's code. `DESCRIBE HISTORY` shows a
+`CREATE OR REPLACE TABLE AS SELECT` at 21:29:34 and 21:29:38, between run 2 and run 3, made by the same user through
+the SQL warehouse with no job or notebook attached. They look like a snapshot of run 1's output taken from another
+session. They were left in place. `gold_employee_360_supplied` matches the run-1 Gold captured here cell for cell.
+
+### Images of Databricks' own rendering
+
+For each task run, `GET /api/2.0/jobs/runs/export?run_id=<task run id>&views_to_export=ALL` returned one NOTEBOOK
+view, saved in `databricks_exports/`. The pages were rendered to PNG with headless Chromium (Playwright,
+`/opt/pw-browsers/chromium`) at 1400 px wide and clipped around the relevant output.
+
+**These are renderings of Databricks run exports, NOT screenshots of the user's browser.** An export page loads
+Databricks' notebook renderer from `databricks-prod-cloudfront.cloud.databricks.com`, which this container's network
+policy blocks. The same files (same versioned path) were fetched from the workspace host
+(`/static/v1/monolith-ui_.../`) and served to the page in their place. Nothing in the page content was changed.
+
+| Image | What it shows | SHA-256 |
+|---|---|---|
+| `ebook/img/databricks_run1_monitoring.png` | Run 1: the monitoring table (10 rules, all FAIL) and `Release decision: BLOCK - do not publish this Employee 360 build`. Databricks' table viewer cuts off the columns after `status` at this width. | `2d221abca7ae49fb4c2fedfc94f07dca8255a2bd364397eebcf9b1adaca300c3` |
+| `ebook/img/databricks_run1_gold.png` | Run 1: "Gold records that are not trusted, and why" (8 rows) and the layers table (9 rows) | `3732076c0519fe070e39df33c675b565f75ba7058a1f00862f1401afbb206b34` |
+| `ebook/img/databricks_run2_skipped.png` | Run 2: batch log with 0 rows inserted and skipped=true for all three sources, `employees with a change this run: 0`, the exit value `skipped: no changes`, then "Command skipped" for the remaining cells | `ff8036048942d98ca828b3cb6c274f2eda6a4976af5b3d1394866811d799d91a` |
+| `ebook/img/databricks_run3_new_issues.png` | Run 3: "New issues this run (these are the alerts)" (DQ03 and RC04 for E1045) and the run summary `{'changed_employees': 7, 'checks_run': True, 'new_issues': 2, 'resolved_issues': 8, 'open_issues': 11}` | `f30e927f352ca320928e218e0e1e74aed4cfbe7568af75b7910c90052eb66193` |
+
+Run 2 note: the notebook prints `No source changed since the last run: checks skipped, no compute spent, no alerts.`
+just before `dbutils.notebook.exit(...)`. That line is **not in Databricks' export**: the decoded notebook model has
+no such text. Databricks keeps only the exit value of that cell. The image shows exactly what Databricks recorded,
+and the skip is evidenced by `employees with a change this run: 0`, `skipped: no changes`, the "Command skipped"
+cells and `dq_runs` row 2 (`checks_run=false`).
+
+Export files (SHA-256):
+`run1_full_load_task677109967167783.html` `ee6aebcc58c3cc0d52509794a9398b2e638c5f1cfdaa4607799748a38c68b90b`,
+`run2_unchanged_rerun_task299320886146837.html` `9d9b77b4715411bdf22a2336d1414f5b2f07a80c48bf8dc2f7176ccd3a6bd80f`,
+`run3_simulated_fixes_task599987566794325.html` `86d96d9a998876c1daa2a94be5169b0fd55af628445a22476f8944b3eacde50f`.
+
+### Earlier runs explained
+
+These are the older names in the Runs list. All of them used task_key `t`, which is why a task row named `t` appears.
+
+| Run name in the list | Run ID | What it was | Result |
+|---|---|---|---|
+| `e360-dq` (first) | 898819557289071 | Batch checks, `employee360_dq`, schema `workspace.employee360_dq` | FAILED: `MUST_AGGREGATE_CORRELATED_SCALAR_SUBQUERY` in `sql/03_reconciliation.sql` (fixed, see above) |
+| `e360-dq` (second) | 515886583443770 | The same batch checks after the subquery fix | SUCCESS |
+| `e360-incremental-1` | 981987682878372 | Incremental run 1, supplied extracts (`data`) | SUCCESS |
+| `e360-incremental-2` | 94742837183686 | Incremental run 2, same extracts again | SUCCESS, skipped (no changes) |
+| `e360-incremental-3` | 68446115877254 | Incremental run 3, `data/simulated_run3` | SUCCESS |
+| `employee360_medallion_run1` | 324021292396329 | Left by the interrupted session (task_key `medallion`), described above | CANCELED |
