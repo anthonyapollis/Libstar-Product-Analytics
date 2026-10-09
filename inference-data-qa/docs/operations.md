@@ -16,6 +16,17 @@
   work: single node, the smallest size, auto-terminate. The data is tiny; compute should start, run for
   minutes and stop.
 
+## Dashboard
+- **What it is:** a Databricks AI/BI dashboard, "Employee 360 Data Quality", on the Gold and monitoring tables
+  (`dashboards/employee360_dq.lvdash.json`, deployed by the same bundle). It has three pages:
+  1. **Release gate:** decision, blocking rules, and rules by severity.
+  2. **Reconciliation and Gold:** reconciliation categories, with legitimate exceptions shown but not counted
+     as failures.
+  3. **Pipeline runs and the issue lifecycle.**
+- **Access:** private. Only the owner can open it, with no shares, no public or embed links, and embedded credentials off.
+  Anyone added later would also need their own grant on the tables. Evidence of the access settings is in
+  `evidence/databricks_dashboard.md`.
+
 ## In Azure DevOps (`azure-pipelines.yml`)
 | When | What runs | Databricks cost |
 |---|---|---|

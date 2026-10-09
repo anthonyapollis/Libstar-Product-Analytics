@@ -284,7 +284,10 @@ if ON_DATABRICKS:
     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {TARGET_SCHEMA}")
     monitoring.withColumn("run_ts", run_ts).write.mode("append").saveAsTable(f"{TARGET_SCHEMA}.dq_monitoring")
     RESULTS["failure_detail"].withColumn("run_ts", run_ts).write.mode("append").saveAsTable(f"{TARGET_SCHEMA}.dq_failure_detail")
-    print(f"appended to {TARGET_SCHEMA}.dq_monitoring and {TARGET_SCHEMA}.dq_failure_detail")
+    # The reconciliation in full, including legitimate exceptions (which are not failures), for the dashboard.
+    keys.withColumn("run_ts", run_ts).write.mode("append").saveAsTable(f"{TARGET_SCHEMA}.dq_recon_keys")
+    recon_fields.withColumn("run_ts", run_ts).write.mode("append").saveAsTable(f"{TARGET_SCHEMA}.dq_recon_fields")
+    print(f"appended to {TARGET_SCHEMA}: dq_monitoring, dq_failure_detail, dq_recon_keys, dq_recon_fields")
 
 # COMMAND ----------
 
