@@ -2,7 +2,8 @@
 
 ## In Databricks
 - **One job, two tasks** (`databricks.yml`):
-  1. `dq_checks` runs `employee360_incremental`, which `%run`s the checks with `fail_on_block=true`.
+  1. `dq_checks` runs `employee360_medallion`. That loads Bronze incrementally, runs the checks on the Silver
+     definitions with `fail_on_block=true`, and rebuilds Silver and Gold.
   2. `publish_employee360` runs only if `dq_checks` succeeds.
 
   A blocking rule therefore stops publication. The results are saved first, so the evidence is never lost.

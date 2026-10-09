@@ -23,7 +23,7 @@ resources:
       tasks:
         - task_key: dq_checks
           notebook_task:
-            notebook_path: ./notebooks/employee360_incremental.py
+            notebook_path: ./notebooks/employee360_medallion.py
             base_parameters:
               batch_dir: data
               target_schema: ${var.target_schema}

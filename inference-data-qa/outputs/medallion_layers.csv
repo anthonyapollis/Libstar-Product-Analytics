@@ -1,0 +1,10 @@
+layer,table_name,row_count
+Bronze,bronze_hr,48
+Bronze,bronze_payroll,48
+Bronze,bronze_e360,48
+Silver,silver_hr,48
+Silver,silver_payroll,48
+Silver,silver_e360_delivered,48
+Gold,gold_employee_360,48
+Gold,gold_dq_monitoring,10
+Gold,dq_issues,17

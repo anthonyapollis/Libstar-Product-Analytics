@@ -1,4 +1,7 @@
-"""Run the incremental notebook three times locally on PySpark + Delta Lake, as a demonstration.
+"""Run the Bronze -> Silver -> Gold pipeline three times locally on PySpark + Delta Lake, as a demonstration.
+
+notebooks/employee360_medallion.py runs employee360_incremental (Bronze, checks, issue lifecycle) and then
+builds Silver and Gold.
 
     pip install "pyspark==4.0.*" "delta-spark==4.0.*"
     python run_incremental_local.py
@@ -56,16 +59,27 @@ def main():
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
     spark.sparkContext.setLogLevel("ERROR")
 
-    for batch_dir in ["data", "data", "data/simulated_run3"]:
-        print(f"\n{'=' * 100}\nRUN with batch_dir={batch_dir}\n{'=' * 100}")
+    snapshots = {}  # run number -> {name: (columns, rows)}, captured right after the run (tables change later)
+    for run_no, batch_dir in enumerate(["data", "data", "data/simulated_run3"], start=1):
+        print(f"\n{'=' * 100}\nRUN {run_no} with batch_dir={batch_dir}\n{'=' * 100}")
         ns = {"spark": spark, "PROJECT_ROOT": str(ROOT), "BATCH_DIR": batch_dir, "TARGET_SCHEMA": SCHEMA,
               "__name__": "__notebook__", "display": lambda df: df.show(100, truncate=False)}
         try:
-            run_notebook(NB / "employee360_incremental.py", ns)
+            run_notebook(NB / "employee360_medallion.py", ns)
+            snapshots[run_no] = {n: (ns["RESULTS"][n].columns, ns["RESULTS"][n].collect())
+                                 for n in ("gold_employee_360", "layers", "gold_vs_delivered")}
         except Skipped:
             pass
 
     OUT.mkdir(exist_ok=True)
+    # Run 1 is the supplied data (the real result); run 3 is the simulated delivery.
+    for run_no, prefix in [(1, "medallion_"), (3, "medallion_run3_")]:
+        for name, (columns, rows) in snapshots[run_no].items():
+            with open(OUT / f"{prefix}{name}.csv", "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f, lineterminator="\n")
+                w.writerow(columns)
+                w.writerows([["" if v is None else (", ".join(v) if isinstance(v, list) else v) for v in r] for r in rows])
+            print(f"wrote outputs/{prefix}{name}.csv ({len(rows)} rows)")
     for name, query in [
         ("incremental_runs", f"SELECT run_id, batch_dir, changed_employees, checks_run, new_issues, resolved_issues, open_issues FROM {SCHEMA}.dq_runs ORDER BY run_id"),
         ("incremental_batches", f"SELECT source, batch_id, rows_in_file, rows_inserted, rows_dropped, skipped FROM {SCHEMA}.ingest_batches ORDER BY batch_id, source"),

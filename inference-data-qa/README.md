@@ -21,8 +21,32 @@ Row counts (48 in each file) and salary totals hide all of this. Payroll also st
 | 4. Root cause | `docs/findings.md` §4, evidence `outputs/recon_lookalike.csv` |
 | 5. Monitoring output | `outputs/monitoring.csv` (rule, pass/fail, affected count, severity, action, alert threshold, release gate, IDs) |
 | 6. Azure Databricks and DevOps, cost | `docs/operations.md`, `databricks.yml`, `azure-pipelines.yml`, `notebooks/employee360_incremental.py` |
+| Medallion layers (Bronze → Silver → Gold) | `notebooks/employee360_medallion.py`, `sql/10_silver_gold.sql` → `outputs/medallion_*.csv` (see below) |
 | AI use | `docs/ai_use.md` |
 | Video | `docs/walkthrough_script.md` |
+
+## Medallion layers
+| Layer | Tables | Holds |
+|---|---|---|
+| Bronze | `bronze_hr`, `bronze_payroll`, `bronze_e360`, `ingest_batches` | Every delivered row as a string, with its batch. Loaded incrementally: an unchanged file is skipped and changed rows are `MERGE`d on a row hash. |
+| Silver | `silver_hr`, `silver_payroll`, `silver_e360_delivered` | The current delivery, typed and standardised. The checks run on these definitions. |
+| Gold | `gold_employee_360`, `gold_dq_monitoring`, `dq_issues` | A trusted Employee 360 rebuilt from Silver by the ownership rules, the monitoring history and the open/resolved issues. |
+
+**Gold rules:**
+- HR decides who exists and their status, department, location and manager.
+- Payroll supplies salary only when it holds exactly one valid ZAR value. Otherwise the salary is left empty
+  and flagged, never guessed.
+- Each employee's failing source rules are listed in `dq_rules_failed`.
+
+**Gold against the delivered Employee 360 (supplied data, `outputs/medallion_gold_vs_delivered.csv`):**
+
+| | Gold | Delivered |
+|---|---:|---:|
+| Active employees | 45 | 46 |
+| Verified ZAR salaries | 45 | 48 |
+| Trusted records | 40 of 48 | n/a |
+
+Gold has E1027 and not E1099, shows E1012 as Terminated, and gives E1018's salary as R62,900.
 
 ## Run it
 **Locally** (Python 3.10+ and Java 17):
@@ -30,14 +54,14 @@ Row counts (48 in each file) and salary totals hide all of this. Payroll also st
 pip install "pyspark==4.0.*" "delta-spark==4.0.*"
 python run_local.py                 # profile, checks, reconciliation, monitoring -> outputs/*.csv
 python tests/check_expected.py      # independent plain-Python recomputation: expects 10/10
-python run_incremental_local.py     # 3-run incremental demo (load, unchanged rerun, fixes + new issue)
+python run_incremental_local.py     # Bronze -> Silver -> Gold, 3 runs (load, unchanged rerun, fixes + new issue)
 ```
 
 **On Databricks:** import the folder into the workspace, keeping the layout, with notebooks as notebooks and
 `sql/` and `data/` as files. Then:
 - run `notebooks/employee360_dq` with widgets `as_of_date=2026-10-08`, `snapshot_end=2026-10-31` and
   `target_schema`;
-- or run `notebooks/employee360_incremental` with `batch_dir=data`.
+- or run `notebooks/employee360_medallion` (Bronze → Silver → Gold, incremental) with `batch_dir=data`.
 
 Results are appended to Delta tables in `target_schema`. Run evidence is in `evidence/databricks_run.md`.
 
