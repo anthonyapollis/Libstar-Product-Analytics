@@ -1,0 +1,12 @@
+table_name,row_count
+bronze_e360,48
+bronze_hr,48
+bronze_payroll,48
+dq_issues,17
+dq_runs,1
+gold_dq_monitoring,10
+gold_employee_360,48
+ingest_batches,3
+silver_e360_delivered,48
+silver_hr,48
+silver_payroll,48

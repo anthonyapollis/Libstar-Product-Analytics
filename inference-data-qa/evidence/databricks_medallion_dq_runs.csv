@@ -1,0 +1,4 @@
+run_id,batch_dir,changed_employees,checks_run,new_issues,resolved_issues,open_issues,run_at
+1,data,49,true,17,0,17,2026-10-09T21:16:29.356Z
+2,data,0,false,0,0,17,2026-10-09T21:18:10.678Z
+3,data/simulated_run3,7,true,2,8,11,2026-10-09T21:34:25.482Z
