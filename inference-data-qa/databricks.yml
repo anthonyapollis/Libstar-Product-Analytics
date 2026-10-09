@@ -10,6 +10,8 @@ variables:
     default: workspace.employee360_dq
   alert_email:
     default: data-engineering-oncall@example.org
+  warehouse_id:
+    description: SQL warehouse the dashboard queries run on
 
 resources:
   jobs:
@@ -32,6 +34,14 @@ resources:
           depends_on: [ { task_key: dq_checks } ]   # runs only if no blocking rule failed
           notebook_task:
             notebook_path: ./notebooks/publish_placeholder.py
+
+  dashboards:
+    employee360_dq:
+      display_name: Employee 360 Data Quality
+      file_path: ./dashboards/employee360_dq.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      embed_credentials: false          # viewers need their own access to the tables
+      # No permissions block: only the deploying owner can see it (the user's decision: private, owner-only).
 
 targets:
   test:

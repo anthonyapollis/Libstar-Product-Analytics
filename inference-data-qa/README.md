@@ -25,6 +25,7 @@ that maps every task in the brief to a page, charts drawn from the outputs, run 
 | 5. Monitoring output | `outputs/monitoring.csv` (rule, pass/fail, affected count, severity, action, alert threshold, release gate, IDs) |
 | 6. Azure Databricks and DevOps, cost | `docs/operations.md`, `databricks.yml`, `azure-pipelines.yml`, `notebooks/employee360_incremental.py` |
 | Medallion layers (Bronze → Silver → Gold) | `notebooks/employee360_medallion.py`, `sql/10_silver_gold.sql` → `outputs/medallion_*.csv` (see below) |
+| Dashboard (Databricks AI/BI) | `dashboards/employee360_dq.lvdash.json`, `dashboards/README.md`, evidence `evidence/databricks_dashboard.md` (private, owner-only) |
 | AI use | `docs/ai_use.md` |
 | Video | `docs/walkthrough_script.md` |
 
