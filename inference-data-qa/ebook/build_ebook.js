@@ -259,18 +259,37 @@ body.push(box("A check I would not run on every execution", [
   "They give diagnostic insight, not a pass/fail gate, and their answers change slowly: run them weekly and during an investigation.",
 ], AMBER, "9A6700"));
 
-// 8. Databricks evidence (only if the run record exists)
+// 8. Databricks evidence (built from evidence/databricks_run.md and the CSVs the Databricks session saved)
 const dbxMd = path.join(ROOT, "evidence", "databricks_run.md");
 if (fs.existsSync(dbxMd)) {
+  const md = fs.readFileSync(dbxMd, "utf8");
+  const runRows = md.split("\n").filter(l => /^\| \d+ \| employee360_/.test(l)).map(l => l.split("|").slice(1, -1).map(c => c.trim()));
+  const dbxRuns = runRows.map(c => [c[0], c[1], c[3].replace(/\[(\d+)\]\(.*\)/, "$1"), c[4].replace(/\*\*/g, "").replace(/\s*\(.*\)/, ""), c[5]]);
+  const dbxMon = csv("../evidence/databricks_monitoring.csv");
+  const local = Object.fromEntries(monitoring.map(r => [r.rule_id, r.affected_ids]));
+  const same = dbxMon.filter(r => local[r.rule_id] === r.affected_ids).length;
   body.push(h1("Proof on Databricks", { num: true, key: "databricks" }));
-  body.push(answers("Tasks 2 and 6 · the same notebooks run on Databricks serverless; results compared with the local run"));
-  const md = fs.readFileSync(dbxMd, "utf8").split("\n").filter(l => l.trim() && !l.startsWith("|---"));
-  for (const l of md.slice(0, 60)) {
-    if (l.startsWith("#")) body.push(new Paragraph({ heading: HeadingLevel.HEADING_3, keepNext: true, children: [new TextRun(l.replace(/^#+\s*/, ""))] }));
-    else body.push(new Paragraph({ spacing: { after: 60 }, children: [new TextRun({ text: l.replace(/\*\*/g, "").replace(/`/g, ""), size: 17, font: l.startsWith("|") ? "Consolas" : undefined })] }));
+  body.push(answers("Tasks 2 and 6 · the same notebooks on Databricks serverless, results compared with the local run"));
+  body.push(p("The notebooks and SQL files were imported into the workspace unchanged and run as one-time serverless jobs. Results were read back with the SQL Statement API and compared line by line with the local outputs (evidence/databricks_run.md, raw data in evidence/databricks_*.csv)."));
+  body.push(table(["#", "Notebook", "Run ID", "Result", "Duration"], dbxRuns, [500, 2700, 2300, 2660, 1200], { align: [0, 0, 0, 0, R], size: 16 }));
+  body.push(gap());
+  body.push(table(["Comparison with the local run", "Result"], [
+    ["Monitoring: rules with identical status and affected IDs", `${same} of ${dbxMon.length}`],
+    ["Incremental runs: changed / checks / new / resolved / open", "3 of 3 runs identical"],
+    ["Issue lifecycle rows (status, first/last seen, resolved, detail)", "19 of 19 identical"],
+  ], [7160, 2200], { align: [0, R] }));
+  body.push(gap());
+  body.push(box("Insight: one engine is not enough evidence", [
+    "The first Databricks run failed: a correlated scalar subquery that open-source Spark accepts is rejected by Databricks serverless (MUST_AGGREGATE_CORRELATED_SCALAR_SUBQUERY).",
+    "The fix carries the value through the existing join (same result) and both engines now pass. CI runs the open-source engine, so the deploy smoke run on Databricks stays in the pipeline for exactly this reason.",
+  ], AMBER, "9A6700"));
+  const imgs = fs.readdirSync(IMG).filter(f => /^(genuine|databricks)_.*\.png$/.test(f)).sort();
+  for (const f of imgs) {
+    const genuine = f.startsWith("genuine_");
+    body.push(...figure(f, 600, f.replace(/^(genuine|databricks)_|\.png$/g, "").replace(/_/g, " "),
+      genuine ? "Screen capture (candidate's browser)" : "Databricks run export",
+      genuine ? "supplied by the candidate" : "evidence/databricks_exports/"));
   }
-  for (const f of fs.readdirSync(IMG).filter(f => f.startsWith("databricks_")).sort())
-    body.push(...figure(f, 600, f.replace(/^databricks_|\.png$/g, "").replace(/_/g, " "), "Databricks run export", "evidence/databricks_run.md"));
 }
 
 // 9. AI use
@@ -302,6 +321,11 @@ body.push(bullet([{ text: "Assumptions: ", bold: true }, "employee_id is the joi
 body.push(bullet([{ text: "Limitations: ", bold: true }, "databricks.yml and azure-pipelines.yml were not executed; run 3 of the incremental demo uses a labelled simulated delivery; the root cause is a hypothesis until the crosswalk, Delta history and job logs are seen; at this size the row-level checks re-run on the full snapshot when anything changes."]));
 
 // Appendix B (evidence index) is appended after FIGURES is complete.
+
+// Appendix B: evidence index (after all figures are known)
+body.push(h1("Evidence index", { appendix: "B", key: "appB" }));
+body.push(p("Every image in this book, what kind it is and where it came from. Check any file with sha256sum <path>."));
+body.push(table(["Fig.", "File", "Kind", "Source", "SHA-256 (first 16)"], FIGURES.map((f, i) => [String(i + 1), f.file.replace("ebook/img/", ""), f.kind, f.source, f.sha.slice(0, 16)]), [600, 2300, 1500, 3260, 1700], { size: 15 }));
 
 // ---------- front matter ----------
 const cover = [
@@ -367,11 +391,6 @@ const Q = [
 ];
 front.push(table(["Task", "Brief requirement", "Answered in", "Page"], Q.map(([t, text, ...keys]) => { const [s, pg] = where(...keys); return [t, text, s, pg]; }), QW, { align: [0, 0, 0, R], size: 16 }));
 front.push(p("The 5–10 minute video is recorded separately; its script is docs/walkthrough_script.md.", { italics: true, size: 17, color: GREY }));
-
-// Appendix B: evidence index (after all figures are known)
-body.push(h1("Evidence index", { appendix: "B", key: "appB" }));
-body.push(p("Every image in this book, what kind it is and where it came from. Check any file with sha256sum <path>."));
-body.push(table(["Fig.", "File", "Kind", "Source", "SHA-256 (first 16)"], FIGURES.map((f, i) => [String(i + 1), f.file.replace("ebook/img/", ""), f.kind, f.source, f.sha.slice(0, 16)]), [600, 2300, 1500, 3260, 1700], { size: 15 }));
 
 // ---------- document ----------
 const doc = new Document({

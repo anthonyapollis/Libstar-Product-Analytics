@@ -20,4 +20,10 @@ working, explainable solution with strong judgement* over an elaborate framework
 
 ## Status
 - Local PySpark 4.0.4: `run_local.py` OK, `run_incremental_local.py` OK, `check_expected.py` 10/10.
-- Databricks serverless run: in progress (child session).
+- **Databricks serverless:** `employee360_dq` and three `employee360_incremental` runs succeeded. They match the local
+  results on all 10 rules, all 3 runs and all 19 issue rows (`evidence/databricks_run.md`). The first run failed on a
+  correlated scalar subquery that Databricks rejects and open-source Spark accepts; it is fixed, and both engines pass.
+- **Medallion (Bronze → Silver → Gold):** built and run locally; the Databricks run (named runs, plus images of the run
+  exports) is in progress.
+- **eBook:** `Employee360_DQ_eBook.pdf`, 18 pages. Every table is read from `outputs/`, and every image is listed in
+  Appendix B with its kind and SHA-256. Please also check that the eBook's claims match the outputs.
