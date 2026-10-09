@@ -72,6 +72,14 @@
   "label": "8. Proof on Databricks"
  },
  {
+  "num": "8.1",
+  "label": "8.1 Bronze, Silver, Gold on Databricks"
+ },
+ {
+  "num": "8.2",
+  "label": "8.2 Dashboard: Employee 360 Data Quality"
+ },
+ {
   "num": "9",
   "label": "9. AI use"
  },

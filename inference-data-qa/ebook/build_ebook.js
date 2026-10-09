@@ -283,7 +283,44 @@ if (fs.existsSync(dbxMd)) {
     "The first Databricks run failed: a correlated scalar subquery that open-source Spark accepts is rejected by Databricks serverless (MUST_AGGREGATE_CORRELATED_SCALAR_SUBQUERY).",
     "The fix carries the value through the existing join (same result) and both engines now pass. CI runs the open-source engine, so the deploy smoke run on Databricks stays in the pipeline for exactly this reason.",
   ], AMBER, "9A6700"));
-  const imgs = fs.readdirSync(IMG).filter(f => /^(genuine|databricks)_.*\.png$/.test(f)).sort();
+  // Medallion runs, named in the Runs list (parsed from the evidence file)
+  const named = md.split("\n").filter(l => l.startsWith("| `Employee360 DQ")).map(l => l.split(/(?<!\\)\|/).slice(1, -1).map(c => c.trim().replace(/\\\|/g, "|").replace(/`/g, "")));
+  if (named.length) {
+    body.push(h2("Bronze, Silver, Gold on Databricks", { key: "databricks.medallion" }));
+    body.push(p("Three runs of the medallion notebook, each named for its purpose so the Runs list explains itself. All succeeded on the first attempt with no code change; Gold after run 1 matches the local output in all 576 cells, and the run log, all 19 issue rows and all 10 monitoring rules match too."));
+    body.push(table(["Run name", "Result", "Duration"], named.map(c => [c[0].replace("Employee360 DQ | ", ""), c[5].replace(/,.*$/, ""), c[6]]), [6160, 1800, 1400], { align: [0, 0, R], size: 16 }));
+    const caps = {
+      "databricks_run1_monitoring.png": "Run 1 on Databricks: the monitoring table (10 rules, all FAIL) and the release decision BLOCK.",
+      "databricks_run1_gold.png": "Run 1 on Databricks: Gold records that are not trusted, and why; row counts per layer.",
+      "databricks_run2_skipped.png": "Run 2 on Databricks: same files again, 0 rows inserted, checks skipped.",
+      "databricks_run3_new_issues.png": "Run 3 on Databricks (simulated delivery): the only two alerts, and the run summary.",
+    };
+    for (const f of Object.keys(caps).filter(f => fs.existsSync(path.join(IMG, f))))
+      body.push(...figure(f, 600, caps[f], "Databricks run export (rendered, not a browser screenshot)", "evidence/databricks_exports/"));
+  }
+
+  // Dashboard
+  const dashMd = path.join(ROOT, "evidence", "databricks_dashboard.md");
+  if (fs.existsSync(dashMd)) {
+    const cats = csv("../evidence/databricks_recon_categories.csv");
+    body.push(h2("Dashboard: Employee 360 Data Quality", { key: "databricks.dashboard" }));
+    body.push(answers("Task 5 · a usable monitoring output, live in Databricks AI/BI"));
+    body.push(p("A Databricks AI/BI dashboard on the Gold and monitoring tables, deployed from dashboards/employee360_dq.lvdash.json. Headline numbers come from the supplied data (run 1, kept with Delta time travel); anything from run 3 is labelled as the simulated delivery."));
+    body.push(table(["Page", "What it shows"], [
+      ["1 · Release gate (supplied data)", "Decision BLOCK, 10 of 10 rules failing, 5 blocking, affected employees by rule and severity, the full rule table with owners"],
+      ["2 · Reconciliation and Gold", "Reconciliation categories (below), Gold against the delivered Employee 360, untrusted Gold records, failure detail by rule"],
+      ["3 · Pipeline runs and issue lifecycle", "New, resolved and open issues per run; the issue table by status; the load log per source"],
+    ], [3000, 6360], { size: 17 }));
+    body.push(gap());
+    body.push(table(["Reconciliation category", "Employees", "Counts as failure", "Meaning"], cats.map(r => [r.category, r.employee_ids, r.counts_as_failure === "true" ? "yes" : "no", r.meaning]), [2000, 2500, 1100, 3760], { size: 16 }));
+    body.push(gap());
+    body.push(box("Access: private to the owner", [
+      "Owner-only (plus the workspace admins group, which on this workspace is the same person); no shares, no public or embed links, no schedules or subscriptions.",
+      "Published with embedded credentials off, so anyone ever given access would still need their own grant on the tables. Evidence: evidence/databricks_dashboard.md.",
+    ]));
+  }
+
+  const imgs = fs.readdirSync(IMG).filter(f => /^genuine_.*\.png$/.test(f)).sort();
   for (const f of imgs) {
     const genuine = f.startsWith("genuine_");
     body.push(...figure(f, 600, f.replace(/^(genuine|databricks)_|\.png$/g, "").replace(/_/g, " "),
@@ -377,9 +414,9 @@ const Q = [
   ["3", "Short reconciliation summary", "recon.summary"],
   ["4", "Evidence, point of failure, impact, confirming information, owner", "rootcause"],
   ["4", "Distinguish proven facts from hypotheses", "rootcause"],
-  ["5", "Monitoring output: rule, pass/fail, count, severity, IDs", "monitoring"],
+  ["5", "Monitoring output: rule, pass/fail, count, severity, IDs", "monitoring", "databricks.dashboard"],
   ["5", "An alert threshold; what blocks a release vs is monitored", "monitoring"],
-  ["6", "How checks run in Azure Databricks and Azure DevOps CI/CD", "ops"],
+  ["6", "How checks run in Azure Databricks and Azure DevOps CI/CD", "ops", "databricks.medallion"],
   ["6", "Before deployment, on a schedule, who receives alerts", "ops"],
   ["6", "Minimise compute, full-table scans, noisy alerts, paid tools", "pipeline.incremental", "ops"],
   ["6", "One check not to run on every execution, and why", "ops"],

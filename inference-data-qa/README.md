@@ -12,7 +12,7 @@ Databricks and on local PySpark.
 Row counts (48 in each file) and salary totals hide all of this. Payroll also still has a leaver as payable
 (E1029). See [docs/findings.md](docs/findings.md).
 
-**Read first: [`Employee360_DQ_eBook.pdf`](Employee360_DQ_eBook.pdf)** (18 pages). It has an executive summary, a requirements index
+**Read first: [`Employee360_DQ_eBook.pdf`](Employee360_DQ_eBook.pdf)** (20 pages). It has an executive summary, a requirements index
 that maps every task in the brief to a page, charts drawn from the outputs, run evidence, and an evidence index.
 
 ## What is where
