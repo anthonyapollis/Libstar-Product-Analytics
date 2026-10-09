@@ -1,0 +1,17 @@
+$ python run_local.py   (data-quality checks: affected employee IDs)
+
+check_failures
++-------+-----------+-------------+--------------------------------------------------------+
+|rule_id|employee_id|source       |detail                                                  |
++-------+-----------+-------------+--------------------------------------------------------+
+|DQ01   |E1015      |Payroll      |2 rows for one employee_id                              |
+|DQ02   |E1020      |HR           |blank: department                                       |
+|DQ02   |E1035      |HR           |blank: email                                            |
+|DQ03   |E1024      |Employee_360 |manager_id E9999 is not in HR                           |
+|DQ03   |E1024      |HR           |manager_id E9999 is not in HR                           |
+|DQ04   |E1029      |HR vs Payroll|HR Terminated, payroll Payable (HR effective 2026-10-02)|
+|DQ04   |E1044      |HR vs Payroll|HR Active but no payroll record                         |
+|DQ05   |E1037      |Payroll      |currency USD in monthly_salary_zar                      |
+|DQ06   |E1030      |Employee_360 |last_updated 2026-07-02, 98 days before the extract     |
+|DQ06   |E1030      |HR           |last_updated 2026-07-01, 99 days before the extract     |
++-------+-----------+-------------+--------------------------------------------------------+

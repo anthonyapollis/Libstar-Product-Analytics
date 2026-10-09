@@ -1,0 +1,17 @@
+$ python run_local.py   (reconciliation: counts agree, key sets do not)
+
+R2. Why matching totals prove nothing: all three files have 48 rows, yet the key sets differ.
++--------------------+---+-------+------------+
+|measure             |hr |payroll|employee_360|
++--------------------+---+-------+------------+
+|Row count           |48 |48     |48          |
+|Distinct employee_id|48 |47     |48          |
+|IDs also in HR      |48 |47     |47          |
++--------------------+---+-------+------------+
+
+R4. Evidence for the root-cause note: is each unexpected Employee 360 record a copy of a real one?
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+
+|unexpected_id|unexpected_name        |lookalike_id|lookalike_name|attributes_equal_of_8|department|location |manager_id|monthly_salary|effective_date|
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+
+|E1099        |Unknown Legacy Employee|E1028       |Isabella Ross |8                    |People    |Cape Town|E1004     |82200.00      |2026-10-01    |
++-------------+-----------------------+------------+--------------+---------------------+----------+---------+----------+--------------+--------------+

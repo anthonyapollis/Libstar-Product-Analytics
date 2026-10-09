@@ -1,0 +1,27 @@
+flowchart LR
+  subgraph SRC["Extracts (daily)"]
+    A1["HR_Source.csv"]
+    A2["Payroll_Source.csv"]
+    A3["Employee_360.csv<br/>(delivered, under test)"]
+  end
+  subgraph B["Bronze · as delivered"]
+    B1["bronze_hr / payroll / e360<br/>every row, every batch<br/>MERGE on row hash"]
+    B0["ingest_batches<br/>unchanged file = skipped"]
+  end
+  subgraph S["Silver · typed, standardised"]
+    S1["silver_hr<br/>silver_payroll<br/>silver_e360_delivered"]
+  end
+  subgraph Q["Checks + reconciliation"]
+    Q1["DQ01–DQ06<br/>RC01–RC04"]
+    Q2{"blocking rule<br/>failed?"}
+  end
+  subgraph G["Gold · what reporting uses"]
+    G1["gold_employee_360<br/>(rebuilt by ownership rules)"]
+    G2["gold_dq_monitoring<br/>dq_issues (open/resolved)"]
+  end
+  A1 & A2 & A3 --> B1
+  B1 --> S1 --> Q1 --> Q2
+  Q2 -- no --> P["publish Employee 360"]
+  Q2 -- yes --> X["job fails · on-call alerted"]
+  S1 --> G1
+  Q1 --> G2 --> AL["alert owners on NEW issues only"]
