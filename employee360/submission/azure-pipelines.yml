@@ -1,0 +1,17 @@
+trigger:
+  branches:
+    include: [main]
+pr:
+  branches:
+    include: [main]
+pool:
+  vmImage: ubuntu-latest
+steps:
+- task: UsePythonVersion@0
+  inputs: { versionSpec: '3.11' }
+- script: |
+    python -m pip install -r requirements.txt
+    python tests/test_pipeline.py
+    python tests/test_incremental.py
+  displayName: Run Employee 360 DQ regression checks
+# Deploy to a Databricks test workspace only after this stage passes.

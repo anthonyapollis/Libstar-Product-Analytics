@@ -1,0 +1,579 @@
+1
+00:00:00,000 --> 00:00:04,341
+Welcome to the Employee three sixty data quality walkthrough, prepared
+
+2
+00:00:04,341 --> 00:00:08,682
+for Anthony Grant Apollis. This presentation explains the supplied data,
+
+3
+00:00:08,682 --> 00:00:13,024
+the release decision, the reconciliation findings, and the evidence included
+
+4
+00:00:13,024 --> 00:00:14,326
+in the submission.
+
+5
+00:00:14,326 --> 00:00:18,216
+The project compares three extracts: human resources, payroll, and the
+
+6
+00:00:18,216 --> 00:00:22,106
+delivered Employee three sixty dataset. Each file contains forty eight
+
+7
+00:00:22,106 --> 00:00:25,996
+rows. Equal row counts are only a starting point, because
+
+8
+00:00:25,996 --> 00:00:29,887
+a missing employee and an unexpected employee can cancel each
+
+9
+00:00:29,887 --> 00:00:31,832
+other out in the totals.
+
+10
+00:00:31,832 --> 00:00:36,308
+The solution combines profiling, explicit quality rules, field comparisons, monitoring,
+
+11
+00:00:36,308 --> 00:00:40,784
+and an incremental loading demonstration. The objective is to make
+
+12
+00:00:40,784 --> 00:00:45,260
+defects explainable and traceable before the data is released for
+
+13
+00:00:45,260 --> 00:00:45,707
+reporting.
+
+14
+00:00:45,707 --> 00:00:49,631
+This video uses the corrected presentation and recorded dashboard evidence.
+
+15
+00:00:49,631 --> 00:00:53,555
+The narrator is computer generated. It is a slide based
+
+16
+00:00:53,555 --> 00:00:57,478
+explanation, not a live screen recording or a clone of
+
+17
+00:00:57,478 --> 00:01:01,402
+Anthony's voice. The accompanying code and evidence allow a reviewer
+
+18
+00:01:01,402 --> 00:01:02,972
+to inspect the implementation.
+
+19
+00:01:02,972 --> 00:01:06,848
+The release decision is block. That is a business control
+
+20
+00:01:06,848 --> 00:01:10,724
+outcome: the checks have identified problems that require investigation. It
+
+21
+00:01:10,724 --> 00:01:14,600
+does not mean the pipeline crashed, or that every employee
+
+22
+00:01:14,600 --> 00:01:15,762
+failed every check.
+
+23
+00:01:15,762 --> 00:01:19,798
+The corrected local validation returns seventeen rule findings across twelve
+
+24
+00:01:19,798 --> 00:01:23,833
+employee identifiers. All ten controls detect at least one defect.
+
+25
+00:01:23,833 --> 00:01:27,868
+Findings can overlap: one employee may violate several rules, and
+
+26
+00:01:27,868 --> 00:01:31,904
+a stale record can appear in more than one source.
+
+27
+00:01:31,904 --> 00:01:35,583
+A final review found a status mapping error in the
+
+28
+00:01:35,583 --> 00:01:39,263
+local implementation. A terminated employee with payroll marked Stopped is
+
+29
+00:01:39,263 --> 00:01:42,943
+a consistent pair. The checker previously expected a different label
+
+30
+00:01:42,943 --> 00:01:46,623
+and incorrectly flagged two valid pairs. That error has been
+
+31
+00:01:46,623 --> 00:01:49,935
+corrected and a regression test now protects the mapping.
+
+32
+00:01:49,935 --> 00:01:54,163
+These local output rows must be read separately from the
+
+33
+00:01:54,163 --> 00:01:58,391
+historical Databricks lifecycle figures shown later. The implementations do not
+
+34
+00:01:58,391 --> 00:02:02,619
+have identical rule identifiers or aggregation. The package records that
+
+35
+00:02:02,619 --> 00:02:05,579
+limitation rather than claiming complete result parity.
+
+36
+00:02:05,579 --> 00:02:10,790
+The assessment spans seven dimensions: uniqueness, completeness, referential integrity, consistency,
+
+37
+00:02:10,790 --> 00:02:16,001
+validity, timeliness, and reconciliation. Ten controls cover these dimensions, with
+
+38
+00:02:16,001 --> 00:02:21,212
+a severity and a release action attached to each result.
+
+39
+00:02:21,212 --> 00:02:26,198
+SQL is useful for readable profiling, joins, grouped checks, and
+
+40
+00:02:26,198 --> 00:02:31,184
+dashboard queries. PySpark supports the distributed Databricks pipeline. The package
+
+41
+00:02:31,184 --> 00:02:36,170
+also includes a local Python implementation for repeatable validation without
+
+42
+00:02:36,170 --> 00:02:38,164
+requiring a cloud workspace.
+
+43
+00:02:38,164 --> 00:02:41,914
+One important business insight is that totals hide offsetting differences.
+
+44
+00:02:41,914 --> 00:02:45,663
+The documented salary comparison shows a net difference of sixty
+
+45
+00:02:45,663 --> 00:02:49,413
+four thousand six hundred rand, but a gross absolute difference
+
+46
+00:02:49,413 --> 00:02:53,163
+of two hundred and twenty five thousand two hundred rand.
+
+47
+00:02:53,163 --> 00:02:57,415
+The net amount allows overstatements and understatements to cancel. The
+
+48
+00:02:57,415 --> 00:03:01,667
+gross amount sums their magnitudes and exposes a larger reconciliation
+
+49
+00:03:01,667 --> 00:03:05,919
+problem. Neither number is automatically a proven financial loss. Currency
+
+50
+00:03:05,919 --> 00:03:10,172
+conflicts and unverifiable payroll values must be investigated before the
+
+51
+00:03:10,172 --> 00:03:13,573
+figures are used for payment or reporting decisions.
+
+52
+00:03:13,573 --> 00:03:17,862
+The source comparison joins employee records on employee identifier. Payroll
+
+53
+00:03:17,862 --> 00:03:22,150
+also has a pay period, so a comparison must select
+
+54
+00:03:22,150 --> 00:03:26,438
+the relevant period before joining. Otherwise multiple payroll rows could
+
+55
+00:03:26,438 --> 00:03:29,440
+multiply the comparison and create misleading results.
+
+56
+00:03:29,440 --> 00:03:33,376
+Employee E one zero two seven exists upstream but is
+
+57
+00:03:33,376 --> 00:03:37,312
+missing downstream. Employee E one zero nine nine appears downstream
+
+58
+00:03:37,312 --> 00:03:41,248
+without the expected source employee. Its match to E one
+
+59
+00:03:41,248 --> 00:03:45,184
+zero two eight across eight tested attributes supports a copied
+
+60
+00:03:45,184 --> 00:03:49,121
+record hypothesis. Confirming the exact upstream cause requires source system
+
+61
+00:03:49,121 --> 00:03:49,514
+lineage.
+
+62
+00:03:49,514 --> 00:03:53,887
+The historical dashboard identifies six employees with field errors, covering
+
+63
+00:03:53,887 --> 00:03:58,259
+attributes such as employment status, salary, currency, and other profile
+
+64
+00:03:58,259 --> 00:04:02,632
+details. Employee E one zero one five has conflicting payroll
+
+65
+00:04:02,632 --> 00:04:07,004
+values, so the outcome remains Cannot verify. Selecting an arbitrary
+
+66
+00:04:07,004 --> 00:04:09,191
+value would hide the conflict.
+
+67
+00:04:09,191 --> 00:04:12,939
+Employee E one zero four two is a documented future
+
+68
+00:04:12,939 --> 00:04:16,688
+dated HR exception. That difference is displayed for transparency and
+
+69
+00:04:16,688 --> 00:04:20,437
+excluded from failure counts. The local checker has narrower field
+
+70
+00:04:20,437 --> 00:04:24,185
+coverage than the historical dashboard; the packaged scope note explains
+
+71
+00:04:24,185 --> 00:04:27,559
+why those results should not be treated as interchangeable.
+
+72
+00:04:27,559 --> 00:04:31,647
+The three run demonstration tests change handling. Run one loads
+
+73
+00:04:31,647 --> 00:04:35,735
+the supplied files. In the historical dashboard it starts with
+
+74
+00:04:35,735 --> 00:04:39,822
+seventeen open lifecycle issues. That count describes the dashboard's issue
+
+75
+00:04:39,822 --> 00:04:43,501
+model, not the row count of every packaged output.
+
+76
+00:04:43,501 --> 00:04:47,318
+Run two presents the same files again. Matching file hashes
+
+77
+00:04:47,318 --> 00:04:51,134
+allow the loader to skip an unchanged delivery, avoiding duplicate
+
+78
+00:04:51,134 --> 00:04:54,951
+processing. An unchanged delivery does not resolve existing issues; they
+
+79
+00:04:54,951 --> 00:04:58,768
+remain open until later evidence shows the problem has gone
+
+80
+00:04:58,768 --> 00:04:59,149
+away.
+
+81
+00:04:59,149 --> 00:05:03,703
+Run three uses a separate, deliberately simulated delivery. It resolves
+
+82
+00:05:03,703 --> 00:05:08,257
+eight earlier issues, introduces two new issues, and leaves eleven
+
+83
+00:05:08,257 --> 00:05:12,811
+open. The arithmetic is seventeen, minus eight, plus two, which
+
+84
+00:05:12,811 --> 00:05:13,722
+equals eleven.
+
+85
+00:05:13,722 --> 00:05:17,599
+Resolved means a later evaluated delivery no longer triggers that
+
+86
+00:05:17,599 --> 00:05:21,476
+issue. It does not mean the original supplied files were
+
+87
+00:05:21,476 --> 00:05:25,353
+repaired. The simulation proves that the lifecycle responds to changes.
+
+88
+00:05:25,353 --> 00:05:29,230
+The local regression test independently verifies file hash changes and
+
+89
+00:05:29,230 --> 00:05:33,107
+unchanged file skips; it does not claim to test streaming
+
+90
+00:05:33,107 --> 00:05:34,270
+change data capture.
+
+91
+00:05:34,270 --> 00:05:38,525
+The dashboard brings together the release decision, rule outcomes, affected
+
+92
+00:05:38,525 --> 00:05:42,781
+employees, severity, and actions. Investigators can begin with a failing
+
+93
+00:05:42,781 --> 00:05:47,036
+rule, identify the affected employee and source, and then inspect
+
+94
+00:05:47,036 --> 00:05:48,738
+the record level evidence.
+
+95
+00:05:48,738 --> 00:05:52,373
+Severity and release action are separate fields. A rule may
+
+96
+00:05:52,373 --> 00:05:56,008
+block release, require an immediate alert, or remain under monitoring.
+
+97
+00:05:56,008 --> 00:05:59,643
+Review the configured action for the rule rather than assuming
+
+98
+00:05:59,643 --> 00:06:03,277
+every critical or high severity result has the same response.
+
+99
+00:06:03,277 --> 00:06:07,347
+A technical failure is different. The earlier unsupported SQL subquery
+
+100
+00:06:07,347 --> 00:06:11,416
+was an execution error, requiring an engineering fix. A successful
+
+101
+00:06:11,416 --> 00:06:15,486
+job that reports failed data quality checks has completed its
+
+102
+00:06:15,486 --> 00:06:19,148
+technical work and correctly exposed a business data problem.
+
+103
+00:06:19,148 --> 00:06:23,207
+For a failed run, inspect the run identifier, failed task,
+
+104
+00:06:23,207 --> 00:06:27,266
+error message, input delivery, and last successful stage. For a
+
+105
+00:06:27,266 --> 00:06:31,325
+data defect, follow the employee, source, and rule to the
+
+106
+00:06:31,325 --> 00:06:35,383
+responsible data owner. Retry after an operational repair; release only
+
+107
+00:06:35,383 --> 00:06:38,630
+after the relevant quality controls have been satisfied.
+
+108
+00:06:38,630 --> 00:06:43,002
+The design separates raw ingestion, conformed data, and reporting outputs
+
+109
+00:06:43,002 --> 00:06:47,374
+through Bronze, Silver, and Gold layers. Run identifiers, source hashes,
+
+110
+00:06:47,374 --> 00:06:51,745
+rule outcomes, and recorded evidence provide traceability. The ebook includes
+
+111
+00:06:51,745 --> 00:06:56,117
+the data model and a join map to explain these
+
+112
+00:06:56,117 --> 00:06:56,554
+relationships.
+
+113
+00:06:56,554 --> 00:07:01,463
+Governance also needs accountable owners, access controls, retention decisions, and
+
+114
+00:07:01,463 --> 00:07:06,373
+an agreed response process. The private dashboard is documented as
+
+115
+00:07:06,373 --> 00:07:11,283
+using workspace permissions. Production access and retention policies still require
+
+116
+00:07:11,283 --> 00:07:13,737
+configuration in the deployment environment.
+
+117
+00:07:13,737 --> 00:07:18,156
+The optional dbt layer adds documented SQL models, dependency lineage,
+
+118
+00:07:18,156 --> 00:07:22,575
+and reusable tests. Its local validation is recorded separately from
+
+119
+00:07:22,575 --> 00:07:26,995
+Databricks execution. The Azure DevOps file defines a proposed continuous
+
+120
+00:07:26,995 --> 00:07:31,414
+integration workflow; it is not evidence that a live production
+
+121
+00:07:31,414 --> 00:07:33,181
+deployment has already occurred.
+
+122
+00:07:33,181 --> 00:07:37,262
+Before deployment, run regression tests and validate the rule changes.
+
+123
+00:07:37,262 --> 00:07:41,342
+For scheduled processing, check changed inputs and use targeted queries
+
+124
+00:07:41,342 --> 00:07:45,422
+where possible. Reserve full historical profiling for a periodic review
+
+125
+00:07:45,422 --> 00:07:49,502
+or a material schema change. Route alerts to owners and
+
+126
+00:07:49,502 --> 00:07:53,582
+suppress repeated unchanged alerts to reduce both compute cost and
+
+127
+00:07:53,582 --> 00:07:53,991
+noise.
+
+128
+00:07:53,991 --> 00:07:58,127
+AI assisted drafting and review, but its suggestions still needed
+
+129
+00:07:58,127 --> 00:08:02,264
+testing. One rejected suggestion used a grouped first value to
+
+130
+00:08:02,264 --> 00:08:06,401
+resolve conflicting payroll entries. That could silently select a salary
+
+131
+00:08:06,401 --> 00:08:10,538
+and conceal an ambiguity. The chosen approach retains Cannot verify
+
+132
+00:08:10,538 --> 00:08:12,193
+and preserves the evidence.
+
+133
+00:08:12,193 --> 00:08:15,528
+The final review also corrected the local payroll status mapping.
+
+134
+00:08:15,528 --> 00:08:18,863
+These examples show why a passing script is not enough:
+
+135
+00:08:18,863 --> 00:08:22,198
+the business meaning of the test must be checked, and
+
+136
+00:08:22,198 --> 00:08:25,533
+the test suite must challenge both valid and invalid cases.
+
+137
+00:08:25,533 --> 00:08:29,221
+To review the submission, extract the ZIP into a new
+
+138
+00:08:29,221 --> 00:08:32,909
+folder and open Start Here. Read the ebook, inspect the
+
+139
+00:08:32,909 --> 00:08:36,596
+dashboard captures, and compare the machine readable outputs with the
+
+140
+00:08:36,596 --> 00:08:40,284
+code. Run the supplied local tests using the documented commands.
+
+141
+00:08:40,284 --> 00:08:43,603
+The manifest provides a checksum for each packaged file.
+
+142
+00:08:43,603 --> 00:08:47,702
+The remaining business action is to work with the source
+
+143
+00:08:47,702 --> 00:08:51,802
+owners, correct confirmed defects in a controlled delivery, and rerun
+
+144
+00:08:51,802 --> 00:08:55,901
+the controls. Only then should the release decision change. This
+
+145
+00:08:55,901 --> 00:09:00,000
+concludes the walkthrough of the evidence, findings, implementation, and limitations.

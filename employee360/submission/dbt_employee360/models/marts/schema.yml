@@ -1,0 +1,26 @@
+version: 2
+models:
+  - name: stg_hr
+    description: Cleaned HR source at one row per supplied HR record.
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]
+  - name: stg_employee360
+    description: Cleaned Employee 360 source at one row per supplied Employee 360 record.
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]
+  - name: stg_payroll
+    description: Payroll source at employee and pay-period grain.
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: pay_period
+        tests: [not_null]
+  - name: int_payroll_conflicts
+    description: Conflicting payroll values. A non-empty result is expected in the supplied data and is handled as Cannot verify.
+  - name: mart_employee360_reconciliation
+    description: Current-period HR, payroll and Employee 360 reconciliation; never chooses an arbitrary conflicting payroll row.
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]

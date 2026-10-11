@@ -1,0 +1,13 @@
+name: employee360_dq
+require-dbt-version: ['>=1.7.0', '<2.0.0']
+config-version: 2
+profile: employee360_dq
+model-paths: ["models"]
+clean-targets: ["target", "dbt_packages"]
+models:
+  employee360_dq:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+

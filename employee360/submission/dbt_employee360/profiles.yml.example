@@ -1,0 +1,11 @@
+employee360_dq:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: main
+      schema: employee360_dq
+      host: <workspace-host>
+      http_path: <sql-warehouse-http-path>
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4

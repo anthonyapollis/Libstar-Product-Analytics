@@ -1,0 +1,3 @@
+# Preserve final-package bytes so published source files match MANIFEST.sha256.
+submission/** -text
+downloads/** -text

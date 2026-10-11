@@ -1,0 +1,4 @@
+source,rows,distinct_employee_ids,duplicate_employee_id_rows,null_or_blank_cells
+HR,48,48,0,7
+Payroll,48,47,2,0
+Employee_360,48,48,0,5

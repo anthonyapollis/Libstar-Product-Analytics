@@ -1,0 +1,18 @@
+version: 2
+sources:
+  - name: raw
+    description: Supplied source tables loaded by the PySpark ingestion job.
+    schema: employee360_dq
+    tables:
+      - name: hr_source
+        columns:
+          - name: employee_id
+            tests: [not_null]
+      - name: payroll_source
+        columns:
+          - name: employee_id
+            tests: [not_null]
+      - name: employee_360
+        columns:
+          - name: employee_id
+            tests: [not_null]

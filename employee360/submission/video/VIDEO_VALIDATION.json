@@ -1,0 +1,59 @@
+{
+  "duration_seconds": 540.123047,
+  "width": 1280,
+  "height": 720,
+  "audio": true,
+  "captions": "burned in; estimated word timing within measured paragraphs",
+  "narrator": "Microsoft George; male synthetic narrator, not a voice clone",
+  "decode_check": "passed",
+  "chapters": [
+    {
+      "slide": 1,
+      "title": "Purpose and evidence",
+      "start": 0,
+      "duration": 62.97166626207224
+    },
+    {
+      "slide": 2,
+      "title": "Release decision and verified counts",
+      "start": 62.97166626207224,
+      "duration": 62.60686248930425
+    },
+    {
+      "slide": 3,
+      "title": "Checks and salary risk",
+      "start": 125.5785287513765,
+      "duration": 67.99490887787906
+    },
+    {
+      "slide": 4,
+      "title": "Reconciliation and root cause",
+      "start": 193.57343762925555,
+      "duration": 73.98573062228266
+    },
+    {
+      "slide": 5,
+      "title": "Incremental loads and lifecycle",
+      "start": 267.5591682515382,
+      "duration": 66.71098017237871
+    },
+    {
+      "slide": 6,
+      "title": "Monitoring and failure investigation",
+      "start": 334.2701484239169,
+      "duration": 64.36032826049691
+    },
+    {
+      "slide": 7,
+      "title": "Governance and cost conscious delivery",
+      "start": 398.6304766844138,
+      "duration": 75.3600326371947
+    },
+    {
+      "slide": 8,
+      "title": "Independent judgement and review route",
+      "start": 473.9905093216085,
+      "duration": 66.00949067839137
+    }
+  ]
+}

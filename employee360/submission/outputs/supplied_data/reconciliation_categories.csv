@@ -1,0 +1,9 @@
+category,employee_id,counts_as_failure,detail
+Missing downstream,E1027,True,Missing downstream
+Unexpected downstream,E1099,True,Unexpected downstream
+Field error,E1012,True,employment status: Terminated -> Active
+Cannot verify,E1015,True,Cannot verify: conflicting payroll values
+Field error,E1018,True,salary: 62900 -> 69400
+Field error,E1037,True,currency: USD -> ZAR
+Field error,E1044,True,missing payroll record
+Legitimate exception,E1042,False,Future-dated HR change; not a release failure

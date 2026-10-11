@@ -1,0 +1,18 @@
+rule_id,employee_id,source,detail,severity,release_action
+DQ01,E1015,Payroll,duplicate employee_id,Critical,Block release
+DQ02,E1020,HR,blank: department,Medium,Monitor
+DQ02,E1035,HR,blank: email,Medium,Monitor
+DQ03,E1024,HR,manager_id E9999 is not in HR,High,Alert now
+DQ04,E1029,HR vs Payroll,"HR Terminated, payroll ['Payable']",Critical,Alert now
+DQ04,E1044,HR vs Payroll,"HR Active, payroll missing",Critical,Alert now
+DQ05,E1037,Payroll,currency USD / salary 42700,High,Block release
+DQ06,E1030,HR,last_updated 2026/07/01 is stale or invalid,Medium,Monitor
+DQ06,E1030,Employee_360,last_updated 2026-07-02 is stale or invalid,Medium,Monitor
+DQ07,E1015,Payroll,2 conflicting salary/currency values for 2026-09,Critical,Block release
+RC01,E1027,HR vs Employee_360,Missing downstream,Critical,Block release
+RC02,E1099,HR vs Employee_360,Unexpected downstream,Critical,Block release
+RC03,E1012,Source vs Employee_360,employment status: Terminated -> Active,Critical,Block release
+RC03,E1015,Payroll vs Employee_360,Cannot verify: conflicting payroll values,Critical,Block release
+RC03,E1018,Source vs Employee_360,salary: 62900 -> 69400,Critical,Block release
+RC03,E1037,Source vs Employee_360,currency: USD -> ZAR,Critical,Block release
+RC03,E1044,Source vs Employee_360,missing payroll record,Critical,Block release

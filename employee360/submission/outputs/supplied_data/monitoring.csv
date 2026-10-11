@@ -1,0 +1,11 @@
+rule_id,description,dimension,status,affected_count,severity,release_action
+DQ01,employee_id unique in every source,Uniqueness,FAIL,1,Critical,Block release
+DQ02,mandatory HR fields populated,Completeness,FAIL,2,Medium,Monitor
+DQ03,manager_id exists in HR,Referential integrity,FAIL,1,High,Alert now
+DQ04,HR status agrees with payroll status,Consistency,FAIL,2,Critical,Alert now
+DQ05,payroll salary is a positive ZAR amount,Validity,FAIL,1,High,Block release
+DQ06,record updated within freshness threshold,Timeliness,FAIL,2,Medium,Monitor
+DQ07,one unambiguous payroll value per employee and period,Consistency,FAIL,1,Critical,Block release
+RC01,every HR employee is in Employee 360,Reconciliation,FAIL,1,Critical,Block release
+RC02,no Employee 360 record without HR employee,Reconciliation,FAIL,1,Critical,Block release
+RC03,"status, salary and currency match when verifiable",Reconciliation,FAIL,5,Critical,Block release

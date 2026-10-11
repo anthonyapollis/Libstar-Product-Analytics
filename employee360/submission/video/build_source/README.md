@@ -1,0 +1,1 @@
+These are the exact local build scripts for audit. They use local Windows paths and require adjustment in another environment. Media generation additionally requires Windows System.Speech (Microsoft George), FFmpeg, Pillow, reportlab and pypdf. The scripts are supporting build records, not the project data-pipeline entry point. Use the packaged MP4 for playback.
